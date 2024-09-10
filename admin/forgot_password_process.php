@@ -43,13 +43,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com'; // SMTP server
             $mail->SMTPAuth = true;
-            $mail->Username = "";
-            $mail->Password = "";
+            $mail->Username = 'ciervosherwin08@gmail.com';
+            $mail->Password = "***";
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Enable TLS encryption
             $mail->Port = 587;
             
             // Recipients
-            $mail->setFrom('your_email@example.com', 'Your App Name');
+            $mail->setFrom('ciervosherwin08@gmail.com', 'MCC Repositories');
             $mail->addAddress($email);
             
             // Content
