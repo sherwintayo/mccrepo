@@ -9,6 +9,7 @@ require_once('../vendor/autoload.php'); // Composer autoloader
 
 // Use PHPMailer with namespaces
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
