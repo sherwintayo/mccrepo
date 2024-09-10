@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->Username = 'sherwintayo08@gmail.com';
             $mail->Password = "jlbm iyke zqjv zwtr";
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Enable TLS encryption
-            $mail->Port = 465;
+            $mail->Port = 587;
             
             // Recipients
             $mail->setFrom('sherwintayo08@gmail.com', 'MCC Repositories');
