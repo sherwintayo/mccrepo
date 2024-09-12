@@ -52,8 +52,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->Host = 'smtp.gmail.com'; // SMTP server for Outlook
             $mail->SMTPAuth = true;
             $mail->Username = 'sherwintayo08@gmail.com';
-            $mail->Password = 'thgb njxm idlk kalu';
-            $mail->Password = 'thgb njxm idlk kalu';
+            $mail->Password = 'jlbm iyke zqjv zwtr';
+            // $mail->Password = 'thgb njxm idlk kalu';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Enable TLS encryption
             $mail->Port = 587;
 
