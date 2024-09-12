@@ -4,8 +4,8 @@
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
 
-require_once('../config.php');
-require_once('../vendor/autoload.php'); // Composer autoloader
+require_once('./config.php');
+require_once('./vendor/autoload.php'); // Composer autoloader
 
 // Use PHPMailer with namespaces
 use PHPMailer\PHPMailer\PHPMailer;
@@ -15,8 +15,15 @@ use PHPMailer\PHPMailer\Exception;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     
+    // Server-side validation for email domain
+    $domain = "@mcclawis.edu.ph";
+    if (!str_ends_with($email, $domain)) {
+        echo "Invalid email address. Only emails ending with $domain are allowed.";
+        exit();
+    }
+
     // Check if email exists in the users table
-    $stmt = $conn->prepare("SELECT id, username FROM users WHERE username = ?");
+    $stmt = $conn->prepare("SELECT id, username FROM msaccount WHERE username = ?");
     $stmt->bind_param('s', $email);
     $stmt->execute();
     $stmt->store_result();
@@ -30,39 +37,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Store token and expiration in the database
         $stmt->bind_result($user_id, $username);
         $stmt->fetch();
-        $update = $conn->prepare("UPDATE users SET reset_token_hash = ?, reset_token_expires_at = ? WHERE id = ?");
+        $update = $conn->prepare("UPDATE msaccount SET reset_token_hash = ?, reset_token_hash_expires_at = ? WHERE id = ?");
         $update->bind_param('ssi', $token_hash, $expires_at, $user_id);
         $update->execute();
         
         // Send the reset link via PHPMailer
-        $reset_link = base_url . "admin/reset_password.php?token=$token";
+        $register_link = base_url . "register.php?token=$token";
         
         $mail = new PHPMailer(true); // Passing `true` enables exceptions
 
         try {
-
-            // $mail->SMTPDebug = SMTP::DEBUG_SERVER;
-            // Server settings
+            // SMTP server settings for Microsoft Outlook
             $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com'; // SMTP server
+            $mail->Host = 'smtp.gmail.com'; // SMTP server for Outlook
             $mail->SMTPAuth = true;
             $mail->Username = 'sherwintayo08@gmail.com';
-            $mail->Password = "jlbm iyke zqjv zwtr";
+            $mail->Password = 'thgb njxm idlk kalu';
+            $mail->Password = 'thgb njxm idlk kalu';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Enable TLS encryption
             $mail->Port = 587;
-            
+
             // Recipients
-            $mail->setFrom('sherwintayo08@gmail.com', 'MCC Repositories');
-            $mail->addAddress($email);
+            $mail->setFrom('Sherwin.Ciervo@mcclawis.edu.ph', 'MCC Repositories'); // Sender's email and name
+            $mail->addAddress($email); // Add recipient email
             
-            // Content
+            // Email content
             $mail->isHTML(true);
             $mail->Subject = 'Password Reset Request';
-            $mail->Body    = "Hi $username,<br><br>Click the link below to reset your password:<br><a href='$reset_link'>$reset_link</a><br><br>The link is valid for 1 hour.";
+            $mail->Body    = "Hi $username,<br><br>Click the link below to register:<br><a href='$register_link'>$register_link</a><br><br>The link is valid for 1 hour.";
             
             // Send email
             $mail->send();
-            echo "Reset link sent to your email.";
+            echo "Register link sent to your email.";
         } catch (Exception $e) {
             echo "Mailer Error: {$mail->ErrorInfo}";
         }
