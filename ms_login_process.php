@@ -53,13 +53,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->Host = 'smtp.gmail.com'; // SMTP server for Outlook
             $mail->SMTPAuth = true;
             $mail->Username = 'sherwintayo08@gmail.com';
-            // $mail->Password = 'jlbm iyke zqjv zwtr';
-            $mail->Password = 'thgb njxm idlk kalu';
+            $mail->Password = 'jlbm iyke zqjv zwtr';
+            // $mail->Password = 'thgb njxm idlk kalu';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Enable TLS encryption
             $mail->Port = 587;
 
             // Recipients
-            $mail->setFrom('Sherwin.Ciervo@mcclawis.edu.ph', 'MCC Repositories'); // Sender's email and name
+            $mail->setFrom('sherwintayo08@gmail.com', 'MCC Repositories'); // Sender's email and name
             $mail->addAddress($email); // Add recipient email
             
             // Email content
