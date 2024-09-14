@@ -107,7 +107,7 @@
         start_loader();
         
         $.ajax({
-          url: 'Login.php?f=ms_Login',
+          url: 'Login.php?f=forgot_password',  // Use the method from Login.php
           method: 'POST',
           data: $(this).serialize(),
           dataType: 'json',
@@ -120,6 +120,9 @@
                 text: 'Check your email for the reset link.',
                 showConfirmButton: false,
                 timer: 2000
+              }).then(() => {
+                // Redirect to login.php after success
+                window.location.href = "login.php";
               });
             } else {
               Swal.fire({
