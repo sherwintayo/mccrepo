@@ -107,7 +107,7 @@
         start_loader();
         
         $.ajax({
-          url: 'Login.php?f=forgot_password',  // Use the method from Login.php
+          url: 'ms_login_process.php',  // Use the method from Login.php
           method: 'POST',
           data: $(this).serialize(),
           dataType: 'json',
