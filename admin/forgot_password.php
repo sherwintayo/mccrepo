@@ -60,6 +60,9 @@
       .forgot-form {
         width: 50%;
       }
+      .card {
+        width: 70%;
+    }
     }
   </style>
 
