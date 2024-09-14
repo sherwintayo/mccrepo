@@ -54,16 +54,16 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                     <fieldset>
                         <legend class="text-navy">Abstract:</legend>
                         <div class="pl-4">
-						<textarea id="summernote" class="form-control form-control-border summernote" readonly>
-						<?= isset($abstract) ? nl2br(file_get_contents(html_entity_decode(base_url.$abstract))) : "" ?>
-						</textarea>
-						</div> 
+                            <large>
+                                <?= isset($abstract) ? html_entity_decode($abstract) : "" ?>
+                        </large>
+                    </div>
                     </fieldset>
                     <fieldset>
                         <legend class="text-navy">Members:</legend>
                         <div class="pl-4"><large><?= isset($members) ? html_entity_decode($members) : "" ?></large></div>
                     </fieldset>
-					<fieldset>
+                    <fieldset>
 						<legend class="text-navy">Project Files:</legend>
 						
 						<a class="btn btn-success" href="<?php echo base_url.'uploads/files/Files-'.$id.'.zip' ?>">Download Project files</a>
