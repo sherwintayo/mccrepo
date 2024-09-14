@@ -16,25 +16,68 @@ class Login extends DBConnection {
 		echo "<h1>Access Denied</h1> <a href='".base_url."'>Go Back.</a>";
 	}
 	public function login(){
-		extract($_POST);
+        extract($_POST);
+        $stmt = $this->conn->prepare("SELECT * FROM users WHERE username = ?");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $qry = $stmt->get_result();
 
-		$qry = $this->conn->query("SELECT * from users where username = '$username' and password = md5('$password')");
-		if($qry->num_rows > 0){
-			$res = $qry->fetch_array();
-			if($res['status'] != 1){
-				return json_encode(array('status'=>'notverified'));
-			}
-			foreach($res as $k => $v){
-				if(!is_numeric($k) && $k != 'password'){
-					$this->settings->set_userdata($k,$v);
-				}
-			}
-			$this->settings->set_userdata('login_type',1);
-		return json_encode(array('status'=>'success'));
-		}else{
-		return json_encode(array('status'=>'incorrect','last_qry'=>"SELECT * from users where username = '$username' and password = md5('$password') "));
-		}
-	}
+        if($qry->num_rows > 0){
+            $res = $qry->fetch_assoc();
+            
+            // Check if the password is hashed with bcrypt (password_hash)
+            if (password_verify($password, $res['password'])) {
+                // Check account status
+                if ($res['status'] != 1) {
+                    return json_encode(['status' => 'notverified']);
+                }
+
+                // Store session data
+                foreach($res as $k => $v){
+                    if(!is_numeric($k) && $k != 'password'){
+                        $this->settings->set_userdata($k, $v);
+                    }
+                }
+                $this->settings->set_userdata('login_type', 1);
+
+                // Optional: Rehash the password if the current hash is not up to date
+                if (password_needs_rehash($res['password'], PASSWORD_DEFAULT)) {
+                    $newHash = password_hash($password, PASSWORD_DEFAULT);
+                    $updateStmt = $this->conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+                    $updateStmt->bind_param('si', $newHash, $res['id']);
+                    $updateStmt->execute();
+                }
+
+                return json_encode(['status' => 'success']);
+            } 
+            // If the password is still hashed with MD5, verify it
+            elseif ($res['password'] === md5($password)) {
+                // Migrate MD5 hash to bcrypt
+                $newHash = password_hash($password, PASSWORD_DEFAULT);
+                $updateStmt = $this->conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+                $updateStmt->bind_param('si', $newHash, $res['id']);
+                $updateStmt->execute();
+
+                // Store session data
+                foreach($res as $k => $v){
+                    if(!is_numeric($k) && $k != 'password'){
+                        $this->settings->set_userdata($k, $v);
+                    }
+                }
+                $this->settings->set_userdata('login_type', 1);
+
+                return json_encode(['status' => 'success']);
+            } else {
+                // Incorrect password
+                return json_encode(['status' => 'incorrect']);
+            }
+        } else {
+            // No user found with the given username
+            return json_encode(['status' => 'incorrect']);
+        }
+    }
+
+
 	public function logout(){
 		if($this->settings->sess_des()){
 			redirect('admin/login.php');
