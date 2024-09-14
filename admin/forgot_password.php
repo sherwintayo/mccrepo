@@ -41,78 +41,32 @@
       background-image: linear-gradient(to right, #f83600 50%, #f9d423 150%);
     }
 
+    /* Responsive styles */
+    @media (max-width: 575.98px) {
+      .myContainer {
+        margin: 20px;
+      }
+
+      .forgot-form {
+        width: 100%;
+      }
+
+      .myForgotForm {
+        border-radius: 20px;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .forgot-form {
+        width: 50%;
+      }
+      .card {
+        width: 70%;
+    }
+    }
+
+
     
-/* Extra small devices (portrait phones, less than 576px) */
-@media (max-width: 575.98px) {
-
-.myContainer{
-    margin: 20px;
-}
-
-.forgot-form {
-    width: 100%;
-    
-}
-
-.card {
-    width: 100%;
-    margin: 0;
-}
-
-.myLoginForm {
-border-radius: 20px 20px 0 0;
-}
-}
-
-/* Small devices (landscape phones, less than 768px) */
-@media (max-width: 767.98px) {  
-
-.myContainer{
-    margin: 20px;
-}
-
-.forgot-form {
-    width: 100%;
-    
-}
-
-.card {
-    width: 100%;
-}
-}
-
-/* Medium devices (tablets, less than 992px) */
-@media (max-width: 991.98px) {
-    .forgot-form {
-    width: 70%;
-}
-
-.card {
-    width: 90%;
-}
-}
-
-/* Large devices (desktops, less than 1200px) */
-@media (max-width: 1199.98px) {
-    .forgot-form {
-    width: 60%;
-}
-
-.card {
-    width: 80%;
-}
-}
-
-/* Extra large devices (large desktops, 1200px and up) */
-@media (min-width: 1200px) {
-    .forgot-form{
-    width: 50%;
-}
-
-.card {
-    width: 70%;
-}
-}
   </style>
 
   <div class="d-flex flex-column align-items-center w-100" id="forgot-password">
