@@ -4,7 +4,7 @@
 <?php require_once('inc/header.php') ?>
 <body class="hold-transition">
   <script>
-    start_loader()
+    start_loader();
   </script>
   <style>
     html, body{
@@ -32,7 +32,6 @@
       border: 0;
       background-image: linear-gradient(to right, #f83600 50%, #f9d423 150%);
     }
-    /* Responsive styles */
     @media (max-width: 575.98px) {
       .myContainer{
           margin: 20px;
@@ -44,7 +43,6 @@
         border-radius: 20px 20px 0 0;
       }
     }
-    /* More responsive rules */
     @media (min-width: 1200px) {
       .login-form {
         width: 50%;
@@ -52,7 +50,7 @@
     }
   </style>
 
-  <div class=" d-flex flex-column align-items-center w-100" id="login">
+  <div class="d-flex flex-column align-items-center w-100" id="login">
     <div class="body d-flex flex-column justify-content-center align-items-center">
       <div class="w-100">
         <h1 class="text-center py-5 my-5 login-title"><b><?php echo $_settings->info('name') ?></b></h1>
@@ -62,7 +60,7 @@
           <div class="d-flex flex-column w-100 px-3">
             <h1 class="text-center font-weight-bold text-white">Forgot Password</h1>
             <hr class="my-3" />
-            <form action="ms_login_process.php" method="post" id="slogin-form" onsubmit="return validateEmail()">
+            <form id="slogin-form">
               <div class="form-group">
                 <div class="input-group">
                   <div class="input-group-prepend">
@@ -72,7 +70,7 @@
                 </div>
               </div>
               <div class="form-group text-right">
-                <button class="btnLogin btn btn-primary btn-flat text-white">Send</button>
+                <button type="submit" class="btnLogin btn btn-primary btn-flat text-white">Send</button>
               </div>
               <div class="text-center">
                 <a class="text-light" href="<?php echo base_url ?>">Go Back</a>
@@ -91,15 +89,57 @@
   </div>
 
   <script>
-    function validateEmail() {
-      const email = document.getElementById('email').value;
-      const domain = "@mcclawis.edu.ph";
-      if (!email.endsWith(domain)) {
-        alert("Please enter a valid email address with the domain " + domain);
-        return false;
-      }
-      return true;
-    }
+    $(document).ready(function() {
+      end_loader();
+      
+      // Handle form submission via AJAX
+      $('#slogin-form').submit(function(e) {
+        e.preventDefault();
+        
+        let email = $('#email').val();
+        const domain = "@mcclawis.edu.ph";
+        
+        if (!email.endsWith(domain)) {
+          alert("Please enter a valid email address with the domain " + domain);
+          return false;
+        }
+        
+        start_loader();
+        
+        $.ajax({
+          url: 'Login.php?f=ms_Login',
+          method: 'POST',
+          data: $(this).serialize(),
+          dataType: 'json',
+          success: function(response) {
+            end_loader();
+            if (response.status === 'success') {
+              Swal.fire({
+                icon: 'success',
+                title: 'Link Sent',
+                text: 'Check your email for the reset link.',
+                showConfirmButton: false,
+                timer: 2000
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: response.msg || 'An error occurred.',
+              });
+            }
+          },
+          error: function() {
+            end_loader();
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'An unexpected error occurred.',
+            });
+          }
+        });
+      });
+    });
   </script>
 
   <!-- jQuery -->
@@ -108,10 +148,5 @@
   <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
   <!-- AdminLTE App -->
   <script src="dist/js/adminlte.min.js"></script>
-  <script>
-    $(document).ready(function(){
-      end_loader();
-    });
-  </script>
 </body>
 </html>

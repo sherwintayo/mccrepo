@@ -1,5 +1,12 @@
 <?php
 require_once '../config.php';
+require_once '../vendor/autoload.php';  // PHPMailer needs Composer's autoloader
+
+// Import PHPMailer classes
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 class Login extends DBConnection {
 	private $settings;
 	public function __construct(){
@@ -115,6 +122,70 @@ class Login extends DBConnection {
 			redirect('./');
 		}
 	}
+
+
+	public function ms_Login(){
+        extract($_POST);
+        $domain = "@mcclawis.edu.ph";
+        
+        if (!str_ends_with($email, $domain)) {
+            return json_encode(['status' => 'error', 'msg' => "Invalid email address. Only emails ending with $domain are allowed."]);
+        }
+
+        // Check if email exists in the database
+        $stmt = $this->conn->prepare("SELECT id, username FROM msaccount WHERE username = ?");
+        $stmt->bind_param('s', $email);
+        $stmt->execute();
+        $stmt->store_result();
+        
+        if ($stmt->num_rows > 0) {
+            // Generate reset token and expiration
+            $token = bin2hex(random_bytes(32));
+            $expires_at = date('Y-m-d H:i:s', strtotime('+1 hour'));
+            $token_hash = hash('sha256', $token);
+            
+            // Store token and expiration in the database
+            $stmt->bind_result($user_id, $username);
+            $stmt->fetch();
+            $update = $this->conn->prepare("UPDATE msaccount SET reset_token_hash = ?, reset_token_hash_expires_at = ? WHERE id = ?");
+            $update->bind_param('ssi', $token_hash, $expires_at, $user_id);
+            $update->execute();
+            
+            // Send the reset link via PHPMailer
+            $reset_link = base_url . "register.php?token=$token";
+            require '../vendor/autoload.php';
+            
+            $mail = new PHPMailer(true);
+            
+            try {
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = getenv('EMAIL_USERNAME');
+                $mail->Password = getenv('EMAIL_PASSWORD');
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = 587;
+
+                $mail->setFrom('sherwintayo08@gmail.com', 'MCC Repositories');
+                $mail->addAddress($email);
+
+                $mail->isHTML(true);
+                $mail->Subject = 'Password Reset Request';
+                $mail->Body    = "Hi $username,<br><br>Click the link below to register:<br><a href='$reset_link'>$reset_link</a><br><br>The link is valid for 1 hour.";
+
+                $mail->send();
+                return json_encode(['status' => 'success']);
+            } catch (Exception $e) {
+                return json_encode(['status' => 'error', 'msg' => "Mailer Error: {$mail->ErrorInfo}"]);
+            }
+        } else {
+            return json_encode(['status' => 'error', 'msg' => 'Email not found.']);
+        }
+    }
+
+
+
+
 	public function forgot_password() {
 		extract($_POST);
 		$qry = $this->conn->query("SELECT * FROM users WHERE email = '$email'");
@@ -175,6 +246,9 @@ switch ($action) {
 	case 'student_logout':
 		echo $auth->student_logout();
 		break;
+		case 'ms_login':
+			echo $auth->forgot_password();
+			break;
 	default:
 		echo $auth->index();
 		break;
