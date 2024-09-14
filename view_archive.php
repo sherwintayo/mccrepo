@@ -53,7 +53,11 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                     </fieldset>
                     <fieldset>
                         <legend class="text-navy">Abstract:</legend>
-                        <div class="pl-4"><large><?= isset($abstract) ? html_entity_decode($abstract) : "" ?></large></div>
+                        <div class="pl-4">
+						<textarea id="summernote" class="form-control form-control-border summernote" readonly>
+						<?= isset($abstract) ? nl2br(file_get_contents(html_entity_decode(base_url.$abstract))) : "" ?>
+						</textarea>
+						</div> 
                     </fieldset>
                     <fieldset>
                         <legend class="text-navy">Members:</legend>
@@ -66,18 +70,12 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
 						
 					</fieldset>
 					<fieldset>
-						<legend class="text-navy">SQL file:</legend>
-						 <div class="pl-4">
-						<textarea id="summernote" class="form-control form-control-border summernote" readonly>
-						<?= isset($sql_path) ? nl2br(file_get_contents(html_entity_decode(base_url.$sql_path))) : "" ?>
-						</textarea>
-						</div> 
-					</fieldset>
+                        <legend class="text-navy">SQL file:</legend>
+                        <a class="btn btn-success" href="<?php echo base_url.'uploads/sql/SQL-'.$id.'.sql' ?>">Download SQL file</a>
+                    </fieldset>
                     <fieldset>
                         <legend class="text-navy">Project Document:</legend>
-                        <div class="pl-4">
-                            <iframe src="<?= isset($document_path) ? base_url.$document_path : "" ?>" frameborder="0" id="document_field" class="text-center w-100">Loading Document ...</iframe>
-                        </div>
+                        <a class="btn btn-success" href="<?php echo base_url.'uploads/files/Document-'.$id.'.pdf' ?>">Download Project Document</a>
                     </fieldset>
                 </div>
             </div>
