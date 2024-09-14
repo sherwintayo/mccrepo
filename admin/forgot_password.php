@@ -32,7 +32,7 @@
       background: transparent;
       border: 2px solid #f83600;
       backdrop-filter: blur(2px);
-      border-radius: 20px;
+      border-radius: 20px 0 0 20px;
     }
 
     .btnForgot {
@@ -74,6 +74,16 @@
             <h2 class="text-center font-weight-bold text-white">Reset your Password</h2>
             <hr class="my-3" />
             <form action="forgot_password_process.php" method="post" class="forgot-form">
+            <div class="row">
+                      <div class="col-lg-12">
+                        <div class="input-group form-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text rounded-0"><i class="far fa-envelope fa-lg fa-fw"></i></span>
+                                </div>
+                                    <input type="email" name="email" id="email" placeholder="Email" class="form-control form-control-border" required>
+                                </div>
+                            </div>
+                      </div>
               <div class="row">
                 <div class="col-lg-12">
                   <div class="input-group form-group">
