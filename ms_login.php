@@ -107,7 +107,7 @@
         start_loader();
         
         $.ajax({
-          url: 'ms_login_process.php',  // Use the method from Login.php
+          url: 'ms_login_process.php',
           method: 'POST',
           data: $(this).serialize(),
           dataType: 'json',
@@ -123,7 +123,7 @@
               }).then(() => {
                 // Redirect to login.php after success
                 window.location.href = "login.php";
-              });
+              });.
             } else {
               Swal.fire({
                 icon: 'error',
