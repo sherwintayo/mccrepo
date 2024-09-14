@@ -75,7 +75,7 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                     </fieldset>
                     <fieldset>
                         <legend class="text-navy">Project Document:</legend>
-                        <a class="btn btn-success" href="<?php echo base_url.'uploads/files/Document-'.$id.'.pdf' ?>">Download Project Document</a>
+                        <a class="btn btn-success" href="<?php echo base_url.'uploads/pdf/Document-'.$id.'.pdf' ?>">Download Project Document</a>
                     </fieldset>
                 </div>
             </div>
