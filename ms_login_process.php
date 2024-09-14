@@ -1,8 +1,8 @@
 <?php
 // Enable error reporting
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 
 require_once('./config.php');
 require_once('./vendor/autoload.php'); // Composer autoloader
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         try {
             // SMTP server settings for Microsoft Outlook
-            $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+            // $mail->SMTPDebug = SMTP::DEBUG_SERVER;
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com'; // SMTP server for Outlook
             $mail->SMTPAuth = true;
