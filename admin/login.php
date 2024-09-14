@@ -113,7 +113,7 @@
                   <a class="text-light font-weight-bolder" href="<?php echo base_url ?>">Go Back</a>
                 </div>
                 <div class="col-6">
-                  <button class="btnLogin btn btn-primary btn-flat text-white">Login</button>
+                  <button class="btnLogin btn btn-primary btn-flat text-white float-right">Login</button>
                 </div>
               </div>
               <div class="row mt-2">
