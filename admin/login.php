@@ -11,17 +11,19 @@
       height:calc(100%) !important;
       width:calc(100%) !important;
     }
-    body{
-      background-image: url("<?php echo validate_image($_settings->info('cover')) ?>");
-      background-size:cover;
-      background-repeat:no-repeat;
+    body {
+        background: linear-gradient(135deg, #141e30 20%, #243b55 100%);
+        background-size: cover;
+        background-repeat: no-repeat;
+        height: 100%;
+        width: 100%;
     }
+    
     .login-title{
-      text-shadow: 2px 2px black
+      text-shadow: 3px 3px black;
+      padding: 20px 0 0 0;
     }
-    #login{
-      flex-direction:column !important
-    }
+
     #logo-img{
         height:150px;
         width:150px;
@@ -29,71 +31,120 @@
         object-position:center center;
         border-radius:100%;
     }
-    #login .col-7,#login .col-5{
-      width: 100% !important;
-      max-width:unset !important
+    
+    .myColor{
+        background-image: linear-gradient(to right, #f83600 50%, #f9d423 150%);
+    }
+
+    .myLoginForm {
+        background: transparent;
+        border: 2px solid #f83600;
+        backdrop-filter: blur(2px);
+        border-radius: 20px 0 0 20px;
+    }
+
+    .btnLogin {
+        border-radius: 0 20px 20px 0;
+        border: 0;
+        background-image: linear-gradient(to right, #f83600 50%, #f9d423 150%);
+    }
+
+    /* Media Queries for responsiveness */
+    @media (max-width: 575.98px) {
+        .myContainer {
+            margin: 20px;
+        }
+
+        .myLoginForm {
+            border-radius: 20px 20px 0 0;
+        }
+    }
+
+    @media (max-width: 767.98px) {  
+        .myContainer {
+            margin: 20px;
+        }
+    }
+
+    @media (max-width: 991.98px) {
+        .login-form {
+            width: 70%;
+        }
+    }
+
+    @media (max-width: 1199.98px) {
+        .login-form {
+            width: 60%;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .login-form {
+            width: 50%;
+        }
     }
   </style>
-  <div class="h-100 d-flex align-items-center w-100" id="login">
-    <div class="col-7 h-100 d-flex align-items-center justify-content-center">
+
+  <div class="d-flex flex-column align-items-center w-100" id="login">
+    <div class="body d-flex flex-column justify-content-center align-items-center">
       <div class="w-100">
-        <center><img src="<?= validate_image($_settings->info('logo')) ?>" alt="" id="logo-img"></center>
-        <h4 class="text-center py-5 login-title"><b><?php echo $_settings->info('name') ?> - Admin</b></h4>
+        <h1 class="text-center py-5 my-5 login-title"><b><?php echo $_settings->info('name') ?> - Admin</b></h1>
       </div>
-      
-    </div>
-    <div class="col-5 h-100 bg-gradient">
-      <div class="d-flex w-100 h-100 justify-content-center align-items-center">
-        <div class="card col-sm-12 col-md-6 col-lg-3 card-outline card-primary">
-          <div class="card-header">
-            <h4 class="text-purle text-center"><b>Login</b></h4>
-          </div>
-          <div class="card-body">
+      <div class="row myContainer">
+        <div class="myLoginForm col-lg-7 p-3 w-100 d-flex justify-content-center align-items-center text-navy">
+          <div class="d-flex flex-column w-100 px-3">
+            <h1 class="text-center font-weight-bold text-white">Sign in to Account</h1>
+            <hr class="my-3" />
             <form id="login-frm" action="" method="post">
-              <div class="input-group mb-3">
-                <input type="text" class="form-control" autofocus name="username" placeholder="Username">
-                <div class="input-group-append">
-                  <div class="input-group-text">
-                    <span class="fas fa-user"></span>
-                  </div>
+              <div class="input-group form-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text rounded-0"><i class="fas fa-user fa-lg fa-fw"></i></span>
                 </div>
+                <input type="text" name="username" id="username" placeholder="Username" class="form-control form-control-border" required>
               </div>
-              <div class="input-group mb-3">
-                <input type="password" class="form-control" name="password" placeholder="Password">
-                <div class="input-group-append">
-                  <div class="input-group-text">
-                    <span class="fas fa-lock"></span>
-                  </div>
+              <div class="input-group form-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text rounded-0"><i class="fas fa-key fa-lg fa-fw"></i></span>
                 </div>
+                <input type="password" name="password" id="password" placeholder="Password" class="form-control form-control-border" required>
               </div>
               <div class="row">
-                <div class="col-8">
-                  <a href="<?php echo base_url ?>">Go to Website</a>
+                <div class="col-6">
+                  <a class="text-light font-weight-bolder" href="<?php echo base_url ?>">Go Back</a>
                 </div>
-                <!-- /.col -->
-                <div class="col-4">
-                  <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                <div class="col-6">
+                  <button class="btnLogin btn btn-primary btn-flat text-white">Login</button>
                 </div>
-                <!-- /.col -->
+              </div>
+              <div class="row mt-2">
+                <div class="col-lg-12 text-center">
+                  <a href="forgot_password.php" class="text-light">Forgot Password?</a>
+                </div>
               </div>
             </form>
           </div>
+        </div>
+        <div class="col-lg-5 d-flex flex-column justify-content-center myColor p-4">
+          <h1 class="text-center font-weight-bold text-white">Hello Friends!</h1>
+          <hr class="my-3 bg-light" />
+          <p class="text-center font-weight-bolder text-light lead">Enter your personal details and start your journey with us!</p>
+          <button class="btn btn-outline-light btn-lg align-self-center font-weight-bolder mt-4" onclick="location.href = 'register.php'">Sign Up</button>
         </div>
       </div>
     </div>
   </div>
 
-<!-- jQuery -->
-<script src="plugins/jquery/jquery.min.js"></script>
-<!-- Bootstrap 4 -->
-<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- AdminLTE App -->
-<script src="dist/js/adminlte.min.js"></script>
+  <!-- jQuery -->
+  <script src="plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap 4 -->
+  <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="dist/js/adminlte.min.js"></script>
 
-<script>
-  $(document).ready(function(){
-    end_loader();
-  })
-</script>
+  <script>
+    $(document).ready(function(){
+      end_loader();
+    })
+  </script>
 </body>
 </html>
