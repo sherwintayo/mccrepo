@@ -58,7 +58,7 @@
 
     @media (min-width: 1200px) {
       .forgot-form {
-        width: 50%;
+        width: 100%;
       }
       .card {
         width: 70%;
