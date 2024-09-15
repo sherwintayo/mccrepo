@@ -77,11 +77,11 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                     </fieldset>
                     <fieldset>
                         <legend class="text-navy">SQL file:</legend>
-                        <a class="btn btn-success" href="<?= base_url . 'uploads/sql/SQL-' . htmlspecialchars($id) . '.sql' ?>">Download SQL file</a>
+                        <a class="btn btn-success" href="<?= base_url . 'uploads/sql/SQL-' . htmlspecialchars($id) . '.zip' ?>">Download SQL file</a>
                     </fieldset>
                     <fieldset>
                         <legend class="text-navy">Project Document:</legend>
-                        <a class="btn btn-success" href="<?= base_url . 'uploads/pdf/Document-' . htmlspecialchars($id) . '.pdf' ?>">Download Project Document</a>
+                        <a class="btn btn-success" href="<?= base_url . 'uploads/pdf/Document-' . htmlspecialchars($id) . '.zip' ?>">Download Project Document</a>
                     </fieldset>
                 </div>
             </div>
