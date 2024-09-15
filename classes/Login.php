@@ -85,7 +85,6 @@ class Login extends DBConnection {
 		}
 	}
     public function student_login(){
-        session_start();
         extract($_POST);
         $stmt = $this->conn->prepare("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS fullname FROM student_list WHERE email = ? AND password = MD5(?)");
         $stmt->bind_param("ss", $email, $password);
