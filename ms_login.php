@@ -1,166 +1,63 @@
 <?php require_once('./config.php'); ?>
 <!DOCTYPE html>
-<html lang="en" class="" style="height: auto;">
+<html lang="en">
 <?php require_once('inc/header.php') ?>
-<body class="hold-transition">
-  <script>
-    start_loader();
-  </script>
-  <style>
-    html, body{
-      height:calc(100%) !important;
-      width:calc(100%) !important;
-    }
-    body {
-        background: linear-gradient(135deg, #141e30 20%, #243b55 100%);
-        background-size: cover;
-        background-repeat: no-repeat;
-        height: 100%;
-        width: 100%;
-    }
-    .myColor{
-        background-image: linear-gradient(to right, #f83600 50%, #f9d423 150%);
-    }
-    .myLoginForm {
-      background: transparent;
-      border: 2px solid #f83600;
-      backdrop-filter: blur(2px);
-      border-radius: 20px 0 0 20px;
-    }
-    .btnLogin{
-      border-radius: 0 20px 20px 0;
-      border: 0;
-      background-image: linear-gradient(to right, #f83600 50%, #f9d423 150%);
-    }
-    @media (max-width: 575.98px) {
-      .myContainer{
-          margin: 20px;
-      }
-      .login-form {
-          width: 100%;
-      }
-      .myLoginForm {
-        border-radius: 20px 20px 0 0;
-      }
-    }
-    @media (min-width: 1200px) {
-      .login-form {
-        width: 50%;
-      }
-    }
-  </style>
-
-  <div class="d-flex flex-column align-items-center w-100" id="login">
-    <div class="body d-flex flex-column justify-content-center align-items-center">
-      <div class="w-100">
-        <h1 class="text-center py-5 my-5 login-title"><b><?php echo $_settings->info('name') ?></b></h1>
-      </div>
-      <div class="row myContainer">
-        <div class="myLoginForm col-lg-7 p-3 w-100 d-flex justify-content-center align-items-center text-navy">
-          <div class="d-flex flex-column w-100 px-3">
-            <h1 class="text-center font-weight-bold text-white">Forgot Password</h1>
-            <hr class="my-3" />
-            <form id="slogin-form">
-              <div class="form-group">
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text rounded-0"><i class="far fa-envelope fa-lg fa-fw"></i></span>
-                  </div>
-                  <input type="email" name="email" id="email" placeholder="Email" class="form-control form-control-border" required>
-                </div>
-              </div>
-              <div class="form-group text-right">
-                <button type="submit" class="btnLogin btn btn-primary btn-flat text-white">Send</button>
-              </div>
-              <div class="text-center">
-                <a class="text-light" href="<?php echo base_url ?>">Go Back</a>
-              </div>
-            </form>
-          </div>
+<body>
+<div class="container">
+    <h2>Forgot Password</h2>
+    <form id="ms-login-form" method="post">
+        <div class="form-group">
+            <label for="email">Enter your MS account:</label>
+            <input type="email" name="email" id="email" class="form-control" required>
         </div>
-        <div class="col-lg-5 d-flex flex-column justify-content-center myColor p-4">
-          <h1 class="text-center font-weight-bold text-white">Hello Friends!</h1>
-          <hr class="my-3 bg-light myHr" />
-          <p class="text-center font-weight-bolder text-light lead">Enter your personal details and start your journey with us!</p>
-          <button class="btn btn-outline-light btn-lg align-self-center font-weight-bolder mt-4 myLinkBtn" onclick="location.href = 'register.php'">Sign Up</button>
-        </div>
-      </div>
-    </div>
-  </div>
+        <button type="submit" class="btn btn-primary">Send</button>
+    </form>
 
-  <script>
-    $(document).ready(function() {
-      // Ensure loader stops once the page is loaded
-      end_loader();
-      
-      // Handle form submission via AJAX
-      $('#slogin-form').submit(function(e) {
-        e.preventDefault();
-        
-        let email = $('#email').val();
+    <!-- Placeholder for displaying response messages -->
+    <div id="response-message" class="mt-3"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#ms-login-form').submit(function(e) {
+        e.preventDefault();  // Prevent default form submission
+        const email = $('#email').val();
         const domain = "@mcclawis.edu.ph";
-        
-        // Client-side email domain validation
+        const responseMessage = $('#response-message');
+
+        // Front-end validation
         if (!email.endsWith(domain)) {
-          alert("Please enter a valid email address with the domain " + domain);
-          return false;
+            responseMessage.html('<div class="alert alert-danger">Please enter a valid email address with the domain ' + domain + '.</div>');
+            return;
         }
-        
-        // Start loader when the form is submitted
-        start_loader();
-        
+
+        // Clear previous response
+        responseMessage.html('');
+
+        // Send form data via AJAX
         $.ajax({
-          url: 'Login.php?f=forgot_password',  // Use the method from Login.php
-          method: 'POST',
-          data: $(this).serialize(),
-          dataType: 'json',
-          success: function(response) {
-            // Always stop the loader after receiving the response
-            end_loader();
-
-            if (response.status === 'success') {
-              Swal.fire({
-                icon: 'success',
-                title: 'Link Sent',
-                text: 'Check your email for the reset link.',
-                showConfirmButton: false,
-                timer: 2000
-              }).then(() => {
-                // Redirect to login.php after success
-                window.location.href = "login.php";
-              });
-            } else {
-              // Display an error message from the server
-              Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: response.msg || 'An error occurred.',
-              });
+            url: 'ms_login_process.php',
+            method: 'POST',
+            data: { email: email },
+            dataType: 'json',
+            beforeSend: function() {
+                // Optionally, add a loading indicator
+                responseMessage.html('<div class="alert alert-info">Processing...</div>');
+            },
+            success: function(response) {
+                if (response.status === 'success') {
+                    responseMessage.html('<div class="alert alert-success">' + response.message + '</div>');
+                } else {
+                    responseMessage.html('<div class="alert alert-danger">' + response.message + '</div>');
+                }
+            },
+            error: function() {
+                responseMessage.html('<div class="alert alert-danger">An error occurred while processing your request. Please try again.</div>');
             }
-          },
-          error: function(xhr, status, error) {
-            // Stop the loader even in case of an AJAX error
-            end_loader();
-
-            // Show an error alert for the failed request
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'An unexpected error occurred. Please try again.',
-            });
-
-            console.error('Error details:', status, error, xhr.responseText);
-          }
         });
-      });
     });
-  </script>
-
-  <!-- jQuery -->
-  <script src="plugins/jquery/jquery.min.js"></script>
-  <!-- Bootstrap 4 -->
-  <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <!-- AdminLTE App -->
-  <script src="dist/js/adminlte.min.js"></script>
+});
+</script>
 </body>
 </html>
