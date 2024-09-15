@@ -84,33 +84,38 @@ class Login extends DBConnection {
 			redirect('admin/login.php');
 		}
 	}
-	function student_login(){
-		extract($_POST);
-		$qry = $this->conn->query("SELECT *,concat(lastname,', ',firstname,' ',middlename) as fullname from student_list where email = '$email' and password = md5('$password') ");
-		if($this->conn->error){
-			$resp['status'] = 'failed';
-			$resp['msg'] = "An error occurred while fetching data. Error:". $this->conn->error;
-		}else{
-		if($qry->num_rows > 0){
-			$res = $qry->fetch_array();
-			if($res['status'] == 1){
-				foreach($res as $k => $v){
-					$this->settings->set_userdata($k,$v);
-				}
-				$this->settings->set_userdata('login_type',2);
-				$resp['status'] = 'success';
-			}else{
-				$resp['status'] = 'failed';
-				$resp['msg'] = "Your Account is not verified yet.";
-			}
-			
-		}else{
-		$resp['status'] = 'failed';
-		$resp['msg'] = "Invalid email or password.";
-		}
-		}
-		return json_encode($resp);
-	}
+    public function student_login(){
+        session_start();
+        extract($_POST);
+        $stmt = $this->conn->prepare("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS fullname FROM student_list WHERE email = ? AND password = MD5(?)");
+        $stmt->bind_param("ss", $email, $password);
+        $stmt->execute();
+        $qry = $stmt->get_result();
+        
+        if ($this->conn->error) {
+            $resp['status'] = 'failed';
+            $resp['msg'] = "An error occurred while fetching data. Error: ". $this->conn->error;
+        } else {
+            if ($qry->num_rows > 0) {
+                $res = $qry->fetch_array();
+                if ($res['status'] == 1) {
+                    foreach ($res as $k => $v) {
+                        $this->settings->set_userdata($k, $v);
+                    }
+                    $this->settings->set_userdata('login_type', 2);
+                    $resp['status'] = 'success';
+                } else {
+                    $resp['status'] = 'failed';
+                    $resp['msg'] = "Your Account is not verified yet.";
+                }
+            } else {
+                $resp['status'] = 'failed';
+                $resp['msg'] = "Invalid email or password.";
+            }
+        }
+        return json_encode($resp);
+    }
+    
 	public function student_logout(){
 		if($this->settings->sess_des()){
 			redirect('./');

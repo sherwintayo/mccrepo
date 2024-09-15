@@ -1,6 +1,18 @@
-<?php 
+<?php
+// Start session to check user login status
+session_start();
+
+// Database connection (make sure you have a valid $conn variable)
+require_once './config.php';
+
 if(isset($_GET['id']) && $_GET['id'] > 0){
-    $stmt = $conn->prepare("SELECT a.* FROM `archive_list` a WHERE a.id = ?");
+    // Check if user is logged in
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: login.php');
+        exit;
+    }
+
+    $stmt = $conn->prepare("SELECT a.* FROM archive_list a WHERE a.id = ?");
     $stmt->bind_param("i", $_GET['id']);
     $stmt->execute();
     $qry = $stmt->get_result();
@@ -73,15 +85,15 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                     </fieldset>
                     <fieldset>
                         <legend class="text-navy">Project Files:</legend>
-                        <a class="btn btn-success" href="<?= base_url . 'uploads/files/Files-' . htmlspecialchars($id) . '.zip' ?>">Download Project files</a>
+                        <a class="btn btn-success" href="<?= $_SESSION['logged_in'] ? base_url . 'uploads/files/Files-' . htmlspecialchars($id) . '.zip' : 'login.php' ?>">Download Project files</a>
                     </fieldset>
                     <fieldset>
                         <legend class="text-navy">SQL file:</legend>
-                        <a class="btn btn-success" href="<?= base_url . 'uploads/sql/SQL-' . htmlspecialchars($id) . '.zip' ?>">Download SQL file</a>
+                        <a class="btn btn-success" href="<?= $_SESSION['logged_in'] ? base_url . 'uploads/sql/SQL-' . htmlspecialchars($id) . '.zip' : 'login.php' ?>">Download SQL file</a>
                     </fieldset>
                     <fieldset>
                         <legend class="text-navy">Project Document:</legend>
-                        <a class="btn btn-success" href="<?= base_url . 'uploads/pdf/Document-' . htmlspecialchars($id) . '.zip' ?>">Download Project Document</a>
+                        <a class="btn btn-success" href="<?= $_SESSION['logged_in'] ? base_url . 'uploads/pdf/Document-' . htmlspecialchars($id) . '.zip' : 'login.php' ?>">Download Project Document</a>
                     </fieldset>
                 </div>
             </div>
