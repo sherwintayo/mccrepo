@@ -30,7 +30,7 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
         <div class="card card-outline card-primary shadow rounded-0">
             <div class="card-header">
                 <h3 class="card-title">
-                    Archive - <?= isset($archive_code) ? $archive_code : "" ?>
+                    Archives - <?= isset($archive_code) ? $archive_code : "" ?>
                 </h3>
             </div>
             <div class="card-body rounded-0">
