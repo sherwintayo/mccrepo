@@ -231,33 +231,28 @@
 
 <script>
   $(document).ready(function(){
-    end_loader();
-    // Registration Form Submit
     $('#slogin-form').submit(function(e){
-        e.preventDefault()
-        var _this = $(this)
-            $(".pop-msg").remove()
-            $('#password, #cpassword').removeClass("is-invalid")
-        var el = $("<div>")
-            el.addClass("alert pop-msg my-2")
-            el.hide()
+        e.preventDefault();
+        var _this = $(this);
+        $(".pop-msg").remove();
+        $('#password, #cpassword').removeClass("is-invalid");
+        var el = $("<div>").addClass("alert pop-msg my-2").hide();
         start_loader();
         $.ajax({
-            url:_base_url_+"classes/Login.php?f=student_login",
-            method:'POST',
-            data:_this.serialize(),
-            dataType:'json',
-            error:err=>{
-                console.log(err)
-                el.text("An error occured while saving the data")
-                el.addClass("alert-danger")
-                _this.prepend(el)
-                el.show('slow')
+            url: _base_url_ + "classes/Login.php?f=student_login",
+            method: 'POST',
+            data: _this.serialize(),
+            dataType: 'json',
+            error: err => {
+                console.log(err);
+                el.text("An error occurred while saving the data").addClass("alert-danger");
+                _this.prepend(el);
+                el.show('slow');
                 end_loader();
             },
-            success:function(resp){
+            success: function(resp) {
                 end_loader();
-                if(resp.status == 'success'){
+                if (resp.status == 'success') {
                     Swal.fire({
                         icon: 'success',
                         title: 'Login Successful',
@@ -265,25 +260,29 @@
                         showConfirmButton: false,
                         timer: 800
                     }).then(() => {
-                        location.href= "./";
-                    })
-                }else if(!!resp.msg){
-                    el.text(resp.msg)
-                    el.addClass("alert-danger")
-                    _this.prepend(el)
-                    el.show('show')
-                }else{
-                    el.text("An error occured while saving the data")
-                    el.addClass("alert-danger")
-                    _this.prepend(el)
-                    el.show('show')
+                        let redirect = new URLSearchParams(window.location.search).get('redirect');
+                        if (redirect == 'download') {
+                            let file_type = new URLSearchParams(window.location.search).get('file_type');
+                            let archive_id = new URLSearchParams(window.location.search).get('id');
+                            let download_url = '';
+                            if (file_type == 'zip') {
+                                download_url = '<?= base_url ?>uploads/files/Files-' + archive_id + '.zip';
+                            } else if (file_type == 'sql') {
+                                download_url = '<?= base_url ?>uploads/files/Files-' + archive_id + '.sql';
+                            } else if (file_type == 'pdf') {
+                                download_url = '<?= base_url ?>uploads/files/Files-' + archive_id + '.pdf';
+                            }
+                            window.location.href = download_url;
+                        } else {
+                            window.location.href = '<?= base_url ?>'; // or wherever you want to redirect after a normal login
+                        }
+                    });
                 }
-                end_loader();
-                $('html, body').animate({scrollTop: 0},'fast')
             }
-        })
-    })
-  })
+        });
+    });
+  });
 </script>
+
 </body>
 </html>
