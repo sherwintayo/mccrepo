@@ -290,7 +290,7 @@ Class Master extends DBConnection {
 						$pdf_tmp_name = $_FILES['pdf']['tmp_name'];
 						$zip_pdf->addFile($pdf_tmp_name, $_FILES['pdf']['name']);
 						if ($zip_pdf->close()) {
-							$this->conn->query("UPDATE archive_list SET pdf_zip_path = CONCAT('{$pdf_zipname}', '?v=', unix_timestamp(CURRENT_TIMESTAMP)) WHERE id = '{$aid}' ");
+							$this->conn->query("UPDATE archive_list SET document_path = CONCAT('{$pdf_zipname}', '?v=', unix_timestamp(CURRENT_TIMESTAMP)) WHERE id = '{$aid}' ");
 						} else {
 							$resp['msg'] .= " But PDF ZIP file failed to close properly.";
 						}
@@ -337,7 +337,7 @@ Class Master extends DBConnection {
 							$sql_tmp_name = $_FILES['sql']['tmp_name'];
 							$zip_sql->addFile($sql_tmp_name, $_FILES['sql']['name']);
 							if ($zip_sql->close()) {
-								$this->conn->query("UPDATE archive_list SET sql_zip_path = CONCAT('{$sql_zipname}', '?v=', unix_timestamp(CURRENT_TIMESTAMP)) WHERE id = '{$aid}' ");
+								$this->conn->query("UPDATE archive_list SET sql_path = CONCAT('{$sql_zipname}', '?v=', unix_timestamp(CURRENT_TIMESTAMP)) WHERE id = '{$aid}' ");
 							} else {
 								$resp['msg'] .= " But SQL ZIP file failed to close properly.";
 							}
