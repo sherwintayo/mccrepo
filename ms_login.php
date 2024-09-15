@@ -90,6 +90,7 @@
 
   <script>
     $(document).ready(function() {
+      // Ensure loader stops once the page is loaded
       end_loader();
       
       // Handle form submission via AJAX
@@ -99,20 +100,24 @@
         let email = $('#email').val();
         const domain = "@mcclawis.edu.ph";
         
+        // Client-side email domain validation
         if (!email.endsWith(domain)) {
           alert("Please enter a valid email address with the domain " + domain);
           return false;
         }
         
+        // Start loader when the form is submitted
         start_loader();
         
         $.ajax({
-          url: 'ms_login_process.php',
+          url: 'Login.php?f=forgot_password',  // Use the method from Login.php
           method: 'POST',
           data: $(this).serialize(),
           dataType: 'json',
           success: function(response) {
+            // Always stop the loader after receiving the response
             end_loader();
+
             if (response.status === 'success') {
               Swal.fire({
                 icon: 'success',
@@ -123,8 +128,9 @@
               }).then(() => {
                 // Redirect to login.php after success
                 window.location.href = "login.php";
-              });.
+              });
             } else {
+              // Display an error message from the server
               Swal.fire({
                 icon: 'error',
                 title: 'Error',
@@ -132,13 +138,18 @@
               });
             }
           },
-          error: function() {
+          error: function(xhr, status, error) {
+            // Stop the loader even in case of an AJAX error
             end_loader();
+
+            // Show an error alert for the failed request
             Swal.fire({
               icon: 'error',
               title: 'Error',
-              text: 'An unexpected error occurred.',
+              text: 'An unexpected error occurred. Please try again.',
             });
+
+            console.error('Error details:', status, error, xhr.responseText);
           }
         });
       });
