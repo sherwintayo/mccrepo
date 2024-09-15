@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
             $mail->Username = 'sherwintayo08@gmail.com';
-            $mail->Password = 'your_password'; 
+            $mail->Password = 'tbez conr sxbn fwuk'; 
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
 
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->setFrom('sherwintayo08@gmail.com', 'MCC Repositories');
             $mail->addAddress($email);
             $mail->isHTML(true);
-            $mail->Subject = 'Password Reset Request';
+            $mail->Subject = 'Registration Form';
             $mail->Body = "Hi $username,<br><br>Click the link below to register:<br><a href='$register_link'>$register_link</a><br><br>The link is valid for 1 hour.";
 
             $mail->send();
