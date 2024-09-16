@@ -86,57 +86,31 @@ class Login extends DBConnection {
 	}
     public function student_login(){
         extract($_POST);
-        $stmt = $this->conn->prepare("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS fullname FROM student_list WHERE email = ? AND password = MD5(?)");
-        $stmt->bind_param("ss", $email, $password);
-        $stmt->execute();
-        $qry = $stmt->get_result();
-        
-        if ($this->conn->error) {
+        $qry = $this->conn->query("SELECT *,concat(lastname,', ',firstname,' ',middlename) as fullname from student_list where email = '$email' and password = md5('$password') ");
+        if($this->conn->error){
             $resp['status'] = 'failed';
-            $resp['msg'] = "An error occurred while fetching data. Error: ". $this->conn->error;
-        } else {
-            if ($qry->num_rows > 0) {
+            $resp['msg'] = "An error occurred while fetching data. Error:". $this->conn->error;
+        }else{
+            if($qry->num_rows > 0){
                 $res = $qry->fetch_array();
-                if ($res['status'] == 1) {
-                    foreach ($res as $k => $v) {
-                        $this->settings->set_userdata($k, $v);
+                if($res['status'] == 1){
+                    foreach($res as $k => $v){
+                        $this->settings->set_userdata($k,$v);
                     }
-                    $this->settings->set_userdata('login_type', 2);
+                    $this->settings->set_userdata('login_type',2);
                     $resp['status'] = 'success';
-    
-                    // Check if the login request has a redirect to a file download
-                    if (isset($_POST['redirect']) && $_POST['redirect'] == 'download') {
-                        $file_type = $_POST['file_type'] ?? '';
-                        $id = $_POST['id'] ?? 0;
-                        $file_url = '';
-    
-                        switch ($file_type) {
-                            case 'zip':
-                                $file_url = base_url . "uploads/files/Files-$id.zip";
-                                break;
-                            case 'sql':
-                                $file_url = base_url . "uploads/sql/SQL-$id.zip";
-                                break;
-                            case 'pdf':
-                                $file_url = base_url . "uploads/pdf/Document-$id.zip";
-                                break;
-                            default:
-                                $file_url = base_url; // Redirect to home if no valid file_type
-                        }
-    
-                        $resp['redirect'] = $file_url;  // Add the file URL for redirection
-                    }
-    
-                } else {
+                }else{
                     $resp['status'] = 'failed';
                     $resp['msg'] = "Your Account is not verified yet.";
                 }
-            } else {
+                
+            }else{
                 $resp['status'] = 'failed';
                 $resp['msg'] = "Invalid email or password.";
             }
         }
         return json_encode($resp);
+        
     }
     
     

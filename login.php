@@ -230,28 +230,29 @@
 <script src="<?php echo base_url ?>plugins/select2/js/select2.full.min.js"></script>
 
 <script>
-$(document).ready(function(){
+  $(document).ready(function(){
     end_loader();
+    // Registration Form Submit
     $('#slogin-form').submit(function(e){
-        e.preventDefault();
-        var _this = $(this);
-        $(".pop-msg").remove();
-        $('#password, #cpassword').removeClass("is-invalid");
-        var el = $("<div>");
-        el.addClass("alert pop-msg my-2");
-        el.hide();
+        e.preventDefault()
+        var _this = $(this)
+            $(".pop-msg").remove()
+            $('#password, #cpassword').removeClass("is-invalid")
+        var el = $("<div>")
+            el.addClass("alert pop-msg my-2")
+            el.hide()
         start_loader();
         $.ajax({
-            url: _base_url_+"classes/Login.php?f=student_login",
+            url:_base_url_+"classes/Login.php?f=student_login",
             method:'POST',
             data:_this.serialize(),
             dataType:'json',
             error:err=>{
-                console.log(err);
-                el.text("An error occurred while saving the data");
-                el.addClass("alert-danger");
-                _this.prepend(el);
-                el.show('slow');
+                console.log(err)
+                el.text("An error occurred while saving the data")
+                el.addClass("alert-danger")
+                _this.prepend(el)
+                el.show('slow')
                 end_loader();
             },
             success:function(resp){
@@ -264,29 +265,42 @@ $(document).ready(function(){
                         showConfirmButton: false,
                         timer: 800
                     }).then(() => {
-                        if(resp.redirect) {
-                            window.location.href = resp.redirect;
+                        let redirect = new URLSearchParams(window.location.search).get('redirect');
+                        if(redirect == 'download') {
+                            let file_type = new URLSearchParams(window.location.search).get('file_type');
+                            let archive_id = new URLSearchParams(window.location.search).get('id');
+                            let download_url = '';
+                            if(file_type == 'zip') {
+                                download_url = '<?= base_url ?>uploads/files/Files-' + archive_id + '.zip';
+                            } else if(file_type == 'sql') {
+                                download_url = '<?= base_url ?>uploads/sql/SQL-' + archive_id + '.zip';
+                            } else if(file_type == 'pdf') {
+                                download_url = '<?= base_url ?>uploads/pdf/Document-' + archive_id + '.zip';
+                            }
+                            if(download_url) {
+                                window.location.href = download_url;
+                            }
                         } else {
-                            location.href = './';
+                            location.href= "./";
                         }
-                    });
+                    })
                 }else if(!!resp.msg){
-                    el.text(resp.msg);
-                    el.addClass("alert-danger");
-                    _this.prepend(el);
-                    el.show('show');
+                    el.text(resp.msg)
+                    el.addClass("alert-danger")
+                    _this.prepend(el)
+                    el.show('show')
                 }else{
-                    el.text("An error occurred while saving the data");
-                    el.addClass("alert-danger");
-                    _this.prepend(el);
-                    el.show('show');
+                    el.text("An error occurred while saving the data")
+                    el.addClass("alert-danger")
+                    _this.prepend(el)
+                    el.show('show')
                 }
                 end_loader();
-                $('html, body').animate({scrollTop: 0},'fast');
+                $('html, body').animate({scrollTop: 0},'fast')
             }
-        });
-    });
-});
+        })
+    })
+  })
 </script>
 
 
