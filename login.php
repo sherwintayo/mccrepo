@@ -278,7 +278,7 @@
                             window.location.href = download_url;
                         }
                     } else {
-                        location.href = base_url + "./view_archive.php?id=" + resp.archive_id;
+                        location.href = base_url + "/view_archive.php?id=" + resp.archive_id;
                     }
                 } else {
                     el.text(resp.msg || "Login failed").addClass("alert-danger");
