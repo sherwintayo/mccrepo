@@ -109,7 +109,7 @@ class Login extends DBConnection {
                 $resp['msg'] = "Invalid email or password.";
             }
         }
-        return json_encode($resp);
+        return json_encode($resp);        
         
     }
     
