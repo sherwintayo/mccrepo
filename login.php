@@ -262,12 +262,14 @@
                     <?php $_SESSION['user_logged_in'] = true; ?>
                     <?php $_SESSION['can_download'] = true; ?>
 
-                    // Redirect to the download URL if provided
-                    let redirect = new URLSearchParams(window.location.search).get('redirect');
-                    if(redirect == 'download') {
-                        let file_type = new URLSearchParams(window.location.search).get('file_type');
-                        let archive_id = new URLSearchParams(window.location.search).get('id');
-                        let download_url = '';
+                    // Redirect to the original page or file download after login
+                    let redirect_to = new URLSearchParams(window.location.search).get('redirect_to');
+                    let file_type = new URLSearchParams(window.location.search).get('file_type');
+                    let archive_id = new URLSearchParams(window.location.search).get('id');
+                    let download_url = '';
+
+                    if(file_type && archive_id) {
+                        // Construct the download URL based on the file type
                         if(file_type == 'zip') {
                             download_url = '<?= base_url ?>uploads/files/Files-' + archive_id + '.zip';
                         } else if(file_type == 'sql') {
@@ -275,11 +277,17 @@
                         } else if(file_type == 'pdf') {
                             download_url = '<?= base_url ?>uploads/pdf/Document-' + archive_id + '.zip';
                         }
+
+                        // Redirect to download the file
                         if(download_url) {
                             window.location.href = download_url;
                         }
+                    } else if (redirect_to) {
+                        // Redirect back to the page where the user came from
+                        window.location.href = decodeURIComponent(redirect_to);
                     } else {
-                        location.href = "./";
+                        // If no redirect is specified, go to homepage
+                        window.location.href = "./";
                     }
                 } else {
                     el.text(resp.msg || "Login failed").addClass("alert-danger");
@@ -290,7 +298,7 @@
         });
     });
   });
-</script>   
+</script>
 
 
 </body>
