@@ -60,8 +60,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->addAddress($email);
             $mail->isHTML(true);
             $mail->Subject = 'Registration Form';
-            $mail->Body = "Hi $username,<br><br>Click the link below to register:<br><a href='$register_link'>$register_link</a><br><br>The link is valid for 1 hour.";
-
+            $mail->Body    = "Hi $username,<br><br>Please click the link below to reset your password:<br><a href='$register_link'>$register_link</a><br><br>If you did not request this, please ignore this email.<br><br>Thanks,<br>Your Company";
+            $mail->AltBody = "Hi $username,\n\nPlease click the link below to reset your password:\n$register_link\n\nIf you did not request this, please ignore this email.\n\nThanks,\nYour Company";
             $mail->send();
             echo json_encode(['status' => 'success', 'message' => 'Register link sent to your email.']);
         } catch (Exception $e) {
