@@ -1,7 +1,8 @@
+
 <?php 
 session_start(); // Start session for tracking login and download access
 if(isset($_GET['id']) && $_GET['id'] > 0){
-    $stmt = $conn->prepare("SELECT a.* FROM `archive_list` a WHERE a.id = ?");
+    $stmt = $conn->prepare("SELECT a.* FROM archive_list a WHERE a.id = ?");
     $stmt->bind_param("i", $_GET['id']);
     $stmt->execute();
     $qry = $stmt->get_result();
@@ -122,7 +123,7 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
     function delete_archive(){
         start_loader();
         $.ajax({
-            url: _base_url_ + "classes/Master.php?f=delete_archive",    
+            url: _base_url_ + "classes/Master.php?f=delete_archive",
             method: "POST",
             data: {id: "<?= isset($id) ? htmlspecialchars($id) : "" ?>"},
             dataType: "json",
