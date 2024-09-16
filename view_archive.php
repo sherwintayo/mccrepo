@@ -1,8 +1,7 @@
-
 <?php 
 session_start(); // Start session for tracking login and download access
 if(isset($_GET['id']) && $_GET['id'] > 0){
-    $stmt = $conn->prepare("SELECT a.* FROM archive_list a WHERE a.id = ?");
+    $stmt = $conn->prepare("SELECT a.* FROM `archive_list` a WHERE a.id = ?");
     $stmt->bind_param("i", $_GET['id']);
     $stmt->execute();
     $qry = $stmt->get_result();
