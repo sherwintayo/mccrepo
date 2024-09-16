@@ -276,7 +276,8 @@
                         }
                         if(download_url) {
                             window.location.href = download_url;
-                            
+
+                            // Exit the login.php page and trigger the download
                             window.close();
                         }
                     } else {
@@ -292,7 +293,5 @@
     });
   });
 </script>   
-
-
 </body>
 </html>
