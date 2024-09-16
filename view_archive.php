@@ -1,4 +1,11 @@
 <?php 
+
+session_start(); // Start session
+
+// Check if user has download privileges (logged in and can download)
+$user_logged_in = isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] == true;
+$can_download = isset($_SESSION['can_download']) && $_SESSION['can_download'] == true;
+
 if(isset($_GET['id']) && $_GET['id'] > 0){
     $stmt = $conn->prepare("SELECT a.* FROM `archive_list` a WHERE a.id = ?");
     $stmt->bind_param("i", $_GET['id']);
@@ -71,17 +78,34 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                         <legend class="text-navy">Members:</legend>
                         <div class="pl-4"><large><?= isset($members) ? html_entity_decode($members) : "" ?></large></div>
                     </fieldset>
-                    <fieldset>
+                       <!-- Project Files -->
+                       <fieldset>
                         <legend class="text-navy">Project Files:</legend>
-                        <a class="btn btn-success" href="login.php?redirect=download&file_type=zip&id=<?= htmlspecialchars($id) ?>">Download Project files</a>
+                        <?php if($user_logged_in && $can_download): ?>
+                            <a class="btn btn-success" href="<?= base_url . 'uploads/files/Files-' . htmlspecialchars($id) . '.zip' ?>">Download Project files</a>
+                        <?php else: ?>
+                            <a class="btn btn-success" href="login.php?redirect=download&file_type=zip&id=<?= htmlspecialchars($id) ?>">Download Project files</a>
+                        <?php endif; ?>
                     </fieldset>
+
+                    <!-- SQL File -->
                     <fieldset>
                         <legend class="text-navy">SQL file:</legend>
-                        <a class="btn btn-success" href="login.php?redirect=download&file_type=sql&id=<?= htmlspecialchars($id) ?>">Download SQL file</a>
+                        <?php if($user_logged_in && $can_download): ?>
+                            <a class="btn btn-success" href="<?= base_url . 'uploads/sql/SQL-' . htmlspecialchars($id) . '.zip' ?>">Download SQL file</a>
+                        <?php else: ?>
+                            <a class="btn btn-success" href="login.php?redirect=download&file_type=sql&id=<?= htmlspecialchars($id) ?>">Download SQL file</a>
+                        <?php endif; ?>
                     </fieldset>
+
+                    <!-- Project Document -->
                     <fieldset>
                         <legend class="text-navy">Project Document:</legend>
-                        <a class="btn btn-success" href="login.php?redirect=download&file_type=pdf&id=<?= htmlspecialchars($id) ?>">Download Project Document</a>
+                        <?php if($user_logged_in && $can_download): ?>
+                            <a class="btn btn-success" href="<?= base_url . 'uploads/pdf/Document-' . htmlspecialchars($id) . '.zip' ?>">Download Project Document</a>
+                        <?php else: ?>
+                            <a class="btn btn-success" href="login.php?redirect=download&file_type=pdf&id=<?= htmlspecialchars($id) ?>">Download Project Document</a>
+                        <?php endif; ?>
                     </fieldset>
                 </div>
             </div>
