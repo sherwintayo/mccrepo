@@ -103,6 +103,30 @@ class Login extends DBConnection {
                     }
                     $this->settings->set_userdata('login_type', 2);
                     $resp['status'] = 'success';
+    
+                    // Check if the login request has a redirect to a file download
+                    if (isset($_POST['redirect']) && $_POST['redirect'] == 'download') {
+                        $file_type = $_POST['file_type'] ?? '';
+                        $id = $_POST['id'] ?? 0;
+                        $file_url = '';
+    
+                        switch ($file_type) {
+                            case 'zip':
+                                $file_url = base_url . "uploads/files/Files-$id.zip";
+                                break;
+                            case 'sql':
+                                $file_url = base_url . "uploads/sql/SQL-$id.zip";
+                                break;
+                            case 'pdf':
+                                $file_url = base_url . "uploads/pdf/Document-$id.zip";
+                                break;
+                            default:
+                                $file_url = base_url; // Redirect to home if no valid file_type
+                        }
+    
+                        $resp['redirect'] = $file_url;  // Add the file URL for redirection
+                    }
+    
                 } else {
                     $resp['status'] = 'failed';
                     $resp['msg'] = "Your Account is not verified yet.";
@@ -113,9 +137,8 @@ class Login extends DBConnection {
             }
         }
         return json_encode($resp);
-
-        
     }
+    
     
 	public function student_logout(){
 		if($this->settings->sess_des()){
