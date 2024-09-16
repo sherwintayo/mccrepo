@@ -122,7 +122,7 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
     function delete_archive(){
         start_loader();
         $.ajax({
-            url: _base_url_ + "classes/Master.php?f=delete_archive",
+            url: _base_url_ + "classes/Master.php?f=delete_archive",    
             method: "POST",
             data: {id: "<?= isset($id) ? htmlspecialchars($id) : "" ?>"},
             dataType: "json",
