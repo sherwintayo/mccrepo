@@ -1,5 +1,4 @@
 <?php 
-session_start(); // Start session for tracking login and download access
 if(isset($_GET['id']) && $_GET['id'] > 0){
     $stmt = $conn->prepare("SELECT a.* FROM `archive_list` a WHERE a.id = ?");
     $stmt->bind_param("i", $_GET['id']);
@@ -30,8 +29,6 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
     $stmt->bind_param("i", $_GET['id']);
     $stmt->execute();
 }
-
-$return_url = urlencode("view_archive.php?id=" . $_GET['id']); // Capture the current page URL for redirection after login
 ?>
 <style>
     #document_field{
@@ -74,37 +71,18 @@ $return_url = urlencode("view_archive.php?id=" . $_GET['id']); // Capture the cu
                         <legend class="text-navy">Members:</legend>
                         <div class="pl-4"><large><?= isset($members) ? html_entity_decode($members) : "" ?></large></div>
                     </fieldset>
-                    
-                    <!-- Check if user is logged in and has download privilege -->
-                    <?php if(isset($_SESSION['user_logged_in']) && $_SESSION['can_download'] == true): ?>
-                        <!-- Allow direct download -->
-                        <fieldset>
-                            <legend class="text-navy">Project Files:</legend>
-                            <a class="btn btn-success" href="<?= base_url . 'uploads/files/Files-' . htmlspecialchars($id) . '.zip' ?>">Download Project files</a>
-                        </fieldset>
-                        <fieldset>
-                            <legend class="text-navy">SQL file:</legend>
-                            <a class="btn btn-success" href="<?= base_url . 'uploads/sql/SQL-' . htmlspecialchars($id) . '.zip' ?>">Download SQL file</a>
-                        </fieldset>
-                        <fieldset>
-                            <legend class="text-navy">Project Document:</legend>
-                            <a class="btn btn-success" href="<?= base_url . 'uploads/pdf/Document-' . htmlspecialchars($id) . '.zip' ?>">Download Project Document</a>
-                        </fieldset>
-                    <?php else: ?>
-                        <!-- Redirect to login if not logged in -->
-                        <fieldset>
-                            <legend class="text-navy">Project Files:</legend>
-                            <a class="btn btn-success" href="login.php?redirect=download&file_type=zip&id=<?= htmlspecialchars($id) ?>&return_url=<?= $return_url ?>">Download Project files</a>
-                        </fieldset>
-                        <fieldset>
-                            <legend class="text-navy">SQL file:</legend>
-                            <a class="btn btn-success" href="login.php?redirect=download&file_type=sql&id=<?= htmlspecialchars($id) ?>&return_url=<?= $return_url ?>">Download SQL file</a>
-                        </fieldset>
-                        <fieldset>
-                            <legend class="text-navy">Project Document:</legend>
-                            <a class="btn btn-success" href="login.php?redirect=download&file_type=pdf&id=<?= htmlspecialchars($id) ?>&return_url=<?= $return_url ?>">Download Project Document</a>
-                        </fieldset>
-                    <?php endif; ?>
+                    <fieldset>
+                        <legend class="text-navy">Project Files:</legend>
+                        <a class="btn btn-success" href="login.php?redirect=download&file_type=zip&id=<?= htmlspecialchars($id) ?>">Download Project files</a>
+                    </fieldset>
+                    <fieldset>
+                        <legend class="text-navy">SQL file:</legend>
+                        <a class="btn btn-success" href="login.php?redirect=download&file_type=sql&id=<?= htmlspecialchars($id) ?>">Download SQL file</a>
+                    </fieldset>
+                    <fieldset>
+                        <legend class="text-navy">Project Document:</legend>
+                        <a class="btn btn-success" href="login.php?redirect=download&file_type=pdf&id=<?= htmlspecialchars($id) ?>">Download Project Document</a>
+                    </fieldset>
                 </div>
             </div>
         </div>
