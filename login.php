@@ -8,7 +8,7 @@
     start_loader()
   </script>
 
-  <!-- Login form content -->
+  <!-- Your login page styles here -->
   
   <div class=" d-flex flex-column align-items-center w-100" id="login">
     <div class="body d-flex flex-column justify-content-center align-items-center">
@@ -74,7 +74,6 @@
                         let file_type = new URLSearchParams(window.location.search).get('file_type');
                         let archive_id = new URLSearchParams(window.location.search).get('id');
                         let download_url = '';
-                        
                         if(file_type == 'zip') {
                             download_url = '<?= base_url ?>uploads/files/Files-' + archive_id + '.zip';
                         } else if(file_type == 'sql') {
@@ -82,12 +81,11 @@
                         } else if(file_type == 'pdf') {
                             download_url = '<?= base_url ?>uploads/pdf/Document-' + archive_id + '.zip';
                         }
-                        
                         if(download_url) {
                             window.location.href = download_url;
                         }
                     } else {
-                        location.href = "./";  // If no download, just go back to the main page
+                        location.href = "./";
                     }
                 } else {
                     el.text(resp.msg || "Login failed").addClass("alert-danger");
