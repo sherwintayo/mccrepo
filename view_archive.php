@@ -75,34 +75,34 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                     
                     <!-- Check if user is logged in and has download privilege -->
                     <?php if(isset($_SESSION['user_logged_in']) && $_SESSION['can_download'] == true): ?>
-                    <!-- Allow direct download if logged in -->
-                    <fieldset>
-                        <legend class="text-navy">Project Files:</legend>
-                        <a class="btn btn-success" href="<?= base_url . 'uploads/files/Files-' . htmlspecialchars($id) . '.zip' ?>">Download Project files</a>
-                    </fieldset>
-                    <fieldset>
-                        <legend class="text-navy">SQL file:</legend>
-                        <a class="btn btn-success" href="<?= base_url . 'uploads/sql/SQL-' . htmlspecialchars($id) . '.zip' ?>">Download SQL file</a>
-                    </fieldset>
-                    <fieldset>
-                        <legend class="text-navy">Project Document:</legend>
-                        <a class="btn btn-success" href="<?= base_url . 'uploads/pdf/Document-' . htmlspecialchars($id) . '.zip' ?>">Download Project Document</a>
-                    </fieldset>
-                <?php else: ?>
-                    <!-- Redirect to login if not logged in -->
-                    <fieldset>
-                        <legend class="text-navy">Project Files:</legend>
-                        <a class="btn btn-success" href="login.php?redirect_to=<?= urlencode($_SERVER['REQUEST_URI']) ?>&file_type=zip&id=<?= htmlspecialchars($id) ?>">Download Project files</a>
-                    </fieldset>
-                    <fieldset>
-                        <legend class="text-navy">SQL file:</legend>
-                        <a class="btn btn-success" href="login.php?redirect_to=<?= urlencode($_SERVER['REQUEST_URI']) ?>&file_type=sql&id=<?= htmlspecialchars($id) ?>">Download SQL file</a>
-                    </fieldset>
-                    <fieldset>
-                        <legend class="text-navy">Project Document:</legend>
-                        <a class="btn btn-success" href="login.php?redirect_to=<?= urlencode($_SERVER['REQUEST_URI']) ?>&file_type=pdf&id=<?= htmlspecialchars($id) ?>">Download Project Document</a>
-                    </fieldset>
-                <?php endif; ?>
+                        <!-- Allow direct download -->
+                        <fieldset>
+                            <legend class="text-navy">Project Files:</legend>
+                            <a class="btn btn-success" href="<?= base_url . 'uploads/files/Files-' . htmlspecialchars($id) . '.zip' ?>">Download Project files</a>
+                        </fieldset>
+                        <fieldset>
+                            <legend class="text-navy">SQL file:</legend>
+                            <a class="btn btn-success" href="<?= base_url . 'uploads/sql/SQL-' . htmlspecialchars($id) . '.zip' ?>">Download SQL file</a>
+                        </fieldset>
+                        <fieldset>
+                            <legend class="text-navy">Project Document:</legend>
+                            <a class="btn btn-success" href="<?= base_url . 'uploads/pdf/Document-' . htmlspecialchars($id) . '.zip' ?>">Download Project Document</a>
+                        </fieldset>
+                    <?php else: ?>
+                        <!-- Redirect to login if not logged in -->
+                        <fieldset>
+                            <legend class="text-navy">Project Files:</legend>
+                            <a class="btn btn-success" href="login.php?redirect=download&file_type=zip&id=<?= htmlspecialchars($id) ?>">Download Project files</a>
+                        </fieldset>
+                        <fieldset>
+                            <legend class="text-navy">SQL file:</legend>
+                            <a class="btn btn-success" href="login.php?redirect=download&file_type=sql&id=<?= htmlspecialchars($id) ?>">Download SQL file</a>
+                        </fieldset>
+                        <fieldset>
+                            <legend class="text-navy">Project Document:</legend>
+                            <a class="btn btn-success" href="login.php?redirect=download&file_type=pdf&id=<?= htmlspecialchars($id) ?>">Download Project Document</a>
+                        </fieldset>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
