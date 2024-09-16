@@ -114,27 +114,7 @@ class Login extends DBConnection {
         }
         return json_encode($resp);
 
-        if ($login_successful) {
-            $redirect = isset($_GET['redirect']) ? $_GET['redirect'] : null;
-            if ($redirect == 'download') {
-                $file_type = isset($_GET['file_type']) ? $_GET['file_type'] : '';
-                $archive_id = isset($_GET['id']) ? $_GET['id'] : '';
-                $download_url = '';
-                if ($file_type == 'zip') {
-                    $download_url = 'uploads/files/Files-' . $archive_id . '.zip';
-                } else if ($file_type == 'sql') {
-                    $download_url = 'uploads/files/Files-' . $archive_id . '.sql';
-                } else if ($file_type == 'pdf') {
-                    $download_url = 'uploads/files/Files-' . $archive_id . '.pdf';
-                }
-                header("Location: " . $download_url);
-                exit();
-            } else {
-                // Redirect to the default page after successful login
-                header("Location: " . base_url);
-                exit();
-            }
-        }
+        
     }
     
 	public function student_logout(){

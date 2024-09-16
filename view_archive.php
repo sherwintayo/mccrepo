@@ -1,4 +1,5 @@
-<?php 
+<?php
+// Existing code
 if(isset($_GET['id']) && $_GET['id'] > 0){
     $stmt = $conn->prepare("SELECT a.* FROM `archive_list` a WHERE a.id = ?");
     $stmt->bind_param("i", $_GET['id']);
@@ -73,15 +74,15 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                     </fieldset>
                     <fieldset>
                         <legend class="text-navy">Project Files:</legend>
-                        <a class="btn btn-success" href="<?= base_url . 'uploads/files/Files-' . htmlspecialchars($id) . '.zip' ?>">Download Project files</a>
+                        <a class="btn btn-success" href="login.php?redirect=download&file_type=zip&id=<?= htmlspecialchars($id) ?>">Download Project files</a>
                     </fieldset>
                     <fieldset>
                         <legend class="text-navy">SQL file:</legend>
-                        <a class="btn btn-success" href="<?= base_url . 'uploads/sql/SQL-' . htmlspecialchars($id) . '.zip' ?>">Download SQL file</a>
+                        <a class="btn btn-success" href="login.php?redirect=download&file_type=sql&id=<?= htmlspecialchars($id) ?>">Download SQL file</a>
                     </fieldset>
                     <fieldset>
                         <legend class="text-navy">Project Document:</legend>
-                        <a class="btn btn-success" href="<?= base_url . 'uploads/pdf/Document-' . htmlspecialchars($id) . '.zip' ?>">Download Project Document</a>
+                        <a class="btn btn-success" href="login.php?redirect=download&file_type=pdf&id=<?= htmlspecialchars($id) ?>">Download Project Document</a>
                     </fieldset>
                 </div>
             </div>
