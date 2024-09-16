@@ -276,6 +276,8 @@
                         }
                         if(download_url) {
                             window.location.href = download_url;
+                            
+                            window.close();
                         }
                     } else {
                         location.href = "./";
