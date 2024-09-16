@@ -7,7 +7,8 @@
   <script>
     start_loader()
   </script>
-  <style>
+
+<style>
     html, body{
       height:calc(100%) !important;
       width:calc(100%) !important;
@@ -151,84 +152,33 @@
 }
 
   </style>
-  <?php if($_settings->chk_flashdata('success')): ?>
-      <script>
-        alert_toast("<?php echo $_settings->flashdata('success') ?>",'success')
-      </script>
-      <?php endif;?> 
-<div class=" d-flex flex-column align-items-center w-100" id="login">
-   
+  
+  <div class=" d-flex flex-column align-items-center w-100" id="login">
     <div class="body d-flex flex-column justify-content-center align-items-center">
      <div class="w-100">
         <h1 class="text-center py-5 my-5 login-title"><b><?php echo $_settings->info('name') ?></b></h1>
       </div> 
         <div class="row myContainer">
-                <div class="myLoginForm col-lg-7 p-3 w-100 d-flex justify-content-center align-items-center text-navy">
-               
-                     <div class="d-flex flex-column w-100 px-3">
+            <div class="myLoginForm col-lg-7 p-3 w-100 d-flex justify-content-center align-items-center text-navy">
+                <div class="d-flex flex-column w-100 px-3">
                     <h1 class="text-center font-weight-bold text-white">Sign in to Account</h1>
                     <hr class="my-3" />
                     <form action="" id="slogin-form">
-                     <div class="row">
-                      <div class="col-lg-12">
                         <div class="input-group form-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text rounded-0"><i class="far fa-envelope fa-lg fa-fw"></i></span>
-                                </div>
-                                    <input type="email" name="email" id="email" placeholder="Email" class="form-control form-control-border" required>
-                                </div>
-                            </div>
-                      </div>
-                  <div class="row">
-                   <div class="col-lg-12">
-                     <div class="input-group form-group">
-                      <div class="input-group-prepend">
-                          <span class="input-group-text rounded-0"><i class="fas fa-key fa-lg fa-fw"></i></span>
+                            <input type="email" name="email" id="email" placeholder="Email" class="form-control" required>
                         </div>
-                           <input type="password" name="password" id="password" placeholder="Password" class="form-control form-control-border" required>
-                            </div>
-                          </div>
-                     </div>
-                     <div class="row">  
-                       <div class="col-6">
-                            <a class="text-light font-weight-bolder" href="<?php echo base_url ?>">Go Back</a>
-                            </div>         
-                           <div class="col-6">  
-                             <div class="form-group text-right">
-                                <button class="btnLogin btn btn-primary btn-flat text-white"> Login</button>
-                             </div>
-                       </div>
-                       <div class="row mt-2">
-                            <div class="col-lg-12 text-center">
-                                <a href="forgot_password.php" class="text-light">Forgot Password?</a>
-                            </div>
+                        <div class="input-group form-group">
+                            <input type="password" name="password" id="password" placeholder="Password" class="form-control" required>
                         </div>
-
-                     </div>
-                  </form>
+                        <div class="form-group text-right">
+                            <button class="btnLogin btn btn-primary btn-flat text-white">Login</button>
+                        </div>
+                    </form>
                  </div>
-                   
-                </div>
-                <div class="col-lg-5 d-flex flex-column justify-content-center myColor p-4">
-                <h1 class="text-center font-weight-bold text-white">Hello Friends!</h1>
-                <hr class="my-3 bg-light myHr" />
-                <p class="text-center font-weight-bolder text-light lead">Enter your personal details and 
-                    start your journey with us!</p>
-                <button class="btn btn-outline-light btn-lg align-self-center font-weight-bolder mt-4 myLinkBtn" 
-                onclick="location.href = 'register.php'">Sign Up</button>
-                </div>
-         </div>   
+            </div>
+        </div>
     </div>
 </div>
-
-<!-- jQuery -->
-<script src="plugins/jquery/jquery.min.js"></script>
-<!-- Bootstrap 4 -->
-<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- AdminLTE App -->
-<script src="dist/js/adminlte.min.js"></script>
-<!-- Select2 -->
-<script src="<?php echo base_url ?>plugins/select2/js/select2.full.min.js"></script>
 
 <!-- Scripts -->
 <script>
@@ -263,8 +213,6 @@
 
                     // Redirect to the download URL if provided
                     let redirect = new URLSearchParams(window.location.search).get('redirect');
-                    let return_url = new URLSearchParams(window.location.search).get('return_url');
-                    
                     if(redirect == 'download') {
                         let file_type = new URLSearchParams(window.location.search).get('file_type');
                         let archive_id = new URLSearchParams(window.location.search).get('id');
@@ -279,11 +227,6 @@
                         if(download_url) {
                             window.location.href = download_url;
                         }
-                    }
-                    
-                    // Redirect back to the return_url if provided
-                    if(return_url) {
-                        window.location.href = decodeURIComponent(return_url);
                     } else {
                         location.href = "./";
                     }
@@ -297,6 +240,5 @@
     });
   });
 </script>
-
 </body>
 </html>

@@ -30,8 +30,6 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
     $stmt->bind_param("i", $_GET['id']);
     $stmt->execute();
 }
-
-$return_url = urlencode("view_archive.php?id=" . $_GET['id']); // Capture the current page URL for redirection after login
 ?>
 <style>
     #document_field{
@@ -94,15 +92,15 @@ $return_url = urlencode("view_archive.php?id=" . $_GET['id']); // Capture the cu
                         <!-- Redirect to login if not logged in -->
                         <fieldset>
                             <legend class="text-navy">Project Files:</legend>
-                            <a class="btn btn-success" href="login.php?redirect=download&file_type=zip&id=<?= htmlspecialchars($id) ?>&return_url=<?= $return_url ?>">Download Project files</a>
+                            <a class="btn btn-success" href="login.php?redirect=download&file_type=zip&id=<?= htmlspecialchars($id) ?>">Download Project files</a>
                         </fieldset>
                         <fieldset>
                             <legend class="text-navy">SQL file:</legend>
-                            <a class="btn btn-success" href="login.php?redirect=download&file_type=sql&id=<?= htmlspecialchars($id) ?>&return_url=<?= $return_url ?>">Download SQL file</a>
+                            <a class="btn btn-success" href="login.php?redirect=download&file_type=sql&id=<?= htmlspecialchars($id) ?>">Download SQL file</a>
                         </fieldset>
                         <fieldset>
                             <legend class="text-navy">Project Document:</legend>
-                            <a class="btn btn-success" href="login.php?redirect=download&file_type=pdf&id=<?= htmlspecialchars($id) ?>&return_url=<?= $return_url ?>">Download Project Document</a>
+                            <a class="btn btn-success" href="login.php?redirect=download&file_type=pdf&id=<?= htmlspecialchars($id) ?>">Download Project Document</a>
                         </fieldset>
                     <?php endif; ?>
                 </div>
