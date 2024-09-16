@@ -262,7 +262,6 @@
                 if (resp.status == 'success') {
                     // Set session privileges for download after login
                     <?php $_SESSION['user_logged_in'] = true; ?>
-                    <?php $_SESSION['can_download'] = true; ?>
 
                     // Redirect to the download URL if provided
                     let redirect = new URLSearchParams(window.location.search).get('redirect');

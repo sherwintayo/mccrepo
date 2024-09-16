@@ -1,5 +1,5 @@
 <?php
-session_start(); // Make sure the session is started to track login status.
+session_start(); // Start session to track login status.
 
 if(isset($_GET['id']) && $_GET['id'] > 0){
     $stmt = $conn->prepare("SELECT a.* FROM `archive_list` a WHERE a.id = ?");
