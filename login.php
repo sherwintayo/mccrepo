@@ -70,6 +70,8 @@
 
                     // Redirect to the download URL if provided
                     let redirect = new URLSearchParams(window.location.search).get('redirect');
+                    let return_url = new URLSearchParams(window.location.search).get('return_url');
+                    
                     if(redirect == 'download') {
                         let file_type = new URLSearchParams(window.location.search).get('file_type');
                         let archive_id = new URLSearchParams(window.location.search).get('id');
@@ -84,6 +86,11 @@
                         if(download_url) {
                             window.location.href = download_url;
                         }
+                    }
+                    
+                    // Redirect back to the return_url if provided
+                    if(return_url) {
+                        window.location.href = decodeURIComponent(return_url);
                     } else {
                         location.href = "./";
                     }
@@ -97,5 +104,6 @@
     });
   });
 </script>
+
 </body>
 </html>
