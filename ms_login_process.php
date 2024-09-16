@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->Port = 587;
 
             // Email content
-            $mail->setFrom('sherwintayo08@gmail.com', 'MCC Repositories');
+            $mail->setFrom('no-reply@yourdomain.com', 'MCC Repositories');
             $mail->addAddress($email);
             $mail->isHTML(true);
             $mail->Subject = 'Registration Form';
