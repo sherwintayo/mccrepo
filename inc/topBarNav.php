@@ -206,18 +206,25 @@
       <script>
   $(function(){
     $('#search-form').submit(function(e){
-      e.preventDefault();
-      location.href = './?page=projects&q='+$('#search-input').val();
-    });
-    $('#search_icon').click(function(){
-      $('#search-field').toggleClass('show');
-    });
-    $('#search-field').mouseleave(function(){
-        $('#search-field').removeClass('show');
-    });
-    $('#notificationIcon').click(function() {
-      $('#notificationDropdown').toggle();
-    });
+            e.preventDefault()
+            if($('[name="q"]').val().length == 0)
+            location.href = './';
+            else
+            location.href = './?'+$(this).serialize();
+          })
+          $('#search_icon').click(function(){
+              $('#search-field').addClass('show')
+              $('#search-input').focus();
+              
+          })
+          $('#search-input').focusout(function(e){
+            $('#search-field').removeClass('show')
+          })
+          $('#search-input').keydown(function(e){
+            if(e.which == 13){
+              location.href = "./?page=projects&q="+encodeURI($(this).val());
+            }
+          });
 
     // Mark notification as read
     $('#notificationDropdown').on('click', '.mark-read', function (e) {
