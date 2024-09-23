@@ -64,19 +64,20 @@
      .myColor{
         background-image: linear-gradient(to right, #f83600 50%, #f9d423 150%);
      }
+
      .myLoginForm {
-  background: transparent;
-  border: 2px solid #f83600;
-  backdrop-filter: blur(2px);
-  border-radius: 20px 0 0 20px;
-}
+        background: transparent;
+        border: 2px solid #f83600;
+        backdrop-filter: blur(2px);
+        border-radius: 20px 0 0 20px;
+        }
 
-.btnLogin{
-  border-radius: 0 20px 20px 0;
-  border: 0;
-  background-image: linear-gradient(to right, #f83600 50%, #f9d423 150%);
+    .btnLogin{
+        border-radius: 0 20px 20px 0;
+        border: 0;
+        background-image: linear-gradient(to right, #f83600 50%, #f9d423 150%);
 
-}
+        }
 
 
 /* Extra small devices (portrait phones, less than 576px) */
@@ -164,7 +165,7 @@
         <h1 class="text-center py-5 my-5 login-title"><b><?php echo $_settings->info('name') ?></b></h1>
       </div> 
         <div class="row myContainer">
-                <div class="myLoginForm col-lg-7 p-3 w-100 d-flex justify-content-center align-items-center text-navy">
+                <div class="myLoginForm col-lg-7 p-3 d-flex justify-content-center align-items-center text-navy">
                
                      <div class="d-flex flex-column w-100 px-3">
                     <h1 class="text-center font-weight-bold text-white">Sign in to Account</h1>

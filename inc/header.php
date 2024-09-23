@@ -16,6 +16,11 @@
     <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&amp;display=fallback"> -->
     <!-- Font Awesome -->
     <link rel="stylesheet" href="<?php echo base_url ?>plugins/fontawesome-free/css/all.min.css">
+     <!-- Theme style -->
+     <link rel="stylesheet" href="<?php echo base_url ?>plugins/styleindex.css">
+    <link rel="stylesheet" href="<?php echo base_url ?>dist/css/adminlte.css">
+    <link rel="stylesheet" href="<?php echo base_url ?>dist/css/custom.css">
+    <link rel="stylesheet" href="<?php echo base_url ?>assets/css/styles.css">
     <!-- Ionicons -->
     <!-- <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"> -->
     <!-- Tempusdominus Bootstrap 4 -->
@@ -28,17 +33,14 @@
   <link rel="stylesheet" href="<?php echo base_url ?>plugins/select2/css/select2.min.css">
   <link rel="stylesheet" href="<?php echo base_url ?>plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
            <!-- Bootstrap 4 CSS CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css" />
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css" /> -->
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- iCheck -->
     <link rel="stylesheet" href="<?php echo base_url ?>plugins/icheck-bootstrap/icheck-bootstrap.min.css">
     <!-- JQVMap -->
     <link rel="stylesheet" href="<?php echo base_url ?>plugins/jqvmap/jqvmap.min.css">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="<?php echo base_url ?>dist/css/adminlte.css">
-    <link rel="stylesheet" href="<?php echo base_url ?>dist/css/custom.css">
-    <link rel="stylesheet" href="<?php echo base_url ?>assets/css/styles.css">
+   
     <!-- overlayScrollbars -->
     <link rel="stylesheet" href="<?php echo base_url ?>plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
     <!-- Daterange picker -->
