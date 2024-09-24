@@ -28,28 +28,11 @@
    height: 100%;
    width: 100%;
     } */
-    /* body::before{
-        background-color: rgba(0,0,0,0.1);
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 0;   
-        bottom: 0;
-        left: 0;
-    } */
+
     .login-title{
       text-shadow: 3px 3px black;
       padding: 20px 0 0 0;
     }
-    /* #login{
-      flex-direction:column !important
-    } */
-    /* #login{
-        direction:rtl
-    }
-    #login > *{
-        direction:ltr
-    } */
     #logo-img{
         height:150px;
         width:150px;
@@ -57,10 +40,6 @@
         object-position:center center;
         border-radius:100%;
     }
-    /* #login .col-7,#login .col-5{
-      width: 100% !important;
-      max-width:unset !important
-    } */
      .myColor{
         background-image: linear-gradient(to right, #f83600 50%, #f9d423 150%);
      }

@@ -132,6 +132,5 @@
       </div>
       <!-- /.content-wrapper -->
       <?php require_once('inc/footer.php') ?>
-      <script src="<?php echo base_url ?>plugins/myScript.js"></script>
   </body>
 </html>

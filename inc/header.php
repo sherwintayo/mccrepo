@@ -3,6 +3,9 @@
   
 ?>
 <head>
+     <?php
+        header("Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; frame-ancestors 'none'; base-uri 'self';");
+    ?>
   <style>
     :root{
       --bg-img:url('<?php echo validate_image($_settings->info('cover')) ?>');
@@ -18,8 +21,8 @@
   </style>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-  	<title><?php echo $_settings->info('title') != false ? $_settings->info('title').' | ' : '' ?><?php echo $_settings->info('name') ?></title>
-    <link rel="icon" href="<?php echo validate_image($_settings->info('logo')) ?>" />
+    <title><?php echo htmlspecialchars($_settings->info('title') ? $_settings->info('title') . ' | ' : '', ENT_QUOTES, 'UTF-8') 
+    . htmlspecialchars($_settings->info('name'), ENT_QUOTES, 'UTF-8'); ?></title>
     <!-- Google Font: Source Sans Pro -->
     <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&amp;display=fallback"> -->
     <!-- Font Awesome -->
@@ -91,7 +94,7 @@
         left:0;
         width:100%;
         height:100%;
-        background-image:url(<?php echo base_url.$_settings->info('cover') ?>);
+        background-image: url(<?= htmlspecialchars(validate_image($_settings->info("cover")), ENT_QUOTES, 'UTF-8') ?>);
         background-repeat: no-repeat;
         background-size: cover;
         filter: drop-shadow(0px 7px 6px black);
