@@ -7,6 +7,14 @@
     :root{
       --bg-img:url('<?php echo validate_image($_settings->info('cover')) ?>');
     }
+
+       /* Disable text selection */
+       body {
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
   </style>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,7 +25,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="<?php echo base_url ?>plugins/fontawesome-free/css/all.min.css">
      <!-- Theme style -->
-     <link rel="stylesheet" href="<?php echo base_url ?>plugins/styleindex.css">
+
     <link rel="stylesheet" href="<?php echo base_url ?>dist/css/adminlte.css">
     <link rel="stylesheet" href="<?php echo base_url ?>dist/css/custom.css">
     <link rel="stylesheet" href="<?php echo base_url ?>assets/css/styles.css">
@@ -50,7 +58,10 @@
      <!-- SweetAlert2 -->
   <link rel="stylesheet" href="<?php echo base_url ?>plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
     <style type="text/css">/* Chart.js */
-      @keyframes chartjs-render-animation{from{opacity:.99}to{opacity:1}}.chartjs-render-monitor{animation:chartjs-render-animation 1ms}.chartjs-size-monitor,.chartjs-size-monitor-expand,.chartjs-size-monitor-shrink{position:absolute;direction:ltr;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1}.chartjs-size-monitor-expand>div{position:absolute;width:1000000px;height:1000000px;left:0;top:0}.chartjs-size-monitor-shrink>div{position:absolute;width:200%;height:200%;left:0;top:0}
+      @keyframes chartjs-render-animation{from{opacity:.99}to{opacity:1}}.chartjs-render-monitor{animation:chartjs-render-animation 1ms}
+      .chartjs-size-monitor,.chartjs-size-monitor-expand,.chartjs-size-monitor-shrink{position:absolute;direction:ltr;left:0;top:0;right:0;
+        bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1}.chartjs-size-monitor-expand>div{position:absolute;
+          width:1000000px;height:1000000px;left:0;top:0}.chartjs-size-monitor-shrink>div{position:absolute;width:200%;height:200%;left:0;top:0}
     </style>
 
      <!-- jQuery -->
@@ -66,6 +77,7 @@
     </script>
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="<?php echo base_url ?>dist/js/script.js"></script>
+    <!-- <script src="<?php echo base_url ?>plugins/myScript.js"></script> -->
     <style>
     #main-header{
         position:relative;
@@ -87,4 +99,19 @@
     }
 
  </style>
+
+<!-- <script>
+    // Disable right-click
+    document.addEventListener('contextmenu',function(event) {
+      event.preventDefault();
+    });
+
+    // Disable F12, Ctrl+Shift+I/J/U
+    document.onkeydown = function(e) {
+      if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 85))) {
+        return false;
+      }
+    };
+  </script> -->
+
   </head>

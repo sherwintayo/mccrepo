@@ -7,6 +7,14 @@
     background-color: #2a252e;
 }
 
+.navbar .navbar-brand img{
+    max-height: 40px;
+}
+.nav .navbar-brand .myBrandName{
+    color: #f9f06d;
+    font-weight: 600;
+}
+
 .navbar .nav-link{
     font-size: 16px;
     color: rgba(255,255,255,0.6);
@@ -36,11 +44,6 @@
 .navbar .nav-link .active{
     color: rgba(255,255,255,0.6);
     font-weight: 600;
-}
-
-.navbar .navbar-brand img{
-    max-height: 40px;
-    
 }
 
 .dropdown-menu{

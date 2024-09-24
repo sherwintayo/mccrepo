@@ -1,4 +1,21 @@
+<head>
+<link rel="stylesheet" href="<?php echo base_url ?>plugins/styleindex.css">
+
+
+
+
 <style>
+
+      /* NAVBAR */
+#login-nav{
+          position:fixed !important;
+          top: 0 !important;
+          z-index: 1037;
+          padding: 1em 1.5em !important;
+        }
+
+      
+
   .user-img{
         position: absolute;
         height: 27px;
@@ -57,29 +74,14 @@
     cursor: pointer;
   }
 </style>
-<!-- Navbar -->
-      <style>
-        #login-nav{
-          position:fixed !important;
-          top: 0 !important;
-          z-index: 1037;
-          padding: 1em 1.5em !important;
-        }
-        #top-Nav{
-          top: 4em;
-        }
-        .text-sm .layout-navbar-fixed .wrapper .main-header ~ .content-wrapper, .layout-navbar-fixed .wrapper .main-header.text-sm ~ .content-wrapper {
-          margin-top: calc(3.6) !important;
-          padding-top: calc(5em) !important;
-      }
-      </style>
+</head>
 <nav class="navbar navbar-expand-lg w-100" id="login-nav">
   <div class="container ">
 
   <a href="./" class="navbar-brand">
             <img src="<?php echo validate_image($_settings->info('logo'))?>" alt="Site Logo" class="brand-image img-circle elevation-3" 
             style="height: 49px; opacity: .8;">
-            <span class= "brand-text font-weight-bolder"><?= $_settings->info('short_name') ?></span>
+            <span class= "myBrandName"><?= $_settings->info('short_name') ?></span>
           </a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" 
@@ -181,9 +183,9 @@
       </div>
 
       <?php else : ?>
-      <a href="./ms_login.php" class="mx-1 text-light">Register</a>
-      <a href="./login.php" class="mx-1 text-light ">Student Login</a>
-      <a href="./admin" class="mx-1 text-light">Admin login</a>
+      <a href="./register.php" class="mx-1 text-light">Sign Up</a>
+      <a href="./login.php" class="mx-1 text-light ">Student Sign In</a>
+      <a href="./admin" class="mx-1 text-light">Admin Sign In</a>
       <?php endif; ?>
 
 

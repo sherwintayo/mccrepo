@@ -1,5 +1,5 @@
-<div class="col-12">
-    <div class="row my-5 ">
+<div class="col-12 mt-5">
+    <div class="row my-5">
         <div class="col-md-5">
             <div class="card card-outline card-navy rounded-0 shadow">
                 <div class="card-header">

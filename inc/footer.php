@@ -25,6 +25,17 @@
             })
             end_loader()  
 
+               // Ensure no right-click and keydown events
+    // document.addEventListener('contextmenu', function(event) {
+    //   event.preventDefault();
+    // });
+
+    // document.onkeydown = function(e) {
+    //   if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 85))) {
+    //     return false;
+    //   }
+    // };
+
   }
     window.uni_modal = function($title = '' , $url='',$size=""){
         start_loader()
@@ -61,7 +72,7 @@
     }
   })
 </script>
-<footer class="main-footer text-md" style="margin: 0px; padding: 10px">
+<footer class="main-footer text-sm" style="margin: 0px; padding: 10px">
   <div class="container d-flex justify-content-between align-items-center pb-1 flex-wrap">
     <!-- Left Section -->
     <div class="text-black align-self-center font-weight-bolder">
@@ -90,6 +101,7 @@
     <script>
       $.widget.bridge('uibutton', $.ui.button)
     </script>
+      <!-- <script src="<?php echo base_url ?>plugins/myScript.js"></script> -->
     <!-- Bootstrap 4 -->
     <script src="<?php echo base_url ?>plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- ChartJS -->

@@ -50,7 +50,7 @@
       </script>
       <?php endif;?>    
       <!-- Content Wrapper. Contains page content -->
-      <div class="content-wrapper w-100 mt-5" style="margin-left: 0px">
+      <div class="content-wrapper w-100 mt-5" style="margin-left: 0px;">
         <?php if($page == "home" || $page == "about_us"): ?>
           <div id="header" class="shadow">
               <div class="d-flex justify-content-center h-100 w-100 align-items-center flex-column">
@@ -60,7 +60,7 @@
           </div>
         <?php endif; ?>
         <!-- Main content -->
-        <section class="content ">
+        <section class="content" style="margin-top: 9vh;">
           <div class="container">
             <?php 
               if(!file_exists($page.".php") && !is_dir($page)){
@@ -132,5 +132,6 @@
       </div>
       <!-- /.content-wrapper -->
       <?php require_once('inc/footer.php') ?>
+      <script src="<?php echo base_url ?>plugins/myScript.js"></script>
   </body>
 </html>

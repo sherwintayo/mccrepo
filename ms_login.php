@@ -49,7 +49,7 @@
             <h1 class="text-center py-5 my-5 login-title"><b><?php echo $_settings->info('name') ?></b></h1>
         </div>
         <div class="row myContainer">
-            <div class="myLoginForm col-lg-7 p-3 w-100 d-flex justify-content-center align-items-center text-navy">
+            <div class="myLoginForm col-lg-7 p-3 d-flex justify-content-center align-items-center text-navy">
                 <div class="d-flex flex-column w-100 px-3">
                     <h1 class="text-center font-weight-bold text-white">MS Login</h1>
                     <hr class="my-3" />
