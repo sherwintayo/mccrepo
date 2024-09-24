@@ -183,7 +183,7 @@
       </div>
 
       <?php else : ?>
-      <a href="./register.php" class="mx-1 text-light">Sign Up</a>
+      <a href="./ms_login.php" class="mx-1 text-light">Sign Up</a>
       <a href="./login.php" class="mx-1 text-light ">Student Sign In</a>
       <a href="./admin" class="mx-1 text-light">Admin Sign In</a>
       <?php endif; ?>
