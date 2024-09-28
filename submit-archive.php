@@ -26,17 +26,20 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
 <div class="content py-4">
     <div class="card card-outline card-primary shadow rounded-0">
         <div class="card-header rounded-0">
-            <h5 class="card-title"><?= isset($id) ? "Update Archive-{$archive_code} Details" : "Submit Project" ?></h5>
+            <h5 class="card-title"><?= htmlspecialchars( isset($id) ? "Update Archive-{$archive_code} Details" : 
+            "Submit Project", ENT_QUOTES, 'UTF-8') ?></h5>
         </div>
         <div class="card-body rounded-0">
             <div class="container-fluid">
                 <form action="" id="archive-form" enctype="multipart/form-data">
-                    <input type="hidden" name="id" value="<?= isset($id) ? $id : "" ?>">
+                    <input type="hidden" name="id" value="<?= htmlspecialchars( isset($id) ? $id : "", ENT_QUOTES, 'UTF-8') ?>">
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label for="title" class="control-label text-navy">Project Title</label>
-                                <input type="text" name="title" id="title" autofocus placeholder="Project Title" class="form-control form-control-border" value="<?= isset($title) ?$title : "" ?>" required>
+                                <input type="text" name="title" id="title" autofocus placeholder="Project Title" 
+                                class="form-control form-control-border" value="<?= htmlspecialchars( isset($title) ?$title : "",
+                                 ENT_QUOTES, 'UTF-8') ?>" required>
                             </div>
                         </div>
                     </div>
@@ -48,7 +51,8 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                                     <?php 
                                         for($i= 0;$i < 51; $i++):
                                     ?>
-                                    <option <?= isset($year) && $year == date("Y",strtotime(date("Y")." -{$i} years")) ? "selected" : "" ?>><?= date("Y",strtotime(date("Y")." -{$i} years")) ?></option>
+                                    <option <?= htmlspecialchars( isset($year) && $year == date("Y",strtotime(date("Y")." -{$i} years")) ?
+                                     "selected" : "", ENT_QUOTES, 'UTF-8') ?>><?= date("Y",strtotime(date("Y")." -{$i} years")) ?></option>
                                     <?php endfor; ?>
                                 </select>
                             </div>
@@ -61,7 +65,7 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                                 <textarea rows="3" name="abstract" id="abstract" placeholder="abstract" class="form-control form-control-border summernote" required><?= isset($abstract) ? html_entity_decode($abstract) : "" ?></textarea>
                             </div>
                         </div>
-                    </div>
+                    </div>  
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="form-group">
@@ -74,11 +78,12 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                         <div class="col-lg-12">
                             <div class="form-group">
                                 <label for="img" class="control-label text-muted">Project Image/Banner Image</label>
-                                <input type="file" id="img" name="img" class="form-control form-control-border" accept="image/png,image/jpeg,image/jpg" onchange="displayImg(this,$(this))" <?= !isset($id) ? "required" : "" ?>>
+                                <input type="file" id="img" name="img" class="form-control form-control-border" accept="image/png,image/jpeg,image/jpg" 
+                                onchange="displayImg(this,$(this))" <?= htmlspecialchars( !isset($id) ? "required" : "", ENT_QUOTES, 'UTF-8') ?>>
                             </div>
 
                             <div class="form-group text-center">
-                                <img src="<?= validate_image(isset($banner_path) ? $banner_path : "") ?>" alt="My Avatar" id="cimg" class="img-fluid banner-img bg-gradient-dark border">
+                                <img src="<?= htmlspecialchars( validate_image(isset($banner_path) ? $banner_path : ""), ENT_QUOTES, 'UTF-8') ?>" alt="My Avatar" id="cimg" class="img-fluid banner-img bg-gradient-dark border">
                             </div>
                         </div>
                     </div>
@@ -86,7 +91,7 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                         <div class="col-lg-12">
                             <div class="form-group">
                                 <label for="pdf" class="control-label text-muted">Project Document (PDF File Only)</label>
-                                <input type="file" id="pdf" name="pdf" class="form-control form-control-border" accept="application/pdf" <?= !isset($id) ? "required" : "" ?>>
+                                <input type="file" id="pdf" name="pdf" class="form-control form-control-border" accept=".pdf" <?= !isset($id) ? "required" : "" ?>>
                             </div>
                         </div>
                     </div>

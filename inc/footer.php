@@ -72,22 +72,23 @@
     }
   })
 </script>
+
 <footer class="main-footer text-sm" style="margin: 0px; padding: 10px">
-  <div class="container d-flex justify-content-between align-items-center pb-1 flex-wrap">
+  <div class="myFooter container d-flex justify-content-between align-items-center pb-1 flex-wrap">
     <!-- Left Section -->
-    <div class="text-black align-self-center font-weight-bolder">
-        <span class="text-black">Copyright © <?php echo date('Y') ?>.</span>
+    <div class="myText align-self-center font-weight-bolder">
+        <span class="myText">Copyright © <?php echo date('Y') ?>.</span>
         <span>All rights reserved.</span>
     </div>
 
     <!-- Right Section -->
-    <div class="text-black">
-      <b><?php echo $_settings->info('short_name') ?> (Modified by: Sherwin Ciervo) v2.0</b>
+    <div class="myText">
+      <b><?php echo htmlspecialchars($_settings->info('short_name'), ENT_QUOTES, 'UTF-8') ?> (Modified by: Sherwin Ciervo) v2.0</b>
     </div>
     </div>
       <!-- Centered Section (Phone) -->
       <div class="row dflex justify-content-center">
-    <div class="col-lg-2 d-flex justify-content-center text-black font-weight-bolder text-center mt-2 mt-lg-0">
+    <div class="col-lg-2 d-flex justify-content-center myText font-weight-bolder text-center mt-2 mt-lg-0">
       <i class="fa fa-phone mr-1"></i> <?php echo $_settings->info('contact') ?>
     </div>
   </div>

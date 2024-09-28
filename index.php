@@ -13,7 +13,7 @@
     position:absolute;
     height:calc(100%);
     width:calc(100%);
-    background-image:url(<?= validate_image($_settings->info("cover")) ?>);
+    background-image:url(<?= htmlspecialchars(validate_image($_settings->info("cover")), ENT_QUOTES, 'UTF-8') ?>);
     background-size:cover;
     background-repeat:no-repeat;
     background-position: center center;
@@ -46,7 +46,7 @@
      <?php require_once('inc/topBarNav.php') ?>
      <?php if($_settings->chk_flashdata('success')): ?>
       <script>
-        alert_toast("<?php echo $_settings->flashdata('success') ?>",'success')
+        alert_toast("<?php echo htmlspecialchars($_settings->flashdata('success'), ENT_QUOTES, 'UTF-8') ?>",'success')
       </script>
       <?php endif;?>    
       <!-- Content Wrapper. Contains page content -->
@@ -54,7 +54,7 @@
         <?php if($page == "home" || $page == "about_us"): ?>
           <div id="header" class="shadow">
               <div class="d-flex justify-content-center h-100 w-100 align-items-center flex-column">
-                  <h1  class="w-200 text-center site-title" ><?php echo "MADRIDEJOS COMMUNITY COLLEGE REPOSITORIES" ?></h1>
+                  <h1  class="w-200 text-center site-title" ><?php echo htmlspecialchars("MADRIDEJOS COMMUNITY COLLEGE REPOSITORIES") ?></h1>
                   <a href="./?page=projects" class="btn btn-lg btn-light rounded-pill w-25" id="enrollment"><b>Explore Projects</b></a>
               </div>
           </div>
@@ -131,6 +131,6 @@
   </div>
       </div>
       <!-- /.content-wrapper -->
-      <?php require_once('inc/footer.php') ?>
+      <?php require_once('inc/footer.php') ?> 
   </body>
 </html>

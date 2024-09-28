@@ -3,21 +3,19 @@
   
 ?>
 <head>
-     <?php
-        header("Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; frame-ancestors 'none'; base-uri 'self';");
-    ?>
+
   <style>
     :root{
       --bg-img:url('<?php echo validate_image($_settings->info('cover')) ?>');
     }
 
        /* Disable text selection */
-       body {
+       /* body {
       user-select: none;
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
-    }
+    } */
   </style>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -28,7 +26,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="<?php echo base_url ?>plugins/fontawesome-free/css/all.min.css">
      <!-- Theme style -->
-
+     <link rel="stylesheet" href="<?php echo base_url ?>plugins/styleindex.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="<?php echo base_url ?>dist/css/adminlte.css">
     <link rel="stylesheet" href="<?php echo base_url ?>dist/css/custom.css">
     <link rel="stylesheet" href="<?php echo base_url ?>assets/css/styles.css">

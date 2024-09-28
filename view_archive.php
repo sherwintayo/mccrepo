@@ -66,12 +66,12 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                     <fieldset>
                         <legend class="text-navy">Abstract:</legend>
                         <div class="pl-4">
-                            <large><?= isset($abstract) ? html_entity_decode($abstract) : "" ?></large>
+                            <large><?= isset($abstract) ? htmlspecialchars($abstract) : "" ?></large>
                         </div>
                     </fieldset>
                     <fieldset>
                         <legend class="text-navy">Members:</legend>
-                        <div class="pl-4"><large><?= isset($members) ? html_entity_decode($members) : "" ?></large></div>
+                        <div class="pl-4"><large><?= isset($members) ? htmlspecialchars($members) : "" ?></large></div>
                     </fieldset>
 
                     <!-- Check if user is logged in and allow direct download -->

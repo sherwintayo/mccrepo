@@ -1,5 +1,5 @@
 <?php require_once('./config.php') ?>
-<?php session_start(); // Start session handling ?>
+<!-- <?php session_start(); // Start session handling ?> -->
 <!DOCTYPE html>
 <html lang="en" class="" style="height: auto;">
  <?php require_once('inc/header.php') ?>
