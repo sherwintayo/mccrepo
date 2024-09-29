@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 11, 2024 at 11:02 AM
+-- Generation Time: Sep 29, 2024 at 03:01 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -162,7 +162,46 @@ INSERT INTO `archive_counter` (`id`, `archive_id`, `created_at`) VALUES
 (0, 52, '2024-07-31 04:46:11'),
 (0, 21, '2024-08-22 03:22:38'),
 (0, 21, '2024-08-22 03:30:04'),
-(0, 21, '2024-08-22 03:32:19');
+(0, 21, '2024-08-22 03:32:19'),
+(0, 124, '2024-09-15 15:35:25'),
+(0, 124, '2024-09-15 15:35:32'),
+(0, 124, '2024-09-15 15:35:53'),
+(0, 124, '2024-09-15 15:36:01'),
+(0, 124, '2024-09-15 15:36:03'),
+(0, 46, '2024-09-21 13:32:22'),
+(0, 46, '2024-09-21 13:32:55'),
+(0, 39, '2024-09-21 14:16:51'),
+(0, 90, '2024-09-22 11:44:47'),
+(0, 90, '2024-09-26 14:53:02'),
+(0, 90, '2024-09-26 14:55:24'),
+(0, 90, '2024-09-26 14:55:47'),
+(0, 90, '2024-09-26 14:56:21'),
+(0, 90, '2024-09-26 14:56:59'),
+(0, 90, '2024-09-26 14:57:17'),
+(0, 90, '2024-09-26 14:57:51'),
+(0, 90, '2024-09-26 14:58:03'),
+(0, 90, '2024-09-26 14:58:16'),
+(0, 90, '2024-09-26 14:58:26'),
+(0, 90, '2024-09-26 14:58:54'),
+(0, 90, '2024-09-26 14:58:56'),
+(0, 90, '2024-09-26 14:59:13'),
+(0, 90, '2024-09-26 15:01:43'),
+(0, 90, '2024-09-26 15:02:06'),
+(0, 90, '2024-09-26 15:02:11'),
+(0, 90, '2024-09-26 15:02:36'),
+(0, 90, '2024-09-26 15:02:40'),
+(0, 90, '2024-09-26 15:02:42'),
+(0, 90, '2024-09-26 15:02:44'),
+(0, 90, '2024-09-26 15:02:45'),
+(0, 90, '2024-09-26 15:02:47'),
+(0, 90, '2024-09-26 15:02:58'),
+(0, 90, '2024-09-26 15:03:02'),
+(0, 90, '2024-09-26 15:03:03'),
+(0, 90, '2024-09-26 15:03:05'),
+(0, 90, '2024-09-26 15:03:32'),
+(0, 90, '2024-09-26 15:03:36'),
+(0, 90, '2024-09-26 15:03:38'),
+(0, 90, '2024-09-26 15:03:39');
 
 -- --------------------------------------------------------
 
@@ -209,7 +248,8 @@ INSERT INTO `archive_list` (`id`, `archive_code`, `curriculum_id`, `year`, `titl
 (80, '2024070003', 7, '2024', 'House Rental Management System', '&lt;p&gt;ajncljan scbkjab swknc akbckahs&lt;/p&gt;', '&lt;p&gt;1. kjascm asbjk&lt;/p&gt;&lt;p&gt;2. klasnc. d,cne&lt;/p&gt;&lt;p&gt;3. kjaskcbakjek&lt;/p&gt;', '', '', NULL, NULL, 1, 13, '2024-07-16 22:44:58', NULL),
 (83, '2024070001', 7, '2024', 'BSIT Repository', '&lt;p&gt;acajbckjashjdcacs oasshcoahsdlvcajv olabsla olajn jsabdcg oajxbcaljsduc&lt;/p&gt;', '&lt;p&gt;AJSNCLABCLLD&lt;/p&gt;&lt;p&gt;oacnlajbdo&lt;/p&gt;&lt;p&gt;baojsablsjc&lt;/p&gt;', '', '', NULL, NULL, 1, 41, '2024-07-17 21:41:26', NULL),
 (90, '2024070002', 7, '2024', 'Pizza Store Management', '&lt;p&gt;hkasbckdsb&amp;nbsp;&lt;/p&gt;', '&lt;p&gt;dcscscd&lt;/p&gt;', '', '', NULL, NULL, 1, 45, '2024-07-24 19:58:19', NULL),
-(123, '2024080001', 7, '0000', '', '', '', '', '', NULL, NULL, 0, 45, '2024-08-01 03:08:19', NULL);
+(123, '2024080001', 7, '0000', '', '', '', '', '', NULL, NULL, 0, 45, '2024-08-01 03:08:19', NULL),
+(124, '2024090001', 7, '2024', 'MCC BSIT Quiz and Exam', '&amp;lt;p&amp;gt;zcaca&amp;lt;/p&amp;gt;', '&amp;lt;p&amp;gt;ascaaasxac&amp;lt;/p&amp;gt;', '', '', NULL, NULL, 0, 45, '2024-09-15 23:34:15', NULL);
 
 -- --------------------------------------------------------
 
@@ -298,7 +338,21 @@ INSERT INTO `keyword_search_counter` (`id`, `keyword`, `created_at`) VALUES
 (0, 'wood', '2023-08-01 10:55:36'),
 (0, 'wood', '2023-08-01 10:56:00'),
 (0, 'system in', '2023-08-02 10:23:22'),
-(0, 'system in', '2023-08-02 10:23:48');
+(0, 'system in', '2023-08-02 10:23:48'),
+(0, 'pizza store ', '2024-09-21 01:44:40'),
+(0, 'pizza store ', '2024-09-21 02:05:13'),
+(0, 'ML', '2024-09-21 13:52:18'),
+(0, '&lt;script&gt;alert(&quot;HI&quot;)&lt;/script&gt;', '2024-09-26 19:26:29'),
+(0, '&lt;script&gt;alert(&quot;HI&quot;)&lt;/script&gt;', '2024-09-26 19:26:48'),
+(0, '&lt;script&gt;alert(&quot;HI&quot;)&lt;/script&gt;', '2024-09-26 19:26:53'),
+(0, '&lt;script&gt;alert(&quot;HI&quot;)&lt;/script&gt;', '2024-09-26 19:27:02'),
+(0, '&lt;script&gt;alert(&quot;HI&quot;)&lt;/script&gt;', '2024-09-26 19:27:19'),
+(0, '', '2024-09-26 19:27:32'),
+(0, '&#039;&lt;script&gt;alert(&quot;HI&quot;)&lt;/scri', '2024-09-26 19:28:10'),
+(0, '&#039;;&quot;&gt;&lt;script&gt;alert(&quot;HI&quot', '2024-09-26 19:28:45'),
+(0, '&quot;&lt;script&gt;alert(&quot;HI&quot;)&lt;/scri', '2024-09-26 19:29:44'),
+(0, '&quot;&lt;script&gt;alert(&quot;HI&quot;)&lt;/scri', '2024-09-26 19:29:52'),
+(0, '&quot;&lt;script&gt;alert(&quot;HI&quot;)&lt;/scri', '2024-09-26 19:30:43');
 
 -- --------------------------------------------------------
 
@@ -3259,7 +3313,7 @@ INSERT INTO `msaccount` (`id`, `firstname`, `lastname`, `username`, `reset_token
 (2933, 'Sherilyn Giltendez', 'Arsolon', 'sherilyn.arsolon@mcclawis.edu.ph', NULL, NULL),
 (2934, 'Sherry', 'Cordova', 'sherry.cordova@mcclawis.edu.ph', NULL, NULL),
 (2935, 'Sherwin Alolor', 'Sumbi', 'Sherwin.Sumbi@mcclawis.edu.ph', NULL, NULL),
-(2936, 'Sherwin', 'Ciervo', 'Sherwin.Ciervo@mcclawis.edu.ph', 'd8a3bd5bc61c196dae609fa285e6ad6e55065e3dc16af70c6b6c06c6a220ac4c', '2024-09-11 17:56:15'),
+(2936, 'Sherwin', 'Ciervo', 'Sherwin.Ciervo@mcclawis.edu.ph', 'd19b8631cd4dca00093902d3ec7ef1ff3354122380b20a03346a703fef548215', '2024-09-15 23:46:10'),
 (2937, 'Sherwin Marfa', 'Escaran', 'sherwin.escaran@mcclawis.edu.ph', NULL, NULL),
 (2938, 'Sherwin Villarino', 'Magallanes', 'sherwin.magallanes@mcclawis.edu.ph', NULL, NULL),
 (2939, 'Shery Mae Marollano', 'Dorin', 'sherymae.dorin@mcclawis.edu.ph', NULL, NULL),
@@ -3653,7 +3707,7 @@ ALTER TABLE `activity_log`
 -- AUTO_INCREMENT for table `archive_list`
 --
 ALTER TABLE `archive_list`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=124;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=125;
 
 --
 -- AUTO_INCREMENT for table `curriculum_list`

@@ -139,11 +139,11 @@
                     <a href="./?page=about" class="nav-link <?= isset($page) && $page =='about' ? "active" : "" ?>">ABOUT US</a>
                   </li>
               </ul>
-                  
+            </div>
       
          
        <!-- Right Section: Search, Notification, and User Profile -->
-     <div class="myRightNav d-flex align-items-center gap-3">
+     <div class="myRightNav d-flex align-items-center">
             <!-- Search Icon -->
             <div class="me-3">
               <a href="javascript:void(0)" class="text-navy" id="search_icon">
@@ -187,18 +187,20 @@
                 <a class="dropdown-item" href="<?= base_url.'classes/Login.php?f=student_logout' ?>"><span class="fas fa-sign-out-alt"></span> Logout</a>
               </div>
             </div>
-
+            
+            <div class="links">
             <?php else : ?>
               <li class="nav-item">
-              <a href="./ .php" class="mx-1 text-light">Sign Up</a>
+              <a href="./ .php" class="myNavLinks mx-1 text-light">Sign Up</a>
               </li>
               <li class="nav-item">
-              <a href="./login.php" class="mx-1 text-light ">Student Sign In</a>
+              <a href="./login.php" class="myNavLinks mx-1 text-light ">Student Sign In</a>
               </li>
               <li class="nav-item">
-              <a href="./admin" class="mx-1 text-light">Admin Sign In</a>
+              <a href="./admin" class="myNavLinks mx-1 text-light">Admin Sign In</a>
               </li>
             <?php endif; ?>
+            </div>
 
                       
           </div>
