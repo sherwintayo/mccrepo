@@ -2,6 +2,16 @@
  <!DOCTYPE html>
 <html lang="en" class="" style="height: auto;">
 <style>
+
+      /* General fix for overflow issues */
+      html, body {
+      overflow-x: hidden; /* Prevent horizontal scrolling */
+      margin: 0;
+      padding: 0;
+      width: 100%; /* Ensure no element exceeds 100% width */
+      box-sizing: border-box;
+    }
+
   #header{
     height:70vh;
     width:calc(100%);
@@ -38,6 +48,11 @@
     left: 33.33%;
     bottom: 0;
   }
+      /* Add this to make sure large images or content don't cause overflow */
+      img, iframe, video, object, embed {
+      max-width: 100%;
+      height: auto;
+    }
 </style>
 <?php require_once('inc/header.php') ?>
   <body class="layout-top-nav layout-fixed layout-navbar-fixed" style="height: auto;">
@@ -50,17 +65,17 @@
       </script>
       <?php endif;?>    
       <!-- Content Wrapper. Contains page content -->
-      <div class="content w-100 mt-5" style="margin-left: 0px; margin-right: 0px;">
+      <div class="content w-100 mt-5" style="margin-left: 0px;">
         <?php if($page == "home" || $page == "about_us"): ?>
           <div id="header" class="shadow">
               <div class="d-flex justify-content-center h-100 w-100 align-items-center flex-column">
-                  <h1  class="w-200 text-center site-title" ><?php echo htmlspecialchars("MADRIDEJOS COMMUNITY COLLEGE REPOSITORIES") ?></h1>
+                  <h1  class="w-100 text-center site-title" ><?php echo htmlspecialchars("MADRIDEJOS COMMUNITY COLLEGE REPOSITORIES") ?></h1>
                   <a href="./?page=projects" class="btn btn-lg btn-light rounded-pill w-25" id="enrollment"><b>Explore Projects</b></a>
               </div>
           </div>
         <?php endif; ?>
         <!-- Main content -->
-        <section class="content" style="margin-top: 9vh;">
+        <section class="content" style="margin-top: 5vh;">
           <div class="container">
             <?php 
               if(!file_exists($page.".php") && !is_dir($page)){

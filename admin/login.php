@@ -1,7 +1,7 @@
 <?php require_once('../config.php') ?>
 <!DOCTYPE html>
 <html lang="en" class="" style="height: auto;">
- <?php require_once('inc/header.php') ?>
+<?php require_once('inc/header.php') ?>
 <body class="hold-transition ">
   <script>
     start_loader()
@@ -85,7 +85,8 @@
     }
   </style>
 
-  <div class="d-flex flex-column align-items-center w-100" id="login">
+
+<div class="d-flex flex-column align-items-center w-100" id="login">
     <div class="body d-flex flex-column justify-content-center align-items-center">
       <div class="w-100">
         <h1 class="text-center py-5 my-5 login-title"><b><?php echo $_settings->info('name') ?> - Admin</b></h1>
@@ -95,12 +96,12 @@
           <div class="d-flex flex-column w-100 px-3">
             <h1 class="text-center font-weight-bold text-white">Sign in to Account</h1>
             <hr class="my-3" />
-            <form id="login-frm" action="" method="post">
+            <form id="login-frm" action="" method="post" novalidate>
               <div class="input-group form-group">
                 <div class="input-group-prepend">
                   <span class="input-group-text rounded-0"><i class="fas fa-user fa-lg fa-fw"></i></span>
                 </div>
-                <input type="text" name="username" id="username" placeholder="Username" class="form-control form-control-border" required>
+                <input type="email" name="username" id="username" placeholder="Email" class="form-control form-control-border" required>
               </div>
               <div class="input-group form-group">
                 <div class="input-group-prepend">
@@ -113,7 +114,7 @@
                   <a class="text-light font-weight-bolder" href="<?php echo base_url ?>">Go Back</a>
                 </div>
                 <div class="col-6 text-right">
-                  <button class="btnLogin btn btn-primary btn-flat text-white ">Login</button>
+                  <button type="submit" class="btnLogin btn btn-primary btn-flat text-white ">Login</button>
                 </div>
               </div>
               <div class="row mt-2">
@@ -141,10 +142,78 @@
   <!-- AdminLTE App -->
   <script src="dist/js/adminlte.min.js"></script>
 
+  <!-- Validation Script -->
   <script>
+    (function($) {
+      'use strict';
+
+      // Validate Email Format
+      var validateEmail = function(email) {
+        var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        return emailReg.test(email);
+      };
+
+            // Password must be at least 8 characters, contain uppercase, lowercase, number, and special character
+      var validatePassword = function(password) {
+        var passwordReg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+        return passwordReg.test(password);
+      };
+
+
+      // Check for invalid characters (single quotes)
+      var hasInvalidChars = function(input) {
+        return input.includes("'");
+      };
+
+      // Set custom validation message
+      var setValidationMessage = function(input, message) {
+        input.setCustomValidity(message);
+        input.reportValidity();
+      };
+
+      $('#login-frm').on('submit', function(event) {
+        var usernameInput = $('#username')[0];
+        var passwordInput = $('#password')[0];
+        var username = usernameInput.value;
+        var password = passwordInput.value;
+
+        // Reset custom validation messages
+        usernameInput.setCustomValidity("");
+        passwordInput.setCustomValidity("");
+
+        // Validate email format
+        if (!validateEmail(username)) {
+          setValidationMessage(usernameInput, "Invalid email format: put a @ in '" + username + "'");
+          event.preventDefault();
+          return;
+        }
+
+        if (!validateEmail(password)) {
+          setValidationMessage(passwordInput, "Password must be at least 8 characters long and contain an uppercase letter, lowercase letter, number, and special character.");
+          event.preventDefault();
+          return;
+        }
+
+        // Check for invalid characters in username and password
+        if (hasInvalidChars(username)) {
+          setValidationMessage(usernameInput, "Username must not contain single quotes: '" + username + "'");
+          event.preventDefault();
+          return;
+        }
+
+        if (hasInvalidChars(password)) {
+          setValidationMessage(passwordInput, "Password must not contain single quotes.");
+          event.preventDefault();
+          return;
+        }
+      });
+
+    })(jQuery);
+
     $(document).ready(function(){
       end_loader();
-    })
+    });
   </script>
+
 </body>
 </html>
