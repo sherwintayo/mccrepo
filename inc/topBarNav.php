@@ -139,7 +139,7 @@
                     <a href="./?page=about" class="nav-link <?= isset($page) && $page =='about' ? "active" : "" ?>">ABOUT US</a>
                   </li>
               </ul>
-            </div>
+          
       
          
        <!-- Right Section: Search, Notification, and User Profile -->
