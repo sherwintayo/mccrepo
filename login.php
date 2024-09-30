@@ -196,7 +196,7 @@
                 <p class="text-center font-weight-bolder text-light lead">Enter your personal details and 
                     start your journey with us!</p>
                 <button class="btn btn-outline-light btn-lg align-self-center font-weight-bolder mt-4 myLinkBtn" 
-                onclick="location.href = 'register.php'">Sign Up</button>
+                onclick="location.href = '#'">Sign Up</button>
                 </div>
          </div>   
     </div>
