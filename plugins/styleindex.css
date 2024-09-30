@@ -109,10 +109,10 @@
     transform: translateY(-8px) rotate(-45deg);
 }
 
-.navbar .myRightNav .links .nav-item .mynavLinks{
-    text-decoration: none;
-    color: rgba(255,255,255,0.6);
-    
+.navbar .container .myRightNav .links .myNavLink {
+    text-decoration: none !important;
+    color: rgba(255,255,255,0.6) !important;
+     
 }
 
 
