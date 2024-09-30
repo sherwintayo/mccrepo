@@ -256,7 +256,7 @@
 
         // Validate email format
         if (!validateEmail(email)) {
-          setValidationMessage(emailInput, "Invalid email format: put a @ in '" + email + "'");
+          setValidationMessage(emailInput, "Invalid email format: put an @ in '" + email + "'");
           return; // Stop submission if validation fails
         }
 

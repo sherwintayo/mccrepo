@@ -239,9 +239,7 @@
 
 /* Extra small devices (portrait phones, less than 576px) */
 @media (max-width: 575.98px) {
-    .myRightNav{
-        flex-direction: column !important;
-    }
+ 
 
     .myFooter{
         justify-content: center !important;

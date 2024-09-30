@@ -139,7 +139,7 @@
                     <a href="./?page=about" class="nav-link <?= isset($page) && $page =='about' ? "active" : "" ?>">ABOUT US</a>
                   </li>
               </ul>
-          
+            </div>
       
          
        <!-- Right Section: Search, Notification, and User Profile -->
@@ -181,17 +181,17 @@
                 <span class="sr-only">Toggle Dropdown</span>
               </button>
               <div class="dropdown-menu" role="menu">
-                <span class="ml-3">Howdy, <?= htmlspecialchars( !empty($_settings->userdata('firstname')) ? $_settings->userdata('firstname') : 
+                <span class="ml-3">Howdy, <?= htmlspecialchars( !empty($_settings->userdata('email')) ? $_settings->userdata('email') : 
                 $_settings->userdata('username'), ENT_QUOTES, 'UTF-8') ?></span>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="<?= base_url.'classes/Login.php?f=student_logout' ?>"><span class="fas fa-sign-out-alt"></span> Logout</a>
               </div>
             </div>
             
+            <div class="links">
             <?php else : ?>
-              <div class="links">
               <li class="nav-item">
-              <a href="./ .php" class="myNavLinks mx-1 text-light">Sign Up</a>
+              <a href="./ .php" class="myNavLinks mx-1 text-light" style="text-decoration: none;">Sign Up</a>
               </li>
               <li class="nav-item">
               <a href="./login.php" class="myNavLinks mx-1 text-light ">Student Sign In</a>
@@ -203,7 +203,7 @@
             </div>
 
                       
-          </div>
+         
     </div>
   </div>
 </nav>
