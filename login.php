@@ -217,12 +217,67 @@
 <script>
   $(document).ready(function(){
     end_loader();
-    
+
+    // Validation functions from the admin login
+    var validateEmail = function(email) {
+      var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+      return emailReg.test(email);
+    };
+
+    // var validatePassword = function(password) {
+    //   var passwordReg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    //   return passwordReg.test(password);
+    // };
+
+    var hasInvalidChars = function(input) {
+      return input.includes("'");
+    };
+
+    var setValidationMessage = function(input, message) {
+      input.setCustomValidity(message);
+      input.reportValidity();
+    };
+
     $('#slogin-form').submit(function(e){
         e.preventDefault();
         var _this = $(this);
         var el = $("<div>");
         el.addClass("alert pop-msg my-2").hide();
+
+        // Fetching input values for validation
+        var emailInput = $('#email')[0];
+        var passwordInput = $('#password')[0];
+        var email = emailInput.value;
+        var password = passwordInput.value;
+
+        // Reset custom validation messages
+        emailInput.setCustomValidity("");
+        passwordInput.setCustomValidity("");
+
+        // Validate email format
+        if (!validateEmail(email)) {
+          setValidationMessage(emailInput, "Invalid email format: put a @ in '" + email + "'");
+          return; // Stop submission if validation fails
+        }
+
+        // Validate password format
+        // if (!validatePassword(password)) {
+        //   setValidationMessage(passwordInput, "Password must be at least 8 characters long and contain an uppercase letter, lowercase letter, number, and special character.");
+        //   return; // Stop submission if validation fails
+        // }
+
+        // Check for invalid characters in email and password
+        if (hasInvalidChars(email)) {
+          setValidationMessage(emailInput, "Email must not contain single quotes: '" + email + "'");
+          return; // Stop submission if validation fails
+        }
+
+        if (hasInvalidChars(password)) {
+          setValidationMessage(passwordInput, "Password must not contain single quotes.");
+          return; // Stop submission if validation fails
+        }
+
+        // Existing AJAX request logic
         start_loader();
 
         $.ajax({
@@ -272,5 +327,6 @@
     });
   });
 </script>
+
 </body>
 </html>
