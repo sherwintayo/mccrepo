@@ -50,7 +50,7 @@
       </script>
       <?php endif;?>    
       <!-- Content Wrapper. Contains page content -->
-      <div class="content w-100 mt-5" style="margin-left: 0px;">
+      <div class="content w-100 mt-5" style="margin-left: 0px; margin-right: 0px;">
         <?php if($page == "home" || $page == "about_us"): ?>
           <div id="header" class="shadow">
               <div class="d-flex justify-content-center h-100 w-100 align-items-center flex-column">
