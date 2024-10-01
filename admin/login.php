@@ -165,48 +165,80 @@
         return input.includes("'");
       };
 
+        // Function to check for invalid characters
+        var hasInvalidChars = function(input) {
+            return /['"<>]/.test(input); // Prevents single quotes, double quotes, and angle brackets
+        };
+
       // Set custom validation message
       var setValidationMessage = function(input, message) {
         input.setCustomValidity(message);
         input.reportValidity();
       };
 
-      $('#login-frm').on('submit', function(event) {
-        var usernameInput = $('#username')[0];
-        var passwordInput = $('#password')[0];
-        var username = usernameInput.value;
-        var password = passwordInput.value;
+          // XSS and Validation Checks for invalid characters and email
+          var hasError = false;
+            _this.find('input[type="text"], input[type="email"], input[type="password"]').each(function(){
+                var input = $(this);
+                var value = input.val();
 
-        // Reset custom validation messages
-        usernameInput.setCustomValidity("");
-        passwordInput.setCustomValidity("");
+                // Check for invalid characters (' and ") and for angle brackets (< and >)
+                if (hasInvalidChars(value)) {
+                    setValidationMessage(this, "Input must not contain single quotes, double quotes, or angle brackets.");
+                    hasError = true;
+                    return false; // Exit loop
+                } else {
+                    setValidationMessage(this, ""); // Clear custom validity if no error
+                }
 
-        // Validate email format
-        if (!validateEmail(username)) {
-          setValidationMessage(usernameInput, "Invalid email format: put a @ in '" + username + "'");
-          event.preventDefault();
-          return;
-        }
+                // Validate email input
+                if (input.attr('type') === 'email' && !validateEmail(value)) {
+                    setValidationMessage(this, "Please include an '@' in the email address.");
+                    hasError = true;
+                    return false; // Exit loop
+                }
+            });
 
-        if (!validateEmail(password)) {
-          setValidationMessage(passwordInput, "Password must be at least 8 characters long and contain an uppercase letter, lowercase letter, number, and special character.");
-          event.preventDefault();
-          return;
-        }
+            if (hasError) {
+                return false; // Prevent form submission if any input has an error
+            }
 
-        // Check for invalid characters in username and password
-        if (hasInvalidChars(username)) {
-          setValidationMessage(usernameInput, "Username must not contain single quotes: '" + username + "'");
-          event.preventDefault();
-          return;
-        }
+      // $('#login-frm').on('submit', function(event) {
+      //   var usernameInput = $('#username')[0];
+      //   var passwordInput = $('#password')[0];
+      //   var username = usernameInput.value;
+      //   var password = passwordInput.value;
 
-        if (hasInvalidChars(password)) {
-          setValidationMessage(passwordInput, "Password must not contain single quotes.");
-          event.preventDefault();
-          return;
-        }
-      });
+      //   // Reset custom validation messages
+      //   usernameInput.setCustomValidity("");
+      //   passwordInput.setCustomValidity("");
+
+      //   // Validate email format
+      //   if (!validateEmail(username)) {
+      //     setValidationMessage(usernameInput, "Invalid email format: put a @ in '" + username + "'");
+      //     event.preventDefault();
+      //     return;
+      //   }
+
+      //   if (!validateEmail(password)) {
+      //     setValidationMessage(passwordInput, "Password must be at least 8 characters long and contain an uppercase letter, lowercase letter, number, and special character.");
+      //     event.preventDefault();
+      //     return;
+      //   }
+
+      //   // Check for invalid characters in username and password
+      //   if (hasInvalidChars(username)) {
+      //     setValidationMessage(usernameInput, "Username must not contain single quotes: '" + username + "'");
+      //     event.preventDefault();
+      //     return;
+      //   }
+
+      //   if (hasInvalidChars(password)) {
+      //     setValidationMessage(passwordInput, "Password must not contain single quotes.");
+      //     event.preventDefault();
+      //     return;
+      //   }
+      // });
 
     })(jQuery);
 
