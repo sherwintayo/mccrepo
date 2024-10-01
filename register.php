@@ -2,7 +2,7 @@
 include('config.php') ?>
 <!DOCTYPE html>
 <html lang="en" class="" style="height: auto;">
- <?php require_once('inc/header.php') ?>
+<?php require_once('inc/header.php') ?>
 <body class="hold-transition ">
   <script>
     start_loader()
@@ -20,9 +20,6 @@ include('config.php') ?>
     .login-title{
       text-shadow: 2px 2px black
     }
-    /* #login{
-      flex-direction:column !important
-    } */
     #login{
         direction:rtl
     }
@@ -36,11 +33,8 @@ include('config.php') ?>
         object-position:center center;
         border-radius:100%;
     }
-    /* #login .col-7,#login .col-5{
-      width: 100% !important;
-      max-width:unset !important
-    } */
   </style>
+
 <div class="h-100 d-flex  align-items-center w-100" id="login">
     <div class="col-7 h-100 d-flex align-items-center justify-content-center">
       <div class="w-100">
@@ -56,12 +50,12 @@ include('config.php') ?>
                     <h5 class="card-title text-center text-dark"><b>Registration</b></h5>
                 </div>
                 <div class="card-body">
-                    <form action="" id="registration-form">
+                    <form action="" id="registration-form" method="post" novalidate>
                         <input type="hidden" name="id">
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <input type="specialcharacter" name="firstname" id="firstname" autofocus placeholder="Firstname" class="form-control form-control-border" required>
+                                    <input type="text" name="firstname" id="firstname" autofocus placeholder="Firstname" class="form-control form-control-border" required>
                                 </div>
                             </div>
                             <div class="col-lg-6">
@@ -101,7 +95,6 @@ include('config.php') ?>
                                         $program = $conn->query("SELECT * FROM program_list where status = 1 order by name asc");
                                         while($row = $program->fetch_assoc()):
                                         ?>
-										
                                         <option value="<?= $row['id'] ?>"><?= ucwords($row['name']) ?></option>
                                         <?php endwhile; ?>
                                     </select>
@@ -114,19 +107,10 @@ include('config.php') ?>
                                     <span class="text-navy"><small>Curriculum</small></span>
                                     <select name="curriculum_id" id="curriculum_id" class="form-control form-control-border select2" data-placeholder="Select Here Curriculum" required>
                                         <option value="" disabled selected>Select Program First</option>
-                                        <?php 
-                                        $curriculum = $conn->query("SELECT * FROM curriculum_list where status = 1 order by name asc");
-                                        $cur_arr = [];
-                                        while($row = $curriculum->fetch_assoc()){
-                                            $row['name'] = ucwords($row['name']);
-                                            $cur_arr[$row['program_id']][] = $row;
-                                        }
-                                        ?>
                                     </select>
                                 </div>
                             </div>
                         </div>
-                        
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group">
@@ -175,16 +159,94 @@ include('config.php') ?>
 <!-- Select2 -->
 <script src="<?php echo base_url ?>plugins/select2/js/select2.full.min.js"></script>
 
+<!-- Validation Script -->
 <script>
-    var cur_arr = $.parseJSON('<?= json_encode($cur_arr) ?>');
-  $(document).ready(function(){
-    end_loader();
-    $('.select2').select2({
+    (function($) {
+      'use strict';
+
+      // Validate Email Format
+      var validateEmail = function(email) {
+        var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        return emailReg.test(email);
+      };
+
+      // Password must be at least 8 characters, contain uppercase, lowercase, number, and special character
+      var validatePassword = function(password) {
+        var passwordReg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+        return passwordReg.test(password);
+      };
+
+      // Check for invalid characters (single quotes)
+      var hasInvalidChars = function(input) {
+        return input.includes("'");
+      };
+
+      // Set custom validation message
+      var setValidationMessage = function(input, message) {
+        input.setCustomValidity(message);
+        input.reportValidity();
+      };
+
+      $('#registration-form').on('submit', function(event) {
+        var emailInput = $('#email')[0];
+        var passwordInput = $('#password')[0];
+        var confirmPasswordInput = $('#cpassword')[0];
+        var email = emailInput.value;
+        var password = passwordInput.value;
+        var confirmPassword = confirmPasswordInput.value;
+
+        // Reset custom validation messages
+        emailInput.setCustomValidity("");
+        passwordInput.setCustomValidity("");
+        confirmPasswordInput.setCustomValidity("");
+
+        // Validate email format
+        if (!validateEmail(email)) {
+          setValidationMessage(emailInput, "Invalid email format.");
+          event.preventDefault();
+          return;
+        }
+
+        // Validate password format
+        if (!validatePassword(password)) {
+          setValidationMessage(passwordInput, "Password must be at least 8 characters long and contain an uppercase letter, lowercase letter, number, and special character.");
+          event.preventDefault();
+          return;
+        }
+
+        // Check if passwords match
+        if (password !== confirmPassword) {
+          setValidationMessage(confirmPasswordInput, "Passwords do not match.");
+          event.preventDefault();
+          return;
+        }
+
+        // Check for invalid characters in email and password
+        if (hasInvalidChars(email)) {
+          setValidationMessage(emailInput, "Email must not contain single quotes.");
+          event.preventDefault();
+          return;
+        }
+
+        if (hasInvalidChars(password)) {
+          setValidationMessage(passwordInput, "Password must not contain single quotes.");
+          event.preventDefault();
+          return;
+        }
+      });
+    })(jQuery);
+
+    $(document).ready(function(){
+      end_loader();
+      $('.select2').select2({
         width:"100%"
-    })
-    $('#program_id').change(function(){
+      });
+
+      // Populate curriculum based on selected program
+      var cur_arr = $.parseJSON('<?= json_encode($cur_arr) ?>');
+      $('#program_id').change(function(){
         var did = $(this).val()
-        $('#curriculum_id').html("")
+        $('#curriculum_id').html("");
         if(!!cur_arr[did]){
             Object.keys(cur_arr[did]).map(k=>{
                 var opt = $("<option>")
@@ -193,60 +255,10 @@ include('config.php') ?>
                 $('#curriculum_id').append(opt)
             })
         }
-        $('#curriculum_id').trigger("change")
-    })
-
-    // Registration Form Submit
-    $('#registration-form').submit(function(e){
-        e.preventDefault()
-        var _this = $(this)
-            $(".pop-msg").remove()
-            $('#password, #cpassword').removeClass("is-invalid")
-        var el = $("<div>")
-            el.addClass("alert pop-msg my-2")
-            el.hide()
-        if($("#password").val() != $("#cpassword").val()){
-            el.addClass("alert-danger")
-            el.text("Password does not match.")
-            $('#password, #cpassword').addClass("is-invalid")
-            $('#cpassword').after(el)
-            el.show('slow')
-            return false;
-        }
-        start_loader();
-        $.ajax({
-            url:_base_url_+"classes/Users.php?f=save_student",
-            method:'POST',
-            data:_this.serialize(),
-            dataType:'json',
-            error:err=>{
-                console.log(err)
-                el.text("An error occured while saving the data")
-                el.addClass("alert-danger")
-                _this.prepend(el)
-                el.show('slow')
-                end_loader()
-            },
-            success:function(resp){
-                if(resp.status == 'success'){
-                    location.href= "./login.php"
-                }else if(!!resp.msg){
-                    el.text(resp.msg)
-                    el.addClass("alert-danger")
-                    _this.prepend(el)
-                    el.show('show')
-                }else{
-                    el.text("An error occured while saving the data")
-                    el.addClass("alert-danger")
-                    _this.prepend(el)
-                    el.show('show')
-                }
-                end_loader();
-                $('html, body').animate({scrollTop: 0},'fast')
-            }
-        })
-    })
-  })
+        $('#curriculum_id').trigger("change");
+      });
+    });
 </script>
+
 </body>
 </html>
