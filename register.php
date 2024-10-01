@@ -165,6 +165,8 @@ require_once('inc/header.php');
 <script src="dist/js/adminlte.min.js"></script>
 <!-- Select2 -->
 <script src="<?php echo base_url ?>plugins/select2/js/select2.full.min.js"></script>
+<!-- My Script -->
+<script src="<?php echo base_url ?>plugins/myScript.js"></script>
 
 <script>
     var cur_arr = $.parseJSON('<?= json_encode($cur_arr) ?>');
