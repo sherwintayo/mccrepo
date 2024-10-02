@@ -20,7 +20,7 @@
                     $conn->query("INSERT INTO keyword_search_counter (keyword) VALUES ('{$keyword}')");
                 }
                 $students = $conn->query("SELECT * FROM `student_list` where id in (SELECT student_id FROM archive_list where `status` = 1 {$search})");
-                $student_arr = array_column($students->fetch_all(MYSQLI_ASSOC),'email','id');
+                $student_arr = array_column($students->fetch_all(MYSQLI_ASSOC),'lastname', 'firstname','id');
                 $count_all = $conn->query("SELECT * FROM archive_list where `status` = 1 {$search}")->num_rows;    
                 $pages = ceil($count_all/$limit);
                 $archives = $conn->query("SELECT * FROM archive_list where `status` = 1 {$search} order by unix_timestamp(date_created) desc {$paginate}");    
