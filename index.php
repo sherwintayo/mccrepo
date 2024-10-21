@@ -75,7 +75,7 @@
           </div>
         <?php endif; ?>
         <!-- Main content -->
-        <section class="content" style="margin-top: 5vh;">
+        <section class="content-wrapper" style="margin-top: 5vh;">
           <div class="container">
             <?php 
               if(!file_exists($page.".php") && !is_dir($page)){
