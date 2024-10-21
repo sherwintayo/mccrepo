@@ -171,4 +171,44 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
             }
         });
     }
+    $(document).ready(function () {
+        // Show the modal when the download button is clicked
+        $('.request-download-btn').click(function () {
+            var fileId = $(this).data('file-id');
+            var fileType = $(this).data('file-type');
+            $('#fileId').val(fileId);
+            $('#requestDownloadModal').modal('show');
+        });
+
+        // Handle the form submission to send the download request to the server
+        $('#downloadRequestForm').submit(function (e) {
+            e.preventDefault();
+            var reason = $('#reason').val();
+            var fileId = $('#fileId').val();
+
+            if (reason.trim() === '') {
+                alert("Please provide a reason for your request.");
+                return;
+            }
+
+            // Send AJAX request to the server to process the download request
+            $.ajax({
+                url: 'process_download_request.php',
+                method: 'POST',
+                data: { fileId: fileId, reason: reason },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.status === 'success') {
+                        alert("Your request has been sent to the admin.");
+                        $('#requestDownloadModal').modal('hide');
+                    } else {
+                        alert("Failed to send request. Please try again.");
+                    }
+                },
+                error: function () {
+                    alert("An error occurred while sending your request. Please try again.");
+                }
+            });
+        });
+    });
 </script>
