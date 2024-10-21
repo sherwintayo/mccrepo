@@ -79,15 +79,15 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                         <!-- Allow direct download if logged in -->
                         <fieldset>
                             <legend class="text-navy">Project Files:</legend>
-                            <a class="btn btn-success" href="<?= base_url . 'uploads/files/Files-' . htmlspecialchars($id) . '.zip' ?>">Download Project files</a>
+                            <a class="btn btn-success" href="<?= base_url . 'uploads/files/Files-' . ($id) . '.zip' ?>">Download Project files</a>
                         </fieldset>
                         <fieldset>
                             <legend class="text-navy">SQL file:</legend>
-                            <a class="btn btn-success" href="<?= base_url . 'uploads/sql/SQL-' . htmlspecialchars($id) . '.zip' ?>">Download SQL file</a>
+                            <a class="btn btn-success" href="<?= base_url . 'uploads/sql/SQL-' . ($id) . '.zip' ?>">Download SQL file</a>
                         </fieldset>
                         <fieldset>
                             <legend class="text-navy">Project Document:</legend>
-                            <a class="btn btn-success" href="<?= base_url . 'uploads/pdf/Document-' . htmlspecialchars($id) . '.zip' ?>">Download Project Document</a>
+                            <a class="btn btn-success" href="<?= base_url . 'uploads/pdf/Document-' . ($id) . '.zip' ?>">Download Project Document</a>
                         </fieldset>
                     <?php else: ?>
                         <!-- Redirect to login if not logged in -->
