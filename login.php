@@ -13,7 +13,7 @@
       height:calc(100%) !important;
       width:calc(100%) !important;
     }
-    body {
+    body {  
         background: linear-gradient(135deg, #141e30 20%, #243b55 100%);
         background-size: cover;
         background-repeat: no-repeat;
@@ -281,48 +281,24 @@
         start_loader();
 
         $.ajax({
-            url: _base_url_ + "classes/Login.php?f=student_login",
-            method: 'POST',
-            data: _this.serialize(),
-            dataType: 'json',
-            error: err => {
-                console.log(err);
-                el.text("An error occurred").addClass("alert-danger");
-                _this.prepend(el);
-                el.show('slow');
-                end_loader();
-            },
-            success: function(resp){
-                end_loader();
-                if (resp.status == 'success') {
-                    // Set session privileges for download after login
-                    <?php $_SESSION['user_logged_in'] = true; ?>
-
-                    // Redirect to the download URL if provided
-                    let redirect = new URLSearchParams(window.location.search).get('redirect');
-                    if(redirect == 'download') {
-                        let file_type = new URLSearchParams(window.location.search).get('file_type');
-                        let archive_id = new URLSearchParams(window.location.search).get('id');
-                        let download_url = '';
-                        if(file_type == 'zip') {
-                            download_url = '<?= base_url ?>uploads/files/Files-' + archive_id + '.zip';
-                        } else if(file_type == 'sql') {
-                            download_url = '<?= base_url ?>uploads/sql/SQL-' + archive_id + '.zip';
-                        } else if(file_type == 'pdf') {
-                            download_url = '<?= base_url ?>uploads/pdf/Document-' + archive_id + '.zip';
-                        }
-                        if(download_url) {
-                            window.location.href = download_url;
-                        }
-                    } else {
-                        location.href = "./";
-                    }
-                } else {
-                    el.text(resp.msg || "Login failed").addClass("alert-danger");
-                    _this.prepend(el);
-                    el.show('show');
-                }
+          url: _base_url_ + "classes/Login.php?f=student_login",
+          method: 'POST',
+          data: _this.serialize(),
+          dataType: 'json',
+          error: err => {
+            console.log(err);
+            alert("An error occurred.");
+            end_loader();
+          },
+          success: function(resp){
+            end_loader();
+            if (resp.status == 'success') {
+              <?php $_SESSION['user_logged_in'] = true; ?>
+              window.location.href = "./";
+            } else {
+              alert("Login failed: " + (resp.msg || "Invalid credentials."));
             }
+          }
         });
     });
   });
