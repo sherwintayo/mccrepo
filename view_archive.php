@@ -36,6 +36,14 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
     #document_field{
         min-height:80vh
     }
+    /* Custom styles to ensure modal is properly centered */
+.modal-dialog {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
 </style>
 <div class="content py-4">
     <div class="col-12">
@@ -105,7 +113,7 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                 <?php endif; ?>
                 </div>
                                 <!-- Modal HTML -->
-                <div class="modal fade" id="requestDownloadModal" tabindex="-1" role="dialog" aria-labelledby="requestDownloadModalLabel" aria-hidden="true">
+                <div class="modal fade" id="requestDownloadModal"  role="dialog" aria-labelledby="requestDownloadModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -187,7 +195,7 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
             var fileId = $('#fileId').val();
 
             if (reason.trim() === '') {
-                alert("Please provide a reason for your request.");
+                alert_toast("Please provide a reason for your request.");
                 return;
             }
 
@@ -199,14 +207,14 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                 dataType: 'json',
                 success: function (response) {
                     if (response.status === 'success') {
-                        alert("Your request has been sent to the admin.");
+                        alert_toast("Your request has been sent to the admin.");
                         $('#requestDownloadModal').modal('hide');
                     } else {
-                        alert("Failed to send request. Please try again.");
+                        alert_toast("Failed to send request. Please try again.");
                     }
                 },
                 error: function () {
-                    alert("An error occurred while sending your request. Please try again.");
+                    alert_toast("An error occurred while sending your request. Please try again.");
                 }
             });
         });
