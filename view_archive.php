@@ -74,36 +74,58 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                         <div class="pl-4"><large><?= isset($members) ? htmlspecialchars($members) : "" ?></large></div>
                     </fieldset>
 
-                    <!-- Check if user is logged in and allow direct download -->
                     <?php if(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] == true): ?>
-                        <!-- Allow direct download if logged in -->
-                        <fieldset>
-                            <legend class="text-navy">Project Files:</legend>
-                            <a class="btn btn-success" href="<?= base_url . 'uploads/files/Files-' . ($id) . '.zip' ?>">Download Project files</a>
-                        </fieldset>
-                        <fieldset>
-                            <legend class="text-navy">SQL file:</legend>
-                            <a class="btn btn-success" href="<?= base_url . 'uploads/sql/SQL-' . ($id) . '.zip' ?>">Download SQL file</a>
-                        </fieldset>
-                        <fieldset>
-                            <legend class="text-navy">Project Document:</legend>
-                            <a class="btn btn-success" href="<?= base_url . 'uploads/pdf/Document-' . ($id) . '.zip' ?>">Download Project Document</a>
-                        </fieldset>
-                    <?php else: ?>
-                        <!-- Redirect to login if not logged in -->
-                        <fieldset>
-                            <legend class="text-navy">Project Files:</legend>
-                            <a class="btn btn-success" href="login.php?redirect=download&file_type=zip&id=<?= htmlspecialchars($id) ?>">Download Project files</a>
-                        </fieldset>
-                        <fieldset>
-                            <legend class="text-navy">SQL file:</legend>
-                            <a class="btn btn-success" href="login.php?redirect=download&file_type=sql&id=<?= htmlspecialchars($id) ?>">Download SQL file</a>
-                        </fieldset>
-                        <fieldset>
-                            <legend class="text-navy">Project Document:</legend>
-                            <a class="btn btn-success" href="login.php?redirect=download&file_type=pdf&id=<?= htmlspecialchars($id) ?>">Download Project Document</a>
-                        </fieldset>
-                    <?php endif; ?>
+                    <!-- Display download buttons that open the modal -->
+                    <fieldset>
+                        <legend class="text-navy">Project Files:</legend>
+                        <button class="btn btn-success request-download-btn" data-file-id="<?= htmlspecialchars($id) ?>" data-file-type="files">Download Project files</button>
+                    </fieldset>
+                    <fieldset>
+                        <legend class="text-navy">SQL file:</legend>
+                        <button class="btn btn-success request-download-btn" data-file-id="<?= htmlspecialchars($id) ?>" data-file-type="sql">Download SQL file</button>
+                    </fieldset>
+                    <fieldset>
+                        <legend class="text-navy">Project Document:</legend>
+                        <button class="btn btn-success request-download-btn" data-file-id="<?= htmlspecialchars($id) ?>" data-file-type="pdf">Download Project Document</button>
+                    </fieldset>
+                <?php else: ?>
+                    <!-- Redirect to login if not logged in -->
+                    <fieldset>
+                        <legend class="text-navy">Project Files:</legend>
+                        <a class="btn btn-success" href="login.php?redirect=download&file_type=zip&id=<?= htmlspecialchars($id) ?>">Download Project files</a>
+                    </fieldset>
+                    <fieldset>
+                        <legend class="text-navy">SQL file:</legend>
+                        <a class="btn btn-success" href="login.php?redirect=download&file_type=sql&id=<?= htmlspecialchars($id) ?>">Download SQL file</a>
+                    </fieldset>
+                    <fieldset>
+                        <legend class="text-navy">Project Document:</legend>
+                        <a class="btn btn-success" href="login.php?redirect=download&file_type=pdf&id=<?= htmlspecialchars($id) ?>">Download Project Document</a>
+                    </fieldset>
+                <?php endif; ?>
+                </div>
+                                <!-- Modal HTML -->
+                <div class="modal fade" id="requestDownloadModal" tabindex="-1" role="dialog" aria-labelledby="requestDownloadModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="requestDownloadModalLabel">Request Download</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="downloadRequestForm">
+                                    <div class="form-group">
+                                        <label for="reason">Reason for Download</label>
+                                        <textarea class="form-control" id="reason" name="reason" rows="3" placeholder="Please provide the reason for downloading this file." required></textarea>
+                                    </div>
+                                    <input type="hidden" id="fileId" name="fileId" value="">
+                                    <button type="submit" class="btn btn-primary">Submit Request</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
