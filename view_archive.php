@@ -1,12 +1,6 @@
 <?php
 session_start(); // Start session to track login status.
 
-// Redirect to login page if the user is not logged in
-if (!isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true) {
-    header('Location: login.php?redirect=download');
-    exit;
-}
-
 if(isset($_GET['id']) && $_GET['id'] > 0){
     $stmt = $conn->prepare("SELECT a.* FROM `archive_list` a WHERE a.id = ?");
     $stmt->bind_param("i", $_GET['id']);
