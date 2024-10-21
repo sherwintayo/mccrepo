@@ -9,16 +9,20 @@
           z-index: 1037;
           padding: 1em 1.5em !important;
         }
-  .user-img{
+  /* .nav_item .btn .user-img{
         position: absolute;
         height: 27px;
         width: 27px;
         object-fit: cover;
         left: -7%;
         top: -12%;
-  }
+        border-radius: 50%;
+  } */
+  .nav-item .dropdown-menu{
+    color: rgba(255,255,255,0.6) !important;
+      }
   .btn-rounded{
-        border-radius: 50px;
+        border-radius: 50%;
   }
   .notification-icon {
     position: relative;
@@ -138,12 +142,20 @@
                   <li class="nav-item">
                     <a href="./?page=about" class="nav-link <?= isset($page) && $page =='about' ? "active" : "" ?>">ABOUT US</a>
                   </li>
+                  <?php if($_settings->userdata('id') > 0): ?>
+              <li class="nav-item">
+                <a href="./?page=profile" class="nav-link <?= isset($page) && $page =='profile' ? "active" : "" ?>">Profile</a>
+              </li>
+              <li class="nav-item">
+                <a href="./?page=submit-archive" class="nav-link <?= isset($page) && $page =='submit-archive' ? "active" : "" ?>">Submit Thesis/Capstone</a>
+              </li>
+              <?php endif; ?>
               </ul>
             </div>
       
          
        <!-- Right Section: Search, Notification, and User Profile -->
-     <div class="myRightNav d-flex align-items-center">
+     <div class="myRightNav d-flex gap-3 align-items-center">
             <!-- Search Icon -->
             <div class="me-3">
               <a href="javascript:void(0)" class="text-navy" id="search_icon">
@@ -178,7 +190,7 @@
                 <span>
                   <img src="<?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>" class="img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar">
                 </span>
-                <span class="sr-only">Toggle Dropdown</span>
+               
               </button>
               <div class="dropdown-menu" role="menu">
                 <span class="ml-3">Howdy, <?= htmlspecialchars( !empty($_settings->userdata('email')) ? $_settings->userdata('email') : 
@@ -325,6 +337,7 @@ aria-labelledby="navbar-modalLabel" aria-hidden="true">
                     <a href="./?page=about" class="nav-link <?= isset($page) && $page =='about' ? 
                     "active" : "" ?>"><i class="fa fa-info-circle"></i> ABOUT US</a>
                   </li>
+                  
               </ul>
       </div>
       <div class="modal-footer">
