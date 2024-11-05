@@ -1,7 +1,3 @@
-<?php
-require_once('config.php');
-?>
-
 <style>
   .img-avatar {
     width: 45px;
