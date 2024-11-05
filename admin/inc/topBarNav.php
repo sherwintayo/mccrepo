@@ -92,7 +92,8 @@ while ($row = $result->fetch_assoc()) {
           <div class="dropdown-item text-center">No new requests</div>
         <?php endif; ?>
 
-        <a href="<?php echo base_url ?>admin/?page=students" class="dropdown-item dropdown-footer">See All Requests</a>
+        <a href="<?php echo base_url ?>admin/?page=notifications" class="dropdown-item dropdown-footer">See All
+          Requests</a>
       </div>
     </li>
 
