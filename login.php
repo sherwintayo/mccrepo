@@ -1,9 +1,5 @@
 <?php require_once('./config.php') ?>
-<?php session_start(); // Start session handling 
-// After successful login, set user_id in session
-$_SESSION['user_id'] = $user_id; // Assume $user_id is obtained from the database
-$_SESSION['user_logged_in'] = true;
-?>
+<!-- <?php session_start(); // Start session handling ?> -->
 <!DOCTYPE html>
 <html lang="en" class="" style="height: auto;">
 <?php require_once('inc/header.php') ?>
