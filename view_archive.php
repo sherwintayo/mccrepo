@@ -22,7 +22,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 
         if ($student->num_rows > 0) {
             $res = $student->fetch_array();
-            $submitted = $res['email'];
+            $submitted = $res['lastname'];
         }
     }
 
@@ -44,6 +44,15 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         align-items: center;
         height: 100%;
     }
+
+    .request-form {
+        display: none;
+        margin-top: 10px;
+    }
+
+    /* Hide request forms initially */
+</style>
+</head>
 </style>
 <div class="content py-4">
     <div class="col-12">
