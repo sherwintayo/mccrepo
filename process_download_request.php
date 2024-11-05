@@ -2,21 +2,21 @@
 session_start();
 require_once('config.php');
 
-
 $response = ['status' => 'error', 'message' => 'Invalid request'];
 
-// Debugging output
+// Check if session user_id is set for debugging
 if (!isset($_SESSION['user_id'])) {
-    $response['message'] = 'User not logged in (user_id missing in session).';
-} elseif (!isset($_POST['fileId']) || !isset($_POST['reason']) || trim($_POST['reason']) === '') {
-    $response['message'] = 'fileId or reason missing.';
-} else {
+    $response['message'] = 'User ID not set in session.';
+    echo json_encode($response);
+    exit;
+}
+
+if (isset($_POST['fileId'], $_POST['reason']) && !empty($_POST['reason']) && isset($_SESSION['user_id'])) {
     $fileId = intval($_POST['fileId']);
     $reason = trim($_POST['reason']);
     $userId = $_SESSION['user_id'];
 
     try {
-        // Insert download request into download_requests table
         $stmt = $conn->prepare("INSERT INTO download_requests (user_id, file_id, reason, status, requested_at) VALUES (?, ?, ?, 'pending', NOW())");
         $stmt->bind_param("iis", $userId, $fileId, $reason);
 
@@ -28,9 +28,9 @@ if (!isset($_SESSION['user_id'])) {
     } catch (Exception $e) {
         $response['message'] = 'An error occurred: ' . $e->getMessage();
     }
+} else {
+    $response['message'] = 'Invalid input or user not logged in.';
 }
 
-// Return JSON response
 header('Content-Type: application/json');
 echo json_encode($response);
-?>
