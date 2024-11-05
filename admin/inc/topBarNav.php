@@ -4,9 +4,9 @@ $notifications = [];
 $count = 0;
 
 // Fetch pending download requests
-$stmt = $conn->prepare("SELECT dr.id, u.firstname, u.lastname, dr.reason, dr.requested_at 
+$stmt = $conn->prepare("SELECT dr.id, s.firstname, s.lastname, dr.reason, dr.requested_at 
                         FROM download_requests dr 
-                        JOIN users u ON dr.user_id = u.id 
+                        JOIN student_list s ON dr.user_id = s.id 
                         WHERE dr.status = 'pending' 
                         ORDER BY dr.requested_at DESC 
                         LIMIT 10");
@@ -108,7 +108,8 @@ while ($row = $result->fetch_assoc()) {
           <span class="sr-only">Toggle Dropdown</span>
         </button>
         <div class="dropdown-menu" role="menu">
-          <a class="dropdown-item" href="<?php echo base_url . 'admin/?page=user' ?>"><span class="fa fa-user"></span> My
+          <a class="dropdown-item" href="<?php echo base_url . 'admin/?page=user' ?>"><span class="fa fa-user"></span>
+            My
             Account</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="<?php echo base_url . '/classes/Login.php?f=logout' ?>"><span

@@ -104,8 +104,8 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         </div>
                     </fieldset>
 
+                    <!-- Download Request Buttons with Text Boxes for Reason -->
                     <?php if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] == true): ?>
-                        <!-- Display download request form if the user is logged in -->
                         <fieldset>
                             <legend class="text-navy">Project Files:</legend>
                             <button class="btn btn-success request-download-btn" data-file-id="<?= htmlspecialchars($id) ?>"
@@ -141,20 +141,20 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         <!-- Redirect to login if not logged in -->
                         <fieldset>
                             <legend class="text-navy">Project Files:</legend>
-                            <a class="btn btn-success login-redirect"
-                                href="login.php?redirect=<?= urlencode($_SERVER['REQUEST_URI']) ?>&file_type=zip&id=<?= htmlspecialchars($id) ?>">Download
+                            <a class="btn btn-success"
+                                href="login.php?redirect=download&file_type=zip&id=<?= htmlspecialchars($id) ?>">Download
                                 Project files</a>
                         </fieldset>
                         <fieldset>
                             <legend class="text-navy">SQL file:</legend>
-                            <a class="btn btn-success login-redirect"
-                                href="login.php?redirect=<?= urlencode($_SERVER['REQUEST_URI']) ?>&file_type=sql&id=<?= htmlspecialchars($id) ?>">Download
+                            <a class="btn btn-success"
+                                href="login.php?redirect=download&file_type=sql&id=<?= htmlspecialchars($id) ?>">Download
                                 SQL file</a>
                         </fieldset>
                         <fieldset>
                             <legend class="text-navy">Project Document:</legend>
-                            <a class="btn btn-success login-redirect"
-                                href="login.php?redirect=<?= urlencode($_SERVER['REQUEST_URI']) ?>&file_type=pdf&id=<?= htmlspecialchars($id) ?>">Download
+                            <a class="btn btn-success"
+                                href="login.php?redirect=download&file_type=pdf&id=<?= htmlspecialchars($id) ?>">Download
                                 Project Document</a>
                         </fieldset>
                     <?php endif; ?>
@@ -235,16 +235,11 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 
 <script>
     $(document).ready(function () {
-        // Show the specific request form below the clicked button if logged in
+        // Show the specific request form below the clicked button
         $('.request-download-btn').click(function () {
             var fileType = $(this).data('file-type');
-            if (!<?= json_encode(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true) ?>) {
-                // Redirect to login page if not logged in
-                window.location.href = 'login.php?redirect=<?= urlencode($_SERVER["REQUEST_URI"]) ?>';
-            } else {
-                $('.request-form').hide(); // Hide all other request forms
-                $('#request-form-' + fileType).toggle(); // Show the selected form
-            }
+            $('.request-form').hide(); // Hide all other request forms
+            $('#request-form-' + fileType).toggle(); // Show the selected form
         });
 
         // Submit the download request via AJAX
@@ -264,6 +259,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 data: { fileId: fileId, reason: reason },
                 dataType: 'json',
                 success: function (response) {
+                    console.log("AJAX response:", response); // Debugging output
                     if (response.status === 'success') {
                         alert("Your request has been sent to the admin.");
                         $('#request-form-' + fileType).hide();
