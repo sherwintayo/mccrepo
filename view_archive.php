@@ -231,11 +231,11 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 
 <script>
     $(document).ready(function () {
-        // Show the request form below the clicked button
+        // Show the specific request form below the clicked button
         $('.request-download-btn').click(function () {
             var fileType = $(this).data('file-type');
-            $('.request-form').hide(); // Hide other request forms
-            $('#request-form-' + fileType).toggle(); // Toggle visibility of the current form
+            $('.request-form').hide(); // Hide all other request forms
+            $('#request-form-' + fileType).toggle(); // Show the selected form
         });
 
         // Submit the download request via AJAX
@@ -249,21 +249,27 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 return;
             }
 
+            // Log data being sent
+            console.log("Sending data to server:", { fileId: fileId, reason: reason });
+
             $.ajax({
                 url: 'process_download_request.php',
                 method: 'POST',
                 data: { fileId: fileId, reason: reason },
                 dataType: 'json',
                 success: function (response) {
+                    console.log("Server response:", response); // Log server response
+
                     if (response.status === 'success') {
                         alert("Your request has been sent to the admin.");
                         $('#request-form-' + fileType).hide();
                         $('#request-form-' + fileType + ' .reason').val(''); // Clear the textarea
                     } else {
-                        alert("Failed to send request. Please try again.");
+                        alert("Failed to send request. Please try again. Error: " + response.message);
                     }
                 },
-                error: function () {
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX error:", textStatus, errorThrown);
                     alert("An error occurred while sending your request. Please try again.");
                 }
             });
