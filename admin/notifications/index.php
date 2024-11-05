@@ -37,9 +37,9 @@
           <?php
           $i = 1;
           // Query to retrieve download requests
-          $qry = $conn->query("SELECT dr.id, u.firstname, u.lastname, dr.reason, dr.status, dr.requested_at 
+          $qry = $conn->query("SELECT dr.id, s.firstname, s.lastname, dr.reason, dr.status, dr.requested_at 
                                              FROM download_requests dr 
-                                             JOIN users u ON dr.user_id = u.id 
+                                             JOIN student_list s ON dr.user_id = s.id 
                                              ORDER BY dr.requested_at DESC");
 
           while ($row = $qry->fetch_assoc()):
