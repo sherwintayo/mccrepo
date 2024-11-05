@@ -249,17 +249,12 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 return;
             }
 
-            // Log data being sent
-            console.log("Sending data to server:", { fileId: fileId, reason: reason });
-
             $.ajax({
                 url: 'process_download_request.php',
                 method: 'POST',
                 data: { fileId: fileId, reason: reason },
                 dataType: 'json',
                 success: function (response) {
-                    console.log("Server response:", response); // Log server response
-
                     if (response.status === 'success') {
                         alert("Your request has been sent to the admin.");
                         $('#request-form-' + fileType).hide();
@@ -269,7 +264,6 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    console.error("AJAX error:", textStatus, errorThrown);
                     alert("An error occurred while sending your request. Please try again.");
                 }
             });

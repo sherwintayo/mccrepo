@@ -2,49 +2,31 @@
 session_start();
 require_once('config.php');
 
-// Check if the user is logged in
-if (!isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true) {
-    echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
-    exit;
-}
+$response = ['status' => 'error', 'message' => 'Invalid request'];
 
-// Validate POST data
-if (empty($_POST['fileId']) || empty($_POST['reason'])) {
-    echo json_encode(['status' => 'error', 'message' => 'Missing fileId or reason']);
-    exit;
-}
+if (isset($_POST['fileId'], $_POST['reason']) && !empty($_POST['reason']) && isset($_SESSION['user_id'])) {
+    $fileId = intval($_POST['fileId']);
+    $reason = trim($_POST['reason']);
+    $userId = $_SESSION['user_id']; // Assuming user_id is stored in session after login
 
-// Capture and sanitize input
-$fileId = intval($_POST['fileId']);
-$reason = htmlspecialchars($_POST['reason'], ENT_QUOTES, 'UTF-8');
-$userId = $_SESSION['user_id'] ?? null; // Assuming user ID is stored in the session
+    try {
+        // Insert download request into download_requests table
+        $stmt = $conn->prepare("INSERT INTO download_requests (user_id, file_id, reason, status, requested_at) VALUES (?, ?, ?, 'pending', NOW())");
+        $stmt->bind_param("iis", $userId, $fileId, $reason);
 
-if (!$userId) {
-    echo json_encode(['status' => 'error', 'message' => 'User ID not found in session']);
-    exit;
-}
-
-// Verify database connection and query
-try {
-    // Confirm connection status
-    if (!$conn) {
-        throw new Exception("Database connection failed: " . mysqli_connect_error());
+        if ($stmt->execute()) {
+            $response = ['status' => 'success', 'message' => 'Request submitted successfully.'];
+        } else {
+            $response['message'] = 'Failed to submit the request.';
+        }
+    } catch (Exception $e) {
+        $response['message'] = 'An error occurred: ' . $e->getMessage();
     }
-
-    // Insert request into the database
-    $stmt = $conn->prepare("INSERT INTO download_requests (user_id, file_id, reason, status) VALUES (?, ?, ?, 'pending')");
-    if ($stmt === false) {
-        throw new Exception("Prepare statement failed: " . $conn->error);
-    }
-
-    // Bind parameters and execute statement
-    $stmt->bind_param("iis", $userId, $fileId, $reason);
-    if (!$stmt->execute()) {
-        throw new Exception("Execute failed: " . $stmt->error);
-    }
-
-    echo json_encode(['status' => 'success', 'message' => 'Request sent successfully']);
-} catch (Exception $e) {
-    echo json_encode(['status' => 'error', 'message' => 'Database error', 'error' => $e->getMessage()]);
+} else {
+    $response['message'] = 'Invalid input or user not logged in.';
 }
+
+// Return JSON response
+header('Content-Type: application/json');
+echo json_encode($response);
 ?>
