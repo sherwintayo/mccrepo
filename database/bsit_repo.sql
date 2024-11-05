@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 29, 2024 at 03:01 AM
+-- Generation Time: Oct 21, 2024 at 06:26 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -53,7 +53,10 @@ INSERT INTO `activity_log` (`activity_log_id`, `username`, `date`, `action`) VAL
 (12, 'admin', '2024-07-31 00:01:54', 'Deleted curriculum \'Data Algorithm\''),
 (13, 'admin', '2024-07-31 00:01:58', 'Deleted curriculum \'Data Structure and Algorithms\''),
 (14, 'admin', '2024-07-31 00:02:02', 'Deleted curriculum \'Database\''),
-(15, 'admin', '2024-07-31 00:02:05', 'Deleted curriculum \'Method of Research\'');
+(15, 'admin', '2024-07-31 00:02:05', 'Deleted curriculum \'Method of Research\''),
+(16, 'sherwintayo08@gmail.com', '2024-10-21 23:59:32', 'Program saved or updated: '),
+(17, 'sherwintayo08@gmail.com', '2024-10-21 23:59:34', 'Program saved or updated: '),
+(18, 'sherwintayo08@gmail.com', '2024-10-21 23:59:45', 'Program saved or updated: ');
 
 -- --------------------------------------------------------
 
@@ -201,7 +204,34 @@ INSERT INTO `archive_counter` (`id`, `archive_id`, `created_at`) VALUES
 (0, 90, '2024-09-26 15:03:32'),
 (0, 90, '2024-09-26 15:03:36'),
 (0, 90, '2024-09-26 15:03:38'),
-(0, 90, '2024-09-26 15:03:39');
+(0, 90, '2024-09-26 15:03:39'),
+(0, 90, '2024-10-21 13:57:46'),
+(0, 90, '2024-10-21 13:57:55'),
+(0, 90, '2024-10-21 13:58:05'),
+(0, 51, '2024-10-21 13:58:14'),
+(0, 51, '2024-10-21 13:58:17'),
+(0, 32, '2024-10-21 14:02:14'),
+(0, 32, '2024-10-21 14:02:18'),
+(0, 32, '2024-10-21 14:02:21'),
+(0, 32, '2024-10-21 14:02:24'),
+(0, 52, '2024-10-21 14:03:35'),
+(0, 52, '2024-10-21 14:03:39'),
+(0, 52, '2024-10-21 15:56:43'),
+(0, 125, '2024-10-21 15:59:13'),
+(0, 125, '2024-10-21 16:00:45'),
+(0, 125, '2024-10-21 16:06:16'),
+(0, 125, '2024-10-21 16:06:22'),
+(0, 125, '2024-10-21 16:06:49'),
+(0, 125, '2024-10-21 16:08:30'),
+(0, 125, '2024-10-21 16:08:46'),
+(0, 125, '2024-10-21 16:10:26'),
+(0, 125, '2024-10-21 16:10:35'),
+(0, 125, '2024-10-21 16:12:01'),
+(0, 125, '2024-10-21 16:12:36'),
+(0, 125, '2024-10-21 16:13:35'),
+(0, 125, '2024-10-21 16:17:07'),
+(0, 125, '2024-10-21 16:17:08'),
+(0, 125, '2024-10-21 16:23:27');
 
 -- --------------------------------------------------------
 
@@ -232,24 +262,10 @@ CREATE TABLE `archive_list` (
 --
 
 INSERT INTO `archive_list` (`id`, `archive_code`, `curriculum_id`, `year`, `title`, `abstract`, `members`, `banner_path`, `document_path`, `folder_path`, `sql_path`, `status`, `student_id`, `date_created`, `date_updated`) VALUES
-(21, '2023070007', 7, '2023', 'Web App Development', 'bububububububujbu', '&lt;p&gt;bubu&lt;/p&gt;&lt;p&gt;tanga&lt;/p&gt;&lt;p&gt;lutang&lt;/p&gt;', 'uploads/banners/archive-21.png?v=1690737880', 'uploads/pdf/archive-21.pdf?v=1690647491', 'uploads/files/upload_21.zip?v=1690647492', NULL, 1, 13, '2023-07-30 00:18:08', NULL),
-(22, '2023070001', 7, '2023', 'Android studio System', '&lt;p&gt;Basta bisan nano ang unod dire&lt;/p&gt;', '&lt;p&gt;Franco&lt;/p&gt;&lt;p&gt;Khufra&lt;/p&gt;&lt;p&gt;Akia&lt;/p&gt;', 'uploads/banners/archive-22.png?v=1690741220', 'uploads/pdf/archive-22.pdf?v=1690741220', 'uploads/files/upload_22.zip?v=1690741220', NULL, 1, 16, '2023-07-31 02:20:19', NULL),
-(23, '2023070002', 7, '2023', 'Coding Matrix Systeem', 'Basta Abstract lagi kami bahala nanong ibutang', '&lt;p&gt;Miya&amp;nbsp;&lt;/p&gt;&lt;p&gt;Layla&lt;/p&gt;&lt;p&gt;Lesley&lt;/p&gt;', 'uploads/banners/archive-23.png?v=1690742332', 'uploads/pdf/archive-23.pdf?v=1690742332', 'uploads/files/upload_23.zip?v=1690742332', NULL, 1, 17, '2023-07-31 02:38:51', NULL),
-(32, '2023070011', 11, '2023', 'Computer Programming', '&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod&lt;/p&gt;&lt;p&gt;tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,&lt;/p&gt;&lt;p&gt;quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo&lt;/p&gt;&lt;p&gt;consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse&lt;/p&gt;&lt;p&gt;cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non&lt;/p&gt;&lt;p&gt;proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/p&gt;', '&lt;p&gt;Bene&lt;/p&gt;&lt;p&gt;Ana&lt;/p&gt;&lt;p&gt;Delia&lt;/p&gt;', 'uploads/banners/archive-32.png?v=1690816195', 'uploads/pdf/archive-32.pdf?v=1690816195', 'uploads/files/upload_32.zip?v=1690816195', NULL, 1, 19, '2023-07-31 23:09:54', NULL),
-(35, '2023070014', 1, '2023', 'System Integration', '&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod&lt;/p&gt;&lt;p&gt;tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,&lt;/p&gt;&lt;p&gt;quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo&lt;/p&gt;&lt;p&gt;consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse&lt;/p&gt;&lt;p&gt;cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non&lt;/p&gt;&lt;p&gt;proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/p&gt;', '&lt;p&gt;Pekka&lt;/p&gt;&lt;p&gt;Golem&lt;/p&gt;&lt;p&gt;HOg Rider&lt;/p&gt;', 'uploads/banners/archive-35.png?v=1690817605', 'uploads/pdf/archive-35.pdf?v=1690817605', 'uploads/files/upload_35.zip?v=1690817605', NULL, 1, 22, '2023-07-31 23:33:24', NULL),
-(38, '2023080002', 7, '2023', 'Optimizing your capstone experiences', '&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod&lt;/p&gt;&lt;p&gt;tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,&lt;/p&gt;&lt;p&gt;quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo&lt;/p&gt;&lt;p&gt;consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse&lt;/p&gt;&lt;p&gt;cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non&lt;/p&gt;&lt;p&gt;proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/p&gt;', '&lt;p&gt;Layla&amp;nbsp;&lt;/p&gt;&lt;p&gt;Selena&lt;/p&gt;&lt;p&gt;Gusion&lt;/p&gt;', 'uploads/banners/archive-38.png?v=1690840884', 'uploads/pdf/archive-38.pdf?v=1690840885', 'uploads/files/upload_38.zip?v=1690840885', NULL, 1, 29, '2023-08-01 06:01:24', NULL),
-(39, '2023080003', 7, '2023', 'Pressbooks Management System', '&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod&lt;/p&gt;&lt;p&gt;tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,&lt;/p&gt;&lt;p&gt;quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo&lt;/p&gt;&lt;p&gt;consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse&lt;/p&gt;&lt;p&gt;cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non&lt;/p&gt;&lt;p&gt;proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/p&gt;', '&lt;p&gt;Khufra&lt;/p&gt;&lt;p&gt;Tigreal&lt;/p&gt;&lt;p&gt;Lolita&lt;/p&gt;', 'uploads/banners/archive-39.png?v=1690841039', 'uploads/pdf/archive-39.pdf?v=1690841039', NULL, NULL, 1, 30, '2023-08-01 06:03:58', NULL),
-(42, '2023080006', 7, '2023', 'Physical Archives Management system', '&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod&lt;/p&gt;&lt;p&gt;tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,&lt;/p&gt;&lt;p&gt;quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo&lt;/p&gt;&lt;p&gt;consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse&lt;/p&gt;&lt;p&gt;cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non&lt;/p&gt;&lt;p&gt;proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/p&gt;', '&lt;p&gt;Martes&lt;/p&gt;&lt;p&gt;Argus&lt;/p&gt;&lt;p&gt;Yu zhong&lt;/p&gt;', 'uploads/banners/archive-42.png?v=1690841887', 'uploads/pdf/archive-42.pdf?v=1690841888', 'uploads/files/upload_42.zip?v=1690841888', NULL, 1, 33, '2023-08-01 06:18:07', NULL),
-(44, '2023080008', 7, '2023', 'Sonia\'s Digital World Management System', '&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod&lt;/p&gt;&lt;p&gt;tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,&lt;/p&gt;&lt;p&gt;quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo&lt;/p&gt;&lt;p&gt;consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse&lt;/p&gt;&lt;p&gt;cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non&lt;/p&gt;&lt;p&gt;proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/p&gt;', '&lt;p&gt;Sonia&lt;/p&gt;&lt;p&gt;sonya&lt;/p&gt;&lt;p&gt;Sunyia&lt;/p&gt;', 'uploads/banners/archive-44.png?v=1690842354', 'uploads/pdf/archive-44.pdf?v=1690842354', 'uploads/files/upload_44.zip?v=1690842354', NULL, 1, 35, '2023-08-01 06:25:52', NULL),
-(46, '2023080010', 7, '2023', 'Tools And Resources For Capstone', '&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod&lt;/p&gt;&lt;p&gt;tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,&lt;/p&gt;&lt;p&gt;quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo&lt;/p&gt;&lt;p&gt;consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse&lt;/p&gt;&lt;p&gt;cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non&lt;/p&gt;&lt;p&gt;proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/p&gt;', '&lt;p&gt;Akia&lt;/p&gt;&lt;p&gt;Minsitar&lt;/p&gt;&lt;p&gt;Joy&lt;/p&gt;', 'uploads/banners/archive-46.png?v=1690842773', 'uploads/pdf/archive-46.pdf?v=1690842773', 'uploads/files/upload_46.zip?v=1690842773', NULL, 1, 37, '2023-08-01 06:32:52', NULL),
-(49, '2023080013', 7, '2023', 'Enrollment Management System', '&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod&lt;/p&gt;&lt;p&gt;tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,&lt;/p&gt;&lt;p&gt;quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo&lt;/p&gt;&lt;p&gt;consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse&lt;/p&gt;&lt;p&gt;cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non&lt;/p&gt;&lt;p&gt;proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/p&gt;', '&lt;p&gt;Freya&lt;/p&gt;&lt;p&gt;Moskov&lt;/p&gt;&lt;p&gt;Valentina&lt;/p&gt;', 'uploads/banners/archive-49.png?v=1690843930', 'uploads/pdf/archive-49.pdf?v=1690843930', 'uploads/files/upload_49.zip?v=1690843930', NULL, 1, 40, '2023-08-01 06:52:09', NULL),
-(51, '2023080015', 7, '2023', 'Testing 123', '&lt;p&gt;test&lt;/p&gt;', '&lt;p&gt;test1&lt;/p&gt;&lt;p&gt;test2&lt;/p&gt;', 'uploads/banners/archive-51.png?v=1691336735', 'uploads/pdf/archive-51.pdf?v=1691336735', NULL, 'uploads/sql/sql51.sql?v=1691336735', 1, 13, '2023-08-06 23:45:33', NULL),
-(52, '2023080016', 7, '2023', 'Database Design system', '&lt;p&gt;Testing&lt;/p&gt;', '&lt;p&gt;rhej&lt;/p&gt;&lt;p&gt;hsis&lt;/p&gt;&lt;p&gt;gu&lt;/p&gt;', 'uploads/banners/archive-52.png?v=1691337122', 'uploads/pdf/archive-52.pdf?v=1691337123', 'uploads/files/upload_52.zip?v=1691337124', 'uploads/sql/sql52.sql?v=1691337123', 1, 13, '2023-08-06 23:52:01', NULL),
-(80, '2024070003', 7, '2024', 'House Rental Management System', '&lt;p&gt;ajncljan scbkjab swknc akbckahs&lt;/p&gt;', '&lt;p&gt;1. kjascm asbjk&lt;/p&gt;&lt;p&gt;2. klasnc. d,cne&lt;/p&gt;&lt;p&gt;3. kjaskcbakjek&lt;/p&gt;', '', '', NULL, NULL, 1, 13, '2024-07-16 22:44:58', NULL),
-(83, '2024070001', 7, '2024', 'BSIT Repository', '&lt;p&gt;acajbckjashjdcacs oasshcoahsdlvcajv olabsla olajn jsabdcg oajxbcaljsduc&lt;/p&gt;', '&lt;p&gt;AJSNCLABCLLD&lt;/p&gt;&lt;p&gt;oacnlajbdo&lt;/p&gt;&lt;p&gt;baojsablsjc&lt;/p&gt;', '', '', NULL, NULL, 1, 41, '2024-07-17 21:41:26', NULL),
+(51, '2023080015', 7, '2023', 'Testing 123', '&lt;p&gt;test&lt;/p&gt;', '&lt;p&gt;test1&lt;/p&gt;&lt;p&gt;test2&lt;/p&gt;', 'uploads/banners/archive-51.png?v=1691336735', 'uploads/pdf/archive-51.pdf?v=1691336735', NULL, 'uploads/sql/sql51.sql?v=1691336735', 1, NULL, '2023-08-06 23:45:33', NULL),
 (90, '2024070002', 7, '2024', 'Pizza Store Management', '&lt;p&gt;hkasbckdsb&amp;nbsp;&lt;/p&gt;', '&lt;p&gt;dcscscd&lt;/p&gt;', '', '', NULL, NULL, 1, 45, '2024-07-24 19:58:19', NULL),
-(123, '2024080001', 7, '0000', '', '', '', '', '', NULL, NULL, 0, 45, '2024-08-01 03:08:19', NULL),
-(124, '2024090001', 7, '2024', 'MCC BSIT Quiz and Exam', '&amp;lt;p&amp;gt;zcaca&amp;lt;/p&amp;gt;', '&amp;lt;p&amp;gt;ascaaasxac&amp;lt;/p&amp;gt;', '', '', NULL, NULL, 0, 45, '2024-09-15 23:34:15', NULL);
+(124, '2024090001', 7, '2024', 'MCC BSIT Quiz and Exam', '&amp;lt;p&amp;gt;zcaca&amp;lt;/p&amp;gt;', '&amp;lt;p&amp;gt;ascaaasxac&amp;lt;/p&amp;gt;', '', '', NULL, NULL, 0, 45, '2024-09-15 23:34:15', NULL),
+(125, '2024100001', 7, '2024', 'Banahaw', '&amp;lt;p&amp;gt;adsadd&amp;lt;/p&amp;gt;', '&amp;lt;p&amp;gt;asdasda&amp;lt;/p&amp;gt;', '', '', NULL, NULL, 1, 45, '2024-10-21 23:58:25', NULL);
 
 -- --------------------------------------------------------
 
@@ -278,6 +294,23 @@ INSERT INTO `curriculum_list` (`id`, `program_id`, `name`, `description`, `statu
 (11, 5, 'Capstone 2', 'Computer Programming Projects', 1, '2023-06-29 04:19:47', NULL),
 (12, 5, 'Web System', 'Web System and Technologies', 1, '2023-06-29 04:20:58', NULL),
 (15, 5, 'Networking', 'Networking', 1, '2024-07-17 22:27:34', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `download_requests`
+--
+
+CREATE TABLE `download_requests` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `file_id` int(11) NOT NULL,
+  `reason` text NOT NULL,
+  `status` enum('pending','approved','rejected') DEFAULT 'pending',
+  `requested_at` datetime DEFAULT current_timestamp(),
+  `reviewed_at` datetime DEFAULT NULL,
+  `reviewed_by` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -352,7 +385,8 @@ INSERT INTO `keyword_search_counter` (`id`, `keyword`, `created_at`) VALUES
 (0, '&#039;;&quot;&gt;&lt;script&gt;alert(&quot;HI&quot', '2024-09-26 19:28:45'),
 (0, '&quot;&lt;script&gt;alert(&quot;HI&quot;)&lt;/scri', '2024-09-26 19:29:44'),
 (0, '&quot;&lt;script&gt;alert(&quot;HI&quot;)&lt;/scri', '2024-09-26 19:29:52'),
-(0, '&quot;&lt;script&gt;alert(&quot;HI&quot;)&lt;/scri', '2024-09-26 19:30:43');
+(0, '&quot;&lt;script&gt;alert(&quot;HI&quot;)&lt;/scri', '2024-09-26 19:30:43'),
+(0, '&quot;&lt;script&gt;alert(&quot;HI&quot;)&lt;/scri', '2024-09-29 01:29:45');
 
 -- --------------------------------------------------------
 
@@ -3460,7 +3494,10 @@ CREATE TABLE `notifications` (
 INSERT INTO `notifications` (`id`, `student_id`, `message`, `date_created`, `status`) VALUES
 (1, 45, 'Your project has been published by the admin.', '2024-07-25 15:50:46', 'read'),
 (2, 45, 'Your project has been unpublished by the admin.', '2024-07-25 16:39:53', 'read'),
-(3, 45, 'Your project has been published by the admin.', '2024-07-25 16:40:32', 'read');
+(3, 45, 'Your project has been published by the admin.', '2024-07-25 16:40:32', 'read'),
+(4, 45, 'Your project has been published by the admin.', '2024-10-21 15:59:32', 'unread'),
+(5, 45, 'Your project has been published by the admin.', '2024-10-21 15:59:34', 'unread'),
+(6, 45, 'Your project has been published by the admin.', '2024-10-21 15:59:45', 'unread');
 
 -- --------------------------------------------------------
 
@@ -3528,30 +3565,7 @@ CREATE TABLE `student_list` (
 --
 
 INSERT INTO `student_list` (`id`, `firstname`, `middlename`, `lastname`, `program_id`, `curriculum_id`, `email`, `password`, `gender`, `status`, `avatar`, `captcha_code`, `date_created`, `date_updated`, `reset_token_hash`, `reset_token_expires_at`) VALUES
-(13, 'Romel', '', 'Alolod', 5, 7, 'romel@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', 'Male', 1, 'uploads/student-13.png?v=1690156908', '0000', '2023-07-24 07:41:28', NULL, NULL, NULL),
-(16, 'lot', '', 'lance', 5, 7, 'lancelot@gmail.com', '8743d4f8db2f7e463089c5d5477940a0', 'Male', 1, 'uploads/student-16.png?v=1690740597', '0000', '2023-07-31 02:06:27', NULL, NULL, NULL),
-(17, 'sion', '', 'gu', 5, 7, 'gusion@gmail.com', 'bb97f8726468ab2a205bf640eb28e728', 'Male', 1, 'uploads/student-17.png?v=1690742085', '0000', '2023-07-31 02:31:45', NULL, NULL, NULL),
-(19, 'curt', '', 'hel', 5, 11, 'helcurt@gmail.com', 'cf8b66ebfc6f04e47bca0b1cf117d54f', 'Male', 1, 'uploads/student-19.png?v=1690793348', '0000', '2023-07-31 14:07:13', NULL, NULL, NULL),
-(22, 'card', '', 'alu', 5, 1, 'alucard@gmail.com', '4dbf17d127c7acd54b25276782a48041', 'Male', 1, 'uploads/student-22.png?v=1690793671', '0000', '2023-07-31 14:49:12', NULL, NULL, NULL),
-(23, 'ber', '', 'sa', 5, 12, 'saber@gmail.com', '2bde79bff687ae45f1354cde4324ccdd', 'Male', 1, 'uploads/student-23.png?v=1690793744', '0000', '2023-07-31 14:53:38', NULL, NULL, NULL),
-(24, 'shin', '', 'yisun', 5, 7, 'yisunshin@gmail.com', 'bf4e4b08141f72e34a59011d4929fcbc', 'Male', 1, 'uploads/student-24.png?v=1690793851', '0000', '2023-07-31 14:55:38', NULL, NULL, NULL),
-(25, 'ley', '', 'har', 5, 7, 'harley@gmail.com', 'ef4cdd3117793b9fd593d7488409626d', 'Male', 1, 'uploads/student-25.png?v=1690793941', '0000', '2023-07-31 15:00:16', NULL, NULL, NULL),
-(26, 'mon', '', 'aa', 5, 7, 'aamon@gmail.com', 'd850f895529a6b8658c13a808474337b', 'Male', 1, 'uploads/student-26.png?v=1690794010', '0000', '2023-07-31 15:03:28', NULL, NULL, NULL),
-(28, 'lott', '', 'ar', 5, 7, 'arlott@gmail.com', 'bbb9a2ca264f9bf115fbfcd9767c5f13', 'Male', 1, 'uploads/student-28.png?v=1690794075', '0000', '2023-07-31 15:09:27', NULL, NULL, NULL),
-(29, 'oy', '', 'j', 5, 7, 'joy@gmail.com', 'c2c8e798aecbc26d86e4805114b03c51', 'Female', 1, 'uploads/student-29.png?v=1690794137', '0000', '2023-07-31 15:10:48', NULL, NULL, NULL),
-(30, 'rina', '', 'ka', 5, 7, 'karina@gmail.com', 'a37b2a637d2541a600d707648460397e', 'Female', 1, 'uploads/student-30.png?v=1690794207', '0000', '2023-07-31 15:11:59', NULL, NULL, NULL),
-(31, 'lia', '', 'nata', 5, 7, 'natalia@gmail.com', 'c1ed60949799e3adcd72928bb3314fe0', 'Female', 1, 'uploads/student-31.png?v=1690794301', '0000', '2023-07-31 15:13:24', NULL, NULL, NULL),
-(32, 'lena', '', 'se', 5, 7, 'selena@gmail.com', '1dbb36285f8dd70721b245b98fbaf4f4', 'Female', 1, 'uploads/student-32.png?v=1690794367', '0000', '2023-07-31 15:16:27', NULL, NULL, NULL),
-(33, 'zo', '', 'han', 5, 7, 'hanzo@gmail.com', 'ce15b45484a184c81076752d7f8b30c1', 'Male', 1, 'uploads/student-33.png?v=1690794439', '0000', '2023-07-31 15:18:21', NULL, NULL, NULL),
-(34, 'detta', '', 'bene', 5, 7, 'benedetta@gmail.com', '40f111ab7749b471fff12b44c648b92e', 'Female', 1, 'uploads/student-34.png?v=1690794518', '0000', '2023-07-31 15:20:08', NULL, NULL, NULL),
-(35, 'n', '', 'yi', 5, 7, 'yin@gmail.com', '08fb144c598dba6ce102bf0696b0a6c8', 'Male', 1, 'uploads/student-35.png?v=1690794596', '0000', '2023-07-31 15:27:15', NULL, NULL, NULL),
-(36, 'ilda', '', 'math', 5, 7, 'mathilda@gmail.com', '54368aff579eabe182cc2e47f9034a58', 'Female', 1, 'uploads/student-36.png?v=1690794674', '0000', '2023-07-31 15:30:38', NULL, NULL, NULL),
-(37, 'uito', '', 'paq', 5, 7, 'paquito@gmail.com', 'f1aaaa4510293f29504303fc3111a7ae', 'Male', 1, 'uploads/student-37.png?v=1690794747', '0000', '2023-07-31 15:34:20', NULL, NULL, NULL),
-(38, 'dita', '', 'ka', 5, 7, 'kadita@gmail.com', 'adc4b69f52d6b82ab93e8bb339b2e07c', 'Female', 1, 'uploads/student-38.png?v=1690794821', '0000', '2023-07-31 15:36:46', NULL, NULL, NULL),
-(39, 'ley', '', 'les', 5, 7, 'lesley@gmail.com', '8744c53672906143e20538f6ac3deadb', 'Female', 1, 'uploads/student-39.png?v=1690794880', '0000', '2023-07-31 15:39:55', NULL, NULL, NULL),
-(40, 'long', '', 'zi', 5, 7, 'zilong@gmail', '595851bf7481b355ff77a38f9183e162', 'Male', 1, 'uploads/student-40.png?v=1690794959', '0000', '2023-07-31 15:41:53', NULL, NULL, NULL),
 (41, 'Sherwin', '', 'Ciervo', 5, 7, 'sherwin@gmail.com', '875a31ea8071f7effdecf590626bde0a', 'Male', 1, '', '0000', '2024-07-15 17:46:24', NULL, NULL, NULL),
-(44, 'John', '', 'James', 5, 7, 'johnjames@gmail.com', '9ba36afc4e560bf811caefc0c7fddddf', 'Male', 0, '', '0000', '2024-07-17 17:40:15', NULL, NULL, NULL),
 (45, 'Sherwin', '', 'Ciervo', 5, 7, 'sherwintayo08@gmail.com', '875a31ea8071f7effdecf590626bde0a', 'Male', 1, '', '0000', '2024-07-21 15:12:56', NULL, '9125b11c49257747e38285d81b8c12fe628527ba5b511b312512a1029e8dcbd2', '2024-09-08 08:44:17');
 
 -- --------------------------------------------------------
@@ -3640,6 +3654,15 @@ ALTER TABLE `curriculum_list`
   ADD KEY `program_id` (`program_id`);
 
 --
+-- Indexes for table `download_requests`
+--
+ALTER TABLE `download_requests`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `file_id` (`file_id`),
+  ADD KEY `reviewed_by` (`reviewed_by`);
+
+--
 -- Indexes for table `ip_details`
 --
 ALTER TABLE `ip_details`
@@ -3701,19 +3724,25 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `activity_log`
 --
 ALTER TABLE `activity_log`
-  MODIFY `activity_log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `activity_log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `archive_list`
 --
 ALTER TABLE `archive_list`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=125;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=127;
 
 --
 -- AUTO_INCREMENT for table `curriculum_list`
 --
 ALTER TABLE `curriculum_list`
   MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
+-- AUTO_INCREMENT for table `download_requests`
+--
+ALTER TABLE `download_requests`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `ip_details`
@@ -3731,7 +3760,7 @@ ALTER TABLE `msaccount`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `password_resets`
@@ -3778,6 +3807,14 @@ ALTER TABLE `archive_list`
 --
 ALTER TABLE `curriculum_list`
   ADD CONSTRAINT `curriculum_list_ibfk_1` FOREIGN KEY (`program_id`) REFERENCES `program_list` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `download_requests`
+--
+ALTER TABLE `download_requests`
+  ADD CONSTRAINT `download_requests_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `student_list` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `download_requests_ibfk_2` FOREIGN KEY (`file_id`) REFERENCES `archive_list` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `download_requests_ibfk_3` FOREIGN KEY (`reviewed_by`) REFERENCES `users` (`id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `student_list`
