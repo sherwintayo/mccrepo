@@ -91,22 +91,38 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         </div>
                     </fieldset>
 
+                    <!-- Download Request Buttons with Text Boxes for Reason -->
                     <?php if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] == true): ?>
-                        <!-- Display download buttons that open the modal -->
                         <fieldset>
                             <legend class="text-navy">Project Files:</legend>
                             <button class="btn btn-success request-download-btn" data-file-id="<?= htmlspecialchars($id) ?>"
                                 data-file-type="files">Download Project files</button>
+                            <div class="request-form" id="request-form-files">
+                                <textarea class="form-control reason" placeholder="Reason for download" rows="2"></textarea>
+                                <button class="btn btn-primary submit-request-btn"
+                                    data-file-id="<?= htmlspecialchars($id) ?>" data-file-type="files">Submit
+                                    Request</button>
+                            </div>
                         </fieldset>
                         <fieldset>
                             <legend class="text-navy">SQL file:</legend>
                             <button class="btn btn-success request-download-btn" data-file-id="<?= htmlspecialchars($id) ?>"
                                 data-file-type="sql">Download SQL file</button>
+                            <div class="request-form" id="request-form-sql">
+                                <textarea class="form-control reason" placeholder="Reason for download" rows="2"></textarea>
+                                <button class="btn btn-primary submit-request-btn"
+                                    data-file-id="<?= htmlspecialchars($id) ?>" data-file-type="sql">Submit Request</button>
+                            </div>
                         </fieldset>
                         <fieldset>
                             <legend class="text-navy">Project Document:</legend>
                             <button class="btn btn-success request-download-btn" data-file-id="<?= htmlspecialchars($id) ?>"
                                 data-file-type="pdf">Download Project Document</button>
+                            <div class="request-form" id="request-form-pdf">
+                                <textarea class="form-control reason" placeholder="Reason for download" rows="2"></textarea>
+                                <button class="btn btn-primary submit-request-btn"
+                                    data-file-id="<?= htmlspecialchars($id) ?>" data-file-type="pdf">Submit Request</button>
+                            </div>
                         </fieldset>
                     <?php else: ?>
                         <!-- Redirect to login if not logged in -->
@@ -206,26 +222,24 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 
 <script>
     $(document).ready(function () {
-        // Show the modal when the download button is clicked
+        // Show the request form below the clicked button
         $('.request-download-btn').click(function () {
-            var fileId = $(this).data('file-id');
-            $('#fileId').val(fileId);
-            $('#requestDownloadModal').modal('show');
+            var fileType = $(this).data('file-type');
+            $('.request-form').hide(); // Hide other request forms
+            $('#request-form-' + fileType).toggle(); // Toggle visibility of the current form
         });
 
-        // Handle the form submission to send the download request to the server
-        $('#downloadRequestForm').submit(function (e) {
-            e.preventDefault();
-            var reason = $('#reason').val();
-            var fileId = $('#fileId').val();
+        // Submit the download request via AJAX
+        $('.submit-request-btn').click(function () {
+            var fileId = $(this).data('file-id');
+            var fileType = $(this).data('file-type');
+            var reason = $('#request-form-' + fileType + ' .reason').val();
 
-            // Validate that a reason has been provided
-            if (reason.trim() === '') {
+            if ($.trim(reason) === '') {
                 alert("Please provide a reason for your request.");
                 return;
             }
 
-            // Send AJAX request to process the download request
             $.ajax({
                 url: 'process_download_request.php',
                 method: 'POST',
@@ -234,7 +248,8 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 success: function (response) {
                     if (response.status === 'success') {
                         alert("Your request has been sent to the admin.");
-                        $('#requestDownloadModal').modal('hide');
+                        $('#request-form-' + fileType).hide();
+                        $('#request-form-' + fileType + ' .reason').val(''); // Clear the textarea
                     } else {
                         alert("Failed to send request. Please try again.");
                     }
