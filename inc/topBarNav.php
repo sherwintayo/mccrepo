@@ -170,7 +170,7 @@
 
 
     <!-- Right Section: Search, Notification, and User Profile -->
-    <div class="myRightNav d-flex gap-3 align-items-center">
+    <div class="myRightNav d-flex gap-3 align-items-center myNavLinks">
       <!-- Search Icon -->
       <div class="me-3">
         <a href="javascript:void(0)" class="text-navy" id="search_icon">
@@ -187,7 +187,7 @@
 
       <!-- Notification Icon -->
       <?php if ($_settings->userdata('id') > 0): ?>
-        <span class="notification-icon me-3" id="notificationIcon">
+        <span class="notification-icon me-3 myNavLinks" id="notificationIcon">
           <a href="javascript:void(0)"><i class="fa fa-bell text-white"></i></a>
           <?php
           $user_id = $_settings->userdata('id');
@@ -200,7 +200,7 @@
         </span>
 
         <!-- User Profile -->
-        <div class="nav-item dropdown">
+        <div class="nav-item dropdown myNavLinks">
           <button type="button" class="btn btn-rounded badge badge-light dropdown-toggle dropdown-icon"
             data-toggle="dropdown">
             <span>
