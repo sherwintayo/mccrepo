@@ -6,7 +6,7 @@ $_SESSION['user_id'] = $user_id; // Assume $user_id is obtained from the databas
 $_SESSION['user_logged_in'] = true;
 
 if (isset($_GET['id']) && $_GET['id'] > 0) {
-    $stmt = $conn->prepare("SELECT a.* FROM archive_list a WHERE a.id = ?");
+    $stmt = $conn->prepare("SELECT a.* FROM `archive_list` a WHERE a.id = ?");
     $stmt->bind_param("i", $_GET['id']);
     $stmt->execute();
     $qry = $stmt->get_result();
@@ -259,17 +259,16 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 data: { fileId: fileId, reason: reason },
                 dataType: 'json',
                 success: function (response) {
-                    console.log("AJAX response:", response); // Log response for debugging
+                    console.log("AJAX response:", response); // Debugging output
                     if (response.status === 'success') {
                         alert("Your request has been sent to the admin.");
                         $('#request-form-' + fileType).hide();
                         $('#request-form-' + fileType + ' .reason').val(''); // Clear the textarea
                     } else {
-                        alert("Failed to send request. Error: " + response.message);
+                        alert("Failed to send request. Please try again. Error: " + response.message);
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    console.error("AJAX error:", textStatus, errorThrown);
                     alert("An error occurred while sending your request. Please try again.");
                 }
             });
