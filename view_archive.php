@@ -1,6 +1,11 @@
 <?php
 session_start(); // Start session to track login status.
 
+if (!isset($_SESSION['user_id'])) {
+    echo "User not logged in.";
+    exit;
+}
+
 if (isset($_GET['id']) && $_GET['id'] > 0) {
     $stmt = $conn->prepare("SELECT a.* FROM `archive_list` a WHERE a.id = ?");
     $stmt->bind_param("i", $_GET['id']);
@@ -249,21 +254,25 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 return;
             }
 
+            console.log("Submitting request with:", { fileId, reason }); // Debugging line
+
             $.ajax({
                 url: 'process_download_request.php',
                 method: 'POST',
                 data: { fileId: fileId, reason: reason },
                 dataType: 'json',
                 success: function (response) {
+                    console.log("Server response:", response); // Debugging line
                     if (response.status === 'success') {
                         alert("Your request has been sent to the admin.");
                         $('#request-form-' + fileType).hide();
-                        $('#request-form-' + fileType + ' .reason').val(''); // Clear the textarea
+                        $('#request-form-' + fileType + ' .reason').val('');
                     } else {
                         alert("Failed to send request. Please try again. Error: " + response.message);
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX error:", textStatus, errorThrown);
                     alert("An error occurred while sending your request. Please try again.");
                 }
             });

@@ -2,12 +2,18 @@
 session_start();
 require_once('config.php');
 
+
 $response = ['status' => 'error', 'message' => 'Invalid request'];
 
-if (isset($_POST['fileId'], $_POST['reason']) && !empty($_POST['reason']) && isset($_SESSION['user_id'])) {
+// Debugging output
+if (!isset($_SESSION['user_id'])) {
+    $response['message'] = 'User not logged in (user_id missing in session).';
+} elseif (!isset($_POST['fileId']) || !isset($_POST['reason']) || trim($_POST['reason']) === '') {
+    $response['message'] = 'fileId or reason missing.';
+} else {
     $fileId = intval($_POST['fileId']);
     $reason = trim($_POST['reason']);
-    $userId = $_SESSION['user_id']; // Assuming user_id is stored in session after login
+    $userId = $_SESSION['user_id'];
 
     try {
         // Insert download request into download_requests table
@@ -22,8 +28,6 @@ if (isset($_POST['fileId'], $_POST['reason']) && !empty($_POST['reason']) && iss
     } catch (Exception $e) {
         $response['message'] = 'An error occurred: ' . $e->getMessage();
     }
-} else {
-    $response['message'] = 'Invalid input or user not logged in.';
 }
 
 // Return JSON response
