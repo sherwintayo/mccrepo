@@ -97,7 +97,7 @@
     // Function to update request status
     function updateRequestStatus(id, status) {
       $.ajax({
-        url: _base_url_ + "admin/update_request_status",
+        url: _base_url_ + "admin/update_request_status.php",
         method: 'POST',
         data: { id: id, status: status },
         dataType: 'json',
