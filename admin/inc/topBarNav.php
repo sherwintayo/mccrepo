@@ -78,7 +78,10 @@ while ($row = $result->fetch_assoc()) {
 
         <?php if ($count > 0): ?>
           <?php foreach ($notifications as $notification): ?>
-            <div class="notification-item">
+            <div class="notification-item" data-id="<?php echo $notification['id']; ?>"
+              data-firstname="<?php echo htmlspecialchars($notification['firstname']); ?>"
+              data-lastname="<?php echo htmlspecialchars($notification['lastname']); ?>"
+              data-reason="<?php echo htmlspecialchars($notification['reason']); ?>" onclick="showRequestModal(this)">
               <div>
                 <strong><?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname']); ?></strong>
                 <span
@@ -96,6 +99,30 @@ while ($row = $result->fetch_assoc()) {
           Requests</a>
       </div>
     </li>
+
+    <!-- Modal HTML -->
+    <div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="requestModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="requestModalLabel">Download Request</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p><strong>Student:</strong> <span id="modalStudentName"></span></p>
+            <p><strong>Reason:</strong> <span id="modalRequestReason"></span></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" id="approveRequestBtn">Approve</button>
+            <button type="button" class="btn btn-danger" id="rejectRequestBtn">Reject</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Do it Later</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- User Dropdown Menu -->
     <li class="nav-item">
@@ -121,3 +148,55 @@ while ($row = $result->fetch_assoc()) {
   </ul>
 </nav>
 <!-- /.navbar -->
+
+<script>
+  // Show modal with request details
+  function showRequestModal(notification) {
+    const id = notification.getAttribute('data-id');
+    const firstName = notification.getAttribute('data-firstname');
+    const lastName = notification.getAttribute('data-lastname');
+    const reason = notification.getAttribute('data-reason');
+
+    document.getElementById('modalStudentName').textContent = firstName + ' ' + lastName;
+    document.getElementById('modalRequestReason').textContent = reason;
+
+    $('#requestModal').modal('show');
+
+    // Set data-id on buttons to track request ID for the action
+    document.getElementById('approveRequestBtn').setAttribute('data-id', id);
+    document.getElementById('rejectRequestBtn').setAttribute('data-id', id);
+  }
+
+  // AJAX function to handle status update
+  function updateRequestStatus(id, status) {
+    $.ajax({
+      url: 'update_status.php',
+      method: 'POST',
+      data: { id: id, status: status },
+      dataType: 'json',
+      success: function (response) {
+        if (response.status === 'success') {
+          alert('Request ' + status + ' successfully.');
+          $('#requestModal').modal('hide');
+          location.reload(); // Refresh page to update notifications
+        } else {
+          alert('Failed to update request status: ' + response.message);
+        }
+      },
+      error: function () {
+        alert('An error occurred while updating the request status.');
+      }
+    });
+  }
+
+  // Button click events
+  document.getElementById('approveRequestBtn').onclick = function () {
+    const id = this.getAttribute('data-id');
+    updateRequestStatus(id, 'approved');
+  };
+
+  document.getElementById('rejectRequestBtn').onclick = function () {
+    const id = this.getAttribute('data-id');
+    updateRequestStatus(id, 'rejected');
+  };
+</script>
