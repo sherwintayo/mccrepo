@@ -115,7 +115,6 @@
 
     // Function to update request status
     function updateRequestStatus(id, status) {
-      start_loader();
       $.ajax({
         url: _base_url_ + "admin/update_request_status.php",
         method: 'POST',
@@ -125,20 +124,17 @@
           if (response.status === 'success') {
             location.reload();
           } else {
-            alert_toast('Failed to update the request status.', 'error');
+            alert('Failed to update the request status.');
           }
-          end_loader();
         },
         error: function () {
-          alert_toast('An error occurred while updating the request.', 'error');
-          end_loader();
+          alert('An error occurred while updating the request.');
         }
       });
     }
 
     // Function to delete request
     function deleteRequest(id) {
-      start_loader();
       $.ajax({
         url: _base_url_ + "admin/delete_request.php",
         method: 'POST',
@@ -148,13 +144,11 @@
           if (response.status === 'success') {
             location.reload();
           } else {
-            alert_toast('Failed to delete the request.', 'error');
+            alert('Failed to delete the request.');
           }
-          end_loader();
         },
         error: function () {
-          alert_toast('An error occurred while deleting the request.', 'error');
-          end_loader();
+          alert('An error occurred while deleting the request.');
         }
       });
     }
