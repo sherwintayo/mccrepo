@@ -98,68 +98,57 @@
 
 <script>
     $(document).ready(function () {
-        // Approve request action
-        $('.approve_request').click(function () {
-            const requestId = $(this).data('id');
-            _conf("Are you sure you want to approve this request?", "updateRequestStatus", [requestId, 'approved']);
+        // Event listener for the verified button
+        $('.verified').click(function () {
+            _conf("Are you sure to verify this enrollee Request?", "verified", [$(this).attr('data-id')])
         });
 
-        // Reject request action
-        $('.reject_request').click(function () {
-            const requestId = $(this).data('id');
-            _conf("Are you sure you want to reject this request?", "updateRequestStatus", [requestId, 'rejected']);
+        // Event listener for the delete button
+        $('.delete_data').click(function () {
+            _conf("Are you sure to delete this project permanently?", "delete_archive", [$(this).attr('data-id')])
         });
 
-        // Delete request action
-        $('.delete_request').click(function () {
-            const requestId = $(this).data('id');
-            _conf("Are you sure you want to delete this request?", "deleteRequest", [requestId]);
+        // Event listener for the update status button
+        $('.update_status').click(function () {
+            uni_modal("Update Details", "archives/update_status.php?id=" + $(this).attr('data-id') + "&status=" + $(this).attr('data-status'))
         });
+        // $('.update_status').click(function(){
+        //     uni_modal("Update Details", "archives/update_status.php?id=" + $(this).attr('data-id') + "&status=" + $(this).attr('data-status'))
+        // });
 
-        // Function to update request status
-        function updateRequestStatus(id, status) {
-            start_loader();
-            $.ajax({
-                url: _base_url_ + "admin/update_request_status.php",
-                method: 'POST',
-                data: { id: id, status: status },
-                dataType: 'json',
-                success: function (response) {
-                    if (response.status === 'success') {
-                        location.reload();
-                    } else {
-                        alert_toast('Failed to update the request status.', 'error');
-                    }
-                    end_loader();
-                },
-                error: function () {
-                    alert_toast('An error occurred while updating the request.', 'error');
-                    end_loader();
-                }
-            });
-        }
+        // Add classes to table elements
+        $('.table td,.table th').addClass('py-1 px-2 align-middle');
 
-        // Function to delete request
-        function deleteRequest(id) {
-            start_loader();
-            $.ajax({
-                url: _base_url_ + "admin/delete_request.php",
-                method: 'POST',
-                data: { id: id },
-                dataType: 'json',
-                success: function (response) {
-                    if (response.status === 'success') {
-                        location.reload();
-                    } else {
-                        alert_toast('Failed to delete the request.', 'error');
-                    }
-                    end_loader();
-                },
-                error: function () {
-                    alert_toast('An error occurred while deleting the request.', 'error');
-                    end_loader();
-                }
-            });
-        }
+        // Initialize DataTables
+        $('.table').dataTable({
+            columnDefs: [
+                { orderable: false, targets: 5 }
+            ],
+        });
     });
+
+    // Function to delete an archive
+    function delete_archive(id) {
+        start_loader();
+        $.ajax({
+            url: _base_url_ + "classes/Master.php?f=delete_archive",
+            method: "POST",
+            data: { id: id },
+            dataType: "json",
+            error: function (err) {
+                console.log("Error: ", err); // Debugging step
+                alert_toast("An error occurred.", 'error');
+                end_loader();
+            },
+            success: function (resp) {
+                console.log("Response: ", resp); // Debugging step
+                if (typeof resp === 'object' && resp.status === 'success') {
+                    location.reload();
+                } else {
+                    alert_toast("An error occurred.", 'error');
+                    end_loader();
+                }
+            }
+        });
+    }
 </script>
