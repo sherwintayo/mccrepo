@@ -124,31 +124,32 @@ while ($row = $result->fetch_assoc()) {
       </div>
     </li>
   </ul>
-  <!-- Modal HTML -->
-  <div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="requestModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="requestModalLabel">Download Request</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <p><strong>Student:</strong> <span id="modalStudentName"></span></p>
-          <p><strong>Reason:</strong> <span id="modalRequestReason"></span></p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-success" id="approveRequestBtn">Approve</button>
-          <button type="button" class="btn btn-danger" id="rejectRequestBtn">Reject</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Do it Later</button>
-        </div>
+</nav>
+<!-- /.navbar -->
+
+<!-- Modal HTML -->
+<div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="requestModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="requestModalLabel">Download Request</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Student:</strong> <span id="modalStudentName"></span></p>
+        <p><strong>Reason:</strong> <span id="modalRequestReason"></span></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" id="approveRequestBtn">Approve</button>
+        <button type="button" class="btn btn-danger" id="rejectRequestBtn">Reject</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Do it Later</button>
       </div>
     </div>
   </div>
-</nav>
-<!-- /.navbar -->
+</div>
 
 <script>
   // Show modal with request details
