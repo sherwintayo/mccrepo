@@ -36,11 +36,10 @@
         <tbody>
           <?php
           $i = 1;
-          // Query to retrieve download requests
           $qry = $conn->query("SELECT dr.id, s.firstname, s.lastname, dr.reason, dr.status, dr.requested_at 
-                                             FROM download_requests dr 
-                                             JOIN student_list s ON dr.user_id = s.id 
-                                             ORDER BY dr.requested_at DESC");
+                               FROM download_requests dr 
+                               JOIN student_list s ON dr.user_id = s.id 
+                               ORDER BY dr.requested_at DESC");
 
           while ($row = $qry->fetch_assoc()):
             ?>
@@ -65,12 +64,26 @@
                 ?>
               </td>
               <td align="center">
-                <?php if ($row['status'] == 'pending'): ?>
-                  <button type="button" class="btn btn-success btn-sm approve_request"
-                    data-id="<?php echo $row['id']; ?>">Approve</button>
-                  <button type="button" class="btn btn-danger btn-sm reject_request"
-                    data-id="<?php echo $row['id']; ?>">Reject</button>
-                <?php endif; ?>
+                <button type="button" class="btn btn-flat btn-default btn-sm dropdown-toggle dropdown-icon"
+                  data-toggle="dropdown">
+                  Action
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu" role="menu">
+                  <?php if ($row['status'] == 'pending'): ?>
+                    <a class="dropdown-item approve_request" href="javascript:void(0)" data-id="<?php echo $row['id']; ?>">
+                      <span class="fa fa-check text-success"></span> Approve
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item reject_request" href="javascript:void(0)" data-id="<?php echo $row['id']; ?>">
+                      <span class="fa fa-times text-danger"></span> Reject
+                    </a>
+                    <div class="dropdown-divider"></div>
+                  <?php endif; ?>
+                  <a class="dropdown-item delete_request" href="javascript:void(0)" data-id="<?php echo $row['id']; ?>">
+                    <span class="fa fa-trash text-danger"></span> Delete
+                  </a>
+                </div>
               </td>
             </tr>
           <?php endwhile; ?>
@@ -94,6 +107,14 @@
       updateRequestStatus(requestId, 'rejected');
     });
 
+    // Delete request action
+    $('.delete_request').click(function () {
+      const requestId = $(this).data('id');
+      if (confirm("Are you sure you want to delete this request?")) {
+        deleteRequest(requestId);
+      }
+    });
+
     // Function to update request status
     function updateRequestStatus(id, status) {
       $.ajax({
@@ -103,13 +124,33 @@
         dataType: 'json',
         success: function (response) {
           if (response.status === 'success') {
-            location.reload(); // Reload to reflect changes
+            location.reload();
           } else {
             alert('Failed to update the request status.');
           }
         },
         error: function () {
           alert('An error occurred while updating the request.');
+        }
+      });
+    }
+
+    // Function to delete request
+    function deleteRequest(id) {
+      $.ajax({
+        url: _base_url_ + "admin/delete_request.php",
+        method: 'POST',
+        data: { id: id },
+        dataType: 'json',
+        success: function (response) {
+          if (response.status === 'success') {
+            location.reload();
+          } else {
+            alert('Failed to delete the request.');
+          }
+        },
+        error: function () {
+          alert('An error occurred while deleting the request.');
         }
       });
     }
