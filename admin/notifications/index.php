@@ -93,24 +93,65 @@
   </div>
 </div>
 
+<!-- Modal Structure -->
+<div id="actionModal" class="modal fade" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmation</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="modalMessage"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="modalConfirm">Continue</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   $(document).ready(function () {
-    // Approve request action
+    let actionType = '';
+    let requestId = '';
+
+    // Open modal for Approve request
     $('.approve_request').click(function () {
-      const requestId = $(this).data('id');
-      updateRequestStatus(requestId, 'approved');
+      requestId = $(this).data('id');
+      actionType = 'approve';
+      $('#modalMessage').text("Are you sure you want to approve this request?");
+      $('#actionModal').modal('show');
     });
 
-    // Reject request action
+    // Open modal for Reject request
     $('.reject_request').click(function () {
-      const requestId = $(this).data('id');
-      updateRequestStatus(requestId, 'rejected');
+      requestId = $(this).data('id');
+      actionType = 'reject';
+      $('#modalMessage').text("Are you sure you want to reject this request?");
+      $('#actionModal').modal('show');
     });
 
-    // Delete request action
+    // Open modal for Delete request
     $('.delete_request').click(function () {
-      const requestId = $(this).data('id');
-      if (confirm("Are you sure you want to delete this request?")) {
+      requestId = $(this).data('id');
+      actionType = 'delete';
+      $('#modalMessage').text("Are you sure you want to delete this request?");
+      $('#actionModal').modal('show');
+    });
+
+    // Confirm button inside modal
+    $('#modalConfirm').click(function () {
+      $('#actionModal').modal('hide'); // Hide modal on confirmation
+
+      if (actionType === 'approve') {
+        updateRequestStatus(requestId, 'approved');
+      } else if (actionType === 'reject') {
+        updateRequestStatus(requestId, 'rejected');
+      } else if (actionType === 'delete') {
         deleteRequest(requestId);
       }
     });
