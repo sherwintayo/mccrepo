@@ -159,15 +159,31 @@ while ($row = $result->fetch_assoc()) {
     const lastName = notification.getAttribute('data-lastname');
     const reason = notification.getAttribute('data-reason');
 
+    // Populate modal with request details
     document.getElementById('modalStudentName').textContent = firstName + ' ' + lastName;
     document.getElementById('modalRequestReason').textContent = reason;
 
-    $('#requestModal').modal('show');
-
-    // Set data-id on buttons to track request ID for the action
+    // Store request ID on buttons for tracking
     document.getElementById('approveRequestBtn').setAttribute('data-id', id);
     document.getElementById('rejectRequestBtn').setAttribute('data-id', id);
+
+    $('#requestModal').modal('show');
   }
+
+  // Initialize modal event listeners when the modal is shown
+  $('#requestModal').on('show.bs.modal', function () {
+    // Approve request action
+    $('#approveRequestBtn').off('click').on('click', function () {
+      const id = $(this).data('id');
+      updateRequestStatus(id, 'approved');
+    });
+
+    // Reject request action
+    $('#rejectRequestBtn').off('click').on('click', function () {
+      const id = $(this).data('id');
+      updateRequestStatus(id, 'rejected');
+    });
+  });
 
   // AJAX function to handle status update
   function updateRequestStatus(id, status) {
@@ -190,15 +206,4 @@ while ($row = $result->fetch_assoc()) {
       }
     });
   }
-
-  // Button click events
-  document.getElementById('approveRequestBtn').onclick = function () {
-    const id = this.getAttribute('data-id');
-    updateRequestStatus(id, 'approved');
-  };
-
-  document.getElementById('rejectRequestBtn').onclick = function () {
-    const id = this.getAttribute('data-id');
-    updateRequestStatus(id, 'rejected');
-  };
 </script>
