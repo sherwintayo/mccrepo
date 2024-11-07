@@ -98,24 +98,25 @@
     // Approve request action
     $('.approve_request').click(function () {
       const requestId = $(this).data('id');
-      _conf("Are you sure you want to approve this request?", "updateRequestStatus", [requestId, 'approved']);
+      updateRequestStatus(requestId, 'approved');
     });
 
     // Reject request action
     $('.reject_request').click(function () {
       const requestId = $(this).data('id');
-      _conf("Are you sure you want to reject this request?", "updateRequestStatus", [requestId, 'rejected']);
+      updateRequestStatus(requestId, 'rejected');
     });
 
     // Delete request action
     $('.delete_request').click(function () {
       const requestId = $(this).data('id');
-      _conf("Are you sure you want to delete this request?", "deleteRequest", [requestId]);
+      if (confirm("Are you sure you want to delete this request?")) {
+        deleteRequest(requestId);
+      }
     });
 
     // Function to update request status
     function updateRequestStatus(id, status) {
-      start_loader();
       $.ajax({
         url: _base_url_ + "admin/update_request_status.php",
         method: 'POST',
@@ -125,20 +126,17 @@
           if (response.status === 'success') {
             location.reload();
           } else {
-            alert_toast('Failed to update the request status.', 'error');
+            alert('Failed to update the request status.');
           }
-          end_loader();
         },
         error: function () {
-          alert_toast('An error occurred while updating the request.', 'error');
-          end_loader();
+          alert('An error occurred while updating the request.');
         }
       });
     }
 
     // Function to delete request
     function deleteRequest(id) {
-      start_loader();
       $.ajax({
         url: _base_url_ + "admin/delete_request.php",
         method: 'POST',
@@ -148,13 +146,11 @@
           if (response.status === 'success') {
             location.reload();
           } else {
-            alert_toast('Failed to delete the request.', 'error');
+            alert('Failed to delete the request.');
           }
-          end_loader();
         },
         error: function () {
-          alert_toast('An error occurred while deleting the request.', 'error');
-          end_loader();
+          alert('An error occurred while deleting the request.');
         }
       });
     }
