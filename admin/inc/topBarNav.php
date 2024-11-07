@@ -172,7 +172,7 @@ while ($row = $result->fetch_assoc()) {
   // AJAX function to handle status update
   function updateRequestStatus(id, status) {
     $.ajax({
-      url: 'update_status.php',
+      url: _base_url_ + "admin/update_request_status.php",
       method: 'POST',
       data: { id: id, status: status },
       dataType: 'json',
