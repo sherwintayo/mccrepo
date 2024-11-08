@@ -147,7 +147,7 @@
       <div class="nav-item dropdown">
         <a class="nav-link notification_icon" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
           aria-expanded="false">
-          <i class="fas fa-bell text-white"></i>
+          <i class="fa fa-bell text-white"></i>
           <span class="badge badge-danger navbar-badge">3</span> <!-- Example notification count -->
         </a>
         <div class="dropdown-menu dropdown-menu-right">
