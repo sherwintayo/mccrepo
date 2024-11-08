@@ -122,7 +122,7 @@
       </div>
 
       <!-- Notification Bell Icon -->
-      <li class="nav-item dropdown">
+      <span class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
           <i class="fas fa-bell"></i>
           <span class="badge badge-danger navbar-badge">3</span> <!-- Example notification count -->
@@ -142,7 +142,7 @@
           <div class="dropdown-divider"></div>
           <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
         </div>
-      </li>
+      </span>
 
       <!-- User Profile -->
       <?php if ($_settings->userdata('id') > 0): ?>
