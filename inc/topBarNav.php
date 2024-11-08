@@ -155,16 +155,6 @@
         </div>
       </div>
 
-      <div class="me-3 position-relative">
-        <a href="javascript:void(0)" class="text-navy" id="notification_icon">
-          <i class="fa fa-bell text-white"></i>
-          <!-- Notification Badge -->
-          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-            5 <!-- Example notification count -->
-          </span>
-        </a>
-      </div>
-
       <!-- Notification Bell Icon -->
       <div class="me-3 position-relative">
         <a class="nav-link notification_icon" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true"
