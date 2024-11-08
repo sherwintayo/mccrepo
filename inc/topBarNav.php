@@ -143,6 +143,30 @@
         </a>
       </div>
 
+      <!-- Notification Bell Icon -->
+      <div class="nav-item dropdown">
+        <a class="nav-link notification_icon" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+          aria-expanded="false">
+          <i class="fas fa-bell text-white"></i>
+          <span class="badge badge-danger navbar-badge">3</span> <!-- Example notification count -->
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+          <span class="dropdown-item dropdown-header">3 Notifications</span>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <i class="fas fa-envelope mr-2"></i> 1 new message
+            <span class="float-right text-muted text-sm">3 mins</span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <i class="fas fa-users mr-2"></i> 5 friend requests
+            <span class="float-right text-muted text-sm">12 hours</span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+        </div>
+      </div>
+
       <!-- User Profile -->
       <?php if ($_settings->userdata('id') > 0): ?>
         <div class="dropdown">
