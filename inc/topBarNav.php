@@ -16,6 +16,18 @@
     .btn-rounded {
       border-radius: 50%;
     }
+
+    /* Notification Badge Style */
+    #notification_icon .badge {
+      font-size: 0.75rem;
+      padding: 0.25em 0.5em;
+      border-radius: 50%;
+      transform: translate(-50%, -25%);
+      background-color: red;
+      /* Set badge background color */
+      color: white;
+      /* Set badge text color */
+    }
   </style>
 </head>
 
@@ -121,28 +133,15 @@
         </div>
       </div>
 
-      <!-- Notification Bell Icon -->
-      <span class="nav-item dropdown">
-        <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-bell"></i>
-          <span class="badge badge-danger navbar-badge">3</span> <!-- Example notification count -->
+      <div class="me-3 position-relative">
+        <a href="javascript:void(0)" class="text-navy" id="notification_icon">
+          <i class="fa fa-bell text-white"></i>
+          <!-- Notification Badge -->
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            5 <!-- Example notification count -->
+          </span>
         </a>
-        <div class="dropdown-menu dropdown-menu-right">
-          <span class="dropdown-item dropdown-header">3 Notifications</span>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-envelope mr-2"></i> 1 new message
-            <span class="float-right text-muted text-sm">3 mins</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-users mr-2"></i> 5 friend requests
-            <span class="float-right text-muted text-sm">12 hours</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
-        </div>
-      </span>
+      </div>
 
       <!-- User Profile -->
       <?php if ($_settings->userdata('id') > 0): ?>
