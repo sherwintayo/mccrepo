@@ -1,17 +1,26 @@
 <?php
-include('config.php');
+require_once 'config.php'; // Adjust this path as needed
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $notificationId = isset($_POST['id']) ? (int)$_POST['id'] : 0;
-    $status = isset($_POST['status']) ? $_POST['status'] : '';
+// Ensure `id` and `status` are provided in the request
+if (isset($_POST['id']) && isset($_POST['status'])) {
+    $notification_id = (int) $_POST['id'];
+    $status = $_POST['status'] === 'read' ? 'read' : 'unread';
 
-    if ($notificationId > 0 && $status === 'read') {
-        $stmt = $conn->prepare("UPDATE notifications SET status = 'read' WHERE id = ?");
-        $stmt->bind_param('i', $notificationId);
-        $stmt->execute();
-        $stmt->close();
+    // Update the notification status
+    $stmt = $conn->prepare("UPDATE notifications SET status = ? WHERE id = ?");
+    $stmt->bind_param("si", $status, $notification_id);
+    $stmt->execute();
+
+    if ($stmt->affected_rows > 0) {
+        echo json_encode(["status" => "success"]);
+    } else {
+        echo json_encode(["status" => "error", "message" => "Failed to update notification status"]);
     }
 
-    $conn->close();
+    $stmt->close();
+} else {
+    echo json_encode(["status" => "error", "message" => "Invalid request"]);
 }
+
+$conn->close();
 ?>
