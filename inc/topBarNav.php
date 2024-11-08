@@ -80,6 +80,8 @@
     }
   </style>
 </head>
+
+
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg w-100" id="login-nav">
   <div class="container ">
@@ -408,7 +410,7 @@
       e.preventDefault();
       const notificationId = $(this).data('id');
       $.ajax({
-        url: 'update_notification_status.php',
+        url: _base_url_ + "update_notification_status.php",
         method: 'POST',
         data: { id: notificationId, status: 'read' },
         success: function () {
