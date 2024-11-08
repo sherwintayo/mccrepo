@@ -166,6 +166,52 @@
             alt="Site Logo" class="brand-image img-circle elevation-3">
           <span class="myBrandName"><?= $_settings->info('short_name') ?></span>
         </div>
+        <div class="myHeaderRight d-flex align-items-center">
+
+          <!-- Search Icon -->
+          <div class="me-3">
+            <a href="javascript:void(0)" class="text-navy" id="search_icon">
+              <i class="fa fa-search text-white"></i>
+            </a>
+            <div class="position-relative">
+              <div id="search-field" class="position-absolute">
+                <input type="search" id="search-input" class="form-control rounded-0" required placeholder="Search..."
+                  value="<?= htmlspecialchars(isset($_GET['q']) ? $_GET['q'] : '', ENT_QUOTES, 'UTF-8') ?>">
+              </div>
+            </div>
+          </div>
+
+          <!-- User Profile -->
+          <?php if ($_settings->userdata('id') > 0): ?>
+            <div class="dropdown">
+              <button type="button" class="btn btn-rounded badge badge-light dropdown-toggle dropdown-icon"
+                data-toggle="dropdown">
+                <span>
+                  <img src="<?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>"
+                    class="img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar">
+                </span>
+                <span class="sr-only">Toggle Dropdown</span>
+              </button>
+              <div class="dropdown-menu" role="menu">
+                <span class="myName">Howdy,
+                  <?= htmlspecialchars(!empty($_settings->userdata('email')) ? $_settings->userdata('email') : $_settings->userdata('username'), ENT_QUOTES, 'UTF-8') ?></span>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="<?= base_url . 'classes/Login.php?f=student_logout' ?>"><i
+                    class="fas fa-sign-out-alt"></i> Logout</a>
+              </div>
+            </div>
+          <?php else: ?>
+            <li class="nav-item">
+              <a href="./ms_login.php" class="myNavLinks mx-1 text-light" style="text-decoration: none;">Sign Up</a>
+            </li>
+            <li class="nav-item">
+              <a href="./login.php" class="myNavLinks mx-1 text-light">Student Sign In</a>
+            </li>
+            <li class="nav-item">
+              <a href="./admin" class="myNavLinks mx-1 text-light">Admin Sign In</a>
+            </li>
+          <?php endif; ?>
+        </div>
       </div>
       <div class="modal-body">
         <ul class="navbar-nav ms-auto mb-lg-0">
