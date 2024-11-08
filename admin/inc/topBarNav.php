@@ -185,7 +185,7 @@ while ($row = $result->fetch_assoc()) {
     });
   });
 
-  // AJAX function to handle status update
+  // AJAX function to handle status update with SweetAlert
   function updateRequestStatus(id, status) {
     $.ajax({
       url: _base_url_ + "admin/update_request_status.php",
@@ -194,15 +194,31 @@ while ($row = $result->fetch_assoc()) {
       dataType: 'json',
       success: function (response) {
         if (response.status === 'success') {
-          alert('Request ' + status + ' successfully.');
-          $('#requestModal').modal('hide');
-          location.reload(); // Refresh page to update notifications
+          Swal.fire({
+            title: 'Success',
+            text: 'Request ' + status + ' successfully.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          }).then(() => {
+            $('#requestModal').modal('hide');
+            location.reload(); // Refresh page to update notifications
+          });
         } else {
-          alert('Failed to update request status: ' + response.message);
+          Swal.fire({
+            title: 'Error',
+            text: 'Failed to update request status: ' + response.message,
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
         }
       },
       error: function () {
-        alert('An error occurred while updating the request status.');
+        Swal.fire({
+          title: 'Error',
+          text: 'An error occurred while updating the request status.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
       }
     });
   }
