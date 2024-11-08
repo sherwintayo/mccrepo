@@ -17,16 +17,38 @@
       border-radius: 50%;
     }
 
-    /* Notification Badge Style */
-    #notification_icon .badge {
+    /* Notification Icon and Badge */
+    .notification_icon .badge {
       font-size: 0.75rem;
       padding: 0.25em 0.5em;
       border-radius: 50%;
-      transform: translate(-50%, -25%);
       background-color: red;
-      /* Set badge background color */
       color: white;
-      /* Set badge text color */
+      position: absolute;
+      top: 0;
+      right: 0;
+      transform: translate(50%, -50%);
+    }
+
+    /* Dropdown Menu Styling */
+    .dropdown-menu-right {
+      min-width: 250px;
+      padding: 0;
+      border-radius: 0.25rem;
+    }
+
+    .dropdown-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dropdown-item i {
+      margin-right: 0.5rem;
+    }
+
+    .dropdown-header {
+      font-weight: bold;
     }
   </style>
 </head>
@@ -144,12 +166,14 @@
       </div>
 
       <!-- Notification Bell Icon -->
-      <div class="nav-item dropdown">
-        <a class="nav-link notification_icon" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+      <div class="me-3 position-relative">
+        <a class="nav-link notification_icon" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true"
           aria-expanded="false">
           <i class="fa fa-bell text-white"></i>
           <span class="badge badge-danger navbar-badge">3</span> <!-- Example notification count -->
         </a>
+
+        <!-- Dropdown Menu -->
         <div class="dropdown-menu dropdown-menu-right">
           <span class="dropdown-item dropdown-header">3 Notifications</span>
           <div class="dropdown-divider"></div>
@@ -166,6 +190,7 @@
           <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
         </div>
       </div>
+
 
       <!-- User Profile -->
       <?php if ($_settings->userdata('id') > 0): ?>
