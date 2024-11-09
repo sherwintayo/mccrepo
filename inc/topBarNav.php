@@ -215,7 +215,7 @@
 
             <!-- Dropdown Menu -->
             <div class="dropdown-menu dropdown-menu-right">
-              <span class="dropdown-item dropdown-header"><?= $unread_count ?> Notifications</span>
+              <span class="dropdown-item dropdown-header">You have <?= $unread_count ?> Notifications</span>
             <?php endif; ?>
             <div class="dropdown-divider"></div>
             <?php if (count($notifications) > 0): ?>
