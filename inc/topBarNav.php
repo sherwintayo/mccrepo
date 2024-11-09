@@ -157,7 +157,7 @@
 
       <?php
       // Fetch notifications for the logged-in user
-      $student_id = $_settings->userdata('id'); // Assuming this gets the current user's ID
+      $student_id = $_settings->userdata('id'); // Check if the user is logged in
       $notifications = [];
       $unread_count = 0;
       if ($student_id) {
@@ -173,37 +173,37 @@
       }
       ?>
 
-      <!-- Notification Bell Icon -->
-      <div class="me-3 position-relative">
-        <a class="notification_icon" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-          aria-expanded="false">
-          <i class="fa fa-bell text-white"></i>
-          <?php if ($unread_count > 0): ?>
-            <span class="badge badge-danger navbar-badge"><?= $unread_count ?></span> <!-- Unread notification count -->
-          <?php endif; ?>
-        </a>
+      <?php if ($student_id): ?> <!-- Only show if user is logged in -->
+        <!-- Notification Bell Icon -->
+        <div class="me-3 position-relative">
+          <a class="notification_icon" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+            aria-expanded="false">
+            <i class="fa fa-bell text-white"></i>
+            <?php if ($unread_count > 0): ?>
+              <span class="badge badge-danger navbar-badge"><?= $unread_count ?></span> <!-- Unread notification count -->
+            <?php endif; ?>
+          </a>
 
-        <!-- Dropdown Menu -->
-        <div class="dropdown-menu dropdown-menu-right">
-          <span class="dropdown-item dropdown-header"><?= count($notifications) ?> New Notifications</span>
-          <div class="dropdown-divider"></div>
-          <?php if (count($notifications) > 0): ?>
-            <?php foreach ($notifications as $notif): ?>
-              <a href="#" class="dropdown-item">
-                <i class="fas fa-envelope mr-2"></i> <?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?>
-                <span
-                  class="float-right text-muted text-sm"><?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
-              </a>
-              <div class="dropdown-divider"></div>
-            <?php endforeach; ?>
-          <?php else: ?>
-            <span class="dropdown-item text-light-50">No notifications</span>
-          <?php endif; ?>
-          <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+          <!-- Dropdown Menu -->
+          <div class="dropdown-menu dropdown-menu-right">
+            <span class="dropdown-item dropdown-header"><?= count($notifications) ?> Notifications</span>
+            <div class="dropdown-divider"></div>
+            <?php if (count($notifications) > 0): ?>
+              <?php foreach ($notifications as $notif): ?>
+                <a href="#" class="dropdown-item">
+                  <i class="fas fa-envelope mr-2"></i> <?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?>
+                  <span
+                    class="float-right text-muted text-sm"><?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
+                </a>
+                <div class="dropdown-divider"></div>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <span class="dropdown-item text-muted">No notifications</span>
+            <?php endif; ?>
+            <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+          </div>
         </div>
-      </div>
-
-
+      <?php endif; ?>
 
 
       <!-- User Profile -->
