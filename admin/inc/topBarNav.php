@@ -67,7 +67,7 @@ while ($row = $result->fetch_assoc()) {
     <!-- Notification Bell Icon -->
     <li class="nav-item dropdown">
       <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-        <i class="fas fa-bell"></i>
+        <i class="fa fa-bell"></i>
         <?php if ($count > 0): ?>
           <span class="badge badge-danger navbar-badge"><?php echo $count; ?></span>
         <?php endif; ?>

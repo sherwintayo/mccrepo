@@ -204,7 +204,7 @@
             <div class="dropdown-divider"></div>
             <?php if (count($notifications) > 0): ?>
               <?php foreach ($notifications as $notif): ?>
-                <a href="#" class="dropdown-item">
+                <a href="./?page=my_archives" class="dropdown-item">
                   <i class="fas fa-envelope mr-2"></i>
                   <span><?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?></span>
                   <span class="notification-time">
