@@ -155,31 +155,55 @@
         </div>
       </div>
 
+      <?php
+      // Fetch notifications for the logged-in user
+      $student_id = $_settings->userdata('id'); // Assuming this gets the current user's ID
+      $notifications = [];
+      $unread_count = 0;
+      if ($student_id) {
+        $result = $conn->query("SELECT * FROM notifications WHERE student_id = $student_id ORDER BY date_created DESC");
+        if ($result) {
+          while ($row = $result->fetch_assoc()) {
+            $notifications[] = $row;
+            if ($row['status'] == 'unread') {
+              $unread_count++;
+            }
+          }
+        }
+      }
+      ?>
+
       <!-- Notification Bell Icon -->
       <div class="me-3 position-relative">
-        <a class="nav-link notification_icon" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+        <a class="notification_icon" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true"
           aria-expanded="false">
           <i class="fa fa-bell text-white"></i>
-          <span class="badge badge-danger navbar-badge">3</span> <!-- Example notification count -->
+          <?php if ($unread_count > 0): ?>
+            <span class="badge badge-danger navbar-badge"><?= $unread_count ?></span> <!-- Unread notification count -->
+          <?php endif; ?>
         </a>
 
         <!-- Dropdown Menu -->
         <div class="dropdown-menu dropdown-menu-right">
-          <span class="dropdown-item dropdown-header">3 Notifications</span>
+          <span class="dropdown-item dropdown-header"><?= count($notifications) ?> New Notifications</span>
           <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-envelope mr-2"></i> 1 new message
-            <span class="float-right text-muted text-sm">3 mins</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-users mr-2"></i> 5 friend requests
-            <span class="float-right text-muted text-sm">12 hours</span>
-          </a>
-          <div class="dropdown-divider"></div>
+          <?php if (count($notifications) > 0): ?>
+            <?php foreach ($notifications as $notif): ?>
+              <a href="#" class="dropdown-item">
+                <i class="fas fa-envelope mr-2"></i> <?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?>
+                <span
+                  class="float-right text-muted text-sm"><?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
+              </a>
+              <div class="dropdown-divider"></div>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <span class="dropdown-item text-light-50">No notifications</span>
+          <?php endif; ?>
           <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
         </div>
       </div>
+
+
 
 
       <!-- User Profile -->
