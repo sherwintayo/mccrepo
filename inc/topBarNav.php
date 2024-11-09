@@ -73,7 +73,7 @@
     .unread-indicator {
       width: 10px;
       height: 10px;
-      background-color: blue;
+      background-color: #0084FF;
       border-radius: 50%;
       position: absolute;
       right: 1rem;
