@@ -65,6 +65,18 @@
       color: rgba(255, 255, 255, 0.6);
       margin-top: 0.2rem;
     }
+
+    /* Blue circle indicator for unread messages */
+    .unread-indicator {
+      width: 10px;
+      height: 10px;
+      background-color: blue;
+      border-radius: 50%;
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
   </style>
 </head>
 
@@ -204,12 +216,16 @@
             <div class="dropdown-divider"></div>
             <?php if (count($notifications) > 0): ?>
               <?php foreach ($notifications as $notif): ?>
-                <a href="./?page=my_archives" class="dropdown-item">
+                <a href="#" class="dropdown-item notification-link" data-id="<?= $notif['id'] ?>"
+                  onclick="markAsReadAndRedirect(this)">
                   <i class="fas fa-envelope mr-2"></i>
                   <span><?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?></span>
                   <span class="notification-time">
                     <?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?>
                   </span>
+                  <?php if ($notif['status'] == 'unread'): ?>
+                    <span class="unread-indicator"></span> <!-- Blue circle for unread messages -->
+                  <?php endif; ?>
                 </a>
                 <div class="dropdown-divider"></div>
               <?php endforeach; ?>
@@ -433,4 +449,21 @@
       }
     });
   });
+
+  function markAsReadAndRedirect(element) {
+    const notificationId = element.getAttribute("data-id");
+
+    // Send AJAX request to mark the notification as read
+    fetch(`./mark_notification_read.php?id=${notificationId}`, { method: 'POST' })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Redirect to the archives page
+          window.location.href = "./?page=my_archives";
+        } else {
+          console.error("Failed to mark notification as read.");
+        }
+      })
+      .catch(error => console.error("Error:", error));
+  }
 </script>
