@@ -185,7 +185,7 @@
           </a>
 
           <!-- Dropdown Menu -->
-          <div class="dropdown-menu dropdown-menu-right">
+          <div class="dropdown-menu dropdown-menu-left">
             <span class="dropdown-item dropdown-header"><?= count($notifications) ?> Notifications</span>
             <div class="dropdown-divider"></div>
             <?php if (count($notifications) > 0): ?>
@@ -198,7 +198,7 @@
                 <div class="dropdown-divider"></div>
               <?php endforeach; ?>
             <?php else: ?>
-              <span class="dropdown-item text-muted">No notifications</span>
+              <span class="dropdown-item text-light-50">No notifications</span>
             <?php endif; ?>
             <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
           </div>
