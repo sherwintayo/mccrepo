@@ -30,25 +30,40 @@
       transform: translate(50%, -50%);
     }
 
-    /* Dropdown Menu Styling */
+    /* Center-aligned Dropdown Menu Styling */
     .dropdown-menu-right {
-      min-width: 250px;
+      min-width: 350px;
+      /* Set width to make enough room for messages */
       padding: 0;
       border-radius: 0.25rem;
+      left: 50%;
+      /* Start positioning from the center */
+      transform: translateX(-40%);
+      /* Shift the dropdown to center-align with the bell icon */
     }
 
     .dropdown-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      white-space: normal;
+      /* Allows text wrapping for long messages */
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding: 0.5rem 1rem;
     }
 
     .dropdown-item i {
       margin-right: 0.5rem;
+      align-self: flex-start;
     }
 
     .dropdown-header {
       font-weight: bold;
+    }
+
+    .notification-time {
+      display: block;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin-top: 0.2rem;
     }
   </style>
 </head>
@@ -174,26 +189,27 @@
       ?>
 
       <?php if ($student_id): ?> <!-- Only show if user is logged in -->
-        <!-- Notification Bell Icon -->
         <div class="me-3 position-relative">
           <a class="notification_icon" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true"
             aria-expanded="false">
             <i class="fa fa-bell text-white"></i>
             <?php if ($unread_count > 0): ?>
-              <span class="badge badge-danger navbar-badge"><?= $unread_count ?></span> <!-- Unread notification count -->
+              <span class="badge badge-danger navbar-badge"><?= $unread_count ?></span>
             <?php endif; ?>
           </a>
 
           <!-- Dropdown Menu -->
-          <div class="dropdown-menu dropdown-menu-left">
+          <div class="dropdown-menu dropdown-menu-right">
             <span class="dropdown-item dropdown-header"><?= count($notifications) ?> Notifications</span>
             <div class="dropdown-divider"></div>
             <?php if (count($notifications) > 0): ?>
               <?php foreach ($notifications as $notif): ?>
                 <a href="#" class="dropdown-item">
-                  <i class="fas fa-envelope mr-2"></i> <?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?>
-                  <span
-                    class="float-right text-muted text-sm"><?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
+                  <i class="fas fa-envelope mr-2"></i>
+                  <span><?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?></span>
+                  <span class="notification-time">
+                    <?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?>
+                  </span>
                 </a>
                 <div class="dropdown-divider"></div>
               <?php endforeach; ?>
