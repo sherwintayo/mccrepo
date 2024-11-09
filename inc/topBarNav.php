@@ -43,7 +43,10 @@
     }
 
     .dropdown-item {
+      position: relative;
+      /* Allows positioning of the unread indicator inside */
       white-space: normal;
+      /* Allows text wrapping for long messages */
       /* Allows text wrapping for long messages */
       overflow: hidden;
       text-overflow: ellipsis;
@@ -236,6 +239,7 @@
           </div>
         </div>
       <?php endif; ?>
+
 
 
       <!-- User Profile -->
