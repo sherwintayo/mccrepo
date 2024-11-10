@@ -342,7 +342,7 @@
                 <span class="sr-only">Toggle Dropdown</span>
               </button>
               <div class="dropdown-menu" role="menu">
-                <span class="myName text-light">Howdy,
+                <span class="myName">Howdy,
                   <?= htmlspecialchars(!empty($_settings->userdata('email')) ? $_settings->userdata('email') : $_settings->userdata('username'), ENT_QUOTES, 'UTF-8') ?></span>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="<?= base_url . 'classes/Login.php?f=student_logout' ?>"><i
@@ -354,10 +354,10 @@
               <a href="./ms_login.php" class="myNavLinks mx-1 text-light" style="text-decoration: none;">Sign Up</a>
             </li>
             <li class="nav-item">
-              <a href="./login.php" class="myNavLinks mx-1 text-light">Student Sign In</a>
+              <a href="./login.php" class="myNavLinks mx-1 text-light" style="text-decoration: none;">Student Sign In</a>
             </li>
             <li class="nav-item">
-              <a href="./admin" class="myNavLinks mx-1 text-light">Admin Sign In</a>
+              <a href="./admin" class="myNavLinks mx-1 text-light" style="text-decoration: none;">Admin Sign In</a>
             </li>
           <?php endif; ?>
         </div>
