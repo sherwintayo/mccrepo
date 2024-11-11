@@ -33,7 +33,7 @@
     .userDropdown {
       min-width: 350px;
       /* Set width to make enough room for messages */
-      padding: 0;
+      padding: 10px;
       border-radius: 0.25rem;
     }
 
