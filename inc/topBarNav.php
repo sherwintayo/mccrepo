@@ -30,7 +30,7 @@
       transform: translate(50%, -50%);
     }
 
-    .userDropdown {
+    .myUserDropdown {
       min-width: auto;
       /* Set width to make enough room for messages */
       padding: 10px;
@@ -263,7 +263,7 @@
             </span>
             <span class="sr-only">Toggle Dropdown</span>
           </button>
-          <div class="dropdown-menu userDropdown" role="menu">
+          <div class="dropdown-menu myUserDropdown" role="menu">
             <span class="myName p3 text-light">
               <?= htmlspecialchars(!empty($_settings->userdata('email')) ? $_settings->userdata('email') : $_settings->userdata('username'), ENT_QUOTES, 'UTF-8') ?></span>
             <div class="dropdown-divider"></div>

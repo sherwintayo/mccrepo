@@ -107,6 +107,11 @@
   color: rgba(255, 255, 255, 0.6) !important;
 }
 
+.myUserDropdown .myName {
+  color: rgba(255, 255, 255, 0.6) !important;
+  cursor: pointer;
+}
+
 /* MODAL */
 
 .modal-dialog {
