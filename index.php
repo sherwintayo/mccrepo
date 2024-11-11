@@ -81,14 +81,15 @@
         <div id="header" class="shadow">
           <div class="d-flex justify-content-center h-100 w-100 align-items-center flex-column">
             <h1 class="w-100 text-center site-title">
-              <?php echo htmlspecialchars("MADRIDEJOS COMMUNITY COLLEGE REPOSITORIES") ?></h1>
+              <?php echo htmlspecialchars("MADRIDEJOS COMMUNITY COLLEGE REPOSITORIES") ?>
+            </h1>
             <a href="./?page=projects" class="btn btn-lg btn-light rounded-pill w-25" id="enrollment"><b>Explore
                 Projects</b></a>
           </div>
         </div>
       <?php endif; ?>
       <!-- Main content -->
-      <section class="content" style="margin-top: 5vh;">
+      <section class="content" style="margin-top: 15vh;">
         <div class="container">
           <?php
           if (!file_exists($page . ".php") && !is_dir($page)) {
