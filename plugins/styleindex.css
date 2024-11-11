@@ -70,6 +70,7 @@
   cursor: pointer;
   text-decoration: none;
   display: inline-block; /* or block if you want it to take the full width */
+  padding: 10px 20px; /* adjust as needed */
 }
 
 .myUserDropdown .myName:hover {
