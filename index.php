@@ -89,7 +89,7 @@
         </div>
       <?php endif; ?>
       <!-- Main content -->
-      <section class="content" style="margin-top: 15vh;">
+      <section class="content" style="margin-top: 10vh;">
         <div class="container">
           <?php
           if (!file_exists($page . ".php") && !is_dir($page)) {
