@@ -69,10 +69,12 @@
   color: rgba(255, 255, 255, 0.6) !important;
   cursor: pointer;
   text-decoration: none;
+  display: inline-block; /* or block if you want it to take the full width */
 }
 
 .myUserDropdown .myName:hover {
   background-color: #f9f06d;
+  color: #333;
 }
 
 /* HAMBURGER */
