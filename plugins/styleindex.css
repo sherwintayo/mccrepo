@@ -60,6 +60,23 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
+.navbar .container .myRightNav .links .myNavLink {
+  text-decoration: none !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.myUserDropdown .myName {
+  color: rgba(255, 255, 255, 0.6) !important;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.myUserDropdown .myName:hover {
+  background-color: #f9f06d;
+}
+
+/* HAMBURGER */
+
 .navbar .navbar-toggler {
   border: none !important;
   outline: none !important;
@@ -100,16 +117,6 @@
 
 .navbar #toggle-menu:checked + label.toggle-btn .bar:nth-child(3) {
   transform: translateY(-8px) rotate(-45deg);
-}
-
-.navbar .container .myRightNav .links .myNavLink {
-  text-decoration: none !important;
-  color: rgba(255, 255, 255, 0.6) !important;
-}
-
-.myUserDropdown .myName {
-  color: rgba(255, 255, 255, 0.6) !important;
-  cursor: pointer;
 }
 
 /* MODAL */

@@ -264,8 +264,8 @@
             <span class="sr-only">Toggle Dropdown</span>
           </button>
           <div class="dropdown-menu myUserDropdown" role="menu">
-            <span class="myName p3 text-light">
-              <?= htmlspecialchars(!empty($_settings->userdata('email')) ? $_settings->userdata('email') : $_settings->userdata('username'), ENT_QUOTES, 'UTF-8') ?></span>
+            <a href="./?page=profile" class="myName">
+              <?= htmlspecialchars(!empty($_settings->userdata('email')) ? $_settings->userdata('email') : $_settings->userdata('username'), ENT_QUOTES, 'UTF-8') ?></a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="<?= base_url . 'classes/Login.php?f=student_logout' ?>"><i
                 class="fas fa-sign-out-alt"></i> Logout</a>
