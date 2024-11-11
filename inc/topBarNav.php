@@ -30,6 +30,13 @@
       transform: translate(50%, -50%);
     }
 
+    .userDropdown {
+      min-width: 350px;
+      /* Set width to make enough room for messages */
+      padding: 0;
+      border-radius: 0.25rem;
+    }
+
     /* Center-aligned Dropdown Menu Styling */
     .dropdown-menu-right {
       min-width: 350px;
@@ -254,7 +261,7 @@
             </span>
             <span class="sr-only">Toggle Dropdown</span>
           </button>
-          <div class="dropdown-menu" role="menu">
+          <div class="dropdown-menu userDropdown" role="menu">
             <span class="myName p3 text-light">
               <?= htmlspecialchars(!empty($_settings->userdata('email')) ? $_settings->userdata('email') : $_settings->userdata('username'), ENT_QUOTES, 'UTF-8') ?></span>
             <div class="dropdown-divider"></div>

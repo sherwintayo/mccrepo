@@ -2,275 +2,231 @@
     background-color: #fff;
 } */
 
+/* TOPNAVBAR */
 
-
-                /* TOPNAVBAR */
-
-.navbar .navbar-toggler .navbar-toggler-icon{
-    filter: invert(1); /* Makes the icon white */
+.navbar .navbar-toggler .navbar-toggler-icon {
+  filter: invert(1); /* Makes the icon white */
 }
 
-
-.navbar{
-    background-color: #2a252e;
+.navbar {
+  background-color: #2a252e;
 }
 
-.navbar .navbar-brand img{
-    max-height: 40px;
-    opacity: .6;
+.navbar .navbar-brand img {
+  max-height: 40px;
+  opacity: 0.6;
 }
-.navbar .navbar-brand .myBrandName{
-    color: #f9f06d !important;
-    font-weight: 600;
-}
-
-.navbar .nav-link{
-    font-size: 16px;
-    color: rgba(255,255,255,0.6);
-    position: relative;
-    padding: 5px;
+.navbar .navbar-brand .myBrandName {
+  color: #f9f06d !important;
+  font-weight: 600;
 }
 
-.navbar .nav-link::before{
-    content: "";
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    right: 0;
-    margin-inline: auto;
-    width: 0%;
-    height: 2px;
-    background-color: #f9f06d;
-    box-shadow: 0 0 8px #f9f06d;
-    transition: all .6s ease;
-    transform-origin: center;
+.navbar .nav-link {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.6);
+  position: relative;
+  padding: 5px;
 }
 
-.navbar .nav-link:hover::before{
-    width: 100%;
+.navbar .nav-link::before {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  width: 0%;
+  height: 2px;
+  background-color: #f9f06d;
+  box-shadow: 0 0 8px #f9f06d;
+  transition: all 0.6s ease;
+  transform-origin: center;
 }
 
-.navbar .nav-link.active{
-    color: rgba(255,255,255,0.6) !important; 
-    font-weight: 600;
+.navbar .nav-link:hover::before {
+  width: 100%;
 }
 
-.dropdown-menu{
-    background-color: #2a252e;
+.navbar .nav-link.active {
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-weight: 600;
 }
 
-.dropdown-item{
-    color: rgba(255,255,255,0.6);
+.dropdown-menu {
+  background-color: #2a252e;
+}
+
+.dropdown-item {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .navbar .navbar-toggler {
-    border: none !important;
-    outline: none !important;
-    box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
-.navbar .toggle-btn{
-    cursor: pointer;
-    position: relative;
-    top: 5px;
-    z-index: 1000;
+.navbar .toggle-btn {
+  cursor: pointer;
+  position: relative;
+  top: 5px;
+  z-index: 1000;
 }
 
-.navbar .toggle-btn .bar{
-    width: 25px;
-    height: 3px;
-    background-color: #f9f06d;
-    margin: 7px 0 7px auto;
-    transition: all .2s ease-in-out;
+.navbar .toggle-btn .bar {
+  width: 25px;
+  height: 3px;
+  background-color: #f9f06d;
+  margin: 7px 0 7px auto;
+  transition: all 0.2s ease-in-out;
 }
 
-.navbar .toggle-btn .bar:nth-child(2){
-    width: 35px;
+.navbar .toggle-btn .bar:nth-child(2) {
+  width: 35px;
 }
 
-.navbar #toggle-menu{
-    display: none;
+.navbar #toggle-menu {
+  display: none;
 }
 
-.navbar #toggle-menu:checked+label.toggle-btn 
-.bar:nth-child(2){
-               
-    transform: translateX(50px);
-    opacity: 0;
+.navbar #toggle-menu:checked + label.toggle-btn .bar:nth-child(2) {
+  transform: translateX(50px);
+  opacity: 0;
 }
 
-.navbar #toggle-menu:checked+label.toggle-btn 
-.bar:nth-child(1){
-    transform: translateY(12px) rotate(45deg);
+.navbar #toggle-menu:checked + label.toggle-btn .bar:nth-child(1) {
+  transform: translateY(12px) rotate(45deg);
 }
 
-.navbar #toggle-menu:checked+label.toggle-btn 
-.bar:nth-child(3){
-    transform: translateY(-8px) rotate(-45deg);
+.navbar #toggle-menu:checked + label.toggle-btn .bar:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
 }
 
 .navbar .container .myRightNav .links .myNavLink {
-    text-decoration: none !important;
-    color: rgba(255,255,255,0.6) !important;
-     
+  text-decoration: none !important;
+  color: rgba(255, 255, 255, 0.6) !important;
 }
 
+/* MODAL */
 
-
-        /* MODAL */
-
-.modal-dialog{
-    margin-left: -3px;
-    margin-top: -3px;
-    width: 85%;
+.modal-dialog {
+  margin-left: -3px;
+  margin-top: -3px;
+  width: 85%;
 }
 
-.modal-dialog .modal-content{
-    background-color: #2a252e !important;
+.modal-dialog .modal-content {
+  background-color: #2a252e !important;
 }
 
-     /* MODAL HEADER */
+/* MODAL HEADER */
 
-.modal-dialog .modal-header, .modal-dialog 
-.modal-footer{
-
-    border: none;
+.modal-dialog .modal-header,
+.modal-dialog .modal-footer {
+  border: none;
 }
 
-.modal-dialog .modal-header{
-    height: 86px;
-} 
-
-.modal-dialog .modal-header img{
-    max-height: 40px;
-    opacity: 0.8;
+.modal-dialog .modal-header {
+  height: 86px;
 }
 
-.modal-dialog .modal-header .myHeaderLeft{
-    margin: 2px 0 5px 2px;
+.modal-dialog .modal-header img {
+  max-height: 40px;
+  opacity: 0.8;
+}
+
+.modal-dialog .modal-header .myHeaderLeft {
+  margin: 2px 0 5px 2px;
 }
 
 .modal-dialog .nav-link i,
-.modal-dialog .modal-header .myHeaderRight 
-.dropdown .dropdown-menu .dropdown-item i{
-    margin-right: 10px;
-    color: #f9f06d !important;
+.modal-dialog
+  .modal-header
+  .myHeaderRight
+  .dropdown
+  .dropdown-menu
+  .dropdown-item
+  i {
+  margin-right: 10px;
+  color: #f9f06d !important;
 }
 
-.modal-dialog .modal-header .myHeaderRight 
-.notification-icon i{
-    color: rgba(255,255,255,0.6) !important;
+.modal-dialog .modal-header .myHeaderRight .notification-icon i {
+  color: rgba(255, 255, 255, 0.6) !important;
 }
 
-.modal-dialog .modal-header .myHeaderRight 
-.dropdown .dropdown-menu .myName{
-    color: rgba(255,255,255,0.6) !important;
+.modal-dialog .modal-header .myHeaderRight .dropdown .dropdown-menu .myName {
+  color: rgba(255, 255, 255, 0.6) !important;
 }
 
-
-.modal-dialog .modal-header .myBrandName{
-    color: #f9f06d !important;
-    font-weight: 600;
-    font-size: 20px;
-    padding-top: 3px;
-    margin-top: 3px;
+.modal-dialog .modal-header .myBrandName {
+  color: #f9f06d !important;
+  font-weight: 600;
+  font-size: 20px;
+  padding-top: 3px;
+  margin-top: 3px;
 }
 
-
-
-     /* MODAL BODY */
-.modal-dialog .modal-body{
-    padding-top: 65px;
-    background-color: #17161d;
+/* MODAL BODY */
+.modal-dialog .modal-body {
+  padding-top: 65px;
+  background-color: #17161d;
 }
 
-.modal-dialog .nav-link{
-    font-size: 18px;
-    margin-bottom: 30px;
-    color: rgba(255,255,255,0.6) !important;
+.modal-dialog .nav-link {
+  font-size: 18px;
+  margin-bottom: 30px;
+  color: rgba(255, 255, 255, 0.6) !important;
 }
 
-.modal-dialog .nav-link.active{
-    color: rgba(255,255,255,0.6) !important;
-    font-weight: 600;
+.modal-dialog .nav-link.active {
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-weight: 600;
 }
 
-.modal-dialog .btn-secondary{
-    color: #2a252e !important;
-    background-color: #f9f06d !important;
+.modal-dialog .btn-secondary {
+  color: #2a252e !important;
+  background-color: #f9f06d !important;
 }
 
-   /* MODAL HEADER */
+/* MODAL HEADER */
 
-.modal-dialog 
-.modal-footer .btn{
-      
-    max-height: 35px;
+.modal-dialog .modal-footer .btn {
+  max-height: 35px;
 }
-.modal-dialog 
-.modal-footer .btn label{
-     align-items: center;
+.modal-dialog .modal-footer .btn label {
+  align-items: center;
 }
 
+/* FOOTER */
 
-
-
-
-               /* FOOTER */
-
-.main-footer{
-    background-color: #2a252e;
+.main-footer {
+  background-color: #2a252e;
 }
-.myFooter .myText{
-    color: rgba(255,255,255,0.6) !important; 
+.myFooter .myText {
+  color: rgba(255, 255, 255, 0.6) !important;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* Extra small devices (portrait phones, less than 576px) */
 @media (max-width: 575.98px) {
- 
-
-    .myFooter{
-        justify-content: center !important;
-        gap: 10px !important;
-    }
-
+  .myFooter {
+    justify-content: center !important;
+    gap: 10px !important;
+  }
 }
 
 /* Small devices (landscape phones, less than 768px) */
-@media (max-width: 767.98px) {  
- 
-  
-
+@media (max-width: 767.98px) {
 }
 
 /* Medium devices (tablets, less than 992px) */
 @media (max-width: 991.98px) {
-
-  
-
-
 }
 
 /* Large devices (desktops, less than 1200px) */
 @media (max-width: 1199.98px) {
-
- 
-
 }
 
 /* Extra large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
-
 }
