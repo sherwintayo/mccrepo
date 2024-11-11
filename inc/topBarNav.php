@@ -255,7 +255,7 @@
             <span class="sr-only">Toggle Dropdown</span>
           </button>
           <div class="dropdown-menu" role="menu">
-            <span class="myName">Howdy,
+            <span class="myName text-light">Howdy,
               <?= htmlspecialchars(!empty($_settings->userdata('email')) ? $_settings->userdata('email') : $_settings->userdata('username'), ENT_QUOTES, 'UTF-8') ?></span>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="<?= base_url . 'classes/Login.php?f=student_logout' ?>"><i
