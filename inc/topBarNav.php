@@ -31,10 +31,12 @@
     }
 
     .userDropdown {
-      min-width: 350px;
+      min-width: auto;
       /* Set width to make enough room for messages */
       padding: 10px;
       border-radius: 0.25rem;
+      right: 50%;
+      transform: translateX(40%)
     }
 
     /* Center-aligned Dropdown Menu Styling */
