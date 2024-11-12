@@ -197,41 +197,17 @@
 
       <?php
       // Fetch notifications for the logged-in user
-      $student_id = $_settings->userdata('id');
+      $student_id = $_settings->userdata('id'); // Check if the user is logged in
       $notifications = [];
       $unread_count = 0;
-
       if ($student_id) {
-        // Fetch general notifications for the student
         $result = $conn->query("SELECT * FROM notifications WHERE student_id = $student_id ORDER BY date_created DESC");
-
         if ($result) {
           while ($row = $result->fetch_assoc()) {
             $notifications[] = $row;
-            if ($row['status'] === 'unread') {
+            if ($row['status'] == 'unread') {
               $unread_count++;
             }
-          }
-        }
-
-        // Fetch approved download requests for the student, including file name for download link
-        $downloadResult = $conn->query("
-        SELECT dr.id, dr.status, f.filename, f.filepath 
-        FROM download_requests dr
-        JOIN files f ON dr.file_id = f.id
-        WHERE dr.user_id = $student_id AND dr.status = 'approved'
-        ORDER BY dr.requested_at DESC
-    ");
-
-        if ($downloadResult) {
-          while ($download = $downloadResult->fetch_assoc()) {
-            $notifications[] = [
-              'id' => $download['id'],
-              'message' => "Your download request for {$download['filename']} is approved.",
-              'date_created' => date("Y-m-d H:i:s"),
-              'status' => 'approved',
-              'file_url' => base_url . "uploads/" . urlencode($download['filepath'])
-            ];
           }
         }
       }
