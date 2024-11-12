@@ -68,41 +68,69 @@ foreach ($user->fetch_array() as $k => $v) {
       <div class="right__col">
         <nav>
           <ul>
-            <li><a href="javascript:void(0);" onclick="loadPage('my_archives.php')">My Archives</a></li>
-            <li><a href="javascript:void(0);" onclick="loadPage('submit_capstone.php')">Submit Capstone Projects</a>
-            </li>
-            <li><a href="javascript:void(0);" onclick="loadPage('notifications.php')">Notifications</a></li>
-            <li><a href="javascript:void(0);" onclick="loadPage('account_settings.php')">Account Settings</a></li>
+            <li><a href="#" onclick="loadContent('my_archives')">my archives</a></li>
+            <li><a href="#" onclick="loadContent('submit_capstone')">submit capstone projects</a></li>
+            <li><a href="#" onclick="loadContent('notifications')">notifications</a></li>
+            <li><a href="#" onclick="loadContent('account_settings')">account settings</a></li>
           </ul>
         </nav>
 
         <!-- Default page content (my_archives) -->
-        <!-- This is where the dynamic content will load -->
         <div class="page" id="content-area">
-          <!-- Default content for My Archives -->
+          <!-- The initial content for "my archives" will go here -->
+          <img src="img/img_1.avif" alt="Photo" />
+          <img src="img/img_2.avif" alt="Photo" />
+          <img src="img/img_3.avif" alt="Photo" />
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // Function to dynamically load content into #content-area
-    function loadPage(pageUrl) {
-      $.ajax({
-        url: pageUrl,
-        method: 'GET',
-        success: function (data) {
-          $('#content-area').html(data);
-        },
-        error: function () {
-          $('#content-area').html('<p>Error loading page. Please try again.</p>');
-        }
-      });
+    // JavaScript function to dynamically load content
+    function loadContent(page) {
+      const contentArea = document.getElementById("content-area");
+
+      switch (page) {
+        case 'my_archives':
+          contentArea.innerHTML = `
+            <h2>My Archives</h2>
+            <img src="img/img_1.avif" alt="Photo" />
+            <img src="img/img_2.avif" alt="Photo" />
+            <img src="img/img_3.avif" alt="Photo" />
+          `;
+          break;
+
+        case 'submit_capstone':
+          contentArea.innerHTML = `
+            <h2>Submit Capstone Projects</h2>
+            <p>Upload and submit your capstone project files here.</p>
+            <button>Submit Project</button>
+          `;
+          break;
+
+        case 'notifications':
+          contentArea.innerHTML = `
+            <h2>Notifications</h2>
+            <p>You have no new notifications at this time.</p>
+          `;
+          break;
+
+        case 'account_settings':
+          contentArea.innerHTML = `
+            <h2>Account Settings</h2>
+            <p>Manage your account information and preferences here.</p>
+          `;
+          break;
+
+        default:
+          contentArea.innerHTML = `<p>Page not found.</p>`;
+      }
     }
 
-    // Load My Archives by default when the page first loads
-    $(document).ready(function () {
-      loadPage('my_archives.php');
+    // Load the default page content ("my_archives") when the page is first loaded
+    document.addEventListener("DOMContentLoaded", function () {
+      loadContent('my_archives');
     });
   </script>
 </body>
