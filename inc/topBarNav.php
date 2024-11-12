@@ -1,5 +1,5 @@
 <head>
-  <link rel="stylesheet" href="<?php echo base_url ?>plugins/styleindex.css?v=<?php echo time(); ?>">
+  <link rel="stylesheet" href="<?php echo base_url ?>myStyles/styleindex.css?v=<?php echo time(); ?>">
   <style>
     /* NAVBAR */
     #login-nav {
@@ -169,7 +169,8 @@
       </li>
       <?php if ($_settings->userdata('id') > 0): ?>
         <li class="nav-item">
-          <a href="./?page=profile" class="nav-link <?= isset($page) && $page == 'profile' ? "active" : "" ?>">Profile</a>
+          <a href="./?page=studentprofile"
+            class="nav-link <?= isset($page) && $page == 'profile' ? "active" : "" ?>">Profile</a>
         </li>
         <li class="nav-item">
           <a href="./?page=submit-archive"
