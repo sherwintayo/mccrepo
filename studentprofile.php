@@ -68,7 +68,7 @@ foreach ($user->fetch_array() as $k => $v) {
       <div class="right__col">
         <nav>
           <ul>
-            <li><a href="#" onclick="loadContent('my_archives.php')">My Archives</a></li>
+            <li><a href="#" onclick="loadContent('./?page=my_archives')">My Archives</a></li>
             <li><a href="#" onclick="loadContent('submit_projects.php')">Submit Capstone Projects</a></li>
             <li><a href="#" onclick="loadContent('notifications.php')">Notifications</a></li>
             <li><a href="#" onclick="loadContent('account_settings.php')">Account Settings</a></li>
