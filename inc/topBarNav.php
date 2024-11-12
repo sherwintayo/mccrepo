@@ -196,25 +196,18 @@
       </div>
 
       <?php
-      // Fetch notifications for the logged-in student
-      $student_id = $_settings->userdata('id');
+      // Fetch notifications for the logged-in user
+      $student_id = $_settings->userdata('id'); // Check if the user is logged in
       $notifications = [];
       $unread_count = 0;
-
       if ($student_id) {
-        // Query to retrieve download requests and notifications for the student
-        $result = $conn->query("
-        SELECT dr.id, dr.status, dr.notification_status, f.filename, dr.requested_at, dr.status AS download_status
-        FROM download_requests dr
-        JOIN files f ON dr.file_id = f.id
-        WHERE dr.user_id = $student_id
-        ORDER BY dr.requested_at DESC
-    ");
-
-        while ($row = $result->fetch_assoc()) {
-          $notifications[] = $row;
-          if ($row['notification_status'] === 'unread') {
-            $unread_count++;
+        $result = $conn->query("SELECT * FROM notifications WHERE student_id = $student_id ORDER BY date_created DESC");
+        if ($result) {
+          while ($row = $result->fetch_assoc()) {
+            $notifications[] = $row;
+            if ($row['status'] == 'unread') {
+              $unread_count++;
+            }
           }
         }
       }
@@ -227,37 +220,33 @@
             <i class="fa fa-bell text-white"></i>
             <?php if ($unread_count > 0): ?>
               <span class="badge badge-danger navbar-badge"><?= $unread_count ?></span>
+
+            </a>
+
+            <!-- Dropdown Menu -->
+            <div class="dropdown-menu dropdown-menu-right">
+              <span class="dropdown-item dropdown-header">You have <?= $unread_count ?> Notifications</span>
             <?php endif; ?>
-          </a>
-
-          <div class="dropdown-menu dropdown-menu-right">
-            <span class="dropdown-item dropdown-header"><?= $unread_count ?> New Notifications</span>
             <div class="dropdown-divider"></div>
-
-            <?php foreach ($notifications as $notif): ?>
-              <div class="dropdown-item <?= $notif['notification_status'] == 'unread' ? 'bg-light' : '' ?>"
-                data-id="<?= $notif['id'] ?>" onclick="markAsReadAndRedirect(this, <?= $notif['id'] ?>)">
-                <p class="mb-1">
-                  <?php if ($notif['download_status'] === 'approved'): ?>
-                    <i class="fas fa-download mr-2"></i> Your download request for <?= htmlspecialchars($notif['filename']) ?>
-                    is
-                    approved.
-                    <a href="<?= base_url . 'uploads/' . urlencode($notif['filename']) ?>"
-                      class="btn btn-sm btn-primary">Download</a>
-                  <?php else: ?>
-                    <i class="fas fa-info-circle mr-2"></i>
-                    <?= $notif['download_status'] === 'rejected' ? 'Your request was rejected.' : 'Pending approval.' ?>
+            <?php if (count($notifications) > 0): ?>
+              <?php foreach ($notifications as $notif): ?>
+                <a href="#" class="dropdown-item notification-link" data-id="<?= $notif['id'] ?>"
+                  onclick="markAsReadAndRedirect(this)">
+                  <i class="fas fa-envelope mr-2"></i>
+                  <span><?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?></span>
+                  <span class="notification-time">
+                    <?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?>
+                  </span>
+                  <?php if ($notif['status'] == 'unread'): ?>
+                    <span class="unread-indicator"></span> <!-- Blue circle for unread messages -->
                   <?php endif; ?>
-                </p>
-                <small class="notification-time"><?= date('M d, Y h:i A', strtotime($notif['requested_at'])) ?></small>
-                <?php if ($notif['notification_status'] === 'unread'): ?>
-                  <span class="unread-indicator"></span>
-                <?php endif; ?>
-              </div>
-              <div class="dropdown-divider"></div>
-            <?php endforeach; ?>
-
-            <a href="./?page=all_notifications" class="dropdown-item dropdown-footer">See All Notifications</a>
+                </a>
+                <div class="dropdown-divider"></div>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <span class="dropdown-item text-light-50">No notifications</span>
+            <?php endif; ?>
+            <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
           </div>
         </div>
       <?php endif; ?>
