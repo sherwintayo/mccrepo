@@ -2,6 +2,7 @@
   <link rel="stylesheet" href="<?php echo base_url ?>myStyles/stdntprof_style.css?v=<?php echo time(); ?>">
 
 </head>
+<?php require_once('./config.php'); ?>
 <?php
 $user = $conn->query("SELECT s.*,d.name as program, c.name as curriculum,CONCAT(lastname,', ',firstname,' ',middlename) as fullname FROM student_list s inner join program_list d on s.program_id = d.id inner join curriculum_list c on s.curriculum_id = c.id where s.id ='{$_settings->userdata('id')}'");
 foreach ($user->fetch_array() as $k => $v) {
