@@ -53,12 +53,11 @@ foreach ($user->fetch_array() as $k => $v) {
       <div class="right__col">
         <nav>
           <ul>
-            <li><a href="">photos</a></li>
-            <li><a href="">galleries</a></li>
-            <li><a href="">groups</a></li>
-            <li><a href="">about</a></li>
+            <li><a href="">my archives</a></li>
+            <li><a href="">submit capstone projects</a></li>
+            <li><a href="">notifications</a></li>
+            <li><a href="">account settings</a></li>
           </ul>
-          <button>Follow</button>
         </nav>
 
         <div class="photos">
