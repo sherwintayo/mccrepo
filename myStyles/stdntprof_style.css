@@ -84,7 +84,7 @@ a {
   flex-direction: column;
   color: #818181;
   font-size: 0.9rem;
-  justify-content: space-between;
+  gap: 25px;
 }
 .header__wrapper .cols__container .left__col .about li span {
   color: #1d1d1d;

@@ -54,7 +54,7 @@ foreach ($user->fetch_array() as $k => $v) {
         </ul>
 
         <div class="content">
-          <h3>Team Members</h3>
+          <h4>Team Members</h4>
           <p><?= nl2br(htmlspecialchars($members)) ?></p>
 
           <ul>
