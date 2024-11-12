@@ -56,35 +56,34 @@ foreach ($user->fetch_array() as $k => $v) {
         <div class="content">
           <h3>Team Members</h3>
           <p><?= nl2br(htmlspecialchars($members)) ?></p>
+
+          <ul>
+            <li><i class="fab fa-twitter"></i></li>
+            <i class="fab fa-pinterest"></i>
+            <i class="fab fa-facebook"></i>
+            <i class="fab fa-dribbble"></i>
+          </ul>
         </div>
+      </div>
+      <div class="right__col">
+        <nav>
+          <ul>
+            <li><a href="">my archives</a></li>
+            <li><a href="">submit capstone projects</a></li>
+            <li><a href="">notifications</a></li>
+            <li><a href="">account settings</a></li>
+          </ul>
+        </nav>
 
-        <ul>
-          <li><i class="fab fa-twitter"></i></li>
-          <i class="fab fa-pinterest"></i>
-          <i class="fab fa-facebook"></i>
-          <i class="fab fa-dribbble"></i>
-        </ul>
+        <div class="photos">
+          <img src="img/img_1.avif" alt="Photo" />
+          <img src="img/img_2.avif" alt="Photo" />
+          <img src="img/img_3.avif" alt="Photo" />
+          <img src="img/img_4.avif" alt="Photo" />
+          <img src="img/img_5.avif" alt="Photo" />
+          <img src="img/img_6.avif" alt="Photo" />
+        </div>
       </div>
     </div>
-    <div class="right__col">
-      <nav>
-        <ul>
-          <li><a href="">my archives</a></li>
-          <li><a href="">submit capstone projects</a></li>
-          <li><a href="">notifications</a></li>
-          <li><a href="">account settings</a></li>
-        </ul>
-      </nav>
-
-      <div class="photos">
-        <img src="img/img_1.avif" alt="Photo" />
-        <img src="img/img_2.avif" alt="Photo" />
-        <img src="img/img_3.avif" alt="Photo" />
-        <img src="img/img_4.avif" alt="Photo" />
-        <img src="img/img_5.avif" alt="Photo" />
-        <img src="img/img_6.avif" alt="Photo" />
-      </div>
-    </div>
-  </div>
   </div>
 </body>
