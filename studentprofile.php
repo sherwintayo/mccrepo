@@ -16,7 +16,7 @@ $user = $conn->query("
         d.name AS program, 
         c.name AS curriculum, 
         CONCAT(s.lastname, ', ', s.firstname, ' ', s.middlename) AS fullname, 
-        a.*,
+        a.*, 
         COUNT(a.id) AS total_projects,
         SUM(CASE WHEN a.status = 1 THEN 1 ELSE 0 END) AS total_published,
         SUM(CASE WHEN a.status = 0 THEN 1 ELSE 0 END) AS total_unpublished
@@ -54,39 +54,37 @@ foreach ($user->fetch_array() as $k => $v) {
         </ul>
 
         <div class="content">
-          <p>
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aliquam
-            erat volutpat. Morbi imperdiet, mauris ac auctor dictum, nisl
-            ligula egestas nulla.
-          </p>
-
-          <ul>
-            <li><i class="fab fa-twitter"></i></li>
-            <i class="fab fa-pinterest"></i>
-            <i class="fab fa-facebook"></i>
-            <i class="fab fa-dribbble"></i>
-          </ul>
+          <h3>Team Members</h3>
+          <p><?= nl2br(htmlspecialchars($members)) ?></p>
         </div>
-      </div>
-      <div class="right__col">
-        <nav>
-          <ul>
-            <li><a href="">my archives</a></li>
-            <li><a href="">submit capstone projects</a></li>
-            <li><a href="">notifications</a></li>
-            <li><a href="">account settings</a></li>
-          </ul>
-        </nav>
 
-        <div class="photos">
-          <img src="img/img_1.avif" alt="Photo" />
-          <img src="img/img_2.avif" alt="Photo" />
-          <img src="img/img_3.avif" alt="Photo" />
-          <img src="img/img_4.avif" alt="Photo" />
-          <img src="img/img_5.avif" alt="Photo" />
-          <img src="img/img_6.avif" alt="Photo" />
-        </div>
+        <ul>
+          <li><i class="fab fa-twitter"></i></li>
+          <i class="fab fa-pinterest"></i>
+          <i class="fab fa-facebook"></i>
+          <i class="fab fa-dribbble"></i>
+        </ul>
       </div>
     </div>
+    <div class="right__col">
+      <nav>
+        <ul>
+          <li><a href="">my archives</a></li>
+          <li><a href="">submit capstone projects</a></li>
+          <li><a href="">notifications</a></li>
+          <li><a href="">account settings</a></li>
+        </ul>
+      </nav>
+
+      <div class="photos">
+        <img src="img/img_1.avif" alt="Photo" />
+        <img src="img/img_2.avif" alt="Photo" />
+        <img src="img/img_3.avif" alt="Photo" />
+        <img src="img/img_4.avif" alt="Photo" />
+        <img src="img/img_5.avif" alt="Photo" />
+        <img src="img/img_6.avif" alt="Photo" />
+      </div>
+    </div>
+  </div>
   </div>
 </body>
