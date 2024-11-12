@@ -148,12 +148,12 @@ a {
 .header__wrapper .cols__container .right__col nav button:hover {
   opacity: 0.8;
 }
-.header__wrapper .cols__container .right__col .photos {
+.header__wrapper .cols__container .right__col .page {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
   gap: 20px;
 }
-.header__wrapper .cols__container .right__col .photos img {
+.header__wrapper .cols__container .right__col .page img {
   max-width: 100%;
   display: block;
   height: 100%;
@@ -179,7 +179,7 @@ a {
     flex-direction: row;
     gap: 30px;
   }
-  .header__wrapper .cols__container .right__col .photos {
+  .header__wrapper .cols__container .right__col .page {
     height: 365px;
     overflow: auto;
     padding: 0 0 30px;

@@ -68,14 +68,16 @@ foreach ($user->fetch_array() as $k => $v) {
       <div class="right__col">
         <nav>
           <ul>
-            <li><a href="">my archives</a></li>
-            <li><a href="">submit capstone projects</a></li>
-            <li><a href="">notifications</a></li>
-            <li><a href="">account settings</a></li>
+            <li><a href="#" onclick="loadContent('my_archives.php')">My Archives</a></li>
+            <li><a href="#" onclick="loadContent('submit_projects.php')">Submit Capstone Projects</a></li>
+            <li><a href="#" onclick="loadContent('notifications.php')">Notifications</a></li>
+            <li><a href="#" onclick="loadContent('account_settings.php')">Account Settings</a></li>
           </ul>
         </nav>
 
-        <div class="photos">
+
+        <!-- Page Content Display Area -->
+        <div class="page" id="page-content">
           <img src="img/img_1.avif" alt="Photo" />
           <img src="img/img_2.avif" alt="Photo" />
           <img src="img/img_3.avif" alt="Photo" />
@@ -87,3 +89,20 @@ foreach ($user->fetch_array() as $k => $v) {
     </div>
   </div>
 </body>
+
+<!-- JavaScript for AJAX content loading -->
+<script>
+  function loadContent(page) {
+    const pageContent = document.getElementById('page-content');
+    pageContent.innerHTML = '<p>Loading...</p>'; // Show loading text
+    fetch(page)
+      .then(response => response.text())
+      .then(data => {
+        pageContent.innerHTML = data; // Insert the loaded content
+      })
+      .catch(error => {
+        pageContent.innerHTML = '<p>Error loading content.</p>';
+        console.error('Error loading content:', error);
+      });
+  }
+</script>
