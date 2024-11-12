@@ -196,16 +196,42 @@
       </div>
 
       <?php
-      // Fetch notifications for the logged-in user
-      $student_id = $_settings->userdata('id'); // Check if the user is logged in
+      // Fetch notifications and approved download requests for the logged-in user
+      $student_id = $_settings->userdata('id');
       $notifications = [];
       $unread_count = 0;
+
       if ($student_id) {
+        // Fetch general notifications
         $result = $conn->query("SELECT * FROM notifications WHERE student_id = $student_id ORDER BY date_created DESC");
         if ($result) {
           while ($row = $result->fetch_assoc()) {
             $notifications[] = $row;
-            if ($row['status'] == 'unread') {
+            if ($row['status'] === 'unread') {
+              $unread_count++;
+            }
+          }
+        }
+
+        // Fetch approved download requests with status_read = 'unread'
+        $downloadResult = $conn->query("
+        SELECT dr.id, dr.status_read, f.filename, f.filepath 
+        FROM download_requests dr
+        JOIN files f ON dr.file_id = f.id
+        WHERE dr.user_id = $student_id AND dr.status = 'approved'
+        ORDER BY dr.requested_at DESC
+    ");
+
+        if ($downloadResult) {
+          while ($download = $downloadResult->fetch_assoc()) {
+            $notifications[] = [
+              'id' => $download['id'],
+              'message' => "Your download request for {$download['filename']} is approved.",
+              'date_created' => date("Y-m-d H:i:s"),
+              'status' => $download['status_read'],
+              'file_url' => base_url . "uploads/" . urlencode($download['filepath'])
+            ];
+            if ($download['status_read'] === 'unread') {
               $unread_count++;
             }
           }
@@ -213,34 +239,39 @@
       }
       ?>
 
-      <?php if ($student_id): ?> <!-- Only show if user is logged in -->
+      <?php if ($student_id): ?>
         <div class="me-3 position-relative">
           <a class="notification_icon" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true"
             aria-expanded="false">
             <i class="fa fa-bell text-white"></i>
             <?php if ($unread_count > 0): ?>
               <span class="badge badge-danger navbar-badge"><?= $unread_count ?></span>
-
-            </a>
-
-            <!-- Dropdown Menu -->
-            <div class="dropdown-menu dropdown-menu-right">
-              <span class="dropdown-item dropdown-header">You have <?= $unread_count ?> Notifications</span>
             <?php endif; ?>
+          </a>
+
+          <!-- Dropdown Menu -->
+          <div class="dropdown-menu dropdown-menu-right">
+            <span class="dropdown-item dropdown-header">You have <?= $unread_count ?> Notifications</span>
             <div class="dropdown-divider"></div>
+
             <?php if (count($notifications) > 0): ?>
               <?php foreach ($notifications as $notif): ?>
                 <a href="#" class="dropdown-item notification-link" data-id="<?= $notif['id'] ?>"
                   onclick="markAsReadAndRedirect(this)">
-                  <i class="fas fa-envelope mr-2"></i>
+                  <i class="fas <?= $notif['status'] == 'approved' ? 'fa-download' : 'fa-envelope' ?> mr-2"></i>
                   <span><?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?></span>
-                  <span class="notification-time">
-                    <?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?>
-                  </span>
-                  <?php if ($notif['status'] == 'unread'): ?>
+                  <span class="notification-time"><?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
+                  <?php if ($notif['status'] == 'unread' || ($notif['status'] === 'approved' && $notif['status_read'] === 'unread')): ?>
                     <span class="unread-indicator"></span> <!-- Blue circle for unread messages -->
                   <?php endif; ?>
                 </a>
+                <?php if ($notif['status'] === 'approved' && isset($notif['file_url'])): ?>
+                  <!-- Download button for approved requests -->
+                  <a href="<?= htmlspecialchars($notif['file_url'], ENT_QUOTES, 'UTF-8') ?>" class="dropdown-item text-primary">
+                    <i class="fas fa-download mr-2"></i> Download
+                    <?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?>
+                  </a>
+                <?php endif; ?>
                 <div class="dropdown-divider"></div>
               <?php endforeach; ?>
             <?php else: ?>
@@ -250,6 +281,7 @@
           </div>
         </div>
       <?php endif; ?>
+
 
 
 
@@ -468,17 +500,17 @@
   function markAsReadAndRedirect(element) {
     const notificationId = element.getAttribute("data-id");
 
-    // Send AJAX request to mark the notification as read
-    fetch(`./mark_notification_read.php?id=${notificationId}`, { method: 'POST' })
+    fetch(`./mark_notification_read.php?id=${notificationId}`, { method: 'GET' })
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          // Redirect to the archives page
-          window.location.href = "./?page=my_archives";
+          element.querySelector('.unread-indicator').remove();
+          // Redirect or update as needed
         } else {
           console.error("Failed to mark notification as read.");
         }
       })
       .catch(error => console.error("Error:", error));
   }
+
 </script>
