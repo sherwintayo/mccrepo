@@ -2,7 +2,12 @@
   <link rel="stylesheet" href="<?php echo base_url ?>myStyles/stdntprof_style.css?v=<?php echo time(); ?>">
 
 </head>
-
+<?php
+$user = $conn->query("SELECT s.*,d.name as program, c.name as curriculum,CONCAT(lastname,', ',firstname,' ',middlename) as fullname FROM student_list s inner join program_list d on s.program_id = d.id inner join curriculum_list c on s.curriculum_id = c.id where s.id ='{$_settings->userdata('id')}'");
+foreach ($user->fetch_array() as $k => $v) {
+  $$k = $v;
+}
+?>
 
 <body>
   <div class="header__wrapper">
@@ -10,12 +15,12 @@
     <div class="cols__container">
       <div class="left__col">
         <div class="img__container">
-          <img src="img/user.jpeg" alt="Anna Smith" />
+          <img src="<?= validate_image($avatar) ?>" alt="Student Image" />
           <span></span>
         </div>
-        <h2>Anna Smith</h2>
-        <p>UX/UI Designer</p>
-        <p>anna@example.com</p>
+        <h2><?= ucwords($fullname) ?></h2>
+        <p>Programmer</p>
+        <p><?= $email ?></p>
 
         <ul class="about">
           <li><span>4,073</span>Followers</li>
