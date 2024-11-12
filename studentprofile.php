@@ -1,6 +1,12 @@
 <head>
   <link rel="stylesheet" href="<?php echo base_url ?>myStyles/stdntprof_style.css?v=<?php echo time(); ?>">
-
+  <style>
+    .header__wrapper header {
+      width: 100%;
+      background: url("<?php echo validate_image($_settings->info('cover')) ?>") no-repeat 50% 20% / cover;
+      min-height: calc(100px + 15vw);
+    }
+  </style>
 </head>
 <?php require_once('./config.php'); ?>
 <?php
