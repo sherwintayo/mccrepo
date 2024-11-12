@@ -10,11 +10,29 @@
 </head>
 <?php require_once('./config.php'); ?>
 <?php
-$user = $conn->query("SELECT s.*,d.name as program, c.name as curriculum,CONCAT(lastname,', ',firstname,' ',middlename) as fullname FROM student_list s inner join program_list d on s.program_id = d.id inner join curriculum_list c on s.curriculum_id = c.id where s.id ='{$_settings->userdata('id')}'");
+$user = $conn->query("
+    SELECT 
+        s.*, 
+        d.name AS program, 
+        c.name AS curriculum, 
+        CONCAT(s.lastname, ', ', s.firstname, ' ', s.middlename) AS fullname, 
+        a.*,
+        COUNT(a.id) AS total_projects,
+        SUM(CASE WHEN a.status = 1 THEN 1 ELSE 0 END) AS total_published,
+        SUM(CASE WHEN a.status = 0 THEN 1 ELSE 0 END) AS total_unpublished
+    FROM student_list s
+    INNER JOIN program_list d ON s.program_id = d.id
+    INNER JOIN curriculum_list c ON s.curriculum_id = c.id
+    LEFT JOIN archive_list a ON a.student_id = s.id
+    WHERE s.id = '{$_settings->userdata('id')}'
+    GROUP BY s.id
+");
+
 foreach ($user->fetch_array() as $k => $v) {
   $$k = $v;
 }
 ?>
+
 
 <body>
   <div class="header__wrapper">
@@ -30,9 +48,9 @@ foreach ($user->fetch_array() as $k => $v) {
         <p><?= $email ?></p>
 
         <ul class="about">
-          <li><span>4,073</span>Followers</li>
-          <li><span>322</span>Following</li>
-          <li><span>200,543</span>Attraction</li>
+          <li><span><?= $total_projects ?></span>Projects</li>
+          <li><span><?= $total_published ?></span>Published</li>
+          <li><span><?= $total_unpublished ?></span>Unpublished</li>
         </ul>
 
         <div class="content">
