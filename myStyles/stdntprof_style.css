@@ -78,13 +78,13 @@ a {
   justify-content: space-between;
   position: relative;
   margin: 35px 0;
+  gap: 25px;
 }
 .header__wrapper .cols__container .left__col .about li {
   display: flex;
   flex-direction: column;
   color: #818181;
   font-size: 0.9rem;
-  gap: 25px;
 }
 .header__wrapper .cols__container .left__col .about li span {
   color: #1d1d1d;
