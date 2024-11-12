@@ -243,43 +243,29 @@
             aria-expanded="false">
             <i class="fa fa-bell text-white"></i>
             <?php if ($unread_count > 0): ?>
-              <span class="badge badge-danger navbar-badge">
-                <?= $unread_count ?></span>
+              <span class="badge badge-danger navbar-badge"><?= $unread_count ?></span>
+
+            </a>
+
+            <!-- Dropdown Menu -->
+            <div class="dropdown-menu dropdown-menu-right">
+              <span class="dropdown-item dropdown-header">You have <?= $unread_count ?> Notifications</span>
             <?php endif; ?>
-          </a>
-
-          <!-- Dropdown Menu -->
-          <div class="dropdown-menu dropdown-menu-right">
-            <span class="dropdown-item dropdown-header">You have
-              <?= $unread_count ?> Notifications
-            </span>
             <div class="dropdown-divider"></div>
-
             <?php if (count($notifications) > 0): ?>
               <?php foreach ($notifications as $notif): ?>
-                <a href="#" class="dropdown-item notification-link" data-id="
-          <?= $notif['id'] ?>" onclick="markAsReadAndRedirect(this)">
-                  <i class="fas <?= $notif['status'] == 'approved' ? 'fa-download' : 'fa-envelope' ?> mr-2"></i>
-                  <span>
-                    <?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?>
-                  </span>
+                <a href="#" class="dropdown-item notification-link" data-id="<?= $notif['id'] ?>"
+                  onclick="markAsReadAndRedirect(this)">
+                  <i class="fas fa-envelope mr-2"></i>
+                  <span><?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?></span>
                   <span class="notification-time">
                     <?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?>
                   </span>
                   <?php if ($notif['status'] == 'unread'): ?>
-                    <span class="unread-indicator"></span>
+                    <span class="unread-indicator"></span> <!-- Blue circle for unread messages -->
                   <?php endif; ?>
                 </a>
-                <?php if ($notif['status'] == 'approved' && isset($notif['file_url'])): ?>
-                  <!-- Download button for approved requests -->
-                  <a href="
-          <?= htmlspecialchars($notif['file_url'], ENT_QUOTES, 'UTF-8') ?>" class="dropdown-item text-primary">
-                    <i class="fas fa-download mr-2"></i> Download
-                    <?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?>
-                  </a>
-                <?php endif; ?>
-                <div class="dropdown-divider">
-                </div>
+                <div class="dropdown-divider"></div>
               <?php endforeach; ?>
             <?php else: ?>
               <span class="dropdown-item text-light-50">No notifications</span>
@@ -506,17 +492,17 @@
   function markAsReadAndRedirect(element) {
     const notificationId = element.getAttribute("data-id");
 
-    fetch(`./mark_notification_read.php?id=${notificationId}`, { method: 'GET' })
+    // Send AJAX request to mark the notification as read
+    fetch(`./mark_notification_read.php?id=${notificationId}`, { method: 'POST' })
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          element.querySelector('.unread-indicator').remove();
-          // Perform any redirection or UI update as needed
+          // Redirect to the archives page
+          window.location.href = "./?page=my_archives";
         } else {
           console.error("Failed to mark notification as read.");
         }
       })
       .catch(error => console.error("Error:", error));
   }
-
 </script>
