@@ -31,8 +31,14 @@ $user = $conn->query("
 foreach ($user->fetch_array() as $k => $v) {
   $$k = $v;
 }
-?>
 
+// Fetch project archives data for the "my archives" section
+$archives = [];
+$qry = $conn->query("SELECT * FROM `archive_list` WHERE student_id = '{$_settings->userdata('id')}' ORDER BY unix_timestamp(`date_created`) ASC");
+while ($row = $qry->fetch_assoc()) {
+  $archives[] = $row;
+}
+?>
 
 <body>
   <div class="header__wrapper">
@@ -87,44 +93,73 @@ foreach ($user->fetch_array() as $k => $v) {
   </div>
 
   <script>
+    const archives = <?php echo json_encode($archives); ?>;
+
     // JavaScript function to dynamically load content
     function loadContent(page) {
       const contentArea = document.getElementById("content-area");
 
-      switch (page) {
-        case 'my_archives':
-          contentArea.innerHTML = `
-            <h2>My Archives</h2>
-            <img src="img/img_1.avif" alt="Photo" />
-            <img src="img/img_2.avif" alt="Photo" />
-            <img src="img/img_3.avif" alt="Photo" />
-          `;
-          break;
+      if (page === 'my_archives') {
+        let html = `
+          <h2>My Submitted Projects</h2>
+          <div class="card-deck d-flex flex-wrap">`;
 
-        case 'submit_capstone':
-          contentArea.innerHTML = `
-            <h2>Submit Capstone Projects</h2>
-            <p>Upload and submit your capstone project files here.</p>
-            <button>Submit Project</button>
-          `;
-          break;
+        archives.forEach((archive) => {
+          const statusLabel = archive.status == 1 ? 'Published' : 'Unpublished';
+          const statusClass = archive.status == 1 ? 'badge-success' : 'badge-secondary';
 
-        case 'notifications':
-          contentArea.innerHTML = `
-            <h2>Notifications</h2>
-            <p>You have no new notifications at this time.</p>
-          `;
-          break;
+          html += `
+            <div class="card shadow-sm border-primary m-2" style="width: 18rem;">
+              <img src="${archive.banner_path ? `<?= base_url ?>${archive.banner_path}` : 'img/default.jpg'}" class="card-img-top" alt="Project Banner" style="height: 180px; object-fit: cover;">
+              <div class="card-body">
+                <h5 class="card-title">${archive.title}</h5>
+                <p class="card-text">Archive Code: ${archive.archive_code}</p>
+              </div>
+              <div class="card-footer d-flex justify-content-between align-items-center">
+                <span class="badge ${statusClass}">${statusLabel}</span>
+                <div class="dropdown">
+                  <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Actions
+                  </button>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" href="<?= base_url ?>/?page=view_archive&id=${archive.id}" target="_blank">
+                      <i class="fa fa-external-link-alt text-gray"></i> View
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item delete_data" href="javascript:void(0)" data-id="${archive.id}">
+                      <i class="fa fa-trash text-danger"></i> Delete
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>`;
+        });
 
-        case 'account_settings':
-          contentArea.innerHTML = `
-            <h2>Account Settings</h2>
-            <p>Manage your account information and preferences here.</p>
-          `;
-          break;
+        html += `</div>`; // Close card-deck div
+        contentArea.innerHTML = html;
 
-        default:
-          contentArea.innerHTML = `<p>Page not found.</p>`;
+        // Add delete functionality
+        document.querySelectorAll('.delete_data').forEach(button => {
+          button.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            _conf("Are you sure to delete this project permanently?", "delete_archive", [id]);
+          });
+        });
+      } else if (page === 'submit_capstone') {
+        contentArea.innerHTML = `
+          <h2>Submit Capstone Projects</h2>
+          <p>Upload and submit your capstone project files here.</p>
+          <button>Submit Project</button>`;
+      } else if (page === 'notifications') {
+        contentArea.innerHTML = `
+          <h2>Notifications</h2>
+          <p>You have no new notifications at this time.</p>`;
+      } else if (page === 'account_settings') {
+        contentArea.innerHTML = `
+          <h2>Account Settings</h2>
+          <p>Manage your account information and preferences here.</p>`;
+      } else {
+        contentArea.innerHTML = `<p>Page not found.</p>`;
       }
     }
 

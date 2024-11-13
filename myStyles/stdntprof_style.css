@@ -116,6 +116,9 @@ a {
 .header__wrapper .cols__container .content ul i {
   font-size: 1.3rem;
 }
+.header__wrapper .cols__container .right__col {
+  flex-grow: 1; /* Right column takes remaining space */
+}
 .header__wrapper .cols__container .right__col nav {
   display: flex;
   align-items: center;

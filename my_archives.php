@@ -1,4 +1,100 @@
+<style>
+    .card-deck .card {
+        min-width: 250px;
+        /* Ensures all cards have a minimum width */
+    }
+
+    .card-deck .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
+
 <div class="content py-3">
+    <div class="container-fluid">
+        <div class="card-deck">
+            <?php
+            $qry = $conn->query("SELECT * FROM `archive_list` WHERE student_id = '{$_settings->userdata('id')}' ORDER BY unix_timestamp(`date_created`) ASC");
+            while ($row = $qry->fetch_assoc()):
+                $status = $row['status'] == 1 ? 'Published' : 'Unpublished';
+                $statusClass = $row['status'] == 1 ? 'badge-success' : 'badge-secondary';
+                ?>
+                <div class="card shadow-sm border-primary mb-4" style="width: 18rem;">
+                    <img src="<?= validate_image($row['banner_path']) ?>" class="card-img-top" alt="Project Banner"
+                        style="height: 180px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title"><?= ucwords($row['title']) ?></h5>
+                        <p class="card-text">Archive Code: <?= $row['archive_code'] ?></p>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between align-items-center">
+                        <span class="badge <?= $statusClass ?>"><?= $status ?></span>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                id="actionMenu<?= $row['id'] ?>" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">
+                                Actions
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="actionMenu<?= $row['id'] ?>">
+                                <a class="dropdown-item" href="<?= base_url ?>/?page=view_archive&id=<?= $row['id'] ?>"
+                                    target="_blank">
+                                    <i class="fa fa-external-link-alt text-gray"></i> View
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item delete_data" href="javascript:void(0)" data-id="<?= $row['id'] ?>">
+                                    <i class="fa fa-trash text-danger"></i> Delete
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endwhile; ?>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.delete_data').click(function () {
+            _conf("Are you sure to delete this project permanently?", "delete_archive", [$(this).attr('data-id')])
+        });
+    });
+
+    function delete_archive(id) {
+        start_loader();
+        $.ajax({
+            url: _base_url_ + "classes/Master.php?f=delete_archive",
+            method: "POST",
+            data: { id: id },
+            dataType: "json",
+            error: err => {
+                console.log(err);
+                alert_toast("An error occurred.", 'error');
+                end_loader();
+            },
+            success: function (resp) {
+                if (typeof resp == 'object' && resp.status == 'success') {
+                    location.reload();
+                } else {
+                    alert_toast("An error occurred.", 'error');
+                    end_loader();
+                }
+            }
+        });
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<!-- <div class="content py-3">
     <div class="container-fluid">
         <div class="card card-outline card-primary shadow rounded-0">
             <div class="card-header rounded-0">
@@ -28,29 +124,29 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php 
-                                $i = 1;
-                                $curriculum = $conn->query("SELECT * FROM curriculum_list where id in (SELECT curriculum_id from `archive_list` where student_id = '{$_settings->userdata('id')}' )");
-                                $cur_arr = array_column($curriculum->fetch_all(MYSQLI_ASSOC),'name','id');
-                                $qry = $conn->query("SELECT * from `archive_list` where student_id = '{$_settings->userdata('id')}' order by unix_timestamp(`date_created`) asc ");
-                                while($row = $qry->fetch_assoc()):
-                            ?>
+                            <?php
+                            $i = 1;
+                            $curriculum = $conn->query("SELECT * FROM curriculum_list where id in (SELECT curriculum_id from `archive_list` where student_id = '{$_settings->userdata('id')}' )");
+                            $cur_arr = array_column($curriculum->fetch_all(MYSQLI_ASSOC), 'name', 'id');
+                            $qry = $conn->query("SELECT * from `archive_list` where student_id = '{$_settings->userdata('id')}' order by unix_timestamp(`date_created`) asc ");
+                            while ($row = $qry->fetch_assoc()):
+                                ?>
                                 <tr>
                                     <td class="text-center"><?php echo $i++; ?></td>
-                                    <td class=""><?php echo date("Y-m-d H:i",strtotime($row['date_created'])) ?></td>
+                                    <td class=""><?php echo date("Y-m-d H:i", strtotime($row['date_created'])) ?></td>
                                     <td><?php echo ($row['archive_code']) ?></td>
                                     <td><?php echo ucwords($row['title']) ?></td>
                                     <td><?php echo $cur_arr[$row['curriculum_id']] ?></td>
                                     <td class="text-center">
                                         <?php
-                                            switch($row['status']){
-                                                case '1':
-                                                    echo "<span class='badge badge-success badge-pill'>Published</span>";
-                                                    break;
-                                                case '0':
-                                                    echo "<span class='badge badge-secondary badge-pill'>Not Published</span>";
-                                                    break;
-                                            }
+                                        switch ($row['status']) {
+                                            case '1':
+                                                echo "<span class='badge badge-success badge-pill'>Published</span>";
+                                                break;
+                                            case '0':
+                                                echo "<span class='badge badge-secondary badge-pill'>Not Published</span>";
+                                                break;
+                                        }
                                         ?>
                                     </td>
                                     <td align="center">
@@ -76,36 +172,36 @@
 <script>
     $(function(){
         $('.delete_data').click(function(){
-			_conf("Are you sure to delete this project permanently?","delete_archive",[$(this).attr('data-id')])
-		})
+            _conf("Are you sure to delete this project permanently?","delete_archive",[$(this).attr('data-id')])
+        })
         $('.table td,.table th').addClass('py-1 px-2 align-middle')
-		$('.table').dataTable({
+        $('.table').dataTable({
             columnDefs: [
                 { orderable: false, targets: 5 }
             ],
         });
     })
     function delete_archive($id){
-		start_loader();
-		$.ajax({
-			url:_base_url_+"classes/Master.php?f=delete_archive",
-			method:"POST",
-			data:{id: $id},
-			dataType:"json",
-			error:err=>{
-				console.log(err)
-				alert_toast("An error occured.",'error');
-				end_loader();
-			},
-			success:function(resp){
-				if(typeof resp== 'object' && resp.status == 'success'){
-					location.reload();
-				}else{
-					alert_toast("An error occured.",'error');
-					end_loader();
-				}
-			}
-		})
-	}
+        start_loader();
+        $.ajax({
+            url:_base_url_+"classes/Master.php?f=delete_archive",
+            method:"POST",
+            data:{id: $id},
+            dataType:"json",
+            error:err=>{
+                console.log(err)
+                alert_toast("An error occured.",'error');
+                end_loader();
+            },
+            success:function(resp){
+                if(typeof resp== 'object' && resp.status == 'success'){
+                    location.reload();
+                }else{
+                    alert_toast("An error occured.",'error');
+                    end_loader();
+                }
+            }
+        })
+    }
 
-</script>
+</script> -->
