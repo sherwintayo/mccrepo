@@ -38,9 +38,10 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 ?>
 <style>
     #document_field {
-        min-height: 80vh;
+        min-height: 80vh
     }
 
+    /* Custom styles to ensure modal is properly centered */
     .modal-dialog {
         display: flex;
         justify-content: center;
@@ -52,13 +53,17 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         display: none;
         margin-top: 10px;
     }
-</style>
 
+    /* Hide request forms initially */
+</style>
+</head>
+</style>
 <div class="content py-4">
     <div class="col-12">
         <div class="card card-outline card-primary shadow rounded-0">
             <div class="card-header">
-                <h3 class="card-title">Archives - <?= isset($archive_code) ? htmlspecialchars($archive_code) : "" ?>
+                <h3 class="card-title">
+                    Archives - <?= isset($archive_code) ? htmlspecialchars($archive_code) : "" ?>
                 </h3>
             </div>
             <div class="card-body rounded-0">
@@ -66,8 +71,6 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     <h2><b><?= isset($title) ? htmlspecialchars($title) : "" ?></b></h2>
                     <small class="text-muted">Submitted by <b class="text-info"><?= htmlspecialchars($submitted) ?></b>
                         on <?= isset($date_created) ? date("F d, Y h:i A", strtotime($date_created)) : "" ?></small>
-
-                    <!-- Edit/Delete Buttons if Student is Owner -->
                     <?php if (isset($student_id) && $_settings->userdata('login_type') == "2" && $student_id == $_settings->userdata('id')): ?>
                         <div class="form-group">
                             <a href="./?page=submit-archive&id=<?= isset($id) ? htmlspecialchars($id) : "" ?>"
@@ -82,8 +85,6 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         <img src="<?= validate_image(isset($banner_path) ? htmlspecialchars($banner_path) : "") ?>"
                             alt="Banner Image" id="banner-img" class="img-fluid border bg-gradient-dark">
                     </center>
-
-                    <!-- Display Project Details -->
                     <fieldset>
                         <legend class="text-navy">Project Year:</legend>
                         <div class="pl-4">
@@ -103,12 +104,12 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         </div>
                     </fieldset>
 
-                    <!-- Download Request Buttons and Textareas for Reason -->
+                    <!-- Download Request Buttons with Text Boxes for Reason -->
                     <?php if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] == true): ?>
                         <fieldset>
                             <legend class="text-navy">Project Files:</legend>
                             <button class="btn btn-success request-download-btn" data-file-id="<?= htmlspecialchars($id) ?>"
-                                data-file-type="files">Download Project Files</button>
+                                data-file-type="files">Download Project files</button>
                             <div class="request-form" id="request-form-files">
                                 <textarea class="form-control reason" placeholder="Reason for download" rows="2"></textarea>
                                 <button class="btn btn-primary submit-request-btn"
@@ -117,9 +118,9 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                             </div>
                         </fieldset>
                         <fieldset>
-                            <legend class="text-navy">SQL File:</legend>
+                            <legend class="text-navy">SQL file:</legend>
                             <button class="btn btn-success request-download-btn" data-file-id="<?= htmlspecialchars($id) ?>"
-                                data-file-type="sql">Download SQL File</button>
+                                data-file-type="sql">Download SQL file</button>
                             <div class="request-form" id="request-form-sql">
                                 <textarea class="form-control reason" placeholder="Reason for download" rows="2"></textarea>
                                 <button class="btn btn-primary submit-request-btn"
@@ -142,13 +143,13 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                             <legend class="text-navy">Project Files:</legend>
                             <a class="btn btn-success"
                                 href="login.php?redirect=download&file_type=zip&id=<?= htmlspecialchars($id) ?>">Download
-                                Project Files</a>
+                                Project files</a>
                         </fieldset>
                         <fieldset>
-                            <legend class="text-navy">SQL File:</legend>
+                            <legend class="text-navy">SQL file:</legend>
                             <a class="btn btn-success"
                                 href="login.php?redirect=download&file_type=sql&id=<?= htmlspecialchars($id) ?>">Download
-                                SQL File</a>
+                                SQL file</a>
                         </fieldset>
                         <fieldset>
                             <legend class="text-navy">Project Document:</legend>
@@ -158,10 +159,79 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         </fieldset>
                     <?php endif; ?>
                 </div>
+                <!-- Modal HTML -->
+                <div class="modal fade" id="requestDownloadModal" role="dialog"
+                    aria-labelledby="requestDownloadModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="requestDownloadModalLabel">Request Download</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="downloadRequestForm">
+                                    <div class="form-group">
+                                        <label for="reason">Reason for Download</label>
+                                        <textarea class="form-control" id="reason" name="reason" rows="3"
+                                            placeholder="Please provide the reason for downloading this file."
+                                            required></textarea>
+                                    </div>
+                                    <input type="hidden" id="fileId" name="fileId" value="">
+                                    <button type="submit" class="btn btn-primary">Submit Request</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+<script>
+    $(function () {
+        $('.delete-data').click(function () {
+            _conf("Are you sure to delete <b>Archive-<?= isset($archive_code) ? htmlspecialchars($archive_code) : "" ?></b>", "delete_archive")
+        });
+        $('.summernote').summernote({
+            height: 200
+        });
+        $("#summernote").summernote("disable");
+    });
+
+    function delete_archive() {
+        start_loader();
+        $.ajax({
+            url: _base_url_ + "classes/Master.php?f=delete_archive",
+            method: "POST",
+            data: { id: "<?= isset($id) ? htmlspecialchars($id) : "" ?>" },
+            dataType: "json",
+            error: err => {
+                console.log(err);
+                alert_toast("An error occurred.", 'error');
+                end_loader();
+            },
+            success: function (resp) {
+                if (typeof resp == 'object' && resp.status == 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted Successfully',
+                        showConfirmButton: false,
+                        timer: 1000
+                    }).then(() => {
+                        location.replace("./");
+                    });
+                } else {
+                    alert_toast("An error occurred.", 'error');
+                    end_loader();
+                }
+            }
+        });
+    }
+
+</script>
+
 
 <script>
     $(document).ready(function () {
@@ -183,30 +253,25 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 return;
             }
 
-            // Console log the data being sent for debugging
-            console.log("Submitting request:", { fileId, reason, fileType });
-
             $.ajax({
                 url: 'process_download_request.php',
                 method: 'POST',
-                data: { fileId: fileId, reason: reason, fileType: fileType },
+                data: { fileId: fileId, reason: reason },
                 dataType: 'json',
                 success: function (response) {
-                    console.log("Server response:", response); // Debugging output
+                    console.log("AJAX response:", response); // Debugging output
                     if (response.status === 'success') {
-                        alert("Your request has been submitted for review.");
+                        alert("Your request has been sent to the admin.");
                         $('#request-form-' + fileType).hide();
                         $('#request-form-' + fileType + ' .reason').val(''); // Clear the textarea
                     } else {
-                        alert("Failed to submit request. Please try again.");
+                        alert("Failed to send request. Please try again. Error: " + response.message);
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    console.error("AJAX error:", textStatus, errorThrown); // Log error
-                    alert("An error occurred while sending your request.");
+                    alert("An error occurred while sending your request. Please try again.");
                 }
             });
         });
     });
-
 </script>
