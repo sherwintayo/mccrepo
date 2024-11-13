@@ -1,36 +1,23 @@
 <?php
-session_start();
-require_once('config.php');
+require_once 'config.php';
 
-$response = ['status' => 'error', 'message' => 'Invalid request'];
+$response = ['status' => 'error', 'message' => 'Request could not be processed'];
 
-// Check if session user_id is set for debugging
-if (!isset($_SESSION['user_id'])) {
-    $response['message'] = 'User ID not set in session.';
-    echo json_encode($response);
-    exit;
-}
-
-if (isset($_POST['fileId'], $_POST['reason']) && !empty($_POST['reason']) && isset($_SESSION['user_id'])) {
+if (isset($_POST['fileId'], $_POST['reason'], $_POST['fileType']) && !empty($_SESSION['user_id'])) {
     $fileId = intval($_POST['fileId']);
-    $reason = trim($_POST['reason']);
-    $userId = $_SESSION['user_id'];
+    $reason = $conn->real_escape_string($_POST['reason']);
+    $fileType = $conn->real_escape_string($_POST['fileType']);
+    $user_id = $_SESSION['user_id'];
 
-    try {
-        $stmt = $conn->prepare("INSERT INTO download_requests (user_id, file_id, reason, status, requested_at) VALUES (?, ?, ?, 'pending', NOW())");
-        $stmt->bind_param("iis", $userId, $fileId, $reason);
-
-        if ($stmt->execute()) {
-            $response = ['status' => 'success', 'message' => 'Request submitted successfully.'];
-        } else {
-            $response['message'] = 'Failed to submit the request.';
-        }
-    } catch (Exception $e) {
-        $response['message'] = 'An error occurred: ' . $e->getMessage();
+    $stmt = $conn->prepare("INSERT INTO download_requests (user_id, file_id, reason, status, status_read) VALUES (?, ?, ?, 'pending', 'unread')");
+    $stmt->bind_param("iis", $user_id, $fileId, $reason);
+    if ($stmt->execute()) {
+        $response = ['status' => 'success'];
+    } else {
+        $response['message'] = 'Failed to submit request.';
     }
-} else {
-    $response['message'] = 'Invalid input or user not logged in.';
+    $stmt->close();
 }
 
-header('Content-Type: application/json');
 echo json_encode($response);
+?>
