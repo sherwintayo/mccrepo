@@ -159,32 +159,6 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         </fieldset>
                     <?php endif; ?>
                 </div>
-                <!-- Modal HTML -->
-                <div class="modal fade" id="requestDownloadModal" role="dialog"
-                    aria-labelledby="requestDownloadModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="requestDownloadModalLabel">Request Download</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="downloadRequestForm">
-                                    <div class="form-group">
-                                        <label for="reason">Reason for Download</label>
-                                        <textarea class="form-control" id="reason" name="reason" rows="3"
-                                            placeholder="Please provide the reason for downloading this file."
-                                            required></textarea>
-                                    </div>
-                                    <input type="hidden" id="fileId" name="fileId" value="">
-                                    <button type="submit" class="btn btn-primary">Submit Request</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
