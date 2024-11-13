@@ -2,7 +2,7 @@
 session_start(); // Start session to track login status.
 
 // After successful login, set user_id in session
-$_SESSION['user_id'] = $fetched_user_id; // Set this after successful login
+$_SESSION['user_id'] = $user_id; // Assume $user_id is obtained from the database
 $_SESSION['user_logged_in'] = true;
 
 if (isset($_GET['id']) && $_GET['id'] > 0) {
