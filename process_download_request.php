@@ -4,13 +4,14 @@ require_once('config.php');
 
 $response = ['status' => 'error', 'message' => 'Invalid request'];
 
-// Check if session user_id is set for debugging
+// Check if session user_id is set
 if (!isset($_SESSION['user_id'])) {
-    $response['message'] = 'User ID not set in session.';
+    $response['message'] = 'User ID not set in session. Please log in again.';
     echo json_encode($response);
     exit;
 }
 
+// Validate POST data
 if (isset($_POST['fileId'], $_POST['reason']) && !empty($_POST['reason']) && isset($_SESSION['user_id'])) {
     $fileId = intval($_POST['fileId']);
     $reason = trim($_POST['reason']);
