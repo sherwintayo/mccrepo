@@ -217,7 +217,7 @@
         $downloadResult = $conn->query("
         SELECT dr.id, f.filename, f.filepath
         FROM download_requests dr
-        JOIN files f ON dr.file_id = f.id
+        JOIN archive_list f ON dr.file_id = f.id 
         WHERE dr.user_id = $student_id AND dr.status = 'approved'
         ORDER BY dr.requested_at DESC
     ");
