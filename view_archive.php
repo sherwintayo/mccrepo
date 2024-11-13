@@ -183,12 +183,16 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 return;
             }
 
+            // Console log the data being sent for debugging
+            console.log("Submitting request:", { fileId, reason, fileType });
+
             $.ajax({
                 url: 'process_download_request.php',
                 method: 'POST',
                 data: { fileId: fileId, reason: reason, fileType: fileType },
                 dataType: 'json',
                 success: function (response) {
+                    console.log("Server response:", response); // Debugging output
                     if (response.status === 'success') {
                         alert("Your request has been submitted for review.");
                         $('#request-form-' + fileType).hide();
@@ -197,10 +201,12 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         alert("Failed to submit request. Please try again.");
                     }
                 },
-                error: function () {
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX error:", textStatus, errorThrown); // Log error
                     alert("An error occurred while sending your request.");
                 }
             });
         });
     });
+
 </script>

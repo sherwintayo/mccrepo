@@ -1,23 +1,31 @@
 <?php
-require_once 'config.php';
+require_once 'config.php'; // Adjust path as needed
 
-$response = ['status' => 'error', 'message' => 'Request could not be processed'];
+header('Content-Type: application/json');
 
-if (isset($_POST['fileId'], $_POST['reason'], $_POST['fileType']) && !empty($_SESSION['user_id'])) {
-    $fileId = intval($_POST['fileId']);
+// Check if required POST parameters are set
+if (isset($_POST['fileId'], $_POST['reason'], $_POST['fileType']) && $_SESSION['user_logged_in']) {
+    $fileId = (int) $_POST['fileId'];
     $reason = $conn->real_escape_string($_POST['reason']);
     $fileType = $conn->real_escape_string($_POST['fileType']);
-    $user_id = $_SESSION['user_id'];
+    $userId = $_SESSION['user_id']; // Ensure user is logged in and has a valid user ID
 
-    $stmt = $conn->prepare("INSERT INTO download_requests (user_id, file_id, reason, status, status_read) VALUES (?, ?, ?, 'pending', 'unread')");
-    $stmt->bind_param("iis", $user_id, $fileId, $reason);
+    // Prepare and execute the SQL statement to insert the download request
+    $stmt = $conn->prepare("INSERT INTO download_requests (user_id, file_id, reason, status) VALUES (?, ?, ?, 'pending')");
+    $stmt->bind_param("iis", $userId, $fileId, $reason);
+
     if ($stmt->execute()) {
-        $response = ['status' => 'success'];
+        // If insertion is successful, send a success response
+        echo json_encode(['status' => 'success']);
     } else {
-        $response['message'] = 'Failed to submit request.';
+        // If insertion fails, send an error response
+        echo json_encode(['status' => 'error', 'message' => 'Failed to save request in the database.']);
     }
+
     $stmt->close();
+} else {
+    // If required POST parameters are missing or user not logged in, return an error
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request or missing parameters.']);
 }
 
-echo json_encode($response);
-?>
+$conn->close();
