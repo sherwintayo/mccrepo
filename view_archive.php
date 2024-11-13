@@ -1,8 +1,8 @@
 <?php
 session_start(); // Start session to track login status.
 
-// Assume $user_id is obtained from the database after successful login
-$_SESSION['user_id'] = $user_id;
+// After successful login, set user_id in session
+$_SESSION['user_id'] = $user_id; // Assume $user_id is obtained from the database
 $_SESSION['user_logged_in'] = true;
 
 if (isset($_GET['id']) && $_GET['id'] > 0) {
@@ -30,7 +30,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         }
     }
 
-    // Insert view record in archive_counter table
+    // Record count execution
     $stmt = $conn->prepare("INSERT INTO archive_counter (archive_id) VALUES (?)");
     $stmt->bind_param("i", $_GET['id']);
     $stmt->execute();
@@ -158,6 +158,32 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                                 Project Document</a>
                         </fieldset>
                     <?php endif; ?>
+                </div>
+                <!-- Modal HTML -->
+                <div class="modal fade" id="requestDownloadModal" role="dialog"
+                    aria-labelledby="requestDownloadModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="requestDownloadModalLabel">Request Download</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="downloadRequestForm">
+                                    <div class="form-group">
+                                        <label for="reason">Reason for Download</label>
+                                        <textarea class="form-control" id="reason" name="reason" rows="3"
+                                            placeholder="Please provide the reason for downloading this file."
+                                            required></textarea>
+                                    </div>
+                                    <input type="hidden" id="fileId" name="fileId" value="">
+                                    <button type="submit" class="btn btn-primary">Submit Request</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
