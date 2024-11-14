@@ -40,19 +40,19 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         min-height: 80vh;
     }
 
-    .modal-dialog {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-    }
-
     .download-info {
         border: 1px solid #ccc;
         padding: 10px;
         border-radius: 5px;
         margin-top: 10px;
     }
+
+    #reasonTextarea,
+    #submitReasonButton {
+        display: none;
+    }
+
+    /* Hide textarea and submit button initially */
 </style>
 </head>
 </style>
@@ -114,8 +114,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     <!-- Reason Textarea for Download Request (shown only if logged in) -->
                     <textarea id="reasonTextarea" class="form-control" rows="3"
                         placeholder="Please provide a reason for downloading this file."></textarea>
-                    <button id="submitReasonButton" class="btn btn-primary mt-2" style="display: none;">Submit
-                        Request</button>
+                    <button id="submitReasonButton" class="btn btn-primary mt-2">Submit Request</button>
 
                     <!-- File Information -->
                     <div class="download-info">
@@ -194,7 +193,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         }
                     });
                 } else {
-                    // Show reason textarea if logged in
+                    // Show reason textarea and submit button if logged in
                     $('#reasonTextarea').show();
                     $('#submitReasonButton').show();
                 }
