@@ -1,8 +1,9 @@
+download all
+
 <?php
 session_start();
-require 'config.php'; // Ensure this includes the database connection
 
-// Check if the user is logged in
+// Check if user is logged in
 $is_logged_in = isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true;
 
 if (isset($_GET['id']) && $_GET['id'] > 0) {
@@ -47,6 +48,15 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         border-radius: 5px;
         margin-top: 10px;
     }
+
+    #reasonTextarea,
+    #submitReasonButton {
+        display: none;
+    }
+
+    /* Hide textarea and submit button initially */
+</style>
+</head>
 </style>
 <div class="content py-4">
     <div class="col-12">
@@ -61,13 +71,41 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     <h2><b><?= isset($title) ? htmlspecialchars($title) : "" ?></b></h2>
                     <small class="text-muted">Submitted by <b class="text-info"><?= htmlspecialchars($submitted) ?></b>
                         on <?= isset($date_created) ? date("F d, Y h:i A", strtotime($date_created)) : "" ?></small>
+                    <?php if (isset($student_id) && $_settings->userdata('login_type') == "2" && $student_id == $_settings->userdata('id')): ?>
+                        <div class="form-group">
+                            <a href="./?page=submit-archive&id=<?= isset($id) ? htmlspecialchars($id) : "" ?>"
+                                class="btn btn-flat btn-default bg-navy btn-sm"><i class="fa fa-edit"></i> Edit</a>
+                            <button type="button" data-id="<?= isset($id) ? htmlspecialchars($id) : "" ?>"
+                                class="btn btn-flat btn-danger btn-sm delete-data"><i class="fa fa-trash"></i>
+                                Delete</button>
+                        </div>
+                    <?php endif; ?>
                     <hr>
                     <center>
                         <img src="<?= validate_image(isset($banner_path) ? htmlspecialchars($banner_path) : "") ?>"
                             alt="Banner Image" id="banner-img" class="img-fluid border bg-gradient-dark">
                     </center>
+                    <fieldset>
+                        <legend class="text-navy">Project Year:</legend>
+                        <div class="pl-4">
+                            <large><?= isset($year) ? htmlspecialchars($year) : "----" ?></large>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend class="text-navy">Abstract:</legend>
+                        <div class="pl-4">
+                            <large><?= isset($abstract) ? htmlspecialchars($abstract) : "" ?></large>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend class="text-navy">Members:</legend>
+                        <div class="pl-4">
+                            <large><?= isset($members) ? htmlspecialchars($members) : "" ?></large>
+                        </div>
+                    </fieldset>
 
-                    <!-- Single "Download All Files" Button -->
+
+                    <!-- Single "Download All Files" Button with Description -->
                     <div style="display: flex; align-items: center; margin-top: 20px;">
                         <h5 class="text-navy" style="flex: 1;">Download all Files</h5>
                         <button class="btn btn-success btn-flat" id="downloadButton">
@@ -88,8 +126,51 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
             </div>
         </div>
     </div>
+    <script>
+        $(function () {
+            $('.delete-data').click(function () {
+                _conf("Are you sure to delete <b>Archive-<?= isset($archive_code) ? htmlspecialchars($archive_code) : "" ?></b>", "delete_archive")
+            });
+            $('.summernote').summernote({
+                height: 200
+            });
+            $("#summernote").summernote("disable");
+        });
+
+        function delete_archive() {
+            start_loader();
+            $.ajax({
+                url: _base_url_ + "classes/Master.php?f=delete_archive",
+                method: "POST",
+                data: { id: "<?= isset($id) ? htmlspecialchars($id) : "" ?>" },
+                dataType: "json",
+                error: err => {
+                    console.log(err);
+                    alert_toast("An error occurred.", 'error');
+                    end_loader();
+                },
+                success: function (resp) {
+                    if (typeof resp == 'object' && resp.status == 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted Successfully',
+                            showConfirmButton: false,
+                            timer: 1000
+                        }).then(() => {
+                            location.replace("./");
+                        });
+                    } else {
+                        alert_toast("An error occurred.", 'error');
+                        end_loader();
+                    }
+                }
+            });
+        }
+
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://stuk.github.io/jszip-utils/dist/jszip-utils.js"></script>
     <script>
         $(document).ready(function () {
             // Handle download button click
@@ -135,5 +216,3 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
             }
         });
     </script>
-    <script src="https://stuk.github.io/jszip-utils/dist/jszip-utils.js"></script>
-</div>
