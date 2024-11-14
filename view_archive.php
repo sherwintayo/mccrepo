@@ -176,6 +176,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 
     <script>
         $(document).ready(function () {
+            // Handle download button click
             $('#downloadButton').click(function () {
                 <?php if ($is_logged_in): ?>
                     // Show reason textarea and submit button if logged in
@@ -202,9 +203,15 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
             $('#submitReasonButton').click(function () {
                 const reason = $('#reasonTextarea').val().trim();
                 if (reason === '') {
-                    alert("Please provide a reason for your request.");
+                    Swal.fire({
+                        icon: 'info',
+                        text: "Please provide a reason for your request.",
+                    });
                     return;
                 }
+
+                // Show loading spinner
+                $('#submitReasonButton').prop('disabled', true).text('Submitting...');
 
                 $.ajax({
                     url: 'process_download_request.php',
@@ -212,16 +219,27 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     data: { fileId: <?= json_encode($id) ?>, reason: reason },
                     dataType: 'json',
                     success: function (response) {
+                        $('#submitReasonButton').prop('disabled', false).text('Submit Request');
                         if (response.status === 'success') {
-                            alert("Your request has been sent to the admin.");
+                            Swal.fire({
+                                icon: 'success',
+                                text: "Your request has been sent to the admin.",
+                            });
                             $('#reasonTextarea').hide().val(''); // Hide and reset textarea
                             $('#submitReasonButton').hide();
                         } else {
-                            alert("Failed to send request: " + response.message);
+                            Swal.fire({
+                                icon: 'error',
+                                text: "Failed to send request: " + response.message,
+                            });
                         }
                     },
                     error: function () {
-                        alert("An error occurred while sending your request. Please try again.");
+                        $('#submitReasonButton').prop('disabled', false).text('Submit Request');
+                        Swal.fire({
+                            icon: 'error',
+                            text: "An error occurred while sending your request. Please try again.",
+                        });
                     }
                 });
             });
