@@ -1,4 +1,3 @@
-<?php require_once('../config.php') ?>
 <?php
 session_start();
 
@@ -113,6 +112,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         </button>
                     </div>
 
+
                     <!-- File Information -->
                     <div class="download-info">
                         <p><strong>Project File:</strong>
@@ -176,12 +176,15 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
     <script>
         $(document).ready(function () {
             const isLoggedIn = <?= json_encode($is_logged_in) ?>;
+
             $('#downloadButton').click(async function () {
                 if (!isLoggedIn) {
+                    // Redirect to login page if not logged in
                     window.location.href = "login.php";
                     return;
                 }
 
+                // Proceed with file download if logged in
                 const zip = new JSZip();
                 const files = [
                     { path: "<?= base_url . 'uploads/pdf/Document-' . htmlspecialchars($id) . '.zip' ?>", name: "Document_File.zip" },
@@ -215,5 +218,4 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 });
             }
         });
-
     </script>
