@@ -175,47 +175,9 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
     <!-- JavaScript for Handling Download Privilege -->
     <script>
         $(document).ready(function () {
-            const isLoggedIn = <?= json_encode($is_logged_in) ?>;
-
-            $('#downloadButton').click(async function () {
-                if (!isLoggedIn) {
-                    // Redirect to login page if not logged in
-                    window.location.href = "login.php";
-                    return;
-                }
-
-                // Proceed with file download if logged in
-                const zip = new JSZip();
-                const files = [
-                    { path: "<?= base_url . 'uploads/pdf/Document-' . htmlspecialchars($id) . '.zip' ?>", name: "Document_File.zip" },
-                    { path: "<?= base_url . 'uploads/files/Files-' . htmlspecialchars($id) . '.zip' ?>", name: "Project_File.zip" },
-                    { path: "<?= base_url . 'uploads/sql/SQL-' . htmlspecialchars($id) . '.zip' ?>", name: "SQL_File.zip" }
-                ];
-
-                for (const file of files) {
-                    try {
-                        const data = await fetchFile(file.path);
-                        if (data) zip.file(file.name, data);
-                    } catch (error) {
-                        console.error(`Failed to load file ${file.name}:`, error);
-                    }
-                }
-
-                zip.generateAsync({ type: "blob" }).then(content => {
-                    const link = document.createElement('a');
-                    link.href = URL.createObjectURL(content);
-                    link.download = "All_Files.zip";
-                    link.click();
-                });
+            $('#downloadButton').click(function () {
+                // Trigger file download through server-side validation
+                window.location.href = `download.php?id=<?= htmlspecialchars($id) ?>`;
             });
-
-            function fetchFile(url) {
-                return new Promise((resolve, reject) => {
-                    JSZipUtils.getBinaryContent(url, function (err, data) {
-                        if (err) reject(err);
-                        else resolve(data);
-                    });
-                });
-            }
         });
     </script>
