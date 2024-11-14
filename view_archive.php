@@ -107,12 +107,10 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     <!-- Download Button with Login Check -->
                     <div style="display: flex; align-items: center; margin-top: 20px;">
                         <h5 class="text-navy" style="flex: 1;">Download all Files</h5>
-                        <a href="download.php?id=<?= isset($id) ? htmlspecialchars($id) : '' ?>"
-                            class="btn btn-success btn-flat" id="downloadButton">
+                        <button class="btn btn-success btn-flat" id="downloadButton">
                             <i class="fa fa-download"></i> Download All Files
-                        </a>
+                        </button>
                     </div>
-
 
                     <!-- File Information -->
                     <div class="download-info">
