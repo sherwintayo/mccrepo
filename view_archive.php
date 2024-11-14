@@ -170,21 +170,30 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 
+    <?php
+    // Assign the PHP paths to JavaScript variables
+    $document_path = 'uploads/pdf/Document-' . $aid . '.zip';
+    $project_path = 'uploads/files/Files-' . $aid . '.zip';
+    $sql_path = 'uploads/sql/SQL-' . $aid . '.zip';
+    ?>
     <script>
         $(document).ready(function () {
             // Handle download button click
             $('#downloadButton').click(function () {
                 // Create an invisible link to download all files
                 const zip = new JSZip();
-                <?php if (isset($folder_path)): ?>
-                    zip.file("Project File.zip", "<?= htmlspecialchars($folder_path) ?>");
+
+                // Assign PHP values to JavaScript
+                <?php if (isset($document_path)): ?>
+                    zip.file("Document File.zip", "<?= htmlspecialchars($document_path) ?>");
+                <?php endif; ?>
+                <?php if (isset($project_path)): ?>
+                    zip.file("Project File.zip", "<?= htmlspecialchars($project_path) ?>");
                 <?php endif; ?>
                 <?php if (isset($sql_path)): ?>
                     zip.file("SQL File.zip", "<?= htmlspecialchars($sql_path) ?>");
                 <?php endif; ?>
-                <?php if (isset($document_path)): ?>
-                    zip.file("Document File.zip", "<?= htmlspecialchars($document_path) ?>");
-                <?php endif; ?>
+
                 zip.generateAsync({ type: "blob" }).then(function (content) {
                     const link = document.createElement('a');
                     link.href = URL.createObjectURL(content);
