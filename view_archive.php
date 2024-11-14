@@ -107,10 +107,12 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     <!-- Download Button with Login Check -->
                     <div style="display: flex; align-items: center; margin-top: 20px;">
                         <h5 class="text-navy" style="flex: 1;">Download all Files</h5>
-                        <button class="btn btn-success btn-flat" id="downloadButton">
+                        <a href="download.php?id=<?= isset($id) ? htmlspecialchars($id) : '' ?>"
+                            class="btn btn-success btn-flat" id="downloadButton">
                             <i class="fa fa-download"></i> Download All Files
-                        </button>
+                        </a>
                     </div>
+
 
                     <!-- File Information -->
                     <div class="download-info">
@@ -179,7 +181,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
             $('#downloadButton').click(function () {
                 if (!isLoggedIn) {
                     // Redirect to login if user is not logged in
-                    window.location.href = "<?php echo base_url ?>";
+                    window.location.href = "login.php";
                     return;
                 }
 
