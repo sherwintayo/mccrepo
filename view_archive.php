@@ -1,7 +1,17 @@
+Your code is almost complete for redirecting non-logged-in users to login.php when they click the "Download All Files"
+button. Here’s a slight refinement to ensure smooth handling of the login check and redirection:
+
+Updated Code
+This version clarifies the login check, redirecting to login.php if the user is not logged in. When the user is logged
+in, it proceeds with creating and downloading the ZIP file.
+
+php
+Copy code
 <?php
 session_start();
+require 'config.php'; // Ensure this includes the database connection
 
-// Check if user is logged in
+// Check if the user is logged in
 $is_logged_in = isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true;
 
 if (isset($_GET['id']) && $_GET['id'] > 0) {
