@@ -217,6 +217,18 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 
     <script>
         $(document).ready(function () {
+            const isLoggedIn = <?= json_encode($is_logged_in) ?>; // PHP variable to check login status
+
+            $('#downloadButton').click(function () {
+                if (!isLoggedIn) {
+                    // Show login modal if not logged in
+                    $('#loginModal').modal('show');
+                } else {
+                    // Show download request modal if logged in
+                    $('#downloadRequestModal').modal('show');
+                }
+            });
+
             // AJAX submission of download request
             $('#downloadRequestForm').submit(function (e) {
                 e.preventDefault();
@@ -235,7 +247,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     success: function (response) {
                         if (response.status === 'success') {
                             alert("Your request has been sent to the admin.");
-                            $('#downloadModal').modal('hide');
+                            $('#downloadRequestModal').modal('hide');
                         } else {
                             alert("Failed to send request: " + response.message);
                         }
