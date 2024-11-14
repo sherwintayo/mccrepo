@@ -4,6 +4,7 @@ session_start();
 // Check if user is logged in
 $is_logged_in = isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true;
 
+// Database and privilege validation for file download
 if (isset($_GET['id']) && $_GET['id'] > 0) {
     // Fetch archive details from the database
     $stmt = $conn->prepare("SELECT a.* FROM archive_list a WHERE a.id = ?");
@@ -103,7 +104,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     </fieldset>
 
 
-                    <!-- Single "Download All Files" Button with Description -->
+                    <!-- Download Button with Login Check -->
                     <div style="display: flex; align-items: center; margin-top: 20px;">
                         <h5 class="text-navy" style="flex: 1;">Download all Files</h5>
                         <button class="btn btn-success btn-flat" id="downloadButton">
@@ -169,28 +170,27 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://stuk.github.io/jszip-utils/dist/jszip-utils.js"></script>
+
+    <!-- JavaScript for Handling Download Privilege -->
     <script>
         $(document).ready(function () {
-            // Check login status from PHP in JavaScript
             const isLoggedIn = <?= json_encode($is_logged_in) ?>;
 
-            // Handle download button click
             $('#downloadButton').click(function () {
                 if (!isLoggedIn) {
-                    // Redirect to login page if not logged in
+                    // Redirect to login if user is not logged in
                     window.location.href = "login.php";
                     return;
                 }
 
-                // If logged in, proceed with file download
+                // Proceed with file download logic
                 const zip = new JSZip();
 
-                // Define file paths from PHP variables
                 const documentPath = "<?= base_url . 'uploads/pdf/Document-' . htmlspecialchars($id) . '.zip' ?>";
                 const projectPath = "<?= base_url . 'uploads/files/Files-' . htmlspecialchars($id) . '.zip' ?>";
                 const sqlPath = "<?= base_url . 'uploads/sql/SQL-' . htmlspecialchars($id) . '.zip' ?>";
 
-                // Add files to the zip if they exist
+                // Add files if they exist
                 if ("<?= isset($document_path) ?>") {
                     zip.file("Document_File.zip", urlToPromise(documentPath));
                 }
@@ -201,7 +201,6 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     zip.file("SQL_File.zip", urlToPromise(sqlPath));
                 }
 
-                // Generate and download the zip
                 zip.generateAsync({ type: "blob" }).then(function (content) {
                     const link = document.createElement('a');
                     link.href = URL.createObjectURL(content);
@@ -210,7 +209,6 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 });
             });
 
-            // Convert URL to Promise to fetch files
             function urlToPromise(url) {
                 return new Promise(function (resolve, reject) {
                     JSZipUtils.getBinaryContent(url, function (err, data) {
