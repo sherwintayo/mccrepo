@@ -1,11 +1,11 @@
 <?php
-session_start(); // Start session to track login status.
+session_start();
 
-// After successful login, set user_id in session
-$_SESSION['user_id'] = $user_id; // Assume $user_id is obtained from the database
-$_SESSION['user_logged_in'] = true;
+// Check if user is logged in
+$is_logged_in = isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true;
 
 if (isset($_GET['id']) && $_GET['id'] > 0) {
+    // Fetch archive details from the database
     $stmt = $conn->prepare("SELECT a.* FROM archive_list a WHERE a.id = ?");
     $stmt->bind_param("i", $_GET['id']);
     $stmt->execute();
@@ -23,7 +23,6 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         $stmt->bind_param("i", $student_id);
         $stmt->execute();
         $student = $stmt->get_result();
-
         if ($student->num_rows > 0) {
             $res = $student->fetch_array();
             $submitted = $res['lastname'];
@@ -107,7 +106,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     <!-- Single "Download All Files" Button with Description -->
                     <div style="display: flex; align-items: center; margin-top: 20px;">
                         <h5 class="text-navy" style="flex: 1;">Download all Files</h5>
-                        <button class="btn btn-success btn-flat" data-toggle="modal" data-target="#downloadModal">
+                        <button class="btn btn-success btn-flat" id="downloadButton">
                             <i class="fa fa-download"></i> Download All Files
                         </button>
                     </div>
@@ -122,34 +121,48 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                             <?= isset($document_path) ? basename($document_path) : "Not available" ?></p>
                     </div>
 
-                    <!-- Download Request Modal -->
-                    <div class="modal fade" id="downloadModal" tabindex="-1" role="dialog"
-                        aria-labelledby="downloadModalLabel" aria-hidden="true">
+                    <!-- Login Modal -->
+                    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog"
+                        aria-labelledby="loginModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="downloadModalLabel">Request Download</h5>
+                                    <h5 class="modal-title" id="loginModalLabel">Login Required</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <?php if (!isset($_SESSION['user_logged_in']) || !$_SESSION['user_logged_in']): ?>
-                                        <p>You need to log in to request downloads.</p>
-                                        <a href="login.php" class="btn btn-primary">Login</a>
-                                    <?php else: ?>
-                                        <form id="downloadRequestForm">
-                                            <div class="form-group">
-                                                <label for="reason">Reason for Download</label>
-                                                <textarea class="form-control" id="reason" name="reason" rows="3"
-                                                    placeholder="Please provide the reason for downloading this file."
-                                                    required></textarea>
-                                            </div>
-                                            <input type="hidden" id="fileId" name="fileId"
-                                                value="<?= htmlspecialchars($id) ?>">
-                                            <button type="submit" class="btn btn-primary">Submit Request</button>
-                                        </form>
-                                    <?php endif; ?>
+                                    <p>You need to log in to request downloads.</p>
+                                    <a href="login.php" class="btn btn-primary">Login</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Download Request Modal -->
+                    <div class="modal fade" id="downloadRequestModal" tabindex="-1" role="dialog"
+                        aria-labelledby="downloadRequestModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="downloadRequestModalLabel">Request Download</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="downloadRequestForm">
+                                        <div class="form-group">
+                                            <label for="reason">Reason for Download</label>
+                                            <textarea class="form-control" id="reason" name="reason" rows="3"
+                                                placeholder="Please provide the reason for downloading this file."
+                                                required></textarea>
+                                        </div>
+                                        <input type="hidden" id="fileId" name="fileId"
+                                            value="<?= htmlspecialchars($id) ?>">
+                                        <button type="submit" class="btn btn-primary">Submit Request</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
