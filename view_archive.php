@@ -173,12 +173,15 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+
     <script>
         $(document).ready(function () {
-            const isLoggedIn = <?= json_encode($is_logged_in) ?>; // PHP variable to check login status
-
             $('#downloadButton').click(function () {
-                if (!isLoggedIn) {
+                <?php if ($is_logged_in): ?>
+                    // Show reason textarea and submit button if logged in
+                    $('#reasonTextarea').show();
+                    $('#submitReasonButton').show();
+                <?php else: ?>
                     // Show SweetAlert login prompt if not logged in
                     Swal.fire({
                         icon: 'warning',
@@ -192,11 +195,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                             window.location.href = 'login.php';
                         }
                     });
-                } else {
-                    // Show reason textarea and submit button if logged in
-                    $('#reasonTextarea').show();
-                    $('#submitReasonButton').show();
-                }
+                <?php endif; ?>
             });
 
             // AJAX submission of download request
