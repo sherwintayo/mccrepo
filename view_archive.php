@@ -121,32 +121,14 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                             <?= isset($document_path) ? basename($document_path) : "Not available" ?></p>
                     </div>
 
-                    <!-- Login Modal -->
-                    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog"
-                        aria-labelledby="loginModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="loginModalLabel">Login Required</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>You need to log in to request downloads.</p>
-                                    <a href="login.php" class="btn btn-primary">Login</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Download Request Modal -->
                     <div class="modal fade" id="downloadRequestModal" tabindex="-1" role="dialog"
                         aria-labelledby="downloadRequestModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="downloadRequestModalLabel">Request Download</h5>
+                                    <h5 class="modal-titl
+                e       " id="downloadRequestModalLabel">Request Download</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -213,7 +195,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         }
 
     </script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         $(document).ready(function () {
@@ -221,8 +203,19 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 
             $('#downloadButton').click(function () {
                 if (!isLoggedIn) {
-                    // Show login modal if not logged in
-                    $('#loginModal').modal('show');
+                    // Show SweetAlert login prompt if not logged in
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Login Required',
+                        text: 'You need to log in to request downloads.',
+                        confirmButtonText: 'Login',
+                        showCancelButton: true,
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = 'login.php';
+                        }
+                    });
                 } else {
                     // Show download request modal if logged in
                     $('#downloadRequestModal').modal('show');
