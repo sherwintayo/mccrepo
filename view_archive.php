@@ -179,7 +179,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
             $('#downloadButton').click(function () {
                 if (!isLoggedIn) {
                     // Redirect to login if user is not logged in
-                    window.location.href = "./login.php";
+                    window.location.href = "<?php echo base_url ?>";
                     return;
                 }
 
