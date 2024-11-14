@@ -175,33 +175,29 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
     <script>
         $(document).ready(function () {
             const isLoggedIn = <?= json_encode($is_logged_in) ?>;
-
-            $('#downloadButton').click(function () {
+            $('#downloadButton').click(async function () {
                 if (!isLoggedIn) {
-                    // Redirect to login if user is not logged in
                     window.location.href = "login.php";
                     return;
                 }
 
-                // Proceed with file download logic
                 const zip = new JSZip();
+                const files = [
+                    { path: "<?= base_url . 'uploads/pdf/Document-' . htmlspecialchars($id) . '.zip' ?>", name: "Document_File.zip" },
+                    { path: "<?= base_url . 'uploads/files/Files-' . htmlspecialchars($id) . '.zip' ?>", name: "Project_File.zip" },
+                    { path: "<?= base_url . 'uploads/sql/SQL-' . htmlspecialchars($id) . '.zip' ?>", name: "SQL_File.zip" }
+                ];
 
-                const documentPath = "<?= base_url . 'uploads/pdf/Document-' . htmlspecialchars($id) . '.zip' ?>";
-                const projectPath = "<?= base_url . 'uploads/files/Files-' . htmlspecialchars($id) . '.zip' ?>";
-                const sqlPath = "<?= base_url . 'uploads/sql/SQL-' . htmlspecialchars($id) . '.zip' ?>";
-
-                // Add files if they exist
-                if ("<?= isset($document_path) ?>") {
-                    zip.file("Document_File.zip", urlToPromise(documentPath));
-                }
-                if ("<?= isset($folder_path) ?>") {
-                    zip.file("Project_File.zip", urlToPromise(projectPath));
-                }
-                if ("<?= isset($sql_path) ?>") {
-                    zip.file("SQL_File.zip", urlToPromise(sqlPath));
+                for (const file of files) {
+                    try {
+                        const data = await fetchFile(file.path);
+                        if (data) zip.file(file.name, data);
+                    } catch (error) {
+                        console.error(`Failed to load file ${file.name}:`, error);
+                    }
                 }
 
-                zip.generateAsync({ type: "blob" }).then(function (content) {
+                zip.generateAsync({ type: "blob" }).then(content => {
                     const link = document.createElement('a');
                     link.href = URL.createObjectURL(content);
                     link.download = "All_Files.zip";
@@ -209,16 +205,14 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 });
             });
 
-            function urlToPromise(url) {
-                return new Promise(function (resolve, reject) {
+            function fetchFile(url) {
+                return new Promise((resolve, reject) => {
                     JSZipUtils.getBinaryContent(url, function (err, data) {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(data);
-                        }
+                        if (err) reject(err);
+                        else resolve(data);
                     });
                 });
             }
         });
+
     </script>
