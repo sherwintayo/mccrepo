@@ -1,8 +1,7 @@
 <?php
 session_start();
-require 'config.php'; // Ensure this includes the database connection
 
-// Check if the user is logged in
+// Check if user is logged in
 $is_logged_in = isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true;
 
 if (isset($_GET['id']) && $_GET['id'] > 0) {
