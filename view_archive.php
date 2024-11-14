@@ -135,7 +135,8 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                                 </div>
                                 <div class="modal-body">
                                     <?php if (!isset($_SESSION['user_logged_in']) || !$_SESSION['user_logged_in']): ?>
-                                        <p>You need to <a href="login.php">log in</a> to request downloads.</p>
+                                        <p>You need to log in to request downloads.</p>
+                                        <a href="login.php" class="btn btn-primary">Login</a>
                                     <?php else: ?>
                                         <form id="downloadRequestForm">
                                             <div class="form-group">
