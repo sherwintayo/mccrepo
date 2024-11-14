@@ -1,5 +1,3 @@
-download all
-
 <?php
 session_start();
 
@@ -173,8 +171,18 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
     <script src="https://stuk.github.io/jszip-utils/dist/jszip-utils.js"></script>
     <script>
         $(document).ready(function () {
+            // Check login status from PHP in JavaScript
+            const isLoggedIn = <?= json_encode($is_logged_in) ?>;
+
             // Handle download button click
             $('#downloadButton').click(function () {
+                if (!isLoggedIn) {
+                    // Redirect to login page if not logged in
+                    window.location.href = "login.php";
+                    return;
+                }
+
+                // If logged in, proceed with file download
                 const zip = new JSZip();
 
                 // Define file paths from PHP variables
