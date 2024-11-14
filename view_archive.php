@@ -111,11 +111,6 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         </button>
                     </div>
 
-                    <!-- Reason Textarea for Download Request (shown only if logged in) -->
-                    <textarea id="reasonTextarea" class="form-control" rows="3"
-                        placeholder="Please provide a reason for downloading this file."></textarea>
-                    <button id="submitReasonButton" class="btn btn-primary mt-2">Submit Request</button>
-
                     <!-- File Information -->
                     <div class="download-info">
                         <p><strong>Project File:</strong>
@@ -172,75 +167,29 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 
     <script>
         $(document).ready(function () {
             // Handle download button click
             $('#downloadButton').click(function () {
-                <?php if ($is_logged_in): ?>
-                    // Show reason textarea and submit button if logged in
-                    $('#reasonTextarea').show();
-                    $('#submitReasonButton').show();
-                <?php else: ?>
-                    // Show SweetAlert login prompt if not logged in
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Login Required',
-                        text: 'You need to log in to request downloads.',
-                        confirmButtonText: 'Login',
-                        showCancelButton: true,
-                        cancelButtonText: 'Cancel'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = 'login.php';
-                        }
-                    });
+                // Create an invisible link to download all files
+                const zip = new JSZip();
+                <?php if (isset($folder_path)): ?>
+                    zip.file("Project File.zip", "<?= htmlspecialchars($folder_path) ?>");
                 <?php endif; ?>
-            });
-
-            // AJAX submission of download request
-            $('#submitReasonButton').click(function () {
-                const reason = $('#reasonTextarea').val().trim();
-                if (reason === '') {
-                    Swal.fire({
-                        icon: 'info',
-                        text: "Please provide a reason for your request.",
-                    });
-                    return;
-                }
-
-                // Show loading spinner
-                $('#submitReasonButton').prop('disabled', true).text('Submitting...');
-
-                $.ajax({
-                    url: 'process_download_request.php',
-                    method: 'POST',
-                    data: { fileId: <?= json_encode($id) ?>, reason: reason },
-                    dataType: 'json',
-                    success: function (response) {
-                        $('#submitReasonButton').prop('disabled', false).text('Submit Request');
-                        if (response.status === 'success') {
-                            Swal.fire({
-                                icon: 'success',
-                                text: "Your request has been sent to the admin.",
-                            });
-                            $('#reasonTextarea').hide().val(''); // Hide and reset textarea
-                            $('#submitReasonButton').hide();
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                text: "Failed to send request: " + response.message,
-                            });
-                        }
-                    },
-                    error: function () {
-                        $('#submitReasonButton').prop('disabled', false).text('Submit Request');
-                        Swal.fire({
-                            icon: 'error',
-                            text: "An error occurred while sending your request. Please try again.",
-                        });
-                    }
+                <?php if (isset($sql_path)): ?>
+                    zip.file("SQL File.zip", "<?= htmlspecialchars($sql_path) ?>");
+                <?php endif; ?>
+                <?php if (isset($document_path)): ?>
+                    zip.file("Document File.zip", "<?= htmlspecialchars($document_path) ?>");
+                <?php endif; ?>
+                zip.generateAsync({ type: "blob" }).then(function (content) {
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(content);
+                    link.download = "All_Files.zip"; // Name of the zip file
+                    link.click();
                 });
             });
         });
