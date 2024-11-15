@@ -506,7 +506,7 @@
             window.location.href = `./download_file.php?id=${notificationId}`;
           } else {
             // Redirect for regular notifications
-            window.location.href = "./?page=my_archives";
+            window.location.href = "./?page=studentprofile";
           }
         } else {
           console.error("Failed to mark notification as read.");
