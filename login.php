@@ -145,9 +145,6 @@
   <div class=" d-flex flex-column align-items-center w-100" id="login">
 
     <div class="body d-flex flex-column justify-content-center align-items-center">
-      <div class="w-100">
-        <h1 class="text-center py-5 my-5 login-title"><b><?php echo $_settings->info('name') ?></b></h1>
-      </div>
       <div class="row myContainer">
         <div class="myLoginForm col-lg-7 p-3 d-flex justify-content-center align-items-center text-navy">
 
