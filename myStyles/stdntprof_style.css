@@ -134,6 +134,8 @@ a {
 .header__wrapper .cols__container .right__col nav ul li a {
   text-transform: uppercase;
   color: #818181;
+}
+.header__wrapper .cols__container .right__col nav ul li a .active {
   background-color: lightgrey;
   color: #000; /* Ensure contrast for better readability */
   border-radius: 4px; /* Optional: add some rounding for a polished look */

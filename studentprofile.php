@@ -74,7 +74,7 @@ while ($row = $qry->fetch_assoc()) {
       <div class="right__col">
         <nav>
           <ul>
-            <li><a href="#" class="nav-link" onclick="setActive(this, 'my_archives')">my archives</a></li>
+            <li><a href="#" class="nav-link active" onclick="setActive(this, 'my_archives')">my archives</a></li>
             <li><a href="#" class="nav-link" onclick="setActive(this, 'submit_capstone')">submit capstone projects</a>
             </li>
             <li><a href="#" class="nav-link" onclick="setActive(this, 'notifications')">notifications</a></li>
