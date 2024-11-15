@@ -3,7 +3,13 @@ session_start();
 
 // Check if user is logged in
 $is_logged_in = isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true;
+if (!isset($_SESSION['user_logged_in']) || !$_SESSION['user_logged_in']) {
+    header("Location: login.php");
+    exit;
+}
 
+// Use $_SESSION['user_id'] as needed for user-specific actions
+$userId = $_SESSION['user_id'];
 // Database and privilege validation for file download
 if (isset($_GET['id']) && $_GET['id'] > 0) {
     // Fetch archive details from the database
