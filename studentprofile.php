@@ -6,6 +6,61 @@
       background: url("<?php echo validate_image($_settings->info('cover')) ?>") no-repeat 50% 20% / cover;
       min-height: calc(100px + 15vw);
     }
+
+    /* Center the confirmation dialog */
+    .confirm-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1050;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      width: 400px;
+      max-width: 90%;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .confirm-modal h5 {
+      margin: 0 0 15px;
+    }
+
+    .confirm-modal .btn-container {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
+
+    .confirm-modal .btn {
+      padding: 8px 15px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .confirm-modal .btn-confirm {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .confirm-modal .btn-cancel {
+      background-color: #6c757d;
+      color: white;
+    }
+
+    /* Modal backdrop */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1049;
+    }
   </style>
 </head>
 <?php require_once('./config.php'); ?>
@@ -139,34 +194,47 @@ while ($row = $qry->fetch_assoc()) {
         html += `</div>`; // Close card-deck div
         contentArea.innerHTML = html;
 
-        // Add delete functionality
-        document.querySelectorAll('.delete_data').forEach(button => {
-          button.addEventListener('click', function () {
-            const id = this.getAttribute('data-id');
-            _conf("Are you sure to delete this project permanently?", "delete_archive", [id]);
+        function _conf(message, action, params) {
+          // Create modal
+          const modalHTML = `
+        <div class="confirm-modal">
+          <h5>${message}</h5>
+          <div class="btn-container">
+            <button class="btn btn-confirm" id="confirm-yes">Yes</button>
+            <button class="btn btn-cancel" id="confirm-no">No</button>
+          </div>
+        </div>
+        <div class="modal-backdrop"></div>`;
+          document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+          // Confirm action
+          document.getElementById('confirm-yes').addEventListener('click', () => {
+            document.querySelector('.confirm-modal').remove();
+            document.querySelector('.modal-backdrop').remove();
+            if (typeof window[action] === 'function') window[action](...params);
           });
-        });
-        function delete_archive($id) {
+
+          // Cancel action
+          document.getElementById('confirm-no').addEventListener('click', () => {
+            document.querySelector('.confirm-modal').remove();
+            document.querySelector('.modal-backdrop').remove();
+          });
+        }
+
+        function delete_archive(id) {
           start_loader();
           $.ajax({
-            url: _base_url_ + "classes/Master.php?f=delete_archive",
+            url: "<?= base_url ?>classes/Master.php?f=delete_archive",
             method: "POST",
-            data: { id: $id },
+            data: { id },
             dataType: "json",
-            error: err => {
-              console.log(err)
-              alert_toast("An error occured.", 'error');
-              end_loader();
+            success: (resp) => {
+              if (resp && resp.status === 'success') location.reload();
+              else alert_toast('An error occurred.', 'error');
             },
-            success: function (resp) {
-              if (typeof resp == 'object' && resp.status == 'success') {
-                location.reload();
-              } else {
-                alert_toast("An error occured.", 'error');
-                end_loader();
-              }
-            }
-          })
+            error: () => alert_toast('An error occurred.', 'error'),
+            complete: end_loader,
+          });
         }
       } else if (page === 'submit_capstone') {
         contentArea.innerHTML = `
