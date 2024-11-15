@@ -156,7 +156,8 @@ while ($row = $qry->fetch_assoc()) {
               $statusClass = $archive['status'] == 1 ? 'badge-success' : 'badge-secondary';
               ?>
               <div class="card shadow-sm border-light m-2" style="width: 18rem;">
-                <img src="<?= $archive['banner_path'] ? base_url . $archive['banner_path'] : 'img/default.jpg'; ?>"
+                <img
+                  src="<?= validate_image($archive['banner_path']) ? base_url . validate_image($archive['banner_path']) : 'img/default.jpg'; ?>"
                   class="card-img-top" alt="Project Banner" style="height: 180px; object-fit: cover;">
                 <div class="card-body">
                   <h5 class="card-title"><?= htmlspecialchars($archive['title']); ?></h5>
