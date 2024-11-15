@@ -4,20 +4,26 @@ session_start();
 // Check if user is logged in
 $is_logged_in = isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true;
 
-// Database and privilege validation for file download
+
+// Check if user is logged in
+$is_logged_in = isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true;
+
 if (isset($_GET['id']) && $_GET['id'] > 0) {
+    $archive_id = $_GET['id'];
+
     // Fetch archive details from the database
     $stmt = $conn->prepare("SELECT a.* FROM archive_list a WHERE a.id = ?");
-    $stmt->bind_param("i", $_GET['id']);
+    $stmt->bind_param("i", $archive_id);
     $stmt->execute();
     $qry = $stmt->get_result();
 
     if ($qry->num_rows > 0) {
-        foreach ($qry->fetch_array() as $k => $v) {
-            if (!is_numeric($k))
-                $$k = $v;
+        $archive_data = $qry->fetch_assoc();
+        foreach ($archive_data as $k => $v) {
+            $$k = $v;  // Dynamically creates variables for archive data
         }
     }
+
     $submitted = "N/A";
     if (isset($student_id)) {
         $stmt = $conn->prepare("SELECT * FROM student_list WHERE id = ?");
@@ -25,14 +31,14 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         $stmt->execute();
         $student = $stmt->get_result();
         if ($student->num_rows > 0) {
-            $res = $student->fetch_array();
+            $res = $student->fetch_assoc();
             $submitted = $res['lastname'];
         }
     }
 
-    // Record count execution
+    // Increment the archive download count
     $stmt = $conn->prepare("INSERT INTO archive_counter (archive_id) VALUES (?)");
-    $stmt->bind_param("i", $_GET['id']);
+    $stmt->bind_param("i", $archive_id);
     $stmt->execute();
 }
 ?>
@@ -186,7 +192,6 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 
             $('#downloadButton').click(function () {
                 if (isLoggedIn) {
-                    // Show request form when the student is logged in
                     $('#reasonTextarea').show();
                     $('#submitReasonButton').show();
                 } else {
@@ -203,9 +208,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 }
             });
 
-            // Handle download request submission
             $('#submitReasonButton').click(function () {
-                console.log('Submit button clicked'); // Debug log
                 const reason = $('#reasonTextarea').val();
                 const fileId = <?= isset($id) ? htmlspecialchars($id) : "null" ?>;
 
@@ -218,13 +221,11 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     return;
                 }
 
-                console.log('Sending AJAX request...'); // Debug log
                 $.ajax({
-                    url: 'process_download_request.php',
+                    url: 'process_download_archive.php',
                     method: 'POST',
                     data: { file_id: fileId, reason: reason },
                     success: function (response) {
-                        console.log('AJAX response:', response); // Debug log
                         const resp = JSON.parse(response);
                         if (resp.status === 'success') {
                             Swal.fire({
@@ -242,8 +243,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                             });
                         }
                     },
-                    error: function (xhr, status, error) {
-                        console.error('AJAX error:', status, error); // Debug log
+                    error: function () {
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
@@ -252,6 +252,5 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     }
                 });
             });
-
         });
     </script>
