@@ -125,9 +125,6 @@ while ($row = $qry->fetch_assoc()) {
         </ul>
 
         <div class="content">
-          <h4>Team Members</h4>
-          <p><?= nl2br(htmlspecialchars($members)) ?></p>
-
           <ul>
             <li><i class="fab fa-twitter"></i></li>
             <i class="fab fa-pinterest"></i>
@@ -253,7 +250,6 @@ while ($row = $qry->fetch_assoc()) {
 
     // Delete archive function
     function delete_archive(id) {
-      start_loader(); // Show a loader while processing
       $.ajax({
         url: _base_url_ + "classes/Master.php?f=delete_archive",
         method: "POST",
@@ -262,7 +258,7 @@ while ($row = $qry->fetch_assoc()) {
         error: function (err) {
           console.error(err);
           Swal.fire('Error', 'An error occurred while deleting the archive.', 'error');
-          end_loader();
+
         },
         success: function (response) {
           if (response.status === 'success') {
@@ -271,7 +267,6 @@ while ($row = $qry->fetch_assoc()) {
             });
           } else {
             Swal.fire('Failed', 'Failed to delete the archive.', 'error');
-            end_loader();
           }
         }
       });
