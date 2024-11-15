@@ -30,3 +30,4 @@ if ($fileId > 0 && !empty($reason)) {
     echo json_encode(['status' => 'error', 'message' => 'Invalid request data']);
 }
 exit;
+?>
