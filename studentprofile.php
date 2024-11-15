@@ -1,9 +1,5 @@
 <head>
-  <!-- SweetAlert2 CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
-  <!-- SweetAlert2 JS -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="<?php echo base_url ?>myStyles/stdntprof_style.css?v=<?php echo time(); ?>">
   <style>
     .header__wrapper header {
@@ -192,6 +188,24 @@ while ($row = $qry->fetch_assoc()) {
           </div>
         </div>
 
+        <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                Are you sure you want to delete this project permanently?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Yes, Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
 
 
         <div id="submit_capstone" class="page">
@@ -226,41 +240,23 @@ while ($row = $qry->fetch_assoc()) {
       document.getElementById(pageId).classList.add('active');
     }
 
+    let deleteId = null; // Store the ID of the item to delete
+
     $(function () {
-      // Trigger delete confirmation using SweetAlert
+      // Trigger delete confirmation modal
       $('.delete_data').click(function () {
-        const id = $(this).attr('data-id');
-        _conf("Are you sure you want to delete this project permanently?", "delete_archive", [id]);
+        deleteId = $(this).data('id'); // Store the ID from the clicked element
+        $('#confirmModal').modal('show'); // Show the modal
       });
 
-      // Initialize DataTables
-      $('.table td, .table th').addClass('py-1 px-2 align-middle');
-      $('.table').dataTable({
-        columnDefs: [
-          { orderable: false, targets: 5 } // Disable ordering on action column
-        ]
-      });
-    });
-
-    // SweetAlert confirmation dialog
-    function _conf(message, callback, params) {
-      Swal.fire({
-        title: 'Confirmation',
-        text: message,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#dc3545',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'Cancel'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          if (typeof window[callback] === "function") {
-            window[callback].apply(null, params);
-          }
+      // Handle delete confirmation
+      $('#confirmDelete').click(function () {
+        if (deleteId) {
+          delete_archive(deleteId); // Call the delete function with the stored ID
+          $('#confirmModal').modal('hide'); // Hide the modal
         }
       });
-    }
+    });
 
     // Delete archive function
     function delete_archive(id) {
@@ -272,16 +268,15 @@ while ($row = $qry->fetch_assoc()) {
         dataType: "json",
         error: function (err) {
           console.error(err);
-          Swal.fire('Error', 'An error occurred while deleting the archive.', 'error');
+          alert_toast("An error occurred.", "error");
           end_loader();
         },
         success: function (response) {
           if (response.status === 'success') {
-            Swal.fire('Deleted!', 'Archive deleted successfully.', 'success').then(() => {
-              location.reload(); // Reload to update the page
-            });
+            alert_toast("Archive deleted successfully.", "success");
+            location.reload(); // Reload to update the page
           } else {
-            Swal.fire('Failed', 'Failed to delete the archive.', 'error');
+            alert_toast("Failed to delete the archive.", "error");
             end_loader();
           }
         }
