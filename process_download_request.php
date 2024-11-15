@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'config.php'; // Ensure this file connects to your database correctly
+require 'config.php';
 
 // Verify user is logged in
 if (!isset($_SESSION['user_logged_in']) || !$_SESSION['user_logged_in']) {
@@ -18,18 +18,22 @@ if ($fileId <= 0 || empty($reason)) {
     exit;
 }
 
-// Prepare the database query
 try {
+    // Prepare and execute the query
     $stmt = $conn->prepare("INSERT INTO download_requests (user_id, file_id, reason) VALUES (?, ?, ?)");
-    $stmt->bind_param("iis", $userId, $fileId, $reason);
-    if ($stmt->execute()) {
-        echo json_encode(['status' => 'success', 'message' => 'Request submitted successfully']);
-    } else {
-        throw new Exception('Failed to execute query: ' . $stmt->error);
+    if (!$stmt) {
+        throw new Exception("Statement preparation failed: " . $conn->error);
     }
+    $stmt->bind_param("iis", $userId, $fileId, $reason);
+    if (!$stmt->execute()) {
+        throw new Exception("Query execution failed: " . $stmt->error);
+    }
+
+    // Success response
+    echo json_encode(['status' => 'success', 'message' => 'Request submitted successfully']);
     $stmt->close();
 } catch (Exception $e) {
-    // Log the error if necessary (avoid exposing details to users)
+    // Log detailed error for debugging
     error_log($e->getMessage());
     echo json_encode(['status' => 'error', 'message' => 'Database error. Please try again later.']);
 }
