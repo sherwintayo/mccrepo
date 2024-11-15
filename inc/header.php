@@ -60,6 +60,8 @@
   <link rel="stylesheet" href="<?php echo base_url ?>plugins/summernote/summernote-bs4.min.css">
   <!-- SweetAlert2 -->
   <link rel="stylesheet" href="<?php echo base_url ?>plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+  <!-- SweetAlert2 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <style type="text/css">
     /* Chart.js */
     @keyframes chartjs-render-animation {
@@ -115,6 +117,8 @@
   <script src="<?php echo base_url ?>plugins/jquery-ui/jquery-ui.min.js"></script>
   <!-- SweetAlert2 -->
   <script src="<?php echo base_url ?>plugins/sweetalert2/sweetalert2.min.js"></script>
+  <!-- SweetAlert2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <!-- Toastr -->
   <script src="<?php echo base_url ?>plugins/toastr/toastr.min.js"></script>
   <script>

@@ -222,7 +222,7 @@ while ($row = $qry->fetch_assoc()) {
     }
 
     $(function () {
-      // Trigger delete confirmation
+      // Trigger delete confirmation using SweetAlert
       $('.delete_data').click(function () {
         const id = $(this).attr('data-id');
         _conf("Are you sure you want to delete this project permanently?", "delete_archive", [id]);
@@ -237,6 +237,26 @@ while ($row = $qry->fetch_assoc()) {
       });
     });
 
+    // SweetAlert confirmation dialog
+    function _conf(message, callback, params) {
+      Swal.fire({
+        title: 'Confirmation',
+        text: message,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          if (typeof window[callback] === "function") {
+            window[callback].apply(null, params);
+          }
+        }
+      });
+    }
+
     // Delete archive function
     function delete_archive(id) {
       start_loader(); // Show a loader while processing
@@ -247,15 +267,16 @@ while ($row = $qry->fetch_assoc()) {
         dataType: "json",
         error: function (err) {
           console.error(err);
-          alert_toast("An error occurred.", "error");
+          Swal.fire('Error', 'An error occurred while deleting the archive.', 'error');
           end_loader();
         },
         success: function (response) {
           if (response.status === 'success') {
-            alert_toast("Archive deleted successfully.", "success");
-            location.reload(); // Reload to update the page
+            Swal.fire('Deleted!', 'Archive deleted successfully.', 'success').then(() => {
+              location.reload(); // Reload to update the page
+            });
           } else {
-            alert_toast("Failed to delete the archive.", "error");
+            Swal.fire('Failed', 'Failed to delete the archive.', 'error');
             end_loader();
           }
         }
