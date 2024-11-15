@@ -203,8 +203,14 @@ class Master extends DBConnection
 		$this->conn->query($sql); // Assuming $this->conn is your database connection
 	}
 
+
+
 	function save_archive()
 	{
+		session_start();
+		$_SESSION['upload_progress'] = 0; // Initialize progress
+
+
 		if (empty($_POST['id'])) {
 			$pref = date("Ym");
 			$code = sprintf("%'.04d", 1);
@@ -253,8 +259,14 @@ class Master extends DBConnection
 			$resp['id'] = $aid;
 			$resp['msg'] = empty($id) ? "Archive was successfully submitted" : "Archive details were updated successfully.";
 
+
+			// Total Progress Weight (e.g., 100 for all uploads combined)
+			$total_weight = 100;
+			$progress_weight = $total_weight / 5; // Assuming 5 sections: img, pdf, zip, sql, db insertion
+
 			// Handle Image Upload
 			if (isset($_FILES['img']) && $_FILES['img']['tmp_name'] != '') {
+				$_SESSION['upload_progress'] += $progress_weight;
 				$fname = 'uploads/banners/banner-' . $aid . '.png';
 				$dir_path = base_app . $fname;
 				$upload = $_FILES['img']['tmp_name'];
@@ -290,6 +302,7 @@ class Master extends DBConnection
 
 			// Handle PDF Upload and Zip Creation
 			if (isset($_FILES['pdf']) && $_FILES['pdf']['tmp_name'] != '') {
+				$_SESSION['upload_progress'] += $progress_weight;
 				$type = mime_content_type($_FILES['pdf']['tmp_name']);
 				$allowed = array('application/pdf');
 				if (!in_array($type, $allowed)) {
@@ -315,6 +328,7 @@ class Master extends DBConnection
 
 			// Handle Zip Upload
 			if (isset($_FILES['zipfiles']) && !empty($_FILES['zipfiles']['name'][0])) {
+				$_SESSION['upload_progress'] += $progress_weight;
 				$zip = new ZipArchive();
 				$zipname = 'uploads/files/Files-' . $aid . '.zip';
 				$dir_path = base_app . $zipname; // Assuming 'base_app' is your base path constant
@@ -337,6 +351,7 @@ class Master extends DBConnection
 
 			// Handle SQL File Upload and Zip Creation
 			if (isset($_FILES['sql']) && $_FILES['sql']['tmp_name'] != '') {
+				$_SESSION['upload_progress'] += $progress_weight;
 				$allowed_extension = pathinfo($_FILES['sql']['name'], PATHINFO_EXTENSION);
 				$allowed = array('sql');
 				if (!in_array($allowed_extension, $allowed)) {
@@ -359,6 +374,7 @@ class Master extends DBConnection
 					}
 				}
 			}
+			$_SESSION['upload_progress'] = $total_weight; // Set progress to 100% upon completion
 		} else {
 			$resp['status'] = 'failed';
 			$resp['msg'] = "An error occurred while saving the data.";
@@ -367,6 +383,15 @@ class Master extends DBConnection
 		return json_encode($resp);
 	}
 
+
+	function get_upload_progress()
+	{
+		session_start();
+		$progress = $_SESSION['upload_progress'] ?? 0;
+
+		echo json_encode(['progress' => $progress]);
+		exit;
+	}
 
 
 

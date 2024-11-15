@@ -183,38 +183,29 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         $('#archive-form').submit(function (e) {
             e.preventDefault();
 
-            // Prepare form data
+            // Submit form data via POST and redirect to studentprofile.php
             const formData = new FormData(this);
 
-            // Initialize AJAX request
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', _base_url_ + 'classes/Master.php?f=save_archive', true);
+            $.ajax({
+                url: _base_url_ + 'classes/Master.php?f=save_archive',
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    const resp = JSON.parse(response);
 
-            // Track upload progress
-            xhr.upload.addEventListener('progress', function (event) {
-                if (event.lengthComputable) {
-                    const percentComplete = Math.round((event.loaded / event.total) * 100);
-                    localStorage.setItem('upload_progress', percentComplete); // Store progress
-                }
-            });
-
-            // Handle response
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    const response = JSON.parse(xhr.responseText);
-                    if (response.status === 'success') {
-                        localStorage.setItem('upload_progress', 100); // Ensure progress is complete
-                        window.location.href = './?page=studentprofile'; // Redirect to studentprofile.php
+                    if (resp.status === 'success') {
+                        // Redirect back to studentprofile.php with progress tracking enabled
+                        window.location.href = './?page=studentprofile&upload=1';
                     } else {
-                        alert('Upload failed: ' + response.msg);
+                        alert('Upload failed: ' + resp.msg);
                     }
-                } else {
-                    alert('An error occurred during upload.');
-                }
-            };
-
-            // Send form data
-            xhr.send(formData);
+                },
+                error: function () {
+                    alert('An error occurred while submitting the form.');
+                },
+            });
         });
     })
 </script>
