@@ -196,11 +196,12 @@
       </div>
 
       <?php
-      // Fetch notifications for the logged-in user
-      $student_id = $_settings->userdata('id'); // Check if the user is logged in
+      $student_id = $_settings->userdata('id'); // Logged-in student ID
       $notifications = [];
       $unread_count = 0;
+
       if ($student_id) {
+        // General notifications from the notifications table
         $result = $conn->query("SELECT * FROM notifications WHERE student_id = $student_id ORDER BY date_created DESC");
         if ($result) {
           while ($row = $result->fetch_assoc()) {
@@ -210,8 +211,38 @@
             }
           }
         }
+
+        // Approved download requests from the download_requests table
+        $query = "
+        SELECT dr.id AS request_id, al.title, al.document_path, al.folder_path, al.sql_path 
+        FROM download_requests dr
+        JOIN archive_list al ON dr.file_id = al.id
+        WHERE dr.student_id = ? AND dr.status = 'approved' AND dr.status_read = 'unread'
+        ORDER BY dr.requested_at DESC
+    ";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('i', $student_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        while ($row = $result->fetch_assoc()) {
+          $notifications[] = [
+            'id' => $row['request_id'],
+            'type' => 'download', // Custom type for download notifications
+            'message' => "Your request to download '<strong>" . htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8') . "</strong>' is approved.",
+            'status' => 'unread',
+            'paths' => [
+              'document' => $row['document_path'],
+              'folder' => $row['folder_path'],
+              'sql' => $row['sql_path'],
+            ],
+            'date_created' => date('Y-m-d H:i:s'), // Default date for display
+          ];
+          $unread_count++;
+        }
       }
       ?>
+
 
       <?php if ($student_id): ?> <!-- Only show if user is logged in -->
         <div class="me-3 position-relative">
@@ -227,19 +258,26 @@
           <div class="dropdown-menu dropdown-menu-right">
             <span class="dropdown-item dropdown-header"><?= count($notifications) ?> Notifications</span>
             <div class="dropdown-divider"></div>
+
             <?php if (count($notifications) > 0): ?>
               <?php foreach ($notifications as $notif): ?>
-                <a href="#" class="dropdown-item notification-link" data-id="<?= $notif['id'] ?>"
-                  onclick="markAsReadAndRedirect(this)">
-                  <i class="fas fa-envelope mr-2"></i>
-                  <span><?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?></span>
-                  <span class="notification-time">
-                    <?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?>
-                  </span>
-                  <?php if ($notif['status'] == 'unread'): ?>
-                    <span class="unread-indicator"></span> <!-- Blue circle for unread messages -->
-                  <?php endif; ?>
-                </a>
+                <?php if (isset($notif['type']) && $notif['type'] === 'download'): ?>
+                  <!-- Download Request Notifications -->
+                  <a href="#" class="dropdown-item download-notification" data-id="<?= $notif['id'] ?>"
+                    data-document="<?= $notif['paths']['document'] ?>" data-folder="<?= $notif['paths']['folder'] ?>"
+                    data-sql="<?= $notif['paths']['sql'] ?>">
+                    <i class="fas fa-download text-success"></i>
+                    <?= $notif['message'] ?>
+                    <span class="notification-time"><?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
+                  </a>
+                <?php else: ?>
+                  <!-- General Notifications -->
+                  <a href="#" class="dropdown-item notification-link" data-id="<?= $notif['id'] ?>">
+                    <i class="fas fa-envelope text-primary"></i>
+                    <?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?>
+                    <span class="notification-time"><?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
+                  </a>
+                <?php endif; ?>
                 <div class="dropdown-divider"></div>
               <?php endforeach; ?>
             <?php else: ?>
@@ -465,20 +503,81 @@
     });
   });
 
-  function markAsReadAndRedirect(element) {
-    const notificationId = element.getAttribute("data-id");
+  $(document).on("click", ".download-notification", function (e) {
+    e.preventDefault();
 
-    // Send AJAX request to mark the notification as read
-    fetch(`./mark_notification_read.php?id=${notificationId}`, { method: 'POST' })
+    const notificationId = $(this).data("id");
+    const documentPath = $(this).data("document");
+    const folderPath = $(this).data("folder");
+    const sqlPath = $(this).data("sql");
+
+    // SweetAlert confirmation
+    Swal.fire({
+      title: "Download Approved Files",
+      text: "Do you want to start downloading the approved files?",
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonText: "Download",
+      cancelButtonText: "Cancel"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Mark as read
+        markNotificationAsRead(notificationId, () => {
+          // Start downloading files
+          downloadFiles({ documentPath, folderPath, sqlPath });
+        });
+      }
+    });
+  });
+
+  function markNotificationAsRead(notificationId, callback) {
+    fetch(`./mark_notification_read.php?id=${notificationId}&type=download`, { method: 'POST' })
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          // Redirect to the archives page
-          window.location.href = "./?page=my_archives";
+          if (callback) callback();
         } else {
           console.error("Failed to mark notification as read.");
         }
       })
       .catch(error => console.error("Error:", error));
+  }
+
+  function downloadFiles(paths) {
+    const zip = new JSZip();
+
+    const files = [
+      { path: paths.document, name: "Document_File.zip" },
+      { path: paths.folder, name: "Project_File.zip" },
+      { path: paths.sql, name: "SQL_File.zip" }
+    ];
+
+    files.forEach(async (file) => {
+      if (file.path) {
+        try {
+          const data = await fetchFile(file.path);
+          zip.file(file.name, data);
+        } catch (error) {
+          console.error(`Failed to load file ${file.name}:`, error);
+        }
+      }
+    });
+
+    zip.generateAsync({ type: "blob" }).then((content) => {
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(content);
+      link.download = "Approved_Files.zip";
+      link.click();
+      URL.revokeObjectURL(link.href); // Cleanup
+    });
+  }
+
+  function fetchFile(url) {
+    return new Promise((resolve, reject) => {
+      JSZipUtils.getBinaryContent(url, function (err, data) {
+        if (err) reject(err);
+        else resolve(data);
+      });
+    });
   }
 </script>
