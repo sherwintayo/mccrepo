@@ -112,6 +112,13 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         </button>
                     </div>
 
+                    <!-- Download Request Form (initially hidden) -->
+                    <div id="requestForm" class="download-info">
+                        <textarea id="reasonTextarea" class="form-control"
+                            placeholder="Please provide a reason for downloading the files"></textarea>
+                        <button class="btn btn-primary btn-flat mt-2" id="submitReasonButton">Submit Request</button>
+                    </div>
+
 
                     <!-- File Information -->
                     <div class="download-info">
@@ -177,54 +184,62 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         $(document).ready(function () {
             const isLoggedIn = <?= json_encode($is_logged_in) ?>;
 
-            $('#downloadButton').click(async function () {
-                if (!isLoggedIn) {
-                    // Show SweetAlert for login requirement
+            $('#downloadButton').click(function () {
+                if (isLoggedIn) {
+                    // Show request form when the student is logged in
+                    $('#reasonTextarea').show();
+                    $('#submitReasonButton').show();
+                } else {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Login Required',
-                        text: 'You need to log in to download files.',
+                        text: 'You need to log in to request downloads.',
                         confirmButtonText: 'OK'
                     }).then((result) => {
                         if (result.isConfirmed) {
                             window.location.href = "login.php";
                         }
                     });
+                }
+            });
+
+            // Handle download request submission
+            $('#submitReasonButton').click(function () {
+                const reason = $('#reasonTextarea').val();
+                const fileId = <?= isset($id) ? htmlspecialchars($id) : "null" ?>;
+
+                if (reason.trim() === "") {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Reason Required',
+                        text: 'Please enter a reason for your download request.'
+                    });
                     return;
                 }
 
-                // Proceed with file download if logged in
-                const zip = new JSZip();
-                const files = [
-                    { path: "<?= base_url . 'uploads/pdf/Document-' . htmlspecialchars($id) . '.zip' ?>", name: "Document_File.zip" },
-                    { path: "<?= base_url . 'uploads/files/Files-' . htmlspecialchars($id) . '.zip' ?>", name: "Project_File.zip" },
-                    { path: "<?= base_url . 'uploads/sql/SQL-' . htmlspecialchars($id) . '.zip' ?>", name: "SQL_File.zip" }
-                ];
-
-                for (const file of files) {
-                    try {
-                        const data = await fetchFile(file.path);
-                        if (data) zip.file(file.name, data);
-                    } catch (error) {
-                        console.error(`Failed to load file ${file.name}:`, error);
+                $.ajax({
+                    url: 'process_download_request.php',
+                    method: 'POST',
+                    data: { file_id: fileId, reason: reason },
+                    success: function (response) {
+                        const resp = JSON.parse(response);
+                        if (resp.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Request Submitted',
+                                text: 'Your download request has been submitted for review.'
+                            });
+                            $('#reasonTextarea').val('').hide();
+                            $('#submitReasonButton').hide();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Could not submit your request. Please try again later.'
+                            });
+                        }
                     }
-                }
-
-                zip.generateAsync({ type: "blob" }).then(content => {
-                    const link = document.createElement('a');
-                    link.href = URL.createObjectURL(content);
-                    link.download = "All_Files.zip";
-                    link.click();
                 });
             });
-
-            function fetchFile(url) {
-                return new Promise((resolve, reject) => {
-                    JSZipUtils.getBinaryContent(url, function (err, data) {
-                        if (err) reject(err);
-                        else resolve(data);
-                    });
-                });
-            }
         });
     </script>
