@@ -190,15 +190,31 @@ while ($row = $qry->fetch_assoc()) {
 
 
 
-
+        <?php
+        if (isset($_GET['id']) && $_GET['id'] > 0) {
+          $qry = $conn->query("SELECT * FROM archive_list where id = '{$_GET['id']}'");
+          if ($qry->num_rows) {
+            foreach ($qry->fetch_array() as $k => $v) {
+              if (!is_numeric($k))
+                $$k = $v;
+            }
+          }
+          if (isset($student_id)) {
+            if ($student_id != $_settings->userdata('id')) {
+              echo "<script> alert('You don\'t have an access to this page'); location.replace('./'); </script>";
+            }
+          }
+        }
+        ?>
 
         <div id="submit_capstone" class="page">
           <h2>Submit Capstone Projects</h2>
           <p>Upload your capstone projects here.</p>
           <div class="content py-4">
-            <div class="card card-outline card-primary shadow rounded-0">
+            <div class="card card-outline card-light shadow rounded-0">
               <div class="card-header rounded-0">
-                <h5 class="card-title">Submit Project</h5>
+                <h5 class="card-title"><?= htmlspecialchars(isset($id) ? "Update Archive-{$archive_code} Details" :
+                  "Submit Project", ENT_QUOTES, 'UTF-8') ?></h5>
               </div>
               <div class="card-body rounded-0">
                 <div class="container-fluid">
