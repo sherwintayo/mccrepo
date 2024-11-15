@@ -512,29 +512,31 @@
       const sqlPath = element.getAttribute("data-sql");
 
       // Mark as read and trigger file download
-      markNotificationAsRead(notificationId, () => {
+      markNotificationAsRead(notificationId, 'download', () => {
         downloadFiles({ documentPath, folderPath, sqlPath });
       });
     } else {
       // Mark as read and redirect for general notifications
-      markNotificationAsRead(notificationId, () => {
+      markNotificationAsRead(notificationId, 'general', () => {
         window.location.href = "./?page=my_archives";
       });
     }
   }
 
-  function markNotificationAsRead(notificationId, callback) {
-    fetch(`./mark_notification_read.php?id=${notificationId}`, { method: 'POST' })
+
+  function markNotificationAsRead(notificationId, type = 'general', callback) {
+    fetch(`./mark_notification_read.php?id=${notificationId}&type=${type}`, { method: 'POST' })
       .then(response => response.json())
       .then(data => {
         if (data.success) {
           if (callback) callback();
         } else {
-          console.error("Failed to mark notification as read.");
+          console.error("Failed to mark notification as read:", data.message);
         }
       })
       .catch(error => console.error("Error:", error));
   }
+
 
   function downloadFiles(paths) {
     const zip = new JSZip();
