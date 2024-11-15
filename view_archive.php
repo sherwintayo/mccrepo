@@ -49,7 +49,8 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
     }
 
     #reasonTextarea,
-    #submitReasonButton {
+    #submitReasonButton,
+    #requestForm {
         display: none;
     }
 
@@ -186,7 +187,6 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 
             $('#downloadButton').click(function () {
                 if (isLoggedIn) {
-                    // Show request form when the student is logged in
                     $('#reasonTextarea').show();
                     $('#submitReasonButton').show();
                 } else {
@@ -203,13 +203,11 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 }
             });
 
-            // Handle download request submission
             $('#submitReasonButton').click(function () {
-                console.log('Submit button clicked'); // Debug log
-                const reason = $('#reasonTextarea').val();
+                const reason = $('#reasonTextarea').val().trim();
                 const fileId = <?= isset($id) ? htmlspecialchars($id) : "null" ?>;
 
-                if (reason.trim() === "") {
+                if (reason === "") {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Reason Required',
@@ -218,32 +216,39 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     return;
                 }
 
-                console.log('Sending AJAX request...'); // Debug log
                 $.ajax({
                     url: 'process_download_request.php',
                     method: 'POST',
                     data: { file_id: fileId, reason: reason },
                     success: function (response) {
-                        console.log('AJAX response:', response); // Debug log
-                        const resp = JSON.parse(response);
-                        if (resp.status === 'success') {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Request Submitted',
-                                text: 'Your download request has been submitted for review.'
-                            });
-                            $('#reasonTextarea').val('').hide();
-                            $('#submitReasonButton').hide();
-                        } else {
+                        try {
+                            const resp = JSON.parse(response);
+                            if (resp.status === 'success') {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Request Submitted',
+                                    text: 'Your download request has been submitted for review.'
+                                });
+                                $('#reasonTextarea').val('').hide();
+                                $('#submitReasonButton').hide();
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: resp.message || 'Could not submit your request. Please try again later.'
+                                });
+                            }
+                        } catch (e) {
+                            console.error('Response parse error:', e);
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error',
-                                text: 'Could not submit your request. Please try again later.'
+                                text: 'Unexpected response from server.'
                             });
                         }
                     },
                     error: function (xhr, status, error) {
-                        console.error('AJAX error:', status, error); // Debug log
+                        console.error('AJAX error:', status, error);
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
@@ -252,6 +257,6 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     }
                 });
             });
-
         });
+
     </script>
