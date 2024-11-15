@@ -374,5 +374,99 @@ while ($row = $qry->fetch_assoc()) {
         }
       });
     }
+
+    // Submit Archive
+    function displayImg(input, _this) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          $('#cimg').attr('src', e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+      } else {
+        $('#cimg').attr('src', "<?= validate_image(isset($avatar) ? $avatar : "") ?>");
+      }
+    }
+    $(function () {
+      $('.summernote').summernote({
+        height: 200,
+        toolbar: [
+          ['style', ['style']],
+          ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+          ['fontname', ['fontname']],
+          ['fontsize', ['fontsize']],
+          ['color', ['color']],
+          ['para', ['ol', 'ul', 'paragraph', 'height']],
+          ['table', ['table']],
+          ['insert', ['link', 'picture']],
+          ['view', ['undo', 'redo', 'help']]
+        ]
+      })
+      $('.summernote-list-only').summernote({
+        height: 200,
+        toolbar: [
+          ['font', ['bold', 'italic', 'clear']],
+          ['fontname', ['fontname']]
+          ['color', ['color']],
+          ['para', ['ol', 'ul']],
+          ['view', ['undo', 'redo', 'help']]
+        ]
+      })
+      // Archive Form Submit
+      $('#archive-form').submit(function (e) {
+        e.preventDefault()
+        var _this = $(this)
+        $(".pop-msg").remove()
+        var el = $("<div>")
+        el.addClass("alert pop-msg my-2")
+        el.hide()
+        start_loader();
+        $.ajax({
+          url: _base_url_ + "classes/Master.php?f=save_archive",
+          data: new FormData($(this)[0]),
+          cache: false,
+          contentType: false,
+          processData: false,
+          method: 'POST',
+          type: 'POST',
+          dataType: 'json',
+          error: err => {
+            console.log(err)
+            el.text("An error occured while saving    the data")
+            el.addClass("alert-danger")
+            _this.prepend(el)
+            el.show('slow')
+            end_loader()
+          },
+          success: function (resp) {
+            if (resp.status == 'success') {
+
+              Swal.fire({
+                icon: 'success',
+                title: 'Uploaded Successfully',
+                // text: 'Click OK to Continue.',
+                showConfirmButton: false,
+                timer: 1000
+              }).then(() => {
+                location.href = "./?page=view_archive&id=" + resp.id
+              })
+            } else if (!!resp.msg) {
+              el.text(resp.msg)
+              el.addClass("alert-danger")
+              _this.prepend(el)
+              el.show('show')
+            } else {
+              el.text("An error occured while saving the data")
+              el.addClass("alert-danger")
+              _this.prepend(el)
+              el.show('show')
+            }
+            end_loader();
+            $('html, body').animate({ scrollTop: 0 }, 'fast')
+          }
+        })
+      })
+    })
   </script>
 </body>
