@@ -56,7 +56,8 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                                         ?>
                                         <option <?= htmlspecialchars(isset($year) && $year == date("Y", strtotime(date("Y") . " -{$i} years")) ?
                                             "selected" : "", ENT_QUOTES, 'UTF-8') ?>>
-                                            <?= date("Y", strtotime(date("Y") . " -{$i} years")) ?></option>
+                                            <?= date("Y", strtotime(date("Y") . " -{$i} years")) ?>
+                                        </option>
                                     <?php endfor; ?>
                                 </select>
                             </div>
@@ -181,70 +182,39 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         // Archive Form Submit
         $('#archive-form').submit(function (e) {
             e.preventDefault();
-            var _this = $(this);
-            $(".pop-msg").remove();
-            var el = $("<div>");
-            el.addClass("alert pop-msg my-2");
-            el.hide();
 
-            // Clear previous progress bar
-            const progressBar = $('<div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;"></div></div>');
-            $('#archive-form').prepend(progressBar);
+            // Prepare form data
+            var formData = new FormData(this);
 
-            $.ajax({
-                url: _base_url_ + "classes/Master.php?f=save_archive",
-                data: new FormData($(this)[0]),
-                cache: false,
-                contentType: false,
-                processData: false,
-                method: 'POST',
-                type: 'POST',
-                dataType: 'json',
-                xhr: function () {
-                    var xhr = new window.XMLHttpRequest();
-                    // Upload progress
-                    xhr.upload.addEventListener('progress', function (evt) {
-                        if (evt.lengthComputable) {
-                            var percentComplete = (evt.loaded / evt.total) * 100;
-                            $('.progress-bar').css('width', percentComplete + '%').attr('aria-valuenow', percentComplete);
-                        }
-                    }, false);
-                    return xhr;
-                },
-                error: function (err) {
-                    console.log(err);
-                    el.text("An error occurred while saving the data");
-                    el.addClass("alert-danger");
-                    _this.prepend(el);
-                    el.show('slow');
-                    $('.progress').remove();
-                },
-                success: function (resp) {
-                    if (resp.status === 'success') {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Uploaded Successfully',
-                            showConfirmButton: false,
-                            timer: 1000
-                        }).then(() => {
-                            // Redirect to student profile
-                            location.href = "./?page=studentprofile";
-                        });
-                    } else if (resp.msg) {
-                        el.text(resp.msg);
-                        el.addClass("alert-danger");
-                        _this.prepend(el);
-                        el.show('show');
-                        $('.progress').remove();
-                    } else {
-                        el.text("An error occurred while saving the data");
-                        el.addClass("alert-danger");
-                        _this.prepend(el);
-                        el.show('show');
-                        $('.progress').remove();
-                    }
+            // AJAX request with progress tracking
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', _base_url_ + 'classes/Master.php?f=save_archive', true);
+
+            // Track upload progress
+            xhr.upload.addEventListener('progress', function (event) {
+                if (event.lengthComputable) {
+                    var percentComplete = Math.round((event.loaded / event.total) * 100);
+                    localStorage.setItem('upload_progress', percentComplete); // Store progress for studentprofile.php
                 }
             });
+
+            // Handle completion
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.status === 'success') {
+                        localStorage.setItem('upload_progress', 100); // Ensure progress is complete
+                        window.location.href = './?page=studentprofile'; // Redirect to studentprofile.php
+                    } else {
+                        alert('Upload failed: ' + response.msg);
+                    }
+                } else {
+                    alert('An error occurred while uploading.');
+                }
+            };
+
+            // Send the request
+            xhr.send(formData);
         });
     })
 </script>

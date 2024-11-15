@@ -144,12 +144,15 @@ while ($row = $qry->fetch_assoc()) {
             <li><a href="#" class="nav-link" onclick="setActive(this, 'account_settings')">account settings</a></li>
           </ul>
           <!-- Redirect Button -->
-          <div id="uploadArea">
-            <!-- Upload Archive Button -->
-            <button id="uploadArchiveBtn" class="btn btn-primary d-flex align-items-center"
-              onclick="redirectToSubmitArchive()">
-              <i class="fa fa-upload mr-2"></i> Upload Archive
-            </button>
+          <button id="uploadArchiveBtn" class="btn btn-primary d-flex align-items-center"
+            onclick="redirectToSubmitArchive()">
+            <i class="fa fa-upload mr-2"></i> Upload Archive
+          </button>
+
+          <!-- Progress Bar (Hidden Initially) -->
+          <div id="uploadProgressBar" class="progress mt-3" style="width: 100%; display: none;">
+            <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+              style="width: 0%;" aria-valuemin="0" aria-valuemax="100">0%</div>
           </div>
         </nav>
 
@@ -274,18 +277,20 @@ while ($row = $qry->fetch_assoc()) {
       });
     }
 
-    // Submit Archive
-
+    // Redirect to the submit-archive page
     function redirectToSubmitArchive() {
-      // Replace button with progress bar during navigation
-      const progressBar = `
-            <div class="progress" style="width: 200px;">
-                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%;"></div>
-            </div>`;
-      $('#uploadArea').html(progressBar);
-      setTimeout(() => {
-        window.location.href = './?page=submit-archive';
-      }, 500); // Simulate delay
+      window.location.href = './?page=submit-archive';
+    }
+
+    // Display the progress bar dynamically
+    function showUploadProgress(percentage) {
+      const progressBar = document.getElementById('progressBar');
+      progressBar.style.width = percentage + '%';
+      progressBar.textContent = percentage + '%';
+
+      if (percentage >= 100) {
+        progressBar.textContent = 'Upload Complete';
+      }
     }
   </script>
 </body>
