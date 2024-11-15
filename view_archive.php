@@ -49,8 +49,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
     }
 
     #reasonTextarea,
-    #submitReasonButton,
-    #requestForm {
+    #submitReasonButton {
         display: none;
     }
 
