@@ -1,38 +1,24 @@
 <?php
 session_start();
-require 'config.php'; // Ensure the path is correct
+require 'config.php';
 
 if (!isset($_SESSION['user_logged_in']) || !$_SESSION['user_logged_in']) {
   echo json_encode(['success' => false, 'message' => 'User not logged in.']);
   exit;
 }
 
-$notificationId = isset($_GET['id']) ? intval($_GET['id']) : 0;
-$notificationType = isset($_GET['type']) ? $_GET['type'] : 'general'; // Type of notification ('general' or 'download')
+$requestId = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-$response = ['success' => false];
-
-if ($notificationId > 0) {
-  if ($notificationType === 'download') {
-    // Update the `status_read` column in the `download_requests` table
-    $stmt = $conn->prepare("UPDATE download_requests SET status_read = 'read' WHERE id = ?");
-    $stmt->bind_param("i", $notificationId);
-  } else {
-    // Update the `status` column in the `notifications` table
-    $stmt = $conn->prepare("UPDATE notifications SET status = 'read' WHERE id = ?");
-    $stmt->bind_param("i", $notificationId);
-  }
-
+if ($requestId > 0) {
+  $stmt = $conn->prepare("UPDATE download_requests SET status_read = 'read' WHERE id = ?");
+  $stmt->bind_param("i", $requestId);
   if ($stmt->execute()) {
-    $response['success'] = true;
+    echo json_encode(['success' => true]);
   } else {
-    $response['message'] = "Failed to update notification status.";
+    echo json_encode(['success' => false, 'message' => 'Failed to mark as read.']);
   }
-
   $stmt->close();
 } else {
-  $response['message'] = "Invalid notification ID.";
+  echo json_encode(['success' => false, 'message' => 'Invalid request ID.']);
 }
-
-echo json_encode($response);
 ?>
