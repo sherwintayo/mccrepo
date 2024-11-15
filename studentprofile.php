@@ -147,18 +147,45 @@ while ($row = $qry->fetch_assoc()) {
         </nav>
 
         <!-- Default page content (my_archives) -->
-        <!-- Page Content -->
         <div id="my_archives" class="page active">
           <h2>My Submitted Projects</h2>
-          <div>
+          <div class="card-deck d-flex flex-wrap">
             <?php foreach ($archives as $archive): ?>
-              <div>
-                <h3><?= $archive['title'] ?></h3>
-                <p><?= $archive['archive_code'] ?> - <?= $archive['status'] == 1 ? 'Published' : 'Unpublished' ?></p>
+              <?php
+              $statusLabel = $archive['status'] == 1 ? 'Published' : 'Unpublished';
+              $statusClass = $archive['status'] == 1 ? 'badge-success' : 'badge-secondary';
+              ?>
+              <div class="card shadow-sm border-light m-2" style="width: 18rem;">
+                <img src="<?= $archive['banner_path'] ? base_url . $archive['banner_path'] : 'img/default.jpg'; ?>"
+                  class="card-img-top" alt="Project Banner" style="height: 180px; object-fit: cover;">
+                <div class="card-body">
+                  <h5 class="card-title"><?= htmlspecialchars($archive['title']); ?></h5>
+                  <p class="card-text">Archive Code: <?= htmlspecialchars($archive['archive_code']); ?></p>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                  <span class="badge <?= $statusClass; ?>"><?= $statusLabel; ?></span>
+                  <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false">
+                      Actions
+                    </button>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" href="<?= base_url ?>/?page=view_archive&id=<?= $archive['id']; ?>"
+                        target="_blank">
+                        <i class="fa fa-external-link-alt text-gray"></i> View
+                      </a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item delete_data" href="javascript:void(0)" data-id="<?= $archive['id']; ?>">
+                        <i class="fa fa-trash text-danger"></i> Delete
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </div>
             <?php endforeach; ?>
           </div>
         </div>
+
 
         <div id="submit_capstone" class="page">
           <h2>Submit Capstone Projects</h2>
