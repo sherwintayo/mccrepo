@@ -7,6 +7,15 @@
       min-height: calc(100px + 15vw);
     }
 
+    /* Add page visibility control */
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
     /* Center the confirmation dialog */
     .confirm-modal {
       position: fixed;
@@ -138,106 +147,49 @@ while ($row = $qry->fetch_assoc()) {
         </nav>
 
         <!-- Default page content (my_archives) -->
-        <div class="page" id="content-area">
-          <!-- The initial content for "my archives" will go here -->
-          <img src="img/img_1.avif" alt="Photo" />
-          <img src="img/img_2.avif" alt="Photo" />
-          <img src="img/img_3.avif" alt="Photo" />
+        <!-- Page Content -->
+        <div id="my_archives" class="page active">
+          <h2>My Submitted Projects</h2>
+          <div>
+            <?php foreach ($archives as $archive): ?>
+              <div>
+                <h3><?= $archive['title'] ?></h3>
+                <p><?= $archive['archive_code'] ?> - <?= $archive['status'] == 1 ? 'Published' : 'Unpublished' ?></p>
+              </div>
+            <?php endforeach; ?>
+          </div>
+        </div>
+
+        <div id="submit_capstone" class="page">
+          <h2>Submit Capstone Projects</h2>
+          <p>Upload your capstone projects here.</p>
+        </div>
+
+        <div id="notifications" class="page">
+          <h2>Notifications</h2>
+          <p>You have no new notifications.</p>
+        </div>
+
+        <div id="account_settings" class="page">
+          <h2>Account Settings</h2>
+          <p>Manage your account preferences here.</p>
         </div>
       </div>
     </div>
   </div>
 
+  </div>
+  </div>
+  </div>
+
   <script>
-    const archives = <?php echo json_encode($archives); ?>;
-
-    // JavaScript function to dynamically load content
-    function loadContent(page) {
-      const contentArea = document.getElementById("content-area");
-
-      if (page === 'my_archives') {
-        let html = `
-          <h2>My Submitted Projects</h2>
-          <div class="card-deck d-flex flex-wrap">`;
-
-        archives.forEach((archive) => {
-          const statusLabel = archive.status == 1 ? 'Published' : 'Unpublished';
-          const statusClass = archive.status == 1 ? 'badge-success' : 'badge-secondary';
-
-          html += `
-            <div class="card shadow-sm border-light m-2" style="width: 18rem;">
-              <img src="${archive.banner_path ? `<?= base_url ?>${archive.banner_path}` : 'img/default.jpg'}" class="card-img-top" alt="Project Banner" style="height: 180px; object-fit: cover;">
-              <div class="card-body">
-                <h5 class="card-title">${archive.title}</h5>
-                <p class="card-text">Archive Code: ${archive.archive_code}</p>
-              </div>
-              <div class="card-footer d-flex justify-content-between align-items-center ml3">
-                <span class="badge ${statusClass}">${statusLabel}</span>
-                <div class="dropdown">
-                  <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Actions
-                  </button>
-                  <div class="dropdown-menu">
-                    <a class="dropdown-item" href="<?= base_url ?>/?page=view_archive&id=${archive.id}" target="_blank">
-                      <i class="fa fa-external-link-alt text-gray"></i> View
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item delete_data" href="javascript:void(0)" data-id="${archive.id}">
-                      <i class="fa fa-trash text-danger"></i> Delete
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>`;
-        });
-
-        html += `</div>`; // Close card-deck div
-        contentArea.innerHTML = html;
-
-        // Add delete functionality
-        document.querySelectorAll('.delete_data').forEach(button => {
-          button.addEventListener('click', function () {
-            const id = this.getAttribute('data-id');
-            _conf("Are you sure to delete this project permanently?", "delete_archive", [id]);
-          });
-        });
-
-      } else if (page === 'submit_capstone') {
-        contentArea.innerHTML = `
-          <h2>Submit Capstone Projects</h2>
-          <p>Upload and submit your capstone project files here.</p>
-          <button>Submit Project</button>`;
-      } else if (page === 'notifications') {
-        contentArea.innerHTML = `
-          <h2>Notifications</h2>
-          <p>You have no new notifications at this time.</p>`;
-      } else if (page === 'account_settings') {
-        contentArea.innerHTML = `
-          <h2>Account Settings</h2>
-          <p>Manage your account information and preferences here.</p>`;
-      } else {
-        contentArea.innerHTML = `<p>Page not found.</p>`;
-      }
-    }
-
-    // Load the default page content ("my_archives") when the page is first loaded
-    document.addEventListener("DOMContentLoaded", function () {
-      loadContent('my_archives');
-    });
-
-    // Set active class on click
-    function setActive(link, page) {
+    // Set the active page and show its content
+    function setActive(link, pageId) {
       document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
-      link.classList.add('active');
-      loadContent(page); // Load the respective page content
-    }
+      document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
 
-    // Set default active link when the page loads
-    document.addEventListener('DOMContentLoaded', function () {
-      const defaultNav = document.querySelector('.nav-link');
-      if (defaultNav) {
-        defaultNav.classList.add('active');
-      }
-    });
+      link.classList.add('active');
+      document.getElementById(pageId).classList.add('active');
+    }
   </script>
 </body>
