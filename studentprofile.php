@@ -219,5 +219,46 @@ while ($row = $qry->fetch_assoc()) {
       link.classList.add('active');
       document.getElementById(pageId).classList.add('active');
     }
+
+    $(function () {
+      // Trigger delete confirmation
+      $('.delete_data').click(function () {
+        const id = $(this).attr('data-id');
+        _conf("Are you sure you want to delete this project permanently?", "delete_archive", [id]);
+      });
+
+      // Initialize DataTables
+      $('.table td, .table th').addClass('py-1 px-2 align-middle');
+      $('.table').dataTable({
+        columnDefs: [
+          { orderable: false, targets: 5 } // Disable ordering on action column
+        ]
+      });
+    });
+
+    // Delete archive function
+    function delete_archive(id) {
+      start_loader(); // Show a loader while processing
+      $.ajax({
+        url: _base_url_ + "classes/Master.php?f=delete_archive",
+        method: "POST",
+        data: { id },
+        dataType: "json",
+        error: function (err) {
+          console.error(err);
+          alert_toast("An error occurred.", "error");
+          end_loader();
+        },
+        success: function (response) {
+          if (response.status === 'success') {
+            alert_toast("Archive deleted successfully.", "success");
+            location.reload(); // Reload to update the page
+          } else {
+            alert_toast("Failed to delete the archive.", "error");
+            end_loader();
+          }
+        }
+      });
+    }
   </script>
 </body>
