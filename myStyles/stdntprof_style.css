@@ -135,6 +135,13 @@ a {
   text-transform: uppercase;
   color: #818181;
 }
+.header__wrapper .cols__container .right__col nav ul li a.active {
+  background-color: lightgrey;
+  color: #000; /* Ensure contrast for better readability */
+  border-radius: 4px; /* Optional: add some rounding for a polished look */
+  padding: 5px 10px; /* Optional: add padding for better spacing */
+}
+
 .header__wrapper .cols__container .right__col nav ul li:nth-child(1) a {
   color: #1d1d1d;
   font-weight: 600;

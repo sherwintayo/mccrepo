@@ -74,10 +74,11 @@ while ($row = $qry->fetch_assoc()) {
       <div class="right__col">
         <nav>
           <ul>
-            <li><a href="#" onclick="loadContent('my_archives')">my archives</a></li>
-            <li><a href="#" onclick="loadContent('submit_capstone')">submit capstone projects</a></li>
-            <li><a href="#" onclick="loadContent('notifications')">notifications</a></li>
-            <li><a href="#" onclick="loadContent('account_settings')">account settings</a></li>
+            <li><a href="#" class="nav-link" onclick="setActive(this, 'my_archives')">my archives</a></li>
+            <li><a href="#" class="nav-link" onclick="setActive(this, 'submit_capstone')">submit capstone projects</a>
+            </li>
+            <li><a href="#" class="nav-link" onclick="setActive(this, 'notifications')">notifications</a></li>
+            <li><a href="#" class="nav-link" onclick="setActive(this, 'account_settings')">account settings</a></li>
           </ul>
         </nav>
 
@@ -166,6 +167,21 @@ while ($row = $qry->fetch_assoc()) {
     // Load the default page content ("my_archives") when the page is first loaded
     document.addEventListener("DOMContentLoaded", function () {
       loadContent('my_archives');
+    });
+
+    // Set active class on click
+    function setActive(link, page) {
+      document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
+      link.classList.add('active');
+      loadContent(page); // Load the respective page content
+    }
+
+    // Set default active link when the page loads
+    document.addEventListener('DOMContentLoaded', function () {
+      const defaultNav = document.querySelector('.nav-link');
+      if (defaultNav) {
+        defaultNav.classList.add('active');
+      }
     });
   </script>
 </body>
