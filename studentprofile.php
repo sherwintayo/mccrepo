@@ -110,7 +110,7 @@ while ($row = $qry->fetch_assoc()) {
           const statusClass = archive.status == 1 ? 'badge-success' : 'badge-secondary';
 
           html += `
-            <div class="card shadow-sm border-primary m-2" style="width: 18rem;">
+            <div class="card shadow-sm border-light m-2" style="width: 18rem;">
               <img src="${archive.banner_path ? `<?= base_url ?>${archive.banner_path}` : 'img/default.jpg'}" class="card-img-top" alt="Project Banner" style="height: 180px; object-fit: cover;">
               <div class="card-body">
                 <h5 class="card-title">${archive.title}</h5>
@@ -146,6 +146,28 @@ while ($row = $qry->fetch_assoc()) {
             _conf("Are you sure to delete this project permanently?", "delete_archive", [id]);
           });
         });
+        function delete_archive($id) {
+          start_loader();
+          $.ajax({
+            url: _base_url_ + "classes/Master.php?f=delete_archive",
+            method: "POST",
+            data: { id: $id },
+            dataType: "json",
+            error: err => {
+              console.log(err)
+              alert_toast("An error occured.", 'error');
+              end_loader();
+            },
+            success: function (resp) {
+              if (typeof resp == 'object' && resp.status == 'success') {
+                location.reload();
+              } else {
+                alert_toast("An error occured.", 'error');
+                end_loader();
+              }
+            }
+          })
+        }
       } else if (page === 'submit_capstone') {
         contentArea.innerHTML = `
           <h2>Submit Capstone Projects</h2>
