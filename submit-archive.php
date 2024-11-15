@@ -184,24 +184,24 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
             e.preventDefault();
 
             // Prepare form data
-            var formData = new FormData(this);
+            const formData = new FormData(this);
 
-            // AJAX request with progress tracking
-            var xhr = new XMLHttpRequest();
+            // Initialize AJAX request
+            const xhr = new XMLHttpRequest();
             xhr.open('POST', _base_url_ + 'classes/Master.php?f=save_archive', true);
 
             // Track upload progress
             xhr.upload.addEventListener('progress', function (event) {
                 if (event.lengthComputable) {
-                    var percentComplete = Math.round((event.loaded / event.total) * 100);
-                    localStorage.setItem('upload_progress', percentComplete); // Store progress for studentprofile.php
+                    const percentComplete = Math.round((event.loaded / event.total) * 100);
+                    localStorage.setItem('upload_progress', percentComplete); // Store progress
                 }
             });
 
-            // Handle completion
+            // Handle response
             xhr.onload = function () {
                 if (xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
+                    const response = JSON.parse(xhr.responseText);
                     if (response.status === 'success') {
                         localStorage.setItem('upload_progress', 100); // Ensure progress is complete
                         window.location.href = './?page=studentprofile'; // Redirect to studentprofile.php
@@ -209,11 +209,11 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         alert('Upload failed: ' + response.msg);
                     }
                 } else {
-                    alert('An error occurred while uploading.');
+                    alert('An error occurred during upload.');
                 }
             };
 
-            // Send the request
+            // Send form data
             xhr.send(formData);
         });
     })
