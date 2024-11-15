@@ -1,5 +1,6 @@
 <?php
 session_start();
+require 'config.php';  // Include the database configuration file to initialize $conn
 
 // Check if user is logged in
 $is_logged_in = isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true;
@@ -18,6 +19,8 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 $$k = $v;
         }
     }
+    $stmt->close(); // Close the statement to free up resources
+
     $submitted = "N/A";
     if (isset($student_id)) {
         $stmt = $conn->prepare("SELECT * FROM student_list WHERE id = ?");
@@ -28,14 +31,17 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
             $res = $student->fetch_array();
             $submitted = $res['lastname'];
         }
+        $stmt->close(); // Close the statement to free up resources
     }
 
     // Record count execution
     $stmt = $conn->prepare("INSERT INTO archive_counter (archive_id) VALUES (?)");
     $stmt->bind_param("i", $_GET['id']);
     $stmt->execute();
+    $stmt->close(); // Close the statement to free up resources
 }
 ?>
+
 <style>
     #document_field {
         min-height: 80vh;
