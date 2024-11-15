@@ -19,8 +19,11 @@ if ($fileId <= 0 || empty($reason)) {
 }
 
 try {
+    // Enable MySQLi error reporting
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
     // Prepare and execute the query
-    $stmt = $conn->prepare("INSERT INTO download_requests (user_id, file_id, reason) VALUES (?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO download_requests (user_id, file_id, reason, status, status_read) VALUES (?, ?, ?, 'pending', 'unread')");
     if (!$stmt) {
         throw new Exception("Statement preparation failed: " . $conn->error);
     }
