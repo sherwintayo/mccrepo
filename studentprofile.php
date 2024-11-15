@@ -151,18 +151,54 @@ while ($row = $qry->fetch_assoc()) {
   <script>
     const archives = <?php echo json_encode($archives); ?>;
 
-    // JavaScript function to dynamically load content
+    // Confirmation modal function
+    function _conf(message, action, params) {
+      const modalHTML = `
+        <div class="confirm-modal">
+          <h5>${message}</h5>
+          <div class="btn-container">
+            <button class="btn btn-confirm" id="confirm-yes">Yes</button>
+            <button class="btn btn-cancel" id="confirm-no">No</button>
+          </div>
+        </div>
+        <div class="modal-backdrop"></div>`;
+      document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+      document.getElementById('confirm-yes').addEventListener('click', () => {
+        document.querySelector('.confirm-modal').remove();
+        document.querySelector('.modal-backdrop').remove();
+        if (typeof window[action] === 'function') window[action](...params);
+      });
+
+      document.getElementById('confirm-no').addEventListener('click', () => {
+        document.querySelector('.confirm-modal').remove();
+        document.querySelector('.modal-backdrop').remove();
+      });
+    }
+
+    function delete_archive(id) {
+      start_loader();
+      $.ajax({
+        url: "<?= base_url ?>classes/Master.php?f=delete_archive",
+        method: "POST",
+        data: { id },
+        dataType: "json",
+        success: (resp) => {
+          if (resp && resp.status === 'success') location.reload();
+          else alert_toast('An error occurred.', 'error');
+        },
+        error: () => alert_toast('An error occurred.', 'error'),
+        complete: end_loader,
+      });
+    }
+
     function loadContent(page) {
       const contentArea = document.getElementById("content-area");
-
       if (page === 'my_archives') {
-        let html = `
-          <h2>My Submitted Projects</h2>
-          <div class="card-deck d-flex flex-wrap">`;
-
+        let html = `<h2>My Submitted Projects</h2><div class="card-deck d-flex flex-wrap">`;
         archives.forEach((archive) => {
-          const statusLabel = archive.status == 1 ? 'Published' : 'Unpublished';
-          const statusClass = archive.status == 1 ? 'badge-success' : 'badge-secondary';
+          const statusLabel = archive.status === 1 ? 'Published' : 'Unpublished';
+          const statusClass = archive.status === 1 ? 'badge-success' : 'badge-secondary';
 
           html += `
             <div class="card shadow-sm border-light m-2" style="width: 18rem;">
@@ -173,69 +209,22 @@ while ($row = $qry->fetch_assoc()) {
               </div>
               <div class="card-footer d-flex justify-content-between align-items-center ml3">
                 <span class="badge ${statusClass}">${statusLabel}</span>
-                <div class="dropdown">
-                  <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Actions
-                  </button>
-                  <div class="dropdown-menu">
-                    <a class="dropdown-item" href="<?= base_url ?>/?page=view_archive&id=${archive.id}" target="_blank">
-                      <i class="fa fa-external-link-alt text-gray"></i> View
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item delete_data" href="javascript:void(0)" data-id="${archive.id}">
-                      <i class="fa fa-trash text-danger"></i> Delete
-                    </a>
-                  </div>
-                </div>
+                <button class="btn btn-sm btn-outline-danger delete_data" data-id="${archive.id}">Delete</button>
               </div>
             </div>`;
         });
-
-        html += `</div>`; // Close card-deck div
+        html += `</div>`;
         contentArea.innerHTML = html;
 
-        function _conf(message, action, params) {
-          // Create modal
-          const modalHTML = `
-        <div class="confirm-modal">
-          <h5>${message}</h5>
-          <div class="btn-container">
-            <button class="btn btn-confirm" id="confirm-yes">Yes</button>
-            <button class="btn btn-cancel" id="confirm-no">No</button>
-          </div>
-        </div>
-        <div class="modal-backdrop"></div>`;
-          document.body.insertAdjacentHTML('beforeend', modalHTML);
-
-          // Confirm action
-          document.getElementById('confirm-yes').addEventListener('click', () => {
-            document.querySelector('.confirm-modal').remove();
-            document.querySelector('.modal-backdrop').remove();
-            if (typeof window[action] === 'function') window[action](...params);
+        document.querySelectorAll('.delete_data').forEach(button => {
+          button.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            _conf("Are you sure to delete this project permanently?", "delete_archive", [id]);
           });
+        });
 
-          // Cancel action
-          document.getElementById('confirm-no').addEventListener('click', () => {
-            document.querySelector('.confirm-modal').remove();
-            document.querySelector('.modal-backdrop').remove();
-          });
-        }
 
-        function delete_archive(id) {
-          start_loader();
-          $.ajax({
-            url: "<?= base_url ?>classes/Master.php?f=delete_archive",
-            method: "POST",
-            data: { id },
-            dataType: "json",
-            success: (resp) => {
-              if (resp && resp.status === 'success') location.reload();
-              else alert_toast('An error occurred.', 'error');
-            },
-            error: () => alert_toast('An error occurred.', 'error'),
-            complete: end_loader,
-          });
-        }
+
       } else if (page === 'submit_capstone') {
         contentArea.innerHTML = `
           <h2>Submit Capstone Projects</h2>
