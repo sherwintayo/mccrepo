@@ -188,23 +188,7 @@ while ($row = $qry->fetch_assoc()) {
           </div>
         </div>
 
-        <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="confirmModalLabel">Confirmation</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                Are you sure you want to delete this project permanently?
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="confirmDelete">Yes, Delete</button>
-              </div>
-            </div>
-          </div>
-        </div>
+
 
 
 
@@ -240,21 +224,26 @@ while ($row = $qry->fetch_assoc()) {
       document.getElementById(pageId).classList.add('active');
     }
 
-    let deleteId = null; // Store the ID of the item to delete
 
     $(function () {
-      // Trigger delete confirmation modal
+      // Trigger delete confirmation with SweetAlert
       $('.delete_data').click(function () {
-        deleteId = $(this).data('id'); // Store the ID from the clicked element
-        $('#confirmModal').modal('show'); // Show the modal
-      });
+        const id = $(this).data('id'); // Get the ID of the item to delete
 
-      // Handle delete confirmation
-      $('#confirmDelete').click(function () {
-        if (deleteId) {
-          delete_archive(deleteId); // Call the delete function with the stored ID
-          $('#confirmModal').modal('hide'); // Hide the modal
-        }
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#dc3545',
+          cancelButtonColor: '#6c757d',
+          confirmButtonText: 'Yes, delete it!',
+          cancelButtonText: 'Cancel'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            delete_archive(id); // Call delete function if confirmed
+          }
+        });
       });
     });
 
@@ -268,15 +257,16 @@ while ($row = $qry->fetch_assoc()) {
         dataType: "json",
         error: function (err) {
           console.error(err);
-          alert_toast("An error occurred.", "error");
+          Swal.fire('Error', 'An error occurred while deleting the archive.', 'error');
           end_loader();
         },
         success: function (response) {
           if (response.status === 'success') {
-            alert_toast("Archive deleted successfully.", "success");
-            location.reload(); // Reload to update the page
+            Swal.fire('Deleted!', 'Your archive has been deleted.', 'success').then(() => {
+              location.reload(); // Reload to update the page
+            });
           } else {
-            alert_toast("Failed to delete the archive.", "error");
+            Swal.fire('Failed', 'Failed to delete the archive.', 'error');
             end_loader();
           }
         }
