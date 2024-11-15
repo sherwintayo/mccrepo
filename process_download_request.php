@@ -1,44 +1,36 @@
 <?php
 session_start();
-require 'config.php'; // Ensure this connects to your database
+require 'config.php'; // Ensure this file connects to your database correctly
 
-header('Content-Type: application/json'); // Set the content type to JSON
-
-// Ensure user is logged in
+// Verify user is logged in
 if (!isset($_SESSION['user_logged_in']) || !$_SESSION['user_logged_in']) {
     echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
     exit;
 }
 
-// Initialize variables
-$userId = $_SESSION['user_id'] ?? 0;
+// Sanitize and validate POST data
+$userId = $_SESSION['user_id'];
 $fileId = isset($_POST['file_id']) ? intval($_POST['file_id']) : 0;
 $reason = isset($_POST['reason']) ? trim($_POST['reason']) : '';
 
-// Check input validity
 if ($fileId <= 0 || empty($reason)) {
     echo json_encode(['status' => 'error', 'message' => 'Invalid input data']);
     exit;
 }
 
-// Ensure database connection is established
-if (!$conn) {
-    echo json_encode(['status' => 'error', 'message' => 'Database connection error']);
-    exit;
-}
-
-// Insert download request into the database
-$stmt = $conn->prepare("INSERT INTO download_requests (user_id, file_id, reason) VALUES (?, ?, ?)");
-if ($stmt) {
+// Prepare the database query
+try {
+    $stmt = $conn->prepare("INSERT INTO download_requests (user_id, file_id, reason) VALUES (?, ?, ?)");
     $stmt->bind_param("iis", $userId, $fileId, $reason);
     if ($stmt->execute()) {
         echo json_encode(['status' => 'success', 'message' => 'Request submitted successfully']);
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $conn->error]);
+        throw new Exception('Failed to execute query: ' . $stmt->error);
     }
     $stmt->close();
-} else {
-    echo json_encode(['status' => 'error', 'message' => 'Failed to prepare statement: ' . $conn->error]);
+} catch (Exception $e) {
+    // Log the error if necessary (avoid exposing details to users)
+    error_log($e->getMessage());
+    echo json_encode(['status' => 'error', 'message' => 'Database error. Please try again later.']);
 }
-exit;
 ?>
