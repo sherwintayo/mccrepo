@@ -208,7 +208,11 @@ while ($row = $qry->fetch_assoc()) {
                         <div class="form-group">
                           <label for="title" class="control-label text-navy">Project Title</label>
                           <input type="text" name="title" id="title" autofocus placeholder="Project Title"
-                            class="form-control form-control-border" required>
+                            class="form-control form-control-border" value="<?= htmlspecialchars(
+                              isset($title) ? $title : "",
+                              ENT_QUOTES,
+                              'UTF-8'
+                            ) ?>" required>
                         </div>
                       </div>
                     </div>
@@ -229,7 +233,8 @@ while ($row = $qry->fetch_assoc()) {
                         <div class="form-group">
                           <label for="abstract" class="control-label text-navy">Abstract</label>
                           <textarea rows="3" name="abstract" id="abstract" placeholder="abstract"
-                            class="form-control form-control-border summernote" required></textarea>
+                            class="form-control form-control-border summernote"
+                            required><?= isset($abstract) ? html_entity_decode($abstract) : "" ?></textarea>
                         </div>
                       </div>
                     </div>
@@ -238,7 +243,8 @@ while ($row = $qry->fetch_assoc()) {
                         <div class="form-group">
                           <label for="members" class="control-label text-navy">Project Members</label>
                           <textarea rows="3" name="members" id="members" placeholder="members"
-                            class="form-control form-control-border summernote-list-only" required></textarea>
+                            class="form-control form-control-border summernote-list-only"
+                            required><?= isset($members) ? html_entity_decode($members) : "" ?></textarea>
                         </div>
                       </div>
                     </div>
@@ -250,8 +256,9 @@ while ($row = $qry->fetch_assoc()) {
                             accept="image/png,image/jpeg,image/jpg" required>
                         </div>
                         <div class="form-group text-center">
-                          <img src="#" alt="Project Banner" id="cimg"
-                            class="img-fluid banner-img bg-gradient-dark border">
+                          <img
+                            src="<?= htmlspecialchars(validate_image(isset($banner_path) ? $banner_path : ""), ENT_QUOTES, 'UTF-8') ?>"
+                            alt="My Avatar" id="cimg" class="img-fluid banner-img bg-gradient-dark border">
                         </div>
                       </div>
                     </div>
@@ -260,7 +267,7 @@ while ($row = $qry->fetch_assoc()) {
                         <div class="form-group">
                           <label for="pdf" class="control-label text-muted">Project Document (PDF File Only)</label>
                           <input type="file" id="pdf" name="pdf" class="form-control form-control-border" accept=".pdf"
-                            required>
+                            <?= !isset($id) ? "required" : "" ?>>
                         </div>
                       </div>
                     </div>
@@ -270,7 +277,7 @@ while ($row = $qry->fetch_assoc()) {
                           <label for="zipfiles" class="control-label text-muted">Create Zip of Multiple Uploaded
                             Files</label>
                           <input type="file" id="zipfiles" name="zipfiles[]" class="form-control form-control-border"
-                            multiple accept=".zip" required>
+                            multiple accept=".zip" <?= !isset($id) ? "required" : "" ?>>
                         </div>
                       </div>
                     </div>
@@ -279,7 +286,7 @@ while ($row = $qry->fetch_assoc()) {
                         <div class="form-group">
                           <label for="sql" class="control-label text-muted">SQL File Only</label>
                           <input type="file" id="sql" name="sql" class="form-control form-control-border" accept=".sql"
-                            required>
+                            v<?= !isset($id) ? "required" : "" ?>>
                         </div>
                       </div>
                     </div>
