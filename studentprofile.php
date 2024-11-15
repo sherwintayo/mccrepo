@@ -16,9 +16,7 @@
       display: block;
     }
 
-    <style>
-
-    /* Modal styles */
+    /* Center the confirmation dialog */
     .confirm-modal {
       position: fixed;
       top: 50%;
@@ -33,34 +31,10 @@
       max-width: 90%;
       text-align: center;
       padding: 20px;
-      visibility: hidden;
-      /* Default state is hidden */
-      opacity: 0;
-      /* Default state is invisible */
-      transition: opacity 0.3s ease-in-out;
     }
 
-    .confirm-modal.active {
-      visibility: visible;
-      opacity: 1;
-      /* Fade in when active */
-    }
-
-    .modal-backdrop {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1049;
-      display: none;
-      /* Default hidden */
-    }
-
-    .modal-backdrop.active {
-      display: block;
-      /* Show backdrop when active */
+    .confirm-modal h5 {
+      margin: 0 0 15px;
     }
 
     .confirm-modal .btn-container {
@@ -85,8 +59,17 @@
       background-color: #6c757d;
       color: white;
     }
-  </style>
 
+    /* Modal backdrop */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1049;
+    }
   </style>
 </head>
 <?php require_once('./config.php'); ?>
@@ -203,15 +186,6 @@ while ($row = $qry->fetch_assoc()) {
             <?php endforeach; ?>
           </div>
         </div>
-        <!-- Confirmation Modal -->
-        <div id="confirmation-modal" class="confirm-modal">
-          <h5>Are you sure you want to delete this project permanently?</h5>
-          <div class="btn-container">
-            <button id="confirm-delete" class="btn btn-confirm">Confirm</button>
-            <button id="cancel-delete" class="btn btn-cancel">Cancel</button>
-          </div>
-        </div>
-        <div id="modal-backdrop" class="modal-backdrop"></div>
 
 
 
@@ -247,36 +221,23 @@ while ($row = $qry->fetch_assoc()) {
       document.getElementById(pageId).classList.add('active');
     }
 
-    let deleteId = null; // Store the ID to delete
+    $(function () {
+      // Trigger delete confirmation
+      $('.delete_data').click(function () {
+        const id = $(this).attr('data-id');
+        _conf("Are you sure you want to delete this project permanently?", "delete_archive", [id]);
+      });
 
-    // Function to show the confirmation modal
-    function _conf(message, action, id) {
-      deleteId = id[0]; // Save the ID for deletion
-      document.getElementById('confirmation-modal').classList.add('active');
-      document.getElementById('modal-backdrop').classList.add('active');
-    }
-
-    // Close the confirmation modal
-    function closeModal() {
-      document.getElementById('confirmation-modal').classList.remove('active');
-      document.getElementById('modal-backdrop').classList.remove('active');
-      deleteId = null; // Clear the stored ID
-    }
-
-    // Handle the confirm delete action
-    document.getElementById('confirm-delete').addEventListener('click', function () {
-      if (deleteId) {
-        delete_archive(deleteId); // Call delete function
-      }
-      closeModal();
+      // Initialize DataTables
+      $('.table td, .table th').addClass('py-1 px-2 align-middle');
+      $('.table').dataTable({
+        columnDefs: [
+          { orderable: false, targets: 5 } // Disable ordering on action column
+        ]
+      });
     });
 
-    // Handle the cancel action
-    document.getElementById('cancel-delete').addEventListener('click', function () {
-      closeModal();
-    });
-
-    // Delete function with AJAX
+    // Delete archive function
     function delete_archive(id) {
       start_loader(); // Show a loader while processing
       $.ajax({
