@@ -145,9 +145,8 @@
   <div class=" d-flex flex-column align-items-center w-100" id="login">
 
     <div class="body d-flex flex-column justify-content-center align-items-center">
-      <div class="row myContainer">
-        <div class="myLoginForm col-lg-7 p-3 d-flex justify-content-center align-items-center text-navy"
-          style="margin-top: 10vh;">
+      <div class="row myContainer" style="margin-top: 30vh;">
+        <div class="myLoginForm col-lg-7 p-3 d-flex justify-content-center align-items-center text-navy">
 
           <div class="d-flex flex-column w-100 px-3 ">
             <h1 class="text-center font-weight-bold text-white">Sign in to Account</h1>
