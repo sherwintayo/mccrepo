@@ -205,6 +205,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 
             // Handle download request submission
             $('#submitReasonButton').click(function () {
+                console.log('Submit button clicked'); // Debug log
                 const reason = $('#reasonTextarea').val();
                 const fileId = <?= isset($id) ? htmlspecialchars($id) : "null" ?>;
 
@@ -217,11 +218,13 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     return;
                 }
 
+                console.log('Sending AJAX request...'); // Debug log
                 $.ajax({
                     url: 'process_download_request.php',
                     method: 'POST',
                     data: { file_id: fileId, reason: reason },
                     success: function (response) {
+                        console.log('AJAX response:', response); // Debug log
                         const resp = JSON.parse(response);
                         if (resp.status === 'success') {
                             Swal.fire({
@@ -238,8 +241,17 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                                 text: 'Could not submit your request. Please try again later.'
                             });
                         }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX error:', status, error); // Debug log
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An unexpected error occurred. Please try again.'
+                        });
                     }
                 });
             });
+
         });
     </script>
