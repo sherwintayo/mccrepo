@@ -167,6 +167,9 @@ a {
 .header__wrapper .cols__container .right__col {
   flex-grow: 1; /* Right column takes remaining space */
 }
+.header__wrapper .cols__container .right__col .page {
+  overflow: auto;
+}
 .header__wrapper .cols__container .right__col1 .page {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
