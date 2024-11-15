@@ -157,7 +157,7 @@ while ($row = $qry->fetch_assoc()) {
               ?>
               <div class="card shadow-sm border-light m-2" style="width: 18rem;">
                 <img
-                  src="<?= validate_image($archive['banner_path']) ? base_url . validate_image($archive['banner_path']) : 'img/default.jpg'; ?>"
+                  src="<?= $archive['banner_path'] ? base_url . $archive['banner_path'] : '/dist/img/no-image-available.png'; ?>"
                   class="card-img-top" alt="Project Banner" style="height: 180px; object-fit: cover;">
                 <div class="card-body">
                   <h5 class="card-title"><?= htmlspecialchars($archive['title']); ?></h5>
