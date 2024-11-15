@@ -148,7 +148,7 @@
       <div class="row myContainer">
         <div class="myLoginForm col-lg-7 p-3 d-flex justify-content-center align-items-center text-navy">
 
-          <div class="d-flex flex-column w-100 px-3">
+          <div class="d-flex flex-column w-100 px-3 " style="margin: 10vh;">
             <h1 class="text-center font-weight-bold text-white">Sign in to Account</h1>
             <hr class="my-3" />
             <form action="" id="slogin-form">
