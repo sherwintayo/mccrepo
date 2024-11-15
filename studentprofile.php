@@ -144,10 +144,13 @@ while ($row = $qry->fetch_assoc()) {
             <li><a href="#" class="nav-link" onclick="setActive(this, 'account_settings')">account settings</a></li>
           </ul>
           <!-- Redirect Button -->
-          <button id="uploadArchiveBtn" class="btn btn-primary d-flex align-items-center"
-            onclick="redirectToSubmitArchive()">
-            <i class="fa fa-upload mr-2"></i> Upload Archive
-          </button>
+          <div id="uploadArea">
+            <!-- Upload Archive Button -->
+            <button id="uploadArchiveBtn" class="btn btn-primary d-flex align-items-center"
+              onclick="redirectToSubmitArchive()">
+              <i class="fa fa-upload mr-2"></i> Upload Archive
+            </button>
+          </div>
         </nav>
 
         <!-- Default page content (my_archives) -->
@@ -193,22 +196,7 @@ while ($row = $qry->fetch_assoc()) {
 
 
 
-        <?php
-        if (isset($_GET['id']) && $_GET['id'] > 0) {
-          $qry = $conn->query("SELECT * FROM archive_list where id = '{$_GET['id']}'");
-          if ($qry->num_rows) {
-            foreach ($qry->fetch_array() as $k => $v) {
-              if (!is_numeric($k))
-                $$k = $v;
-            }
-          }
-          if (isset($student_id)) {
-            if ($student_id != $_settings->userdata('id')) {
-              echo "<script> alert('You don\'t have an access to this page'); location.replace('./'); </script>";
-            }
-          }
-        }
-        ?>
+
 
         <div id="notifications" class="page">
           <h2>Notifications</h2>
@@ -287,9 +275,17 @@ while ($row = $qry->fetch_assoc()) {
     }
 
     // Submit Archive
-    // Redirect to the submit-archive page
+
     function redirectToSubmitArchive() {
-      window.location.href = './?page=submit-archive';
+      // Replace button with progress bar during navigation
+      const progressBar = `
+            <div class="progress" style="width: 200px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%;"></div>
+            </div>`;
+      $('#uploadArea').html(progressBar);
+      setTimeout(() => {
+        window.location.href = './?page=submit-archive';
+      }, 500); // Simulate delay
     }
   </script>
 </body>
