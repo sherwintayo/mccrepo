@@ -220,13 +220,12 @@
             <i class="fa fa-bell text-white"></i>
             <?php if ($unread_count > 0): ?>
               <span class="badge badge-danger navbar-badge"><?= $unread_count ?></span>
-
-            </a>
-
-            <!-- Dropdown Menu -->
-            <div class="dropdown-menu dropdown-menu-right">
-              <span class="dropdown-item dropdown-header">You have <?= $unread_count ?> Notifications</span>
             <?php endif; ?>
+          </a>
+
+          <!-- Dropdown Menu -->
+          <div class="dropdown-menu dropdown-menu-right">
+            <span class="dropdown-item dropdown-header"><?= count($notifications) ?> Notifications</span>
             <div class="dropdown-divider"></div>
             <?php if (count($notifications) > 0): ?>
               <?php foreach ($notifications as $notif): ?>
@@ -250,6 +249,7 @@
           </div>
         </div>
       <?php endif; ?>
+
 
 
 
