@@ -195,7 +195,109 @@ while ($row = $qry->fetch_assoc()) {
         <div id="submit_capstone" class="page">
           <h2>Submit Capstone Projects</h2>
           <p>Upload your capstone projects here.</p>
+          <div class="content py-4">
+            <div class="card card-outline card-primary shadow rounded-0">
+              <div class="card-header rounded-0">
+                <h5 class="card-title">Submit Project</h5>
+              </div>
+              <div class="card-body rounded-0">
+                <div class="container-fluid">
+                  <form action="" id="archive-form" enctype="multipart/form-data">
+                    <div class="row">
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label for="title" class="control-label text-navy">Project Title</label>
+                          <input type="text" name="title" id="title" autofocus placeholder="Project Title"
+                            class="form-control form-control-border" required>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label for="year" class="control-label text-navy">Year</label>
+                          <select name="year" id="year" class="form-control form-control-border" required>
+                            <?php for ($i = 0; $i < 51; $i++): ?>
+                              <option><?= date("Y", strtotime(date("Y") . " -{$i} years")) ?></option>
+                            <?php endfor; ?>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="form-group">
+                          <label for="abstract" class="control-label text-navy">Abstract</label>
+                          <textarea rows="3" name="abstract" id="abstract" placeholder="abstract"
+                            class="form-control form-control-border summernote" required></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="form-group">
+                          <label for="members" class="control-label text-navy">Project Members</label>
+                          <textarea rows="3" name="members" id="members" placeholder="members"
+                            class="form-control form-control-border summernote-list-only" required></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="form-group">
+                          <label for="img" class="control-label text-muted">Project Image/Banner Image</label>
+                          <input type="file" id="img" name="img" class="form-control form-control-border"
+                            accept="image/png,image/jpeg,image/jpg" required>
+                        </div>
+                        <div class="form-group text-center">
+                          <img src="#" alt="Project Banner" id="cimg"
+                            class="img-fluid banner-img bg-gradient-dark border">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="form-group">
+                          <label for="pdf" class="control-label text-muted">Project Document (PDF File Only)</label>
+                          <input type="file" id="pdf" name="pdf" class="form-control form-control-border" accept=".pdf"
+                            required>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="form-group">
+                          <label for="zipfiles" class="control-label text-muted">Create Zip of Multiple Uploaded
+                            Files</label>
+                          <input type="file" id="zipfiles" name="zipfiles[]" class="form-control form-control-border"
+                            multiple accept=".zip" required>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="form-group">
+                          <label for="sql" class="control-label text-muted">SQL File Only</label>
+                          <input type="file" id="sql" name="sql" class="form-control form-control-border" accept=".sql"
+                            required>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="form-group text-center">
+                          <button class="btn btn-default bg-navy btn-flat">Submit</button>
+                          <a href="./?page=profile" class="btn btn-light border btn-flat">Cancel</a>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
 
         <div id="notifications" class="page">
           <h2>Notifications</h2>
