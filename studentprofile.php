@@ -278,43 +278,67 @@ while ($row = $qry->fetch_assoc()) {
       window.location.href = './?page=submit-archive';
     }
 
-    // Polling to track upload progress
-    function trackUploadProgress() {
-      const progressBar = document.getElementById('progressBar');
-      const progressContainer = document.getElementById('uploadProgressBar');
+    document.addEventListener('DOMContentLoaded', function () {
+      const uploadData = localStorage.getItem('uploadData');
 
-      progressContainer.style.display = 'block'; // Show progress bar
+      if (uploadData) {
+        // Show the progress bar and hide the upload button
+        const uploadButton = document.getElementById('uploadArchiveBtn');
+        const progressBarContainer = document.getElementById('uploadProgressBar');
+        const progressBar = document.getElementById('progressBar');
+        uploadButton.style.display = 'none';
+        progressBarContainer.style.display = 'block';
 
-      const interval = setInterval(() => {
-        $.ajax({
-          url: _base_url_ + 'classes/Master.php?f=get_upload_progress',
-          method: 'GET',
-          success: function (response) {
-            const resp = JSON.parse(response);
-            const percentage = resp.progress || 0;
+        // Prepare form data
+        const parsedData = JSON.parse(uploadData);
+        const formData = new FormData();
+        for (let key in parsedData) {
+          formData.append(key, parsedData[key]);
+        }
 
-            progressBar.style.width = percentage + '%';
-            progressBar.textContent = percentage + '%';
+        // Start AJAX upload
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', './classes/Master.php?f=save_archive', true);
 
-            if (percentage >= 100) {
-              clearInterval(interval);
-              progressBar.textContent = 'Upload Complete';
-              setTimeout(() => {
-                location.reload(); // Reload to display updated button
-              }, 2000);
+        // Poll the progress function every second
+        const pollProgress = setInterval(() => {
+          fetch('./classes/Master.php?f=get_upload_progress')
+            .then(response => response.json())
+            .then(data => {
+              const progress = data.progress || 0;
+              progressBar.style.width = progress + '%';
+              progressBar.textContent = progress + '%';
+
+              if (progress >= 100) {
+                clearInterval(pollProgress);
+                Swal.fire('Success', 'Upload completed successfully!', 'success').then(() => {
+                  progressBarContainer.style.display = 'none';
+                  uploadButton.style.display = 'block';
+                  localStorage.removeItem('uploadData');
+                  location.reload(); // Reload to show the updated archives
+                });
+              }
+            });
+        }, 1000);
+
+        // Handle AJAX upload completion
+        xhr.onload = function () {
+          if (xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+            if (response.status !== 'success') {
+              Swal.fire('Error', response.msg || 'An error occurred during upload.', 'error');
             }
-          },
-          error: function () {
-            clearInterval(interval);
-            alert('Error tracking upload progress.');
-          },
-        });
-      }, 1000); // Poll every second
-    }
+          } else {
+            Swal.fire('Error', 'An unexpected error occurred during upload.', 'error');
+          }
+        };
 
-    // Start tracking progress if triggered
-    <?php if (isset($_GET['upload']) && $_GET['upload'] == 1): ?>
-      trackUploadProgress();
-    <?php endif; ?>
+        xhr.onerror = function () {
+          Swal.fire('Error', 'Failed to upload data.', 'error');
+        };
+
+        xhr.send(formData); // Send the form data
+      }
+    });
   </script>
 </body>
