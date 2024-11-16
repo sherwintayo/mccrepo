@@ -255,9 +255,9 @@
               <?php foreach ($notifications as $notif): ?>
                 <a href="javascript:void(0);" class="dropdown-item notification-link"
                   data-id="<?= $notif['download_id'] ?? $notif['id'] ?>" data-files="<?= isset($notif['download_id']) ? htmlspecialchars(json_encode([
-                        'pdf' => base_url . 'uploads/pdf/Document-' . $notif['download_id'] . '.zip',
-                        'files' => base_url . 'uploads/files/Files-' . $notif['download_id'] . '.zip',
-                        'sql' => base_url . 'uploads/sql/SQL-' . $notif['download_id'] . '.zip',
+                        'pdf' => base_url . 'uploads/pdf/Document-' . $notif['al_id'] . '.zip',
+                        'files' => base_url . 'uploads/files/Files-' . $notif['al_id'] . '.zip',
+                        'sql' => base_url . 'uploads/sql/SQL-' . $notif['al_id'] . '.zip',
                       ]), ENT_QUOTES, 'UTF-8') : '' ?>"
                   data-download="<?= isset($notif['download_id']) ? 'true' : 'false' ?>"
                   onclick="handleNotificationClick(this)">
@@ -501,7 +501,7 @@
     const isDownload = element.getAttribute('data-download') === 'true';
 
     if (isDownload) {
-      const filePaths = JSON.parse(element.getAttribute('data-files')); // File paths from the notification
+      const filePaths = JSON.parse(element.getAttribute('data-files')); // File paths in JSON format
       const zip = new JSZip();
 
       try {
