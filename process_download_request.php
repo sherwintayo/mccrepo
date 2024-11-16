@@ -19,12 +19,20 @@ if ($fileId <= 0 || empty($reason)) {
 }
 
 try {
+    // Enable MySQLi error reporting
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
+    // Generate a new unique ID
+    $result = $conn->query("SELECT MAX(id) AS max_id FROM download_requests");
+    $row = $result->fetch_assoc();
+    $newId = $row['max_id'] + 1;
+
     // Prepare and execute the query
-    $stmt = $conn->prepare("INSERT INTO download_requests (user_id, file_id, reason) VALUES (?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO download_requests (id, user_id, file_id, reason, status, status_read) VALUES (?, ?, ?, ?, 'pending', 'unread')");
     if (!$stmt) {
         throw new Exception("Statement preparation failed: " . $conn->error);
     }
-    $stmt->bind_param("iis", $userId, $fileId, $reason);
+    $stmt->bind_param("iiis", $newId, $userId, $fileId, $reason);
     if (!$stmt->execute()) {
         throw new Exception("Query execution failed: " . $stmt->error);
     }
