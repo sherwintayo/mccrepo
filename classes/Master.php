@@ -395,7 +395,6 @@ class Master extends DBConnection
 
 
 
-
 	//    DELETE ARCHIVE
 	function delete_archive()
 	{

@@ -147,12 +147,10 @@ while ($row = $qry->fetch_assoc()) {
             </button>
 
             <!-- Progress Bar (Hidden Initially) -->
-            <!-- Progress Bar -->
             <div id="uploadProgressBar" class="progress mt-3" style="width: 100%; display: none;">
               <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
                 style="width: 0%;" aria-valuemin="0" aria-valuemax="100">0%</div>
             </div>
-
           </div>
         </nav>
 
@@ -281,86 +279,71 @@ while ($row = $qry->fetch_assoc()) {
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-      const uploadData = JSON.parse(localStorage.getItem('uploadData'));
+      const uploadData = localStorage.getItem('uploadData');
       if (uploadData) {
-        // Show progress bar and hide button
+        const parsedData = JSON.parse(uploadData);
+
+        // Show progress bar and hide upload button
         const uploadButton = document.getElementById('uploadArchiveBtn');
         const progressBarContainer = document.getElementById('uploadProgressBar');
         uploadButton.style.display = 'none';
         progressBarContainer.style.display = 'block';
 
-        // Send data to backend
+        // Prepare form data for AJAX
         const formData = new FormData();
-        for (let key in uploadData) {
-          if (key.includes('img') || key.includes('pdf') || key.includes('zip') || key.includes('sql')) {
-            const file = document.querySelector(`input[name="${key}"]`).files[0];
-            if (file) formData.append(key, file);
-          } else {
-            formData.append(key, uploadData[key]);
-          }
+        for (let key in parsedData) {
+          formData.append(key, parsedData[key]);
         }
 
+        // Perform AJAX request with progress tracking
         const xhr = new XMLHttpRequest();
         xhr.open('POST', './classes/Master.php?f=save_archive', true);
 
         // Track upload progress
-        xhr.upload.addEventListener('progress', function (e) {
-          if (e.lengthComputable) {
-            const percentage = Math.round((e.loaded / e.total) * 100);
-            updateProgressBar(percentage);
+        xhr.upload.addEventListener('progress', function (event) {
+          if (event.lengthComputable) {
+            const percentage = Math.round((event.loaded / event.total) * 100);
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = percentage + '%';
+            progressBar.textContent = percentage + '%';
           }
         });
 
-        // Poll backend for session progress
-        const progressInterval = setInterval(function () {
-          fetch('./classes/Master.php?f=get_upload_progress')
-            .then(response => response.json())
-            .then(data => updateProgressBar(data.progress));
-        }, 500);
-
-        // Handle response
+        // Handle upload completion
         xhr.onload = function () {
-          clearInterval(progressInterval);
           if (xhr.status === 200) {
             const response = JSON.parse(xhr.responseText);
             if (response.status === 'success') {
-              Swal.fire('Success', response.msg, 'success');
+              Swal.fire('Success', 'Archive uploaded successfully.', 'success');
             } else {
-              Swal.fire('Error', response.msg || 'Upload failed.', 'error');
+              Swal.fire('Error', response.msg || 'An error occurred.', 'error');
             }
           } else {
             Swal.fire('Error', 'An unexpected error occurred.', 'error');
           }
-          resetUploadUI();
+
+          // Reset progress bar and show upload button
+          const progressBar = document.getElementById('progressBar');
+          progressBar.style.width = '0%';
+          progressBar.textContent = '0%';
+          progressBarContainer.style.display = 'none';
+          uploadButton.style.display = 'block';
+
+          // Clear stored data
+          localStorage.removeItem('uploadData');
         };
 
-        // Error handling
         xhr.onerror = function () {
-          clearInterval(progressInterval);
           Swal.fire('Error', 'An error occurred during the upload.', 'error');
-          resetUploadUI();
+
+          // Reset UI
+          progressBarContainer.style.display = 'none';
+          uploadButton.style.display = 'block';
+          localStorage.removeItem('uploadData');
         };
 
-        // Send request
+        // Send data
         xhr.send(formData);
-      }
-
-      function updateProgressBar(percentage) {
-        const progressBar = document.getElementById('progressBar');
-        progressBar.style.width = percentage + '%';
-        progressBar.textContent = percentage + '%';
-
-        if (percentage >= 100) {
-          progressBar.textContent = 'Upload Complete';
-        }
-      }
-
-      function resetUploadUI() {
-        const uploadButton = document.getElementById('uploadArchiveBtn');
-        const progressBarContainer = document.getElementById('uploadProgressBar');
-        progressBarContainer.style.display = 'none';
-        uploadButton.style.display = 'block';
-        localStorage.removeItem('uploadData');
       }
     });
   </script>
