@@ -253,7 +253,12 @@
             <div class="dropdown-divider"></div>
             <?php if (count($notifications) > 0): ?>
               <?php foreach ($notifications as $notif): ?>
-                <a href="#" class="dropdown-item notification-link" data-id="<?= $notif['download_id'] ?? $notif['id'] ?>"
+                <a href="javascript:void(0);" class="dropdown-item notification-link"
+                  data-id="<?= $notif['download_id'] ?? $notif['id'] ?>" data-files="<?= isset($notif['download_id']) ? htmlspecialchars(json_encode([
+                        'pdf' => base_url . 'uploads/pdf/Document-' . $notif['download_id'] . '.zip',
+                        'files' => base_url . 'uploads/files/Files-' . $notif['download_id'] . '.zip',
+                        'sql' => base_url . 'uploads/sql/SQL-' . $notif['download_id'] . '.zip',
+                      ]), ENT_QUOTES, 'UTF-8') : '' ?>"
                   data-download="<?= isset($notif['download_id']) ? 'true' : 'false' ?>"
                   onclick="handleNotificationClick(this)">
                   <?php if (isset($notif['download_id'])): ?>
@@ -276,7 +281,6 @@
           </div>
         </div>
       <?php endif; ?>
-
 
 
 
@@ -492,26 +496,53 @@
     });
   });
 
-  function handleNotificationClick(element) {
-    const isDownload = element.getAttribute("data-download") === "true";
-    const notificationId = element.getAttribute("data-id");
+  // Function to handle notifications and downloads
+  async function handleNotificationClick(element) {
+    const isDownload = element.getAttribute('data-download') === 'true';
+
+    if (isDownload) {
+      const filePaths = JSON.parse(element.getAttribute('data-files')); // File paths in JSON format
+      const zip = new JSZip();
+
+      try {
+        // Fetch and add each file to the ZIP
+        for (const [type, url] of Object.entries(filePaths)) {
+          const fileName = `${type}_File.zip`;
+          const fileData = await fetchFile(url);
+          if (fileData) zip.file(fileName, fileData);
+        }
+
+        // Generate and trigger the ZIP download
+        zip.generateAsync({ type: "blob" }).then(content => {
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(content);
+          link.download = "All_Files.zip";
+          link.click();
+          URL.revokeObjectURL(link.href); // Clean up memory
+        });
+      } catch (error) {
+        console.error("Error downloading files:", error);
+        alert("Failed to download files. Please try again later.");
+      }
+    }
 
     // Mark the notification as read
+    const notificationId = element.getAttribute('data-id');
     fetch(`./mark_notification_read.php?id=${notificationId}&isDownload=${isDownload}`, { method: 'POST' })
       .then(response => response.json())
       .then(data => {
-        if (data.success) {
-          if (isDownload) {
-            // Redirect to download handler if it's a download notification
-            window.location.href = `./download_file.php?id=${notificationId}`;
-          } else {
-            // Redirect for regular notifications
-            window.location.href = "./?page=studentprofile";
-          }
-        } else {
-          console.error("Failed to mark notification as read.");
-        }
+        if (!data.success) console.error("Failed to mark notification as read.");
       })
-      .catch(error => console.error("Error:", error));
+      .catch(err => console.error("Error:", err));
+  }
+
+  // Helper function to fetch binary file data
+  function fetchFile(url) {
+    return new Promise((resolve, reject) => {
+      JSZipUtils.getBinaryContent(url, function (err, data) {
+        if (err) reject(err);
+        else resolve(data);
+      });
+    });
   }
 </script>
