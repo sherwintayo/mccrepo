@@ -292,7 +292,6 @@ while ($row = $qry->fetch_assoc()) {
         // Prepare FormData
         const formData = new FormData();
         for (let key in parsedData) {
-          // Check for file inputs
           if (key.includes('img') || key.includes('pdf') || key.includes('zip') || key.includes('sql')) {
             const fileInput = document.querySelector(`input[name="${key}"]`);
             if (fileInput && fileInput.files[0]) {
@@ -302,6 +301,15 @@ while ($row = $qry->fetch_assoc()) {
             formData.append(key, parsedData[key]);
           }
         }
+
+        Object.keys(parsedData).forEach(key => {
+          if (parsedData[key] instanceof File) {
+            formData.append(key, parsedData[key]);
+          } else {
+            formData.append(key, parsedData[key]);
+          }
+        });
+
 
         // Perform AJAX request with progress tracking
         const xhr = new XMLHttpRequest();
@@ -319,20 +327,24 @@ while ($row = $qry->fetch_assoc()) {
 
         // Handle upload completion
         xhr.onload = function () {
-          if (xhr.status === 200) {
-            const response = JSON.parse(xhr.responseText);
-            if (response.status === 'success') {
-              Swal.fire('Success', 'Archive uploaded successfully.', 'success');
+          try {
+            if (xhr.status === 200) {
+              const response = JSON.parse(xhr.responseText);
+              if (response.status === 'success') {
+                Swal.fire('Success', 'Archive uploaded successfully.', 'success');
+              } else {
+                Swal.fire('Error', response.msg || 'An error occurred.', 'error');
+              }
             } else {
-              Swal.fire('Error', response.msg || 'An error occurred.', 'error');
+              throw new Error('Unexpected server response.');
             }
-          } else {
-            Swal.fire('Error', 'An unexpected error occurred.', 'error');
+          } catch (error) {
+            Swal.fire('Error', error.message, 'error');
+          } finally {
+            resetUI();
           }
-
-          // Reset progress bar and show upload button
-          resetUI();
         };
+
 
         xhr.onerror = function () {
           Swal.fire('Error', 'An error occurred during the upload.', 'error');
