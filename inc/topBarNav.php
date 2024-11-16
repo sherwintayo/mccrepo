@@ -501,7 +501,7 @@
     const isDownload = element.getAttribute('data-download') === 'true';
 
     if (isDownload) {
-      const filePaths = JSON.parse(element.getAttribute('data-files')); // File paths in JSON format
+      const filePaths = JSON.parse(element.getAttribute('data-files')); // File paths from the notification
       const zip = new JSZip();
 
       try {
