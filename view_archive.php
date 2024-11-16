@@ -219,21 +219,31 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     url: 'process_download_request.php',
                     method: 'POST',
                     data: { file_id: fileId, reason: reason },
-                    dataType: 'json',
                     success: function (response) {
-                        if (response.status === 'success') {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Request Submitted',
-                                text: response.message
-                            });
-                            $('#reasonTextarea').val('').hide();
-                            $('#submitReasonButton').hide();
-                        } else {
+                        try {
+                            const resp = typeof response === "string" ? JSON.parse(response) : response;
+
+                            if (resp.status === 'success') {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Request Submitted',
+                                    text: resp.message
+                                });
+                                $('#reasonTextarea').val('').hide();
+                                $('#submitReasonButton').hide();
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: resp.message || 'Could not submit your request. Please try again later.'
+                                });
+                            }
+                        } catch (e) {
+                            console.error('Response parse error:', e);
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error',
-                                text: response.message || 'An unexpected error occurred.'
+                                text: 'Unexpected response from server.'
                             });
                         }
                     },
@@ -248,5 +258,6 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 });
             });
         });
+
 
     </script>
