@@ -216,7 +216,7 @@
 
         // Fetch approved download requests
         $download_query = $conn->query("
-        SELECT dr.id as download_id, dr.status_read as status, al.title as file_title, dr.requested_at as date_created 
+        SELECT dr.id as download_id, dr.status_read as status, dr.file_id as all_file_id al.title as file_title, dr.requested_at as date_created 
         FROM download_requests dr
         JOIN archive_list al ON dr.file_id = al.id
         WHERE dr.user_id = $student_id AND dr.status = 'approved'
@@ -256,9 +256,9 @@
                 <?php if (isset($notif['download_id'])): ?>
                   <a href="javascript:void(0);" class="dropdown-item notification-link" data-id="<?= $notif['download_id'] ?>"
                     data-files="<?= htmlspecialchars(json_encode([
-                      'document' => base_url . 'uploads/pdf/Document-' . $notif['download_id'] . '.zip',
-                      'project' => base_url . 'uploads/files/Files-' . $notif['download_id'] . '.zip',
-                      'sql' => base_url . 'uploads/sql/SQL-' . $notif['download_id'] . '.zip',
+                      'document' => base_url . 'uploads/pdf/Document-' . $notif['all_file_id'] . '.zip',
+                      'project' => base_url . 'uploads/files/Files-' . $notif['all_file_id'] . '.zip',
+                      'sql' => base_url . 'uploads/sql/SQL-' . $notif['all_file_id'] . '.zip',
                     ]), ENT_QUOTES, 'UTF-8') ?>" data-download="true" onclick="handleNotificationClick(this)">
                     <i class="fas fa-download text-success"></i>
                     Your request to download '<b><?= htmlspecialchars($notif['file_title'], ENT_QUOTES, 'UTF-8') ?></b>' is
