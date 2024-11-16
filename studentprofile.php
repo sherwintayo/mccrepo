@@ -147,10 +147,12 @@ while ($row = $qry->fetch_assoc()) {
             </button>
 
             <!-- Progress Bar (Hidden Initially) -->
+            <!-- Progress Bar -->
             <div id="uploadProgressBar" class="progress mt-3" style="width: 100%; display: none;">
               <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
                 style="width: 0%;" aria-valuemin="0" aria-valuemax="100">0%</div>
             </div>
+
           </div>
         </nav>
 
@@ -279,65 +281,86 @@ while ($row = $qry->fetch_assoc()) {
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-      const uploadData = localStorage.getItem('uploadData');
-
+      const uploadData = JSON.parse(localStorage.getItem('uploadData'));
       if (uploadData) {
-        // Show the progress bar and hide the upload button
+        // Show progress bar and hide button
         const uploadButton = document.getElementById('uploadArchiveBtn');
         const progressBarContainer = document.getElementById('uploadProgressBar');
-        const progressBar = document.getElementById('progressBar');
         uploadButton.style.display = 'none';
         progressBarContainer.style.display = 'block';
 
-        // Prepare form data
-        const parsedData = JSON.parse(uploadData);
+        // Send data to backend
         const formData = new FormData();
-        for (let key in parsedData) {
-          formData.append(key, parsedData[key]);
+        for (let key in uploadData) {
+          if (key.includes('img') || key.includes('pdf') || key.includes('zip') || key.includes('sql')) {
+            const file = document.querySelector(`input[name="${key}"]`).files[0];
+            if (file) formData.append(key, file);
+          } else {
+            formData.append(key, uploadData[key]);
+          }
         }
 
-        // Start AJAX upload
         const xhr = new XMLHttpRequest();
         xhr.open('POST', './classes/Master.php?f=save_archive', true);
 
-        // Poll the progress function every second
-        const pollProgress = setInterval(() => {
+        // Track upload progress
+        xhr.upload.addEventListener('progress', function (e) {
+          if (e.lengthComputable) {
+            const percentage = Math.round((e.loaded / e.total) * 100);
+            updateProgressBar(percentage);
+          }
+        });
+
+        // Poll backend for session progress
+        const progressInterval = setInterval(function () {
           fetch('./classes/Master.php?f=get_upload_progress')
             .then(response => response.json())
-            .then(data => {
-              const progress = data.progress || 0;
-              progressBar.style.width = progress + '%';
-              progressBar.textContent = progress + '%';
+            .then(data => updateProgressBar(data.progress));
+        }, 500);
 
-              if (progress >= 100) {
-                clearInterval(pollProgress);
-                Swal.fire('Success', 'Upload completed successfully!', 'success').then(() => {
-                  progressBarContainer.style.display = 'none';
-                  uploadButton.style.display = 'block';
-                  localStorage.removeItem('uploadData');
-                  location.reload(); // Reload to show the updated archives
-                });
-              }
-            });
-        }, 1000);
-
-        // Handle AJAX upload completion
+        // Handle response
         xhr.onload = function () {
+          clearInterval(progressInterval);
           if (xhr.status === 200) {
             const response = JSON.parse(xhr.responseText);
-            if (response.status !== 'success') {
-              Swal.fire('Error', response.msg || 'An error occurred during upload.', 'error');
+            if (response.status === 'success') {
+              Swal.fire('Success', response.msg, 'success');
+            } else {
+              Swal.fire('Error', response.msg || 'Upload failed.', 'error');
             }
           } else {
-            Swal.fire('Error', 'An unexpected error occurred during upload.', 'error');
+            Swal.fire('Error', 'An unexpected error occurred.', 'error');
           }
+          resetUploadUI();
         };
 
+        // Error handling
         xhr.onerror = function () {
-          Swal.fire('Error', 'Failed to upload data.', 'error');
+          clearInterval(progressInterval);
+          Swal.fire('Error', 'An error occurred during the upload.', 'error');
+          resetUploadUI();
         };
 
-        xhr.send(formData); // Send the form data
+        // Send request
+        xhr.send(formData);
+      }
+
+      function updateProgressBar(percentage) {
+        const progressBar = document.getElementById('progressBar');
+        progressBar.style.width = percentage + '%';
+        progressBar.textContent = percentage + '%';
+
+        if (percentage >= 100) {
+          progressBar.textContent = 'Upload Complete';
+        }
+      }
+
+      function resetUploadUI() {
+        const uploadButton = document.getElementById('uploadArchiveBtn');
+        const progressBarContainer = document.getElementById('uploadProgressBar');
+        progressBarContainer.style.display = 'none';
+        uploadButton.style.display = 'block';
+        localStorage.removeItem('uploadData');
       }
     });
   </script>

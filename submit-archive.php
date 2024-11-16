@@ -183,13 +183,19 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         $('#archive-form').submit(function (e) {
             e.preventDefault();
 
-            // Store form data in localStorage for processing in studentprofile.php
-            var formData = new FormData(this);
-            var dataObject = {};
+            // Prepare form data
+            const formData = new FormData(this);
+            const uploadData = {};
             formData.forEach((value, key) => {
-                dataObject[key] = value;
+                if (value instanceof File) {
+                    uploadData[key] = URL.createObjectURL(value); // Store file reference
+                } else {
+                    uploadData[key] = value;
+                }
             });
-            localStorage.setItem('uploadData', JSON.stringify(dataObject));
+
+            // Store in localStorage
+            localStorage.setItem('uploadData', JSON.stringify(uploadData));
 
             // Redirect to studentprofile.php
             window.location.href = './?page=studentprofile';
