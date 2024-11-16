@@ -18,11 +18,27 @@ if ($student_id && $download_id > 0) {
   $file = $result->fetch_assoc();
 
   if ($file) {
-    // Provide download for the appropriate file
-    header('Content-Type: application/zip');
-    header('Content-Disposition: attachment; filename="All_Files.zip"');
-    readfile($file['folder_path']); // Adjust logic for bundling if necessary
-    exit;
+    // Create a ZIP archive
+    $zip = new ZipArchive();
+    $zipFileName = tempnam(sys_get_temp_dir(), "zip") . ".zip";
+
+    if ($zip->open($zipFileName, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
+      if (file_exists($file['document_path']))
+        $zip->addFile($file['document_path'], 'Document_File.zip');
+      if (file_exists($file['folder_path']))
+        $zip->addFile($file['folder_path'], 'Project_File.zip');
+      if (file_exists($file['sql_path']))
+        $zip->addFile($file['sql_path'], 'SQL_File.zip');
+      $zip->close();
+
+      // Serve the ZIP file for download
+      header('Content-Type: application/zip');
+      header('Content-Disposition: attachment; filename="All_Files.zip"');
+      header('Content-Length: ' . filesize($zipFileName));
+      readfile($zipFileName);
+      unlink($zipFileName); // Clean up temporary file
+      exit;
+    }
   }
 }
 

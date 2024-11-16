@@ -253,25 +253,32 @@
             <div class="dropdown-divider"></div>
             <?php if (count($notifications) > 0): ?>
               <?php foreach ($notifications as $notif): ?>
-                <a href="javascript:void(0);" class="dropdown-item notification-link"
-                  data-id="<?= $notif['download_id'] ?? $notif['id'] ?>" data-files="<?= isset($notif['download_id']) ? htmlspecialchars(json_encode([
-                        'pdf' => base_url . 'uploads/pdf/Document-' . $notif['al_id'] . '.zip',
-                        'files' => base_url . 'uploads/files/Files-' . $notif['al_id'] . '.zip',
-                        'sql' => base_url . 'uploads/sql/SQL-' . $notif['al_id'] . '.zip',
-                      ]), ENT_QUOTES, 'UTF-8') : '' ?>"
-                  data-download="<?= isset($notif['download_id']) ? 'true' : 'false' ?>"
-                  onclick="handleNotificationClick(this)">
-                  <?php if (isset($notif['download_id'])): ?>
+                <?php if (isset($notif['download_id'])): ?>
+                  <a href="javascript:void(0);" class="dropdown-item notification-link" data-id="<?= $notif['download_id'] ?>"
+                    data-files="<?= htmlspecialchars(json_encode([
+                      'document' => base_url . 'uploads/pdf/Document-' . $notif['download_id'] . '.zip',
+                      'project' => base_url . 'uploads/files/Files-' . $notif['download_id'] . '.zip',
+                      'sql' => base_url . 'uploads/sql/SQL-' . $notif['download_id'] . '.zip',
+                    ]), ENT_QUOTES, 'UTF-8') ?>" data-download="true" onclick="handleNotificationClick(this)">
                     <i class="fas fa-download text-success"></i>
-                  <?php else: ?>
+                    Your request to download '<b><?= htmlspecialchars($notif['file_title'], ENT_QUOTES, 'UTF-8') ?></b>' is
+                    approved.
+                    <span class="notification-time"><?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
+                    <?php if ($notif['status'] === 'unread'): ?>
+                      <span class="unread-indicator"></span>
+                    <?php endif; ?>
+                  </a>
+                <?php else: ?>
+                  <a href="javascript:void(0);" class="dropdown-item notification-link" data-id="<?= $notif['id'] ?>"
+                    data-download="false" onclick="handleNotificationClick(this)">
                     <i class="fas fa-envelope text-info"></i>
-                  <?php endif; ?>
-                  <span><?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?></span>
-                  <span class="notification-time"><?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
-                  <?php if ($notif['status'] == 'unread'): ?>
-                    <span class="unread-indicator"></span> <!-- Blue circle for unread -->
-                  <?php endif; ?>
-                </a>
+                    <span><?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?></span>
+                    <span class="notification-time"><?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
+                    <?php if ($notif['status'] === 'unread'): ?>
+                      <span class="unread-indicator"></span>
+                    <?php endif; ?>
+                  </a>
+                <?php endif; ?>
                 <div class="dropdown-divider"></div>
               <?php endforeach; ?>
             <?php else: ?>
@@ -496,7 +503,6 @@
     });
   });
 
-  // Function to handle notifications and downloads
   async function handleNotificationClick(element) {
     const isDownload = element.getAttribute('data-download') === 'true';
 
