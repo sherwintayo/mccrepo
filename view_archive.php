@@ -182,56 +182,82 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
     <!-- JavaScript for Handling Download Privilege -->
     <script>
         $(document).ready(function () {
-            const isLoggedIn = <?= json_encode($is_logged_in) ?>; // PHP variable to check login status
+            const isLoggedIn = <?= json_encode($is_logged_in) ?>;
 
             $('#downloadButton').click(function () {
-                if (!isLoggedIn) {
-                    // Show SweetAlert login prompt if not logged in
+                if (isLoggedIn) {
+                    $('#reasonTextarea').show();
+                    $('#submitReasonButton').show();
+                } else {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Login Required',
                         text: 'You need to log in to request downloads.',
-                        confirmButtonText: 'Login',
-                        showCancelButton: true,
-                        cancelButtonText: 'Cancel'
+                        confirmButtonText: 'OK'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            window.location.href = 'login.php';
+                            window.location.href = "login.php";
                         }
                     });
-                } else {
-                    // Show reason textarea and submit button if logged in
-                    $('#reasonTextarea').show();
-                    $('#submitReasonButton').show();
                 }
             });
 
-            // AJAX submission of download request
             $('#submitReasonButton').click(function () {
                 const reason = $('#reasonTextarea').val().trim();
-                if (reason === '') {
-                    alert("Please provide a reason for your request.");
+                const fileId = <?= isset($id) ? htmlspecialchars($id) : "null" ?>;
+
+                if (!reason) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Reason Required',
+                        text: 'Please enter a reason for your download request.'
+                    });
                     return;
                 }
 
                 $.ajax({
                     url: 'process_download_request.php',
                     method: 'POST',
-                    data: { fileId: <?= json_encode($id) ?>, reason: reason },
-                    dataType: 'json',
+                    data: { file_id: fileId, reason: reason },
                     success: function (response) {
-                        if (response.status === 'success') {
-                            alert("Your request has been sent to the admin.");
-                            $('#reasonTextarea').hide().val(''); // Hide and reset textarea
-                            $('#submitReasonButton').hide();
-                        } else {
-                            alert("Failed to send request: " + response.message);
+                        try {
+                            const resp = typeof response === "string" ? JSON.parse(response) : response;
+
+                            if (resp.status === 'success') {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Request Submitted',
+                                    text: resp.message
+                                });
+                                $('#reasonTextarea').val('').hide();
+                                $('#submitReasonButton').hide();
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: resp.message || 'Could not submit your request. Please try again later.'
+                                });
+                            }
+                        } catch (e) {
+                            console.error('Response parse error:', e);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Unexpected response from server.'
+                            });
                         }
                     },
-                    error: function () {
-                        alert("An error occurred while sending your request. Please try again.");
+                    error: function (xhr, status, error) {
+                        console.error('AJAX error:', status, error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An unexpected error occurred. Please try again.'
+                        });
                     }
                 });
             });
         });
+
+
     </script>
