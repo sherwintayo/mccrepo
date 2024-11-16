@@ -179,25 +179,32 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 ['view', ['undo', 'redo', 'help']]
             ]
         })
-        // Archive Form Submit
         $('#archive-form').submit(function (e) {
             e.preventDefault();
 
+            // Submit form data via POST and redirect to studentprofile.php
             const formData = new FormData(this);
-            const dataObject = {};
 
-            formData.forEach((value, key) => {
-                if (value instanceof File) {
-                    // Store files as File objects
-                    dataObject[key] = value;
-                } else {
-                    dataObject[key] = value;
-                }
+            $.ajax({
+                url: _base_url_ + 'classes/Master.php?f=save_archive',
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    const resp = JSON.parse(response);
+
+                    if (resp.status === 'success') {
+                        // Redirect back to studentprofile.php with progress tracking enabled
+                        window.location.href = './?page=studentprofile&upload=1';
+                    } else {
+                        alert('Upload failed: ' + resp.msg);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while submitting the form.');
+                },
             });
-
-            localStorage.setItem('uploadData', JSON.stringify(dataObject));
-            window.location.href = './?page=studentprofile';
         });
-
     })
 </script>

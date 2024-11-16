@@ -278,91 +278,43 @@ while ($row = $qry->fetch_assoc()) {
       window.location.href = './?page=submit-archive';
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-      const uploadData = localStorage.getItem('uploadData');
-      if (uploadData) {
-        const parsedData = JSON.parse(uploadData);
+    // Polling to track upload progress
+    function trackUploadProgress() {
+      const progressBar = document.getElementById('progressBar');
+      const progressContainer = document.getElementById('uploadProgressBar');
 
-        // Show progress bar and hide upload button
-        const uploadButton = document.getElementById('uploadArchiveBtn');
-        const progressBarContainer = document.getElementById('uploadProgressBar');
-        uploadButton.style.display = 'none';
-        progressBarContainer.style.display = 'block';
+      progressContainer.style.display = 'block'; // Show progress bar
 
-        // Prepare FormData
-        const formData = new FormData();
-        for (let key in parsedData) {
-          if (key.includes('img') || key.includes('pdf') || key.includes('zip') || key.includes('sql')) {
-            const fileInput = document.querySelector(`input[name="${key}"]`);
-            if (fileInput && fileInput.files[0]) {
-              formData.append(key, fileInput.files[0]);
-            }
-          } else {
-            formData.append(key, parsedData[key]);
-          }
-        }
+      const interval = setInterval(() => {
+        $.ajax({
+          url: _base_url_ + 'classes/Master.php?f=get_upload_progress',
+          method: 'GET',
+          success: function (response) {
+            const resp = JSON.parse(response);
+            const percentage = resp.progress || 0;
 
-        Object.keys(parsedData).forEach(key => {
-          if (parsedData[key] instanceof File) {
-            formData.append(key, parsedData[key]);
-          } else {
-            formData.append(key, parsedData[key]);
-          }
-        });
-
-
-        // Perform AJAX request with progress tracking
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', './classes/Master.php?f=save_archive', true);
-
-        // Track upload progress
-        xhr.upload.addEventListener('progress', function (event) {
-          if (event.lengthComputable) {
-            const percentage = Math.round((event.loaded / event.total) * 100);
-            const progressBar = document.getElementById('progressBar');
             progressBar.style.width = percentage + '%';
             progressBar.textContent = percentage + '%';
-          }
-        });
 
-        // Handle upload completion
-        xhr.onload = function () {
-          try {
-            if (xhr.status === 200) {
-              const response = JSON.parse(xhr.responseText);
-              if (response.status === 'success') {
-                Swal.fire('Success', 'Archive uploaded successfully.', 'success');
-              } else {
-                Swal.fire('Error', response.msg || 'An error occurred.', 'error');
-              }
-            } else {
-              throw new Error('Unexpected server response.');
+            if (percentage >= 100) {
+              clearInterval(interval);
+              progressBar.textContent = 'Upload Complete';
+              setTimeout(() => {
+                location.reload(); // Reload to display updated button
+              }, 2000);
             }
-          } catch (error) {
-            Swal.fire('Error', error.message, 'error');
-          } finally {
-            resetUI();
-          }
-        };
+          },
+          error: function () {
+            clearInterval(interval);
+            alert('Error tracking upload progress.');
+          },
+        });
+      }, 1000); // Poll every second
+    }
 
-
-        xhr.onerror = function () {
-          Swal.fire('Error', 'An error occurred during the upload.', 'error');
-          resetUI();
-        };
-
-        // Send FormData
-        xhr.send(formData);
-
-        function resetUI() {
-          const progressBar = document.getElementById('progressBar');
-          progressBar.style.width = '0%';
-          progressBar.textContent = '0%';
-          progressBarContainer.style.display = 'none';
-          uploadButton.style.display = 'block';
-          localStorage.removeItem('uploadData');
-        }
-      }
-    });
+    // Start tracking progress if triggered
+    <?php if (isset($_GET['upload']) && $_GET['upload'] == 1): ?>
+      trackUploadProgress();
+    <?php endif; ?>
   </script>
 </body>
