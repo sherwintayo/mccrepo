@@ -206,7 +206,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 const reason = $('#reasonTextarea').val().trim();
                 const fileId = <?= isset($id) ? htmlspecialchars($id) : "null" ?>;
 
-                if (!reason) {
+                if (reason === "") {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Reason Required',
@@ -221,13 +221,12 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     data: { file_id: fileId, reason: reason },
                     success: function (response) {
                         try {
-                            const resp = typeof response === "string" ? JSON.parse(response) : response;
-
+                            const resp = JSON.parse(response);
                             if (resp.status === 'success') {
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Request Submitted',
-                                    text: resp.message
+                                    text: 'Your download request has been submitted for review.'
                                 });
                                 $('#reasonTextarea').val('').hide();
                                 $('#submitReasonButton').hide();
@@ -258,6 +257,5 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 });
             });
         });
-
 
     </script>
