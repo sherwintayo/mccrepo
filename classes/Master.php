@@ -208,7 +208,9 @@ class Master extends DBConnection
 	function save_archive()
 	{
 		session_start();
-		$_SESSION['upload_progress'] = 0; // Initialize progress
+		if (!isset($_SESSION['upload_progress'])) {
+			$_SESSION['upload_progress'] = 0;
+		}
 
 
 		if (empty($_POST['id'])) {
@@ -260,9 +262,7 @@ class Master extends DBConnection
 			$resp['msg'] = empty($id) ? "Archive was successfully submitted" : "Archive details were updated successfully.";
 
 
-			// Total Progress Weight (e.g., 100 for all uploads combined)
-			$total_weight = 100;
-			$progress_weight = $total_weight / 5; // Assuming 5 sections: img, pdf, zip, sql, db insertion
+			$_SESSION['upload_progress'] = 0; // Reset progress for new session
 
 			// Handle Image Upload
 			if (isset($_FILES['img']) && $_FILES['img']['tmp_name'] != '') {

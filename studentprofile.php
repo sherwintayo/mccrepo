@@ -289,10 +289,18 @@ while ($row = $qry->fetch_assoc()) {
         uploadButton.style.display = 'none';
         progressBarContainer.style.display = 'block';
 
-        // Prepare form data for AJAX
+        // Prepare FormData
         const formData = new FormData();
         for (let key in parsedData) {
-          formData.append(key, parsedData[key]);
+          // Check for file inputs
+          if (key.includes('img') || key.includes('pdf') || key.includes('zip') || key.includes('sql')) {
+            const fileInput = document.querySelector(`input[name="${key}"]`);
+            if (fileInput && fileInput.files[0]) {
+              formData.append(key, fileInput.files[0]);
+            }
+          } else {
+            formData.append(key, parsedData[key]);
+          }
         }
 
         // Perform AJAX request with progress tracking
@@ -323,27 +331,25 @@ while ($row = $qry->fetch_assoc()) {
           }
 
           // Reset progress bar and show upload button
+          resetUI();
+        };
+
+        xhr.onerror = function () {
+          Swal.fire('Error', 'An error occurred during the upload.', 'error');
+          resetUI();
+        };
+
+        // Send FormData
+        xhr.send(formData);
+
+        function resetUI() {
           const progressBar = document.getElementById('progressBar');
           progressBar.style.width = '0%';
           progressBar.textContent = '0%';
           progressBarContainer.style.display = 'none';
           uploadButton.style.display = 'block';
-
-          // Clear stored data
           localStorage.removeItem('uploadData');
-        };
-
-        xhr.onerror = function () {
-          Swal.fire('Error', 'An error occurred during the upload.', 'error');
-
-          // Reset UI
-          progressBarContainer.style.display = 'none';
-          uploadButton.style.display = 'block';
-          localStorage.removeItem('uploadData');
-        };
-
-        // Send data
-        xhr.send(formData);
+        }
       }
     });
   </script>
