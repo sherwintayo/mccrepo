@@ -132,12 +132,10 @@ class Login extends DBConnection
 
     public function student_logout()
     {
-        session_start();
-        $_SESSION = [];
-        session_destroy();
-        redirect('./');
+        if ($this->settings->sess_des()) {
+            redirect('./');
+        }
     }
-
 
 
 
