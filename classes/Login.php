@@ -92,15 +92,14 @@ class Login extends DBConnection
     }
     public function student_login()
     {
-        session_start();
+        session_start(); // Start session
         extract($_POST);
 
-        $qry = $this->conn->query("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS fullname 
-        FROM student_list WHERE email = '$email' AND password = MD5('$password')");
+        $qry = $this->conn->query("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS fullname FROM student_list WHERE email = '$email' AND password = MD5('$password')");
 
         if ($this->conn->error) {
             $resp['status'] = 'failed';
-            $resp['msg'] = "An error occurred: " . $this->conn->error;
+            $resp['msg'] = "An error occurred while fetching data. Error: " . $this->conn->error;
         } else {
             if ($qry->num_rows > 0) {
                 $res = $qry->fetch_array();
@@ -109,11 +108,11 @@ class Login extends DBConnection
                     $_SESSION['user_logged_in'] = true;
                     $_SESSION['user_id'] = $res['id'];
 
-                    // Set other session data if needed
                     foreach ($res as $k => $v) {
                         $this->settings->set_userdata($k, $v);
                     }
-                    $this->settings->set_userdata('login_type', 2);
+
+                    $this->settings->set_userdata('login_type', 2); // Example login type for students
                     $resp['status'] = 'success';
                 } else {
                     $resp['status'] = 'failed';
@@ -127,14 +126,15 @@ class Login extends DBConnection
         return json_encode($resp);
     }
 
+
     public function student_logout()
     {
-        session_start();
-        session_unset();
-        session_destroy();
-        header("Location: ./login.php");
-        exit;
+        session_start(); // Start session
+        session_unset(); // Unset all session variables
+        session_destroy(); // Destroy the session
+        redirect('./login.php'); // Redirect to the login page
     }
+
 
 
 

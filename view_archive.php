@@ -1,18 +1,11 @@
 <?php
 session_start();
 
-// Check if user is logged in
 $is_logged_in = isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true;
 
-// Redirect to login if the user is not logged in
+// Redirect to login if not logged in
 if (!$is_logged_in) {
-    header("Location: login.php?redirect=" . urlencode($_SERVER['REQUEST_URI']));
-    exit;
-}
-
-if (isset($_GET['redirect'])) {
-    $redirect_url = htmlspecialchars($_GET['redirect']);
-    echo "<script>window.location.href = '$redirect_url';</script>";
+    header("Location: login.php");
     exit;
 }
 
@@ -200,10 +193,12 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 
             $('#downloadButton').click(function () {
                 if (isLoggedIn) {
+                    // Show the download request form for logged-in users
                     $('#reasonTextarea').show();
                     $('#submitReasonButton').show();
                     $('#requestForm').show();
                 } else {
+                    // Redirect to login page if not logged in
                     Swal.fire({
                         icon: 'warning',
                         title: 'Login Required',
@@ -211,8 +206,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         confirmButtonText: 'OK'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            const redirectUrl = encodeURIComponent(window.location.href);
-                            window.location.href = "login.php?redirect=" + redirectUrl;
+                            window.location.href = "login.php";
                         }
                     });
                 }
