@@ -105,9 +105,11 @@ class Login extends DBConnection
                 $res = $qry->fetch_array();
 
                 if ($res['status'] == 1) {
+                    // Set session variables for logged-in status and user ID
                     $_SESSION['user_logged_in'] = true;
-                    $_SESSION['user_id'] = $res['id'];
+                    $_SESSION['user_id'] = $res['id']; // Set to the user ID or relevant identifier
 
+                    // Set other session data
                     foreach ($res as $k => $v) {
                         $this->settings->set_userdata($k, $v);
                     }
@@ -127,6 +129,7 @@ class Login extends DBConnection
     }
 
 
+
     public function student_logout()
     {
         session_start(); // Start session
@@ -134,6 +137,7 @@ class Login extends DBConnection
         session_destroy(); // Destroy the session
         redirect('./login.php'); // Redirect to the login page
     }
+
 
 
 
