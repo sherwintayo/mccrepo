@@ -189,6 +189,8 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     // Show request form when the student is logged in
                     $('#reasonTextarea').show();
                     $('#submitReasonButton').show();
+                    $('#requestForm').show();
+
                 } else {
                     Swal.fire({
                         icon: 'warning',
@@ -234,6 +236,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                             });
                             $('#reasonTextarea').val('').hide();
                             $('#submitReasonButton').hide();
+                            $('#requestForm').hide();
                         } else {
                             Swal.fire({
                                 icon: 'error',
