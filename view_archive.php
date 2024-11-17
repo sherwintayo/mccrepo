@@ -190,8 +190,17 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     $('#reasonTextarea').show();
                     $('#submitReasonButton').show();
                 } else {
-                    // Redirect to login.php
-                    window.location.href = "login.php";
+                    // Display SweetAlert and redirect upon confirmation
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Login Required',
+                        text: 'You need to log in to request downloads.',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "login.php";
+                        }
+                    });
                 }
             });
 
@@ -209,7 +218,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 }
 
                 $.ajax({
-                    url: 'process_download_request.php',
+                    url: 'process_download.php',
                     method: 'POST',
                     data: { file_id: fileId, reason: reason },
                     dataType: 'json',
