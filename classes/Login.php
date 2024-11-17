@@ -92,29 +92,28 @@ class Login extends DBConnection
     }
     public function student_login()
     {
-        session_start(); // Start session
+        session_start();
         extract($_POST);
 
-        $qry = $this->conn->query("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS fullname FROM student_list WHERE email = '$email' AND password = MD5('$password')");
+        $qry = $this->conn->query("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS fullname 
+        FROM student_list WHERE email = '$email' AND password = MD5('$password')");
 
         if ($this->conn->error) {
             $resp['status'] = 'failed';
-            $resp['msg'] = "An error occurred while fetching data. Error: " . $this->conn->error;
+            $resp['msg'] = "An error occurred: " . $this->conn->error;
         } else {
             if ($qry->num_rows > 0) {
                 $res = $qry->fetch_array();
 
                 if ($res['status'] == 1) {
-                    // Set session variables for logged-in status and user ID
                     $_SESSION['user_logged_in'] = true;
-                    $_SESSION['user_id'] = $res['id']; // Set to the user ID or relevant identifier
+                    $_SESSION['user_id'] = $res['id'];
 
-                    // Set other session data
+                    // Set other session data if needed
                     foreach ($res as $k => $v) {
                         $this->settings->set_userdata($k, $v);
                     }
-
-                    $this->settings->set_userdata('login_type', 2); // Example login type for students
+                    $this->settings->set_userdata('login_type', 2);
                     $resp['status'] = 'success';
                 } else {
                     $resp['status'] = 'failed';
@@ -128,14 +127,15 @@ class Login extends DBConnection
         return json_encode($resp);
     }
 
-
-
     public function student_logout()
     {
-        if ($this->settings->sess_des()) {
-            redirect('./');
-        }
+        session_start();
+        session_unset();
+        session_destroy();
+        header("Location: ./login.php");
+        exit;
     }
+
 
 
     public function ms_Login()

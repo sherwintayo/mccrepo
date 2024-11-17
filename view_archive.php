@@ -4,6 +4,18 @@ session_start();
 // Check if user is logged in
 $is_logged_in = isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true;
 
+// Redirect to login if the user is not logged in
+if (!$is_logged_in) {
+    header("Location: login.php?redirect=" . urlencode($_SERVER['REQUEST_URI']));
+    exit;
+}
+
+if (isset($_GET['redirect'])) {
+    $redirect_url = htmlspecialchars($_GET['redirect']);
+    echo "<script>window.location.href = '$redirect_url';</script>";
+    exit;
+}
+
 // Database and privilege validation for file download
 if (isset($_GET['id']) && $_GET['id'] > 0) {
     // Fetch archive details from the database
@@ -188,11 +200,9 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 
             $('#downloadButton').click(function () {
                 if (isLoggedIn) {
-                    // Show request form when the student is logged in
                     $('#reasonTextarea').show();
                     $('#submitReasonButton').show();
                     $('#requestForm').show();
-
                 } else {
                     Swal.fire({
                         icon: 'warning',
@@ -201,7 +211,8 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         confirmButtonText: 'OK'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            window.location.href = "login.php";
+                            const redirectUrl = encodeURIComponent(window.location.href);
+                            window.location.href = "login.php?redirect=" + redirectUrl;
                         }
                     });
                 }

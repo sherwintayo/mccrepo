@@ -1,5 +1,14 @@
 <?php require_once('./config.php') ?>
-<!-- <?php session_start(); // Start session handling ?> -->
+<?php
+session_start(); // Ensure the session is started
+
+// Redirect logged-in users back to their intended page or homepage
+if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in']) {
+  $redirect = isset($_GET['redirect']) ? htmlspecialchars($_GET['redirect']) : './';
+  header("Location: $redirect");
+  exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en" class="" style="height: auto;">
 <?php require_once('inc/header.php') ?>
