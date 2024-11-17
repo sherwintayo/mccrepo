@@ -129,15 +129,14 @@ class Login extends DBConnection
     }
 
 
-
     public function student_logout()
     {
-        session_start(); // Ensure session is started
-        $_SESSION['user_logged_in'] = false; // Explicitly set the logged-in flag to false
-        unset($_SESSION['user_id']); // Clear user-specific session data
-        $this->settings->sess_des(); // Destroy session
-        redirect('./login.php'); // Redirect to login page
+        session_start(); // Start session if not already active
+        $this->settings->sess_des(); // Call the updated session destroy method
+        header("Location: ./login.php"); // Redirect to login page
+        exit; // Ensure no further execution
     }
+
 
 
 
