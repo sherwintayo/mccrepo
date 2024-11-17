@@ -46,12 +46,12 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         padding: 10px;
         border-radius: 5px;
         margin-top: 10px;
-        display: none;
     }
 
 
     #reasonTextarea,
-    #submitReasonButton {
+    #submitReasonButton,
+    .requestForm {
         display: none;
     }
 
