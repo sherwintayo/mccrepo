@@ -1,8 +1,10 @@
 <?php
 session_start();
 
-$is_logged_in = isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true;
-
+if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true) {
+    header("Location: view_archive.php");
+    exit;
+}
 
 // Database and privilege validation for file download
 if (isset($_GET['id']) && $_GET['id'] > 0) {
