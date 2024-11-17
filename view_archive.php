@@ -4,6 +4,11 @@ session_start();
 // Check if user is logged in
 $is_logged_in = isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true;
 
+if (!$is_logged_in) {
+    header("Location: login.php");
+    exit;
+}
+
 // Database and privilege validation for file download
 if (isset($_GET['id']) && $_GET['id'] > 0) {
     // Fetch archive details from the database
@@ -187,24 +192,37 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
             const isLoggedIn = <?= json_encode($is_logged_in) ?>;
 
             $('#downloadButton').click(function () {
-                if (isLoggedIn) {
-                    // Show request form when the student is logged in
-                    $('#reasonTextarea').show();
-                    $('#submitReasonButton').show();
-                    $('#requestForm').show();
-
-                } else {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Login Required',
-                        text: 'You need to log in to request downloads.',
-                        confirmButtonText: 'OK'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = "login.php";
+                // Validate login state using an AJAX call to the server
+                $.ajax({
+                    url: 'validate_login.php',
+                    method: 'POST',
+                    success: function (response) {
+                        const resp = JSON.parse(response);
+                        if (resp.is_logged_in) {
+                            $('#reasonTextarea').show();
+                            $('#submitReasonButton').show();
+                            $('#requestForm').show();
+                        } else {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Login Required',
+                                text: 'You need to log in to request downloads.',
+                                confirmButtonText: 'OK'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = "login.php";
+                                }
+                            });
                         }
-                    });
-                }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Failed to validate login state.'
+                        });
+                    }
+                });
             });
 
             // Handle download request submission
