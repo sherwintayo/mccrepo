@@ -133,7 +133,7 @@ class Login extends DBConnection
     {
         session_start(); // Start session if not already active
         $this->settings->sess_des(); // Call the updated session destroy method
-        header("Location: ./login.php"); // Redirect to login page
+        header("Location: ../login.php"); // Redirect to login page
         exit; // Ensure no further execution
     }
 
