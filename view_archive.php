@@ -186,6 +186,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 
             $('#downloadButton').click(function () {
                 if (isLoggedIn) {
+                    // Show request form when the student is logged in
                     $('#reasonTextarea').show();
                     $('#submitReasonButton').show();
                 } else {
@@ -202,11 +203,13 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 }
             });
 
+            // Handle download request submission
             $('#submitReasonButton').click(function () {
-                const reason = $('#reasonTextarea').val().trim();
+                console.log('Submit button clicked'); // Debug log
+                const reason = $('#reasonTextarea').val();
                 const fileId = <?= isset($id) ? htmlspecialchars($id) : "null" ?>;
 
-                if (!reason) {
+                if (reason.trim() === "") {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Reason Required',
@@ -215,17 +218,19 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     return;
                 }
 
+                console.log('Sending AJAX request...'); // Debug log
                 $.ajax({
                     url: 'process_download_request.php',
                     method: 'POST',
                     data: { file_id: fileId, reason: reason },
-                    dataType: 'json',
                     success: function (response) {
-                        if (response.status === 'success') {
+                        console.log('AJAX response:', response); // Debug log
+                        const resp = JSON.parse(response);
+                        if (resp.status === 'success') {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Request Submitted',
-                                text: response.message
+                                text: 'Your download request has been submitted for review.'
                             });
                             $('#reasonTextarea').val('').hide();
                             $('#submitReasonButton').hide();
@@ -233,12 +238,12 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error',
-                                text: response.message || 'An unexpected error occurred.'
+                                text: 'Could not submit your request. Please try again later.'
                             });
                         }
                     },
                     error: function (xhr, status, error) {
-                        console.error('AJAX error:', status, error);
+                        console.error('AJAX error:', status, error); // Debug log
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
@@ -247,6 +252,6 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     }
                 });
             });
-        });
 
+        });
     </script>
