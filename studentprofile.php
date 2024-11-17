@@ -263,9 +263,7 @@ while ($row = $qry->fetch_assoc()) {
         },
         success: function (response) {
           if (response.status === 'success') {
-            Swal.fire('Deleted!', 'Your archive has been deleted.', 'success').then(() => {
-              location.reload(); // Reload to update the page
-            });
+            location.reload(); // Reload to update the page
           } else {
             Swal.fire('Failed', 'Failed to delete the archive.', 'error');
           }
