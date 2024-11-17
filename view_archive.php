@@ -113,12 +113,11 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     </div>
 
                     <!-- Download Request Form (initially hidden) -->
-                    <div id="requestForm" class="download-info" style="display: none;">
+                    <div id="requestForm" class="download-info">
                         <textarea id="reasonTextarea" class="form-control"
                             placeholder="Please provide a reason for downloading the files"></textarea>
                         <button class="btn btn-primary btn-flat mt-2" id="submitReasonButton">Submit Request</button>
                     </div>
-
 
 
                     <!-- File Information -->
@@ -187,9 +186,11 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 
             $('#downloadButton').click(function () {
                 if (isLoggedIn) {
+                    // Show the textarea and submit button
                     $('#reasonTextarea').show();
                     $('#submitReasonButton').show();
                 } else {
+                    // Display SweetAlert and redirect upon confirmation
                     Swal.fire({
                         icon: 'warning',
                         title: 'Login Required',
