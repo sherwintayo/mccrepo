@@ -186,19 +186,12 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 
             $('#downloadButton').click(function () {
                 if (isLoggedIn) {
+                    // Show the textarea and submit button
                     $('#reasonTextarea').show();
                     $('#submitReasonButton').show();
                 } else {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Login Required',
-                        text: 'You need to log in to request downloads.',
-                        confirmButtonText: 'OK'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = "login.php";
-                        }
-                    });
+                    // Redirect to login.php
+                    window.location.href = "login.php";
                 }
             });
 
@@ -248,5 +241,4 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 });
             });
         });
-
     </script>
