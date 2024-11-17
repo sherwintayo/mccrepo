@@ -188,12 +188,12 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 
             $('#downloadButton').click(function () {
                 if (isLoggedIn) {
-                    // Show request form when the student is logged in
+                    // Show request form when logged in
                     $('#reasonTextarea').show();
                     $('#submitReasonButton').show();
                     $('#requestForm').show();
-
                 } else {
+                    // Redirect to login page when not logged in
                     Swal.fire({
                         icon: 'warning',
                         title: 'Login Required',
