@@ -1,10 +1,8 @@
 <?php
 session_start();
 
-if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true) {
-    header("Location: view_archive.php");
-    exit;
-}
+// Check if user is logged in
+$is_logged_in = isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true;
 
 // Database and privilege validation for file download
 if (isset($_GET['id']) && $_GET['id'] > 0) {
@@ -190,12 +188,12 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 
             $('#downloadButton').click(function () {
                 if (isLoggedIn) {
-                    // Show the download request form for logged-in users
+                    // Show request form when the student is logged in
                     $('#reasonTextarea').show();
                     $('#submitReasonButton').show();
                     $('#requestForm').show();
+
                 } else {
-                    // Redirect to login page if not logged in
                     Swal.fire({
                         icon: 'warning',
                         title: 'Login Required',

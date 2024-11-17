@@ -180,16 +180,10 @@ class SystemSettings extends DBConnection
 	}
 	function sess_des()
 	{
-		// Unset all session variables
-		session_unset();
-
-		// Destroy the session
-		session_destroy();
-
-		// Regenerate a new session ID for security (optional, but recommended)
-		session_start();
-		session_regenerate_id(true);
-
+		if (isset($_SESSION['userdata'])) {
+			unset($_SESSION['userdata']);
+			return true;
+		}
 		return true;
 	}
 	function info($field = '')
