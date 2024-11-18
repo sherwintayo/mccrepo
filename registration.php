@@ -54,7 +54,7 @@ require_once('inc/header.php');
   <div class="container register">
     <div class="row">
       <div class="col-md-3 register-left">
-        <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo" />
+        <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo" style="margin-top: 20vh;" />
         <h3>Welcome</h3>
         <p>Register and start your journey!</p>
 
