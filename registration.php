@@ -57,7 +57,7 @@ require_once('inc/header.php');
         <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo" />
         <h3>Welcome</h3>
         <p>Register and start your journey!</p>
-        <button class="myButton" onclick="location.href = 'login.php'">Login</button>
+
       </div>
       <div class="col-md-9 register-right">
         <div class="tab-content" id="myTabContent">
