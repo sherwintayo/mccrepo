@@ -10,34 +10,14 @@
 </head>
 <style>
     /* html, body {
-      height:calc(100%) !important;
-      width:calc(100%) !important; 
-        }*/
-
+    height: calc(100%) !important;
+    width: calc(100%) !important;
+  } */
     body {
-        background: linear-gradient(135deg, #141e30 20%, #243b55 100%);
-        height: 100%;
-        width: 100%;
+        background-image: url("dist/img/background.png");
+        background-size: cover;
+        background-repeat: no-repeat;
     }
-
-    .myColor {
-        background-image: linear-gradient(to right, #f83600 50%, #f9d423 150%);
-    }
-
-    .myLoginForm {
-        background: transparent;
-        border: 2px solid #f83600;
-        backdrop-filter: blur(2px);
-        border-radius: 20px 0 0 20px;
-    }
-
-    .btnLogin {
-        border-radius: 0 20px 20px 0;
-        border: 0;
-        background-image: linear-gradient(to right, #f83600 50%, #f9d423 150%);
-    }
-
-    /* Responsive styles omitted for brevity */
 </style>
 
 <body class="hold-transition">
