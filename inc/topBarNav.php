@@ -478,6 +478,9 @@
 </div>
 
 <!-- /.navbar -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://stuk.github.io/jszip-utils/dist/jszip-utils.js"></script>
 <script>
   $(function () {
     $('#search-form').submit(function (e) {
