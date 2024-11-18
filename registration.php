@@ -57,15 +57,9 @@ require_once('inc/header.php');
         <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo" />
         <h3>Welcome</h3>
         <p>Register and start your journey!</p>
-        <input type="submit" name="" value="Login" /><br />
+        <button class="myButton" onclick="location.href = 'login.php'">Login</button>
       </div>
       <div class="col-md-9 register-right">
-        <ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
-          <li class="nav-item">
-            <a class="nav-link active" id="student-tab" data-toggle="tab" href="#student" role="tab"
-              aria-controls="student" aria-selected="true">Student</a>
-          </li>
-        </ul>
         <div class="tab-content" id="myTabContent">
           <!-- Student Registration Tab -->
           <div class="tab-pane fade show active" id="student" role="tabpanel" aria-labelledby="student-tab">

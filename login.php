@@ -4,215 +4,96 @@
 <html lang="en" class="" style="height: auto;">
 <?php require_once('inc/header.php') ?>
 
+<head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="dist/css/registerstyle.css">
+</head>
+<style>
+  html,
+  /* body {
+    height: calc(100%) !important;
+    width: calc(100%) !important;
+  } */
+
+  body {
+    background-image: url("dist/img/background.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+</style>
+
+
 <body class="hold-transition">
-  <script>
+  <!-- <script>
     start_loader()
-  </script>
+  </script> -->
 
-  <style>
-    html,
-    body {
-      height: calc(100%) !important;
-      width: calc(100%) !important;
-    }
-
-    body {
-      background: linear-gradient(135deg, #141e30 20%, #243b55 100%);
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 100%;
-      width: 100%;
-    }
-
-    /* body{
-      background-image: url("<?php echo validate_image($_settings->info('cover')) ?>");
-      background-size:cover;
-      background-repeat:no-repeat;
-      background-position:center center;
-   height: 100%;
-   width: 100%;
-    } */
-
-    .login-title {
-      text-shadow: 3px 3px black;
-      padding: 20px 0 0 0;
-    }
-
-    #logo-img {
-      height: 150px;
-      width: 150px;
-      object-fit: scale-down;
-      object-position: center center;
-      border-radius: 100%;
-    }
-
-    .myColor {
-      background-image: linear-gradient(to right, #f83600 50%, #f9d423 150%);
-    }
-
-    .myLoginForm {
-      background: transparent;
-      border: 2px solid #f83600;
-      backdrop-filter: blur(2px);
-      border-radius: 20px 0 0 20px;
-    }
-
-    .btnLogin {
-      border-radius: 0 20px 20px 0;
-      border: 0;
-      background-image: linear-gradient(to right, #f83600 50%, #f9d423 150%);
-
-    }
-
-
-    /* Extra small devices (portrait phones, less than 576px) */
-    @media (max-width: 575.98px) {
-
-      .myContainer {
-        margin: 20px;
-      }
-
-      .login-form {
-        width: 100%;
-
-      }
-
-      .card {
-        width: 100%;
-        margin: 0;
-      }
-
-      .myLoginForm {
-        border-radius: 20px 20px 0 0;
-      }
-    }
-
-    /* Small devices (landscape phones, less than 768px) */
-    @media (max-width: 767.98px) {
-
-      .myContainer {
-        margin: 20px;
-      }
-
-      .login-form {
-        width: 100%;
-
-      }
-
-      .card {
-        width: 100%;
-      }
-    }
-
-    /* Medium devices (tablets, less than 992px) */
-    @media (max-width: 991.98px) {
-      .login-form {
-        width: 70%;
-      }
-
-      .card {
-        width: 90%;
-      }
-    }
-
-    /* Large devices (desktops, less than 1200px) */
-    @media (max-width: 1199.98px) {
-      .login-form {
-        width: 60%;
-      }
-
-      .card {
-        width: 80%;
-      }
-    }
-
-    /* Extra large devices (large desktops, 1200px and up) */
-    @media (min-width: 1200px) {
-      .login-form {
-        width: 50%;
-      }
-
-      .card {
-        width: 70%;
-      }
-    }
-  </style>
   <?php if ($_settings->chk_flashdata('success')): ?>
     <script>
       alert_toast("<?php echo $_settings->flashdata('success') ?>", 'success')
     </script>
   <?php endif; ?>
-  <div class=" d-flex flex-column align-items-center w-100" id="login">
+  <div class="container register" style="margin-top: 14vh;">
+    <div class="row">
+      <!-- Left Section -->
+      <div class="col-md-3 register-left">
+        <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo" />
+        <h3>Welcome Back</h3>
+        <p>Enter your credentials to access your account.</p>
+        <button class="myButton" onclick="location.href = 'registration.php'">Sign Up</button>
+      </div>
 
-    <div class="body d-flex flex-column justify-content-center align-items-center">
-      <div class="row myContainer" style="margin-top: 30vh;">
-        <div class="myLoginForm col-lg-7 p-3 d-flex justify-content-center align-items-center text-navy">
-
-          <div class="d-flex flex-column w-100 px-3 ">
-            <h1 class="text-center font-weight-bold text-white">Sign in to Account</h1>
-            <hr class="my-3" />
-            <form action="" id="slogin-form">
-              <div class="row">
-                <div class="col-lg-12">
-                  <div class="input-group form-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text rounded-0"><i class="far fa-envelope fa-lg fa-fw"></i></span>
-                    </div>
-                    <input type="email" name="email" id="email" placeholder="Email"
+      <!-- Right Section -->
+      <div class="col-md-9 register-right">
+        <div class="tab-content" id="myTabContent">
+          <div class="tab-pane fade show active" id="login-tab" role="tabpanel">
+            <h3 class="register-heading">Login to Your Account</h3>
+            <div class="row register-form">
+              <div class="col-md-12">
+                <form action="" id="slogin-form">
+                  <!-- Email Field -->
+                  <div class="form-group">
+                    <input type="email" name="email" id="email" placeholder="Email *"
                       class="form-control form-control-border" required>
                   </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-lg-12">
-                  <div class="input-group form-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text rounded-0"><i class="fas fa-key fa-lg fa-fw"></i></span>
-                    </div>
-                    <input type="password" name="password" id="password" placeholder="Password"
+
+                  <!-- Password Field -->
+                  <div class="form-group">
+                    <input type="password" name="password" id="password" placeholder="Password *"
                       class="form-control form-control-border" required>
                   </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-6">
-                  <a class="text-light font-weight-bolder" href="<?php echo base_url ?>">Go Back</a>
-                </div>
-                <div class="col-6">
-                  <div class="form-group text-right">
-                    <button class="btnLogin btn btn-primary btn-flat text-white"> Login</button>
-                  </div>
-                </div>
-                <div class="row mt-2">
-                  <div class="col-lg-12 text-center">
-                    <a href="forgot_password.php" class="text-light">Forgot Password?</a>
-                  </div>
-                </div>
 
+                  <!-- Buttons -->
+                  <div class="row">
+                    <div class="col-md-6">
+                      <a href="<?php echo base_url ?>" class="btn btn-light">Go Back</a>
+                    </div>
+                    <div class="col-md-6 text-right">
+                      <button class="btn btn-primary btn-flat">Login</button>
+                    </div>
+                  </div>
+
+                  <!-- Forgot Password Link -->
+                  <div class="row mt-2">
+                    <div class="col-lg-12 text-center">
+                      <a href="forgot_password.php" class="text-primary">Forgot Password?</a>
+                    </div>
+                  </div>
+                </form>
               </div>
-            </form>
+            </div>
           </div>
-
-        </div>
-        <div class="col-lg-5 d-flex flex-column justify-content-center myColor p-4">
-          <h1 class="text-center font-weight-bold text-white">Hello Friends!</h1>
-          <hr class="my-3 bg-light myHr" />
-          <p class="text-center font-weight-bolder text-light lead">Enter your personal details and
-            start your journey with us!</p>
-          <button class="btn btn-outline-light btn-lg align-self-center font-weight-bolder mt-4 myLinkBtn"
-            onclick="location.href = '#'">Sign Up</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- jQuery -->
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="plugins/jquery/jquery.min.js"></script>
-  <!-- Bootstrap 4 -->
   <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <!-- AdminLTE App -->
   <script src="dist/js/adminlte.min.js"></script>
-  <!-- Select2 -->
   <script src="<?php echo base_url ?>plugins/select2/js/select2.full.min.js"></script>
 
 
