@@ -59,7 +59,7 @@ class SystemSettings extends DBConnection
 			$type = mime_content_type($upload);
 			$allowed = array('image/png', 'image/jpeg');
 			if (!in_array($type, $allowed)) {
-				$resp['msg'] . = " But Image failed to upload due to invalid file type.";
+				$resp['msg'] .= " But Image failed to upload due to invalid file type.";
 			} else {
 				$new_height = 200;
 				$new_width = 200;
@@ -77,7 +77,7 @@ class SystemSettings extends DBConnection
 					imagedestroy($gdImg);
 					imagedestroy($t_image);
 				} else {
-					$resp['msg'] . = " But Image failed to upload due to unkown reason.";
+					$resp['msg'] .= " But Image failed to upload due to unkown reason.";
 				}
 			}
 			if (isset($uploaded_img) && $uploaded_img == true) {
@@ -98,7 +98,7 @@ class SystemSettings extends DBConnection
 			$type = mime_content_type($upload);
 			$allowed = array('image/png', 'image/jpeg');
 			if (!in_array($type, $allowed)) {
-				$resp['msg'] . = " But Image failed to upload due to invalid file type.";
+				$resp['msg'] .= " But Image failed to upload due to invalid file type.";
 			} else {
 				$new_height = 720;
 				$new_width = 1280;
@@ -114,7 +114,7 @@ class SystemSettings extends DBConnection
 					imagedestroy($gdImg);
 					imagedestroy($t_image);
 				} else {
-					$resp['msg'] . = " But Image failed to upload due to unkown reason.";
+					$resp['msg'] .= " But Image failed to upload due to unkown reason.";
 				}
 			}
 			if (isset($uploaded_img) && $uploaded_img == true) {
