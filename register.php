@@ -8,7 +8,7 @@ require_once('inc/header.php');
 <head>
     <title>Registration Form</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="dist/css/registerstyle.css">
+    <link rel="stylesheet" href="registerstyle.css">
 </head>
 
 <body class="hold-transition ">
@@ -178,18 +178,18 @@ require_once('inc/header.php');
                 width: "100%"
             });
 
-            // Update Curriculum Options on Program Change
             $('#program_id').change(function () {
-                const did = $(this).val();
-                $('#curriculum_id').html('<option value="" disabled selected>Select Curriculum</option>');
+                var did = $(this).val();
+                $('#curriculum_id').html("");
                 if (!!cur_arr[did]) {
                     Object.keys(cur_arr[did]).map(k => {
-                        const opt = $("<option>");
+                        var opt = $("<option>");
                         opt.attr('value', cur_arr[did][k].id);
                         opt.text(cur_arr[did][k].name);
                         $('#curriculum_id').append(opt);
                     });
                 }
+                $('#curriculum_id').trigger("change");
             });
 
             // Registration Form Submit with Validations
