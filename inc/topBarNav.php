@@ -196,7 +196,6 @@
       </div>
 
       <?php
-      // Fetch notifications for the logged-in user
       $student_id = $_settings->userdata('id'); // Current logged-in user ID
       $notifications = [];
       $unread_count = 0;
@@ -209,14 +208,14 @@
                                 ORDER BY date_created DESC");
         while ($row = $notif_query->fetch_assoc()) {
           $notifications[] = $row;
-          if ($row['status'] == 'unread') {
+          if ($row['status'] === 'unread') {
             $unread_count++;
           }
         }
 
         // Fetch approved download requests
         $download_query = $conn->query("
-        SELECT dr.id as download_id, dr.status_read as status, al.title as file_title, dr.requested_at as date_created 
+        SELECT dr.file_id as archive_id, dr.id as download_id, dr.status_read as status, al.title as file_title, dr.requested_at as date_created 
         FROM download_requests dr
         JOIN archive_list al ON dr.file_id = al.id
         WHERE dr.user_id = $student_id AND dr.status = 'approved'
@@ -225,7 +224,7 @@
         while ($row = $download_query->fetch_assoc()) {
           $row['message'] = "Your request to download '<b>" . htmlspecialchars($row['file_title'], ENT_QUOTES, 'UTF-8') . "</b>' is approved.";
           $notifications[] = $row;
-          if ($row['status'] == 'unread') {
+          if ($row['status'] === 'unread') {
             $unread_count++;
           }
         }
@@ -236,6 +235,7 @@
         });
       }
       ?>
+
 
       <?php if ($student_id): ?> <!-- Only show if user is logged in -->
         <div class="me-3 position-relative">
@@ -256,19 +256,20 @@
                 <?php if (isset($notif['download_id'])): ?>
                   <a href="javascript:void(0);" class="dropdown-item notification-link" data-id="<?= $notif['download_id'] ?>"
                     data-files="<?= htmlspecialchars(json_encode([
-                      'document' => base_url . 'uploads/pdf/Document-' . $notif['download_id'] . '.zip',
-                      'project' => base_url . 'uploads/files/Files-' . $notif['download_id'] . '.zip',
-                      'sql' => base_url . 'uploads/sql/SQL-' . $notif['download_id'] . '.zip',
+                      'document' => base_url . 'uploads/pdf/Document-' . $notif['archive_id'] . '.zip',
+                      'project' => base_url . 'uploads/files/Files-' . $notif['archive_id'] . '.zip',
+                      'sql' => base_url . 'uploads/sql/SQL-' . $notif['archive_id'] . '.zip',
                     ]), ENT_QUOTES, 'UTF-8') ?>" data-download="true" onclick="handleNotificationClick(this)">
                     <i class="fas fa-download text-success"></i>
                     Your request to download '<b><?= htmlspecialchars($notif['file_title'], ENT_QUOTES, 'UTF-8') ?></b>' is
                     approved.
                     <span class="notification-time"><?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
                     <?php if ($notif['status'] === 'unread'): ?>
-                      <span class="unread-indicator"></span>
+                      <span class="unread-indicator"></span> <!-- Blue circle for unread -->
                     <?php endif; ?>
                   </a>
                 <?php else: ?>
+
                   <a href="javascript:void(0);" class="dropdown-item notification-link" data-id="<?= $notif['id'] ?>"
                     data-download="false" onclick="handleNotificationClick(this)">
                     <i class="fas fa-envelope text-info"></i>
@@ -553,5 +554,5 @@
         else resolve(data);
       });
     });
-  }
+  }.
 </script>
