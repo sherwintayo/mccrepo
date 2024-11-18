@@ -40,7 +40,7 @@
         <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo" />
         <h3>Welcome Back</h3>
         <p>Enter your credentials to access your account.</p>
-        <button class="myButton" onclick="location.href = 'registration.php'">Sign Up</button>
+        <button class="myButton" onclick="location.href = 'ms_login.php'">Sign Up</button>
       </div>
 
       <!-- Right Section -->
