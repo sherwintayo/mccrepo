@@ -554,5 +554,5 @@
         else resolve(data);
       });
     });
-  }.
+  }
 </script>
