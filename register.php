@@ -8,7 +8,7 @@ require_once('inc/header.php');
 <head>
     <title>Registration Form</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="registerstyle.css">
+    <link rel="stylesheet" href="dist/css/registerstyle.css">
 </head>
 
 <body class="hold-transition ">
