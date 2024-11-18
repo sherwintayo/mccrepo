@@ -20,9 +20,7 @@ require_once('inc/header.php');
   }
 
   body {
-    background-image: url("<?php echo validate_image($_settings->info('cover')) ?>");
-    background-size: cover;
-    background-repeat: no-repeat;
+    background-color: #fff;
   }
 
   .login-title {
