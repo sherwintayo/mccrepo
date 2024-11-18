@@ -20,7 +20,9 @@ require_once('inc/header.php');
   }
 
   body {
-    background-color: #fff;
+    background-image: url("dist/img/background.png");
+    background-size: cover;
+    background-repeat: no-repeat;
   }
 
   .login-title {
