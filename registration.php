@@ -13,11 +13,11 @@ require_once('inc/header.php');
 </head>
 
 <style>
-  html,
+  /* html,
   body {
     height: calc(100%) !important;
     width: calc(100%) !important;
-  }
+  } */
 
   body {
     background-image: url("dist/img/background.png");

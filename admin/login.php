@@ -3,147 +3,92 @@
 <html lang="en" class="" style="height: auto;">
 <?php require_once('inc/header.php') ?>
 
+<head>
+  <title>Admin Login</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../dist/css/registerstyle.css">
+</head>
+<style>
+  /* html,
+  body {
+    height: calc(100%) !important;
+    width: calc(100%) !important;
+  } */
+
+  body {
+    background-image: url("../dist/img/background.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+</style>
+
 <body class="hold-transition ">
   <script>
     start_loader()
   </script>
-  <style>
-    html,
-    body {
-      height: calc(100%) !important;
-      width: calc(100%) !important;
-    }
 
-    body {
-      background: linear-gradient(135deg, #141e30 20%, #243b55 100%);
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 100%;
-      width: 100%;
-    }
 
-    .login-title {
-      text-shadow: 3px 3px black;
-      padding: 20px 0 0 0;
-    }
+  <div class="container register" style="margin-top: 14vh;">
+    <div class="row">
+      <!-- Left Section -->
+      <div class="col-md-3 register-left">
+        <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo" />
+        <h3>Welcome Admin</h3>
+        <p>Enter your credentials to access the admin panel.</p>
+        <button class="myButton" onclick="location.href = '../index.php'">Go to Site</button>
+      </div>
 
-    #logo-img {
-      height: 150px;
-      width: 150px;
-      object-fit: scale-down;
-      object-position: center center;
-      border-radius: 100%;
-    }
+      <!-- Right Section -->
+      <div class="col-md-9 register-right">
+        <div class="tab-content" id="myTabContent">
+          <div class="tab-pane fade show active" id="admin-login-tab" role="tabpanel">
+            <h3 class="register-heading">Admin Login</h3>
+            <div class="row register-form">
+              <div class="col-md-12">
+                <form id="login-frm" action="" method="POST" novalidate>
+                  <!-- Email Field -->
+                  <div class="form-group">
+                    <input type="email" name="username" id="username" placeholder="Email *"
+                      class="form-control form-control-border" required>
+                  </div>
 
-    .myColor {
-      background-image: linear-gradient(to right, #f83600 50%, #f9d423 150%);
-    }
+                  <!-- Password Field -->
+                  <div class="form-group">
+                    <input type="password" name="password" id="password" placeholder="Password *"
+                      class="form-control form-control-border" required>
+                  </div>
 
-    .myLoginForm {
-      background: transparent;
-      border: 2px solid #f83600;
-      backdrop-filter: blur(2px);
-      border-radius: 20px 0 0 20px;
-    }
+                  <!-- Buttons -->
+                  <div class="row">
+                    <div class="col-md-6">
+                      <a href="../index.php" class="btn btn-light">Go Back</a>
+                    </div>
+                    <div class="col-md-6 text-right">
+                      <button type="submit" class="btn btn-primary btn-flat">Login</button>
+                    </div>
+                  </div>
 
-    .btnLogin {
-      border-radius: 0 20px 20px 0;
-      border: 0;
-      background-image: linear-gradient(to right, #f83600 50%, #f9d423 150%);
-    }
-
-    /* Media Queries for responsiveness */
-    @media (max-width: 575.98px) {
-      .myContainer {
-        margin: 20px;
-      }
-
-      .myLoginForm {
-        border-radius: 20px 20px 0 0;
-      }
-    }
-
-    @media (max-width: 767.98px) {
-      .myContainer {
-        margin: 20px;
-      }
-    }
-
-    @media (max-width: 991.98px) {
-      .login-form {
-        width: 70%;
-      }
-    }
-
-    @media (max-width: 1199.98px) {
-      .login-form {
-        width: 60%;
-      }
-    }
-
-    @media (min-width: 1200px) {
-      .login-form {
-        width: 50%;
-      }
-    }
-  </style>
-
-  <div class="d-flex flex-column align-items-center w-100" id="login">
-    <div class="body d-flex flex-column justify-content-center align-items-center" #style="margin-top: 30vh;">
-      <div class="row myContainer">
-        <div class="myLoginForm col-lg-7 p-3 w-100 d-flex justify-content-center align-items-center text-navy">
-          <div class="d-flex flex-column w-100 px-3">
-            <h1 class="text-center font-weight-bold text-white">Sign in to Account</h1>
-            <hr class="my-3" />
-            <form id="login-frm" action="" method="post" novalidate>
-              <div class="input-group form-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text rounded-0"><i class="fas fa-user fa-lg fa-fw"></i></span>
-                </div>
-                <input type="email" name="username" id="username" placeholder="Email"
-                  class="form-control form-control-border" required>
+                  <!-- Forgot Password Link -->
+                  <div class="row mt-2">
+                    <div class="col-lg-12 text-center">
+                      <a href="forgot_password.php" class="text-primary">Forgot Password?</a>
+                    </div>
+                  </div>
+                </form>
               </div>
-              <div class="input-group form-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text rounded-0"><i class="fas fa-key fa-lg fa-fw"></i></span>
-                </div>
-                <input type="password" name="password" id="password" placeholder="Password"
-                  class="form-control form-control-border" required>
-              </div>
-              <div class="row">
-                <div class="col-6">
-                  <a class="text-light font-weight-bolder" href="<?php echo base_url ?>">Go Back</a>
-                </div>
-                <div class="col-6 text-right">
-                  <button type="submit" class="btnLogin btn btn-primary btn-flat text-white">Login</button>
-                </div>
-              </div>
-              <div class="row mt-2">
-                <div class="col-lg-12 text-center">
-                  <a href="forgot_password.php" class="text-light">Forgot Password?</a>
-                </div>
-              </div>
-            </form>
+            </div>
           </div>
-        </div>
-        <div class="col-lg-5 d-flex flex-column justify-content-center myColor p-4">
-          <h1 class="text-center font-weight-bold text-white">Hello Friends!</h1>
-          <hr class="my-3 bg-light" />
-          <p class="text-center font-weight-bolder text-light lead">Enter your personal details and start your journey
-            with us!</p>
-          <button class="btn btn-outline-light btn-lg align-self-center font-weight-bolder mt-4"
-            onclick="location.href = 'register.php'">Sign Up</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- jQuery -->
-  <script src="plugins/jquery/jquery.min.js"></script>
-  <!-- Bootstrap 4 -->
-  <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <!-- AdminLTE App -->
-  <script src="dist/js/adminlte.min.js"></script>
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../plugins/jquery/jquery.min.js"></script>
+  <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../dist/js/adminlte.min.js"></script>
 
   <!-- Validation Script -->
   <script>
