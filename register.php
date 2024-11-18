@@ -5,12 +5,6 @@ require_once('inc/header.php');
 <!DOCTYPE html>
 <html lang="en" class="" style="height: auto;">
 
-<head>
-    <title>Registration Form</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="dist/css/registerstyle.css">
-</head>
-
 <body class="hold-transition ">
     <script>
         start_loader();
@@ -49,66 +43,69 @@ require_once('inc/header.php');
         }
     </style>
 
-    <div class="container register">
-        <div class="row">
-            <!-- Left Section -->
-            <div class="col-md-3 register-left">
-                <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo" />
-                <h3>Welcome</h3>
-                <p>Register and start your journey!</p>
-                <a href="<?php echo base_url ?>" class="btn btn-light">Go Back</a><br />
+    <div class="h-100 d-flex align-items-center w-100" id="login">
+        <div class="col-7 h-100 d-flex align-items-center justify-content-center">
+            <div class="w-100">
+                <center><img src="<?= validate_image($_settings->info('logo')) ?>" alt="" id="logo-img"></center>
+                <h1 class="text-center py-5 login-title"><b><?php echo $_settings->info('name') ?> - Admin</b></h1>
             </div>
-
-            <!-- Right Section -->
-            <div class="col-md-9 register-right">
-                <ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active" id="student-tab" data-toggle="tab" href="#student" role="tab"
-                            aria-controls="student" aria-selected="true">Student</a>
-                    </li>
-                </ul>
-
-                <div class="tab-content" id="myTabContent">
-                    <!-- Student Registration Tab -->
-                    <div class="tab-pane fade show active" id="student" role="tabpanel" aria-labelledby="student-tab">
-                        <h3 class="register-heading">Student Registration</h3>
-                        <div class="row register-form">
-                            <div class="col-md-12">
-                                <form action="" id="registration-form" method="POST" novalidate>
-                                    <input type="hidden" name="id">
-
-                                    <!-- Name Fields -->
-                                    <div class="row">
-                                        <div class="col-md-6 form-group">
-                                            <input type="text" name="firstname" id="firstname"
-                                                placeholder="First Name *" class="form-control" required>
-                                        </div>
-                                        <div class="col-md-6 form-group">
-                                            <input type="text" name="middlename" id="middlename"
-                                                placeholder="Middle Name (optional)" class="form-control">
-                                        </div>
-                                        <div class="col-md-6 form-group">
-                                            <input type="text" name="lastname" id="lastname" placeholder="Last Name *"
-                                                class="form-control" required>
-                                        </div>
-                                    </div>
-
-                                    <!-- Gender -->
+        </div>
+        <div class="col-5 h-100 bg-gradient bg-navy">
+            <div class="w-100 d-flex justify-content-center align-items-center h-100 text-navy">
+                <div class="card card-outline card-primary rounded-0 shadow col-lg-10 col-md-10 col-sm-5">
+                    <div class="card-header">
+                        <h5 class="card-title text-center text-dark"><b>Registration</b></h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="" id="registration-form" method="POST" novalidate>
+                            <input type="hidden" name="id">
+                            <div class="row">
+                                <div class="col-lg-6">
                                     <div class="form-group">
-                                        <label>Gender:</label><br />
-                                        <label class="radio inline padding-right-10">
-                                            <input type="radio" name="gender" value="Male" checked> <span>Male</span>
-                                        </label>
-                                        <label class="radio inline">
-                                            <input type="radio" name="gender" value="Female"> <span>Female</span>
-                                        </label>
+                                        <input type="text" name="firstname" id="firstname" placeholder="Firstname"
+                                            class="form-control form-control-border" required>
                                     </div>
-
-                                    <!-- Program and Curriculum -->
+                                </div>
+                                <div class="col-lg-6">
                                     <div class="form-group">
-                                        <label for="program_id">Program</label>
-                                        <select name="program_id" id="program_id" class="form-control select2" required>
-                                            <option value="" disabled selected>Select Program</option>
+                                        <input type="text" name="middlename" id="middlename"
+                                            placeholder="Middlename (optional)"
+                                            class="form-control form-control-border">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <input type="text" name="lastname" id="lastname" placeholder="Lastname"
+                                            class="form-control form-control-border" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-auto">
+                                    <div class="custom-control custom-radio">
+                                        <input class="custom-control-input" type="radio" id="genderMale" name="gender"
+                                            value="Male" required checked>
+                                        <label for="genderMale" class="custom-control-label">Male</label>
+                                    </div>
+                                </div>
+                                <div class="form-group col-auto">
+                                    <div class="custom-control custom-radio">
+                                        <input class="custom-control-input" type="radio" id="genderFemale" name="gender"
+                                            value="Female">
+                                        <label for="genderFemale" class="custom-control-label">Female</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <span class="text-navy"><small>Program</small></span>
+                                        <select name="program_id" id="program_id"
+                                            class="form-control form-control-border select2"
+                                            data-placeholder="Select Here Program" required>
+                                            <option value=""></option>
                                             <?php
                                             $program = $conn->query("SELECT * FROM program_list WHERE status = 1 ORDER BY name ASC");
                                             while ($row = $program->fetch_assoc()):
@@ -117,42 +114,63 @@ require_once('inc/header.php');
                                             <?php endwhile; ?>
                                         </select>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label for="curriculum_id">Curriculum</label>
-                                        <select name="curriculum_id" id="curriculum_id" class="form-control select2"
-                                            required>
-                                            <option value="" disabled selected>Select Curriculum</option>
+                                        <span class="text-navy"><small>Curriculum</small></span>
+                                        <select name="curriculum_id" id="curriculum_id"
+                                            class="form-control form-control-border select2"
+                                            data-placeholder="Select Here Curriculum" required>
+                                            <option value="" disabled selected>Select Program First</option>
+                                            <?php
+                                            $curriculum = $conn->query("SELECT * FROM curriculum_list WHERE status = 1 ORDER BY name ASC");
+                                            $cur_arr = [];
+                                            while ($row = $curriculum->fetch_assoc()) {
+                                                $row['name'] = ucwords($row['name']);
+                                                $cur_arr[$row['program_id']][] = $row;
+                                            }
+                                            ?>
                                         </select>
                                     </div>
-
-                                    <!-- Email and Password -->
-                                    <div class="row">
-                                        <div class="col-md-6 form-group">
-                                            <input type="email" name="email" id="email" placeholder="Email *"
-                                                class="form-control" required>
-                                        </div>
-                                        <div class="col-md-6 form-group">
-                                            <input type="password" name="password" id="password"
-                                                placeholder="Password *" class="form-control" required>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="password" id="cpassword" placeholder="Confirm Password *"
-                                            class="form-control" required>
-                                    </div>
-
-                                    <!-- Buttons -->
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <a href="<?php echo base_url ?>" class="btn btn-light">Go Back</a>
-                                        </div>
-                                        <div class="col-md-6 text-right">
-                                            <button type="submit" class="btn btn-primary">Register</button>
-                                        </div>
-                                    </div>
-                                </form>
+                                </div>
                             </div>
-                        </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <input type="email" name="email" id="email" placeholder="Email"
+                                            class="form-control form-control-border" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <input type="password" name="password" id="password" placeholder="Password"
+                                            class="form-control form-control-border" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <input type="password" id="cpassword" placeholder="Confirm Password"
+                                            class="form-control form-control-border" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <button><a href="<?php echo base_url ?>">Go Back</a></button>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group text-right">
+                                        <button class="btn btn-default bg- btn-flat">Register</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
