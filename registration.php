@@ -47,9 +47,9 @@ require_once('inc/header.php');
 </style>
 
 <body class="hold-transition ">
-  <!-- <script>
+  <script>
     start_loader();
-  </script> -->
+  </script>
 
   <div class="container register">
     <div class="row">
