@@ -60,9 +60,10 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
-.navbar .container .myRightNav .myNavLink {
+.navbar .myRightNav .nav-item .myNavLink {
   text-decoration: none !important;
   color: rgba(255, 255, 255, 0.6) !important;
+  list-style: none;
 }
 
 .myUserDropdown .myName {

@@ -181,7 +181,7 @@
     </div>
 
     <!-- Right Section: Search and User Profile -->
-    <div class="myRightNav d-flex gap-3 align-items-center myNavLinks">
+    <div class="myRightNav d-flex gap-3 align-items-center">
       <!-- Search Icon -->
       <div class="me-3">
         <a href="javascript:void(0)" class="text-navy" id="search_icon">
@@ -312,14 +312,17 @@
           </div>
         </div>
       <?php else: ?>
-        <li class="nav-item">
-          <a href="./ms_login.php" class="myNavLinks mx-1 text-light" style="text-decoration: none;">Sign Up</a>
+        <li class="nav-item" style="list-style: none;">
+          <a href="./ms_login.php" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">Sign
+            Up</a>
         </li>
-        <li class="nav-item">
-          <a href="./login.php" class="myNavLinks mx-1 text-light">Student Sign In</a>
+        <li class="nav-item" style="list-style: none;">
+          <a href="./login.php" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">Student
+            Sign In</a>
         </li>
-        <li class="nav-item">
-          <a href="./admin" class="myNavLinks mx-1 text-light">Admin Sign In</a>
+        <li class="nav-item" style="list-style: none;">
+          <a href="./admin" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">Admin
+            Sign In</a>
         </li>
       <?php endif; ?>
     </div>
