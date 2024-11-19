@@ -34,72 +34,108 @@ class SystemSettings extends DBConnection
 		}
 		return true;
 	}
-
-
 	function update_settings_info()
 	{
-		$resp = ['success' => false, 'message' => ''];
-		try {
-			foreach ($_POST as $key => $value) {
-				if ($key !== "content") {
+		$data = "";
+		foreach ($_POST as $key => $value) {
+			if (!in_array($key, array("content")))
+				if (isset($_SESSION['system_info'][$key])) {
 					$value = str_replace("'", "&apos;", $value);
-					$sql = "INSERT INTO system_info (meta_field, meta_value) VALUES ('$key', '$value') 
-                        ON DUPLICATE KEY UPDATE meta_value='$value'";
-					$this->conn->query($sql);
+					$qry = $this->conn->query("UPDATE system_info set meta_value = '{$value}' where meta_field = '{$key}' ");
+				} else {
+					$qry = $this->conn->query("INSERT into system_info set meta_value = '{$value}', meta_field = '{$key}' ");
 				}
-			}
-
-			if (isset($_POST['content'])) {
-				foreach ($_POST['content'] as $k => $v) {
-					file_put_contents("../$k.html", $v);
-				}
-			}
-
-			$this->processFileUpload('img', 'logo');
-			$this->processFileUpload('cover', 'cover');
-
-			$this->update_system_info();
-			$resp['success'] = true;
-			$resp['message'] = 'System Info Successfully Updated.';
-		} catch (Exception $e) {
-			$resp['message'] = 'An error occurred: ' . $e->getMessage();
 		}
-		header('Content-Type: application/json');
-		echo json_encode($resp);
-		exit;
-	}
+		if (isset($_POST['content']))
+			foreach ($_POST['content'] as $k => $v) {
+				file_put_contents("../{$k}.html", $v);
 
-	private function processFileUpload($fieldName, $metaField)
-	{
-		if (isset($_FILES[$fieldName]) && $_FILES[$fieldName]['tmp_name'] != '') {
-			$fname = "uploads/{$metaField}-" . time() . '.png';
+			}
+
+		if (isset($_FILES['img']) && $_FILES['img']['tmp_name'] != '') {
+			$fname = 'uploads/logo-' . (time()) . '.png';
 			$dir_path = base_app . $fname;
-			$upload = $_FILES[$fieldName]['tmp_name'];
+			$upload = $_FILES['img']['tmp_name'];
 			$type = mime_content_type($upload);
-			$allowed = ['image/png', 'image/jpeg'];
+			$allowed = array('image/png', 'image/jpeg');
 			if (!in_array($type, $allowed)) {
-				throw new Exception("Invalid file type for {$fieldName}");
-			}
-			list($width, $height) = getimagesize($upload);
-			$new_width = $metaField == 'cover' ? 1280 : 200;
-			$new_height = $metaField == 'cover' ? 720 : 200;
-
-			$t_image = imagecreatetruecolor($new_width, $new_height);
-			$gdImg = ($type == 'image/png') ? imagecreatefrompng($upload) : imagecreatefromjpeg($upload);
-			imagecopyresampled($t_image, $gdImg, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
-			imagepng($t_image, $dir_path);
-
-			if (isset($_SESSION['system_info'][$metaField])) {
-				$this->conn->query("UPDATE system_info set meta_value = '{$fname}' where meta_field = '{$metaField}' ");
-				if (is_file(base_app . $_SESSION['system_info'][$metaField])) {
-					unlink(base_app . $_SESSION['system_info'][$metaField]);
-				}
+				$resp['msg'] .= " But Image failed to upload due to invalid file type.";
 			} else {
-				$this->conn->query("INSERT into system_info set meta_value = '{$fname}',meta_field = '{$metaField}' ");
+				$new_height = 200;
+				$new_width = 200;
+
+				list($width, $height) = getimagesize($upload);
+				$t_image = imagecreatetruecolor($new_width, $new_height);
+				imagealphablending($t_image, false);
+				imagesavealpha($t_image, true);
+				$gdImg = ($type == 'image/png') ? imagecreatefrompng($upload) : imagecreatefromjpeg($upload);
+				imagecopyresampled($t_image, $gdImg, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+				if ($gdImg) {
+					if (is_file($dir_path))
+						unlink($dir_path);
+					$uploaded_img = imagepng($t_image, $dir_path);
+					imagedestroy($gdImg);
+					imagedestroy($t_image);
+				} else {
+					$resp['msg'] .= " But Image failed to upload due to unkown reason.";
+				}
+			}
+			if (isset($uploaded_img) && $uploaded_img == true) {
+				if (isset($_SESSION['system_info']['logo'])) {
+					$qry = $this->conn->query("UPDATE system_info set meta_value = '{$fname}' where meta_field = 'logo' ");
+					if (is_file(base_app . $_SESSION['system_info']['logo']))
+						unlink(base_app . $_SESSION['system_info']['logo']);
+				} else {
+					$qry = $this->conn->query("INSERT into system_info set meta_value = '{$fname}',meta_field = 'logo' ");
+				}
+				unset($uploaded_img);
 			}
 		}
-	}
+		if (isset($_FILES['cover']) && $_FILES['cover']['tmp_name'] != '') {
+			$fname = 'uploads/cover-' . time() . '.png';
+			$dir_path = base_app . $fname;
+			$upload = $_FILES['cover']['tmp_name'];
+			$type = mime_content_type($upload);
+			$allowed = array('image/png', 'image/jpeg');
+			if (!in_array($type, $allowed)) {
+				$resp['msg'] .= " But Image failed to upload due to invalid file type.";
+			} else {
+				$new_height = 720;
+				$new_width = 1280;
 
+				list($width, $height) = getimagesize($upload);
+				$t_image = imagecreatetruecolor($new_width, $new_height);
+				$gdImg = ($type == 'image/png') ? imagecreatefrompng($upload) : imagecreatefromjpeg($upload);
+				imagecopyresampled($t_image, $gdImg, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+				if ($gdImg) {
+					if (is_file($dir_path))
+						unlink($dir_path);
+					$uploaded_img = imagepng($t_image, $dir_path);
+					imagedestroy($gdImg);
+					imagedestroy($t_image);
+				} else {
+					$resp['msg'] .= " But Image failed to upload due to unkown reason.";
+				}
+			}
+			if (isset($uploaded_img) && $uploaded_img == true) {
+				if (isset($_SESSION['system_info']['cover'])) {
+					$qry = $this->conn->query("UPDATE system_info set meta_value = '{$fname}' where meta_field = 'cover' ");
+					if (is_file(base_app . $_SESSION['system_info']['cover']))
+						unlink(base_app . $_SESSION['system_info']['cover']);
+				} else {
+					$qry = $this->conn->query("INSERT into system_info set meta_value = '{$fname}',meta_field = 'cover' ");
+				}
+				unset($uploaded_img);
+			}
+		}
+
+		$update = $this->update_system_info();
+		$flash = $this->set_flashdata('success', 'System Info Successfully Updated.');
+		if ($update && $flash) {
+			// var_dump($_SESSION);
+			return true;
+		}
+	}
 	function set_userdata($field = '', $value = '')
 	{
 		if (!empty($field) && !empty($value)) {
