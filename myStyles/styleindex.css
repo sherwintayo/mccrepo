@@ -9,7 +9,7 @@
 }
 
 .navbar {
-  background-color: #b51b23;
+  background-color: #0062cc;
 }
 
 .navbar .navbar-brand img {
@@ -53,7 +53,7 @@
 }
 
 .dropdown-menu {
-  background-color: #b51b23;
+  background-color: #0062cc;
 }
 
 .dropdown-item {
@@ -217,7 +217,7 @@
 /* FOOTER */
 
 .main-footer {
-  background-color: #b51b23;
+  background-color: #0062cc;
 }
 .myFooter .myText {
   color: rgba(255, 255, 255, 0.6) !important;

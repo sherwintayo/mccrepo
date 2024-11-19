@@ -34,7 +34,7 @@
       alert_toast("<?php echo $_settings->flashdata('success') ?>", 'success')
     </script>
   <?php endif; ?>
-  <div class="container register" style="margin-top: 14vh;">
+  <div class="container register" style="margin-top: 14vh;" id="login">
     <div class="row">
       <!-- Left Section -->
       <div class="col-md-3 register-left">
