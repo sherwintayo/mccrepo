@@ -140,19 +140,22 @@ while ($row = $qry->fetch_assoc()) {
             <li><a href="#" class="nav-link" onclick="setActive(this, 'notifications')">notifications</a></li>
             <li><a href="#" class="nav-link" onclick="setActive(this, 'account_settings')">account settings</a></li>
           </ul>
-          <div id="uploadArea">
-            <button id="uploadArchiveBtn" class="btn btn-primary d-flex align-items-center"
-              onclick="redirectToSubmitArchive()">
-              <i class="fa fa-upload mr-2"></i> Upload Archive
-            </button>
+          <!-- Upload Button -->
+          <button id="uploadArchiveBtn" class="btn btn-primary d-flex align-items-center"
+            onclick="redirectToSubmitArchive()">
+            <i class="fa fa-upload mr-2"></i> Upload Archive
+          </button>
+        </nav>
 
-            <!-- Progress Bar (Hidden Initially) -->
-            <div id="uploadProgressBar" class="progress mt-3" style="width: 100%; display: none;">
-              <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                style="width: 0%;" aria-valuemin="0" aria-valuemax="100">0%</div>
+        <!-- Progress Bar -->
+        <div id="progressBarContainer" style="display: none; width: 100%; margin-top: 20px;">
+          <div class="progress">
+            <div id="uploadProgressBar" class="progress-bar progress-bar-striped progress-bar-animated"
+              role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
             </div>
           </div>
-        </nav>
+        </div>
+
 
         <!-- Default page content (my_archives) -->
         <div id="my_archives" class="page active">
@@ -279,43 +282,33 @@ while ($row = $qry->fetch_assoc()) {
     }
 
     // Polling to track upload progress
-    function trackUploadProgress() {
-      const progressBar = document.getElementById('progressBar');
-      const progressContainer = document.getElementById('uploadProgressBar');
+    // Function to start showing the progress bar
+    function showProgressBar() {
+      document.getElementById('uploadArchiveBtn').style.display = 'none';
+      document.getElementById('progressBarContainer').style.display = 'block';
 
-      progressContainer.style.display = 'block'; // Show progress bar
-
+      // Simulate upload progress (for demonstration purposes)
+      let progress = 0;
       const interval = setInterval(() => {
-        $.ajax({
-          url: _base_url_ + 'classes/Master.php?f=get_upload_progress',
-          method: 'GET',
-          success: function (response) {
-            const resp = JSON.parse(response);
-            const percentage = resp.progress || 0;
+        progress += 10;
+        document.getElementById('uploadProgressBar').style.width = progress + '%';
+        document.getElementById('uploadProgressBar').setAttribute('aria-valuenow', progress);
 
-            progressBar.style.width = percentage + '%';
-            progressBar.textContent = percentage + '%';
-
-            if (percentage >= 100) {
-              clearInterval(interval);
-              progressBar.textContent = 'Upload Complete';
-              setTimeout(() => {
-                location.reload(); // Reload to display updated content
-              }, 2000);
-            }
-          },
-          error: function () {
-            clearInterval(interval);
-            alert('Error tracking upload progress.');
-          },
-        });
-      }, 1000); // Poll every second
+        if (progress >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            location.reload(); // Reload the page after upload completes
+          }, 500);
+        }
+      }, 500);
     }
 
-    // Start tracking progress if redirected back from submit-archive
-    <?php if (isset($_GET['upload']) && $_GET['upload'] == 1): ?>
-      trackUploadProgress();
-    <?php endif; ?>
-
+    document.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('showProgressBar') === 'true') {
+        // Start the progress bar
+        localStorage.removeItem('showProgressBar');
+        showProgressBar();
+      }
+    });
   </script>
 </body>

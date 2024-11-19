@@ -179,31 +179,59 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 ['view', ['undo', 'redo', 'help']]
             ]
         })
+    })
+</script>
+<script>
+    $(function () {
         $('#archive-form').submit(function (e) {
             e.preventDefault();
+            var _this = $(this);
+            $(".pop-msg").remove();
+            var el = $("<div>");
+            el.addClass("alert pop-msg my-2");
+            el.hide();
+            start_loader();
 
-            const formData = new FormData(this);
-
+            // AJAX form submission
             $.ajax({
-                url: _base_url_ + 'classes/Master.php?f=save_archive',
-                method: 'POST',
-                data: formData,
+                url: _base_url_ + "classes/Master.php?f=save_archive",
+                data: new FormData($(this)[0]),
+                cache: false,
                 contentType: false,
                 processData: false,
-                success: function (response) {
-                    const resp = JSON.parse(response);
+                method: 'POST',
+                type: 'POST',
+                dataType: 'json',
+                error: err => {
+                    console.log(err);
+                    el.text("An error occurred while saving the data");
+                    el.addClass("alert-danger");
+                    _this.prepend(el);
+                    el.show('slow');
+                    end_loader();
+                },
+                success: function (resp) {
+                    if (resp.status == 'success') {
+                        // Set flag in localStorage to show progress bar
+                        localStorage.setItem('showProgressBar', 'true');
 
-                    if (resp.status === 'success') {
-                        // Redirect back to studentprofile.php with progress tracking enabled
-                        window.location.href = './?page=studentprofile&upload=1';
+                        // Redirect to the student profile
+                        location.href = './?page=profile';
+                    } else if (!!resp.msg) {
+                        el.text(resp.msg);
+                        el.addClass("alert-danger");
+                        _this.prepend(el);
+                        el.show('show');
                     } else {
-                        alert('Upload failed: ' + resp.msg);
+                        el.text("An error occurred while saving the data");
+                        el.addClass("alert-danger");
+                        _this.prepend(el);
+                        el.show('show');
                     }
-                },
-                error: function () {
-                    alert('An error occurred while submitting the form.');
-                },
+                    end_loader();
+                    $('html, body').animate({ scrollTop: 0 }, 'fast');
+                }
             });
         });
-    })
+    });
 </script>
