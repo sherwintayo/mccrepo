@@ -180,28 +180,12 @@ class SystemSettings extends DBConnection
 	}
 	function sess_des()
 	{
-		// Ensure session is started
-		if (session_status() == PHP_SESSION_NONE) {
-			session_start();
-		}
-
-		// Clear user-specific session data
 		if (isset($_SESSION['userdata'])) {
 			unset($_SESSION['userdata']);
+			return true;
 		}
-
-		// Clear login status
-		if (isset($_SESSION['user_logged_in'])) {
-			unset($_SESSION['user_logged_in']);
-		}
-
-		// Clear all session data if necessary
-		session_unset();
-		session_destroy();
-
 		return true;
 	}
-
 	function info($field = '')
 	{
 		if (!empty($field)) {

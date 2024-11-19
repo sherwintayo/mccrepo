@@ -34,7 +34,7 @@
 			</div> -->
 		</div>
 		<div class="card-body">
-			<form action="SystemSettings.php?f=update_settings" id="system-frm" method="POST" enctype="multipart/form-data">
+			<form action="" id="system-frm">
 				<div id="msg" class="form-group"></div>
 				<div class="form-group">
 					<label for="name" class="control-label">System Name</label>
@@ -160,40 +160,4 @@
 			]
 		})
 	})
-	$('#system-frm').submit(function (e) {
-		e.preventDefault();
-		var formData = new FormData(this);
-
-		$.ajax({
-			url: $(this).attr('action'),
-			type: 'POST',
-			data: formData,
-			processData: false,
-			contentType: false,
-			success: function (resp) {
-				if (resp == 1) {
-					Swal.fire({
-						title: 'Success!',
-						text: 'System Info Successfully Updated.',
-						icon: 'success'
-					});
-				} else {
-					Swal.fire({
-						title: 'Error!',
-						text: 'Failed to update system info.',
-						icon: 'error'
-					});
-				}
-			},
-			error: function (xhr, status, error) {
-				console.error('AJAX Error:', xhr.responseText); // Debug response
-				Swal.fire({
-					title: 'Error!',
-					text: 'An unexpected error occurred.',
-					icon: 'error'
-				});
-			}
-		});
-	});
-
 </script>
