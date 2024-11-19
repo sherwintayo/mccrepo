@@ -179,59 +179,32 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 ['view', ['undo', 'redo', 'help']]
             ]
         })
-    })
-</script>
-<script>
-    $(function () {
         $('#archive-form').submit(function (e) {
             e.preventDefault();
-            var _this = $(this);
-            $(".pop-msg").remove();
-            var el = $("<div>");
-            el.addClass("alert pop-msg my-2");
-            el.hide();
-            start_loader();
 
-            // AJAX form submission
+            // Submit form data via POST
+            const formData = new FormData(this);
+
             $.ajax({
-                url: _base_url_ + "classes/Master.php?f=save_archive",
-                data: new FormData($(this)[0]),
-                cache: false,
+                url: _base_url_ + 'classes/Master.php?f=save_archive',
+                method: 'POST',
+                data: formData,
                 contentType: false,
                 processData: false,
-                method: 'POST',
-                type: 'POST',
-                dataType: 'json',
-                error: err => {
-                    console.log(err);
-                    el.text("An error occurred while saving the data");
-                    el.addClass("alert-danger");
-                    _this.prepend(el);
-                    el.show('slow');
-                    end_loader();
-                },
-                success: function (resp) {
-                    if (resp.status == 'success') {
-                        // Set flag in localStorage to show progress bar
-                        localStorage.setItem('showProgressBar', 'true');
+                success: function (response) {
+                    const resp = JSON.parse(response);
 
-                        // Redirect to the student profile
-                        location.href = './?page=profile';
-                    } else if (!!resp.msg) {
-                        el.text(resp.msg);
-                        el.addClass("alert-danger");
-                        _this.prepend(el);
-                        el.show('show');
+                    if (resp.status === 'success') {
+                        alert(resp.msg); // Show success message
+                        window.location.href = './?page=studentprofile';
                     } else {
-                        el.text("An error occurred while saving the data");
-                        el.addClass("alert-danger");
-                        _this.prepend(el);
-                        el.show('show');
+                        alert('Upload failed: ' + resp.msg);
                     }
-                    end_loader();
-                    $('html, body').animate({ scrollTop: 0 }, 'fast');
-                }
+                },
+                error: function () {
+                    alert('An error occurred while submitting the form.');
+                },
             });
         });
-    });
+    })
 </script>

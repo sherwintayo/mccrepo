@@ -140,22 +140,13 @@ while ($row = $qry->fetch_assoc()) {
             <li><a href="#" class="nav-link" onclick="setActive(this, 'notifications')">notifications</a></li>
             <li><a href="#" class="nav-link" onclick="setActive(this, 'account_settings')">account settings</a></li>
           </ul>
-          <!-- Upload Button -->
-          <button id="uploadArchiveBtn" class="btn btn-primary d-flex align-items-center"
-            onclick="redirectToSubmitArchive()">
-            <i class="fa fa-upload mr-2"></i> Upload Archive
-          </button>
-        </nav>
-
-        <!-- Progress Bar -->
-        <div id="progressBarContainer" style="display: none; width: 100%; margin-top: 20px;">
-          <div class="progress">
-            <div id="uploadProgressBar" class="progress-bar progress-bar-striped progress-bar-animated"
-              role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-            </div>
+          <div id="uploadArea">
+            <button id="uploadArchiveBtn" class="btn btn-primary d-flex align-items-center"
+              onclick="redirectToSubmitArchive()">
+              <i class="fa fa-upload mr-2"></i> Upload Archive
+            </button>
           </div>
-        </div>
-
+        </nav>
 
         <!-- Default page content (my_archives) -->
         <div id="my_archives" class="page active">
@@ -281,34 +272,6 @@ while ($row = $qry->fetch_assoc()) {
       window.location.href = './?page=submit-archive';
     }
 
-    // Polling to track upload progress
-    // Function to start showing the progress bar
-    function showProgressBar() {
-      document.getElementById('uploadArchiveBtn').style.display = 'none';
-      document.getElementById('progressBarContainer').style.display = 'block';
 
-      // Simulate upload progress (for demonstration purposes)
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress += 10;
-        document.getElementById('uploadProgressBar').style.width = progress + '%';
-        document.getElementById('uploadProgressBar').setAttribute('aria-valuenow', progress);
-
-        if (progress >= 100) {
-          clearInterval(interval);
-          setTimeout(() => {
-            location.reload(); // Reload the page after upload completes
-          }, 500);
-        }
-      }, 500);
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      if (localStorage.getItem('showProgressBar') === 'true') {
-        // Start the progress bar
-        localStorage.removeItem('showProgressBar');
-        showProgressBar();
-      }
-    });
   </script>
 </body>
