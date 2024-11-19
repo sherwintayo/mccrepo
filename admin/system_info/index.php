@@ -167,46 +167,35 @@
 		const formData = new FormData(document.getElementById('system-frm'));
 
 		$.ajax({
-			url: 'SystemSettings.php?f=update_settings',
+			url: '/path/to/SystemSettings.php?f=update_settings', // Update the path
 			method: 'POST',
 			data: formData,
-			processData: false, // Required for FormData
-			contentType: false, // Required for FormData
+			processData: false,
+			contentType: false,
 			success: function (response) {
-				try {
-					const res = JSON.parse(response);
-					if (res.success) {
-						Swal.fire({
-							title: 'Success!',
-							text: res.message,
-							icon: 'success'
-						});
-					} else {
-						Swal.fire({
-							title: 'Error!',
-							text: res.message,
-							icon: 'error'
-						});
-					}
-				} catch (e) {
-					console.error('Error parsing response:', e);
+				if (response.success) {
+					Swal.fire({
+						title: 'Success!',
+						text: response.message,
+						icon: 'success'
+					});
+				} else {
 					Swal.fire({
 						title: 'Error!',
-						text: 'An unexpected error occurred.',
+						text: response.message,
 						icon: 'error'
 					});
 				}
 			},
-			error: function (err) {
-				console.error('AJAX error:', err);
+			error: function (xhr, status, error) {
+				console.error('AJAX error:', xhr.responseText || error);
 				Swal.fire({
 					title: 'Error!',
-					text: 'Failed to submit data. Please try again.',
+					text: 'Failed to submit data. Please check console for details.',
 					icon: 'error'
 				});
 			}
 		});
 	}
 
-	document.getElementById('system-frm').addEventListener('submit', updateSettings);
 </script>

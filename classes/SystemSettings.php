@@ -34,27 +34,27 @@ class SystemSettings extends DBConnection
 		}
 		return true;
 	}
+
+
 	function update_settings_info()
 	{
 		$resp = ['success' => false, 'message' => ''];
 		try {
-			$data = "";
 			foreach ($_POST as $key => $value) {
-				if (!in_array($key, array("content")))
-					if (isset($_SESSION['system_info'][$key])) {
-						$value = str_replace("'", "&apos;", $value);
-						$qry = $this->conn->query("UPDATE system_info set meta_value = '{$value}' where meta_field = '{$key}' ");
-					} else {
-						$qry = $this->conn->query("INSERT into system_info set meta_value = '{$value}', meta_field = '{$key}' ");
-					}
-			}
-			if (isset($_POST['content'])) {
-				foreach ($_POST['content'] as $k => $v) {
-					file_put_contents("../{$k}.html", $v);
+				if ($key !== "content") {
+					$value = str_replace("'", "&apos;", $value);
+					$sql = "INSERT INTO system_info (meta_field, meta_value) VALUES ('$key', '$value') 
+                        ON DUPLICATE KEY UPDATE meta_value='$value'";
+					$this->conn->query($sql);
 				}
 			}
 
-			// Handle logo and cover image upload
+			if (isset($_POST['content'])) {
+				foreach ($_POST['content'] as $k => $v) {
+					file_put_contents("../$k.html", $v);
+				}
+			}
+
 			$this->processFileUpload('img', 'logo');
 			$this->processFileUpload('cover', 'cover');
 
@@ -64,7 +64,9 @@ class SystemSettings extends DBConnection
 		} catch (Exception $e) {
 			$resp['message'] = 'An error occurred: ' . $e->getMessage();
 		}
+		header('Content-Type: application/json');
 		echo json_encode($resp);
+		exit;
 	}
 
 	private function processFileUpload($fieldName, $metaField)
