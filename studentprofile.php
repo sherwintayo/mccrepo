@@ -300,7 +300,7 @@ while ($row = $qry->fetch_assoc()) {
               clearInterval(interval);
               progressBar.textContent = 'Upload Complete';
               setTimeout(() => {
-                location.reload(); // Reload to display updated button
+                location.reload(); // Reload to display updated content
               }, 2000);
             }
           },
@@ -312,9 +312,10 @@ while ($row = $qry->fetch_assoc()) {
       }, 1000); // Poll every second
     }
 
-    // Start tracking progress if triggered
+    // Start tracking progress if redirected back from submit-archive
     <?php if (isset($_GET['upload']) && $_GET['upload'] == 1): ?>
       trackUploadProgress();
     <?php endif; ?>
+
   </script>
 </body>

@@ -182,7 +182,6 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         $('#archive-form').submit(function (e) {
             e.preventDefault();
 
-            // Submit form data via POST and redirect to studentprofile.php
             const formData = new FormData(this);
 
             $.ajax({
