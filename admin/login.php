@@ -4,9 +4,9 @@
 <?php require_once('inc/header.php') ?>
 
 <head>
-  <title>Admin Login</title>
+  <title>MS Login</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="../dist/css/registerstyle.css">
+  <link rel="stylesheet" href="../myStyles/registerstyle.css">
 </head>
 <style>
   /* html,

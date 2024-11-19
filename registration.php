@@ -6,10 +6,9 @@ require_once('inc/header.php');
 <html lang="en" class="" style="height: auto;">
 
 <head>
-  <title>Bootstrap Dual Design Registration Form | Coder Uncle</title>
-
+  <title>MS Login</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="dist/css/registerstyle.css">
+  <link rel="stylesheet" href="myStyles/registerstyle.css">
 </head>
 
 <style>
