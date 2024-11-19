@@ -161,7 +161,6 @@
 		})
 	})
 </script>
-
 <script>
 	function updateSettings(event) {
 		event.preventDefault(); // Prevent default form submission
