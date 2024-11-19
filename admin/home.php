@@ -133,18 +133,30 @@ include 'timezone.php';
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card card-info">
-                <div class="card-header">
-                    <h3 class="card-title">Top Picks</h3>
-                    <div class="card-tools"></div>
-                </div>
-                <div class="card-body">
-                    <div class="chart">
-                        <canvas id="lineChart"
-                            style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                <!-- BAR CHART -->
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">Published / Unpublish </h3>
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div id="topPicksList" class="mt-3"></div>
+                    <div class="card-body">
+                        <div class="chart">
+                            <canvas id="barChart"
+                                style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
                 </div>
+                <!-- /.card -->
             </div>
         </div>
 
@@ -197,33 +209,21 @@ include 'timezone.php';
             </div>
         </div>
         <div class="col-md-6">
-
-            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                <!-- BAR CHART -->
-                <div class="card card-success">
-                    <div class="card-header">
-                        <h3 class="card-title">Published / Unpublish </h3>
-
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                            <button type="button" class="btn btn-tool" data-card-widget="remove">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart">
-                            <canvas id="barChart"
-                                style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                        </div>
-                    </div>
-                    <!-- /.card-body -->
+            <div class="card card-info">
+                <div class="card-header">
+                    <h3 class="card-title">Top Picks</h3>
+                    <div class="card-tools"></div>
                 </div>
-                <!-- /.card -->
+                <div class="card-body">
+                    <div class="chart">
+                        <canvas id="lineChart"
+                            style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                    </div>
+                    <div id="topPicksList" class="mt-3"></div>
+                </div>
             </div>
         </div>
+
         <!-- jQuery -->
         <script src="plugins/jquery/jquery.min.js"></script>
         <!-- Bootstrap 4 -->
