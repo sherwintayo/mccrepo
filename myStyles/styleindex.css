@@ -60,7 +60,7 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
-.navbar .container .myRightNav .links .myNavLink {
+.navbar .container .myRightNav .myNavLink {
   text-decoration: none !important;
   color: rgba(255, 255, 255, 0.6) !important;
 }
