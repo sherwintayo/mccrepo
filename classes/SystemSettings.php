@@ -34,7 +34,7 @@ class SystemSettings extends DBConnection
 		}
 		return true;
 	}
-	function update_settings_info()
+	function update_settings()
 	{
 		$data = "";
 		foreach ($_POST as $key => $value) {
@@ -226,7 +226,7 @@ $action = !isset($_GET['f']) ? 'none' : strtolower($_GET['f']);
 $sysset = new SystemSettings();
 switch ($action) {
 	case 'update_settings':
-		echo $sysset->update_settings_info();
+		echo $sysset->update_settings();
 		break;
 	default:
 		// echo $sysset->index();
