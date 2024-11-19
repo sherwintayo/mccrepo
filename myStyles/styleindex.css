@@ -9,7 +9,7 @@
 }
 
 .navbar {
-  background-color: #2a252e;
+  background-color: #b51b23;
 }
 
 .navbar .navbar-brand img {
@@ -53,7 +53,7 @@
 }
 
 .dropdown-menu {
-  background-color: #2a252e;
+  background-color: #b51b23;
 }
 
 .dropdown-item {
@@ -131,7 +131,7 @@
 }
 
 .modal-dialog .modal-content {
-  background-color: #2a252e !important;
+  background-color: #b51b23 !important;
 }
 
 /* MODAL HEADER */
@@ -216,7 +216,7 @@
 /* FOOTER */
 
 .main-footer {
-  background-color: #2a252e;
+  background-color: #b51b23;
 }
 .myFooter .myText {
   color: rgba(255, 255, 255, 0.6) !important;
