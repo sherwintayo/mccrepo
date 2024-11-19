@@ -3,6 +3,9 @@ if (!class_exists('DBConnection')) {
 	require_once('../config.php');
 	require_once('DBConnection.php');
 }
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1); // Enable error reporting
 class SystemSettings extends DBConnection
 {
 	public function __construct()
@@ -38,19 +41,20 @@ class SystemSettings extends DBConnection
 	{
 		$data = "";
 		foreach ($_POST as $key => $value) {
-			if (!in_array($key, array("content")))
-				if (isset($_SESSION['system_info'][$key])) {
-					$value = str_replace("'", "&apos;", $value);
-					$qry = $this->conn->query("UPDATE system_info set meta_value = '{$value}' where meta_field = '{$key}' ");
-				} else {
-					$qry = $this->conn->query("INSERT into system_info set meta_value = '{$value}', meta_field = '{$key}' ");
+			if (!in_array($key, array("content"))) {
+				$value = str_replace("'", "&apos;", $value);
+				$qry = $this->conn->query("UPDATE system_info set meta_value = '{$value}' where meta_field = '{$key}'");
+				if (!$qry) {
+					file_put_contents('debug.log', "Database Error: " . $this->conn->error . "\n", FILE_APPEND);
 				}
+			}
 		}
-		if (isset($_POST['content']))
+
+		if (isset($_POST['content'])) {
 			foreach ($_POST['content'] as $k => $v) {
 				file_put_contents("../{$k}.html", $v);
-
 			}
+		}
 
 		if (isset($_FILES['img']) && $_FILES['img']['tmp_name'] != '') {
 			$fname = 'uploads/logo-' . (time()) . '.png';
@@ -132,10 +136,11 @@ class SystemSettings extends DBConnection
 		$update = $this->update_system_info();
 		$flash = $this->set_flashdata('success', 'System Info Successfully Updated.');
 		if ($update && $flash) {
-			// var_dump($_SESSION);
-			return true;
+			return 1; // Success
 		}
+		return 0; // Failure
 	}
+
 	function set_userdata($field = '', $value = '')
 	{
 		if (!empty($field) && !empty($value)) {
@@ -226,7 +231,7 @@ $action = !isset($_GET['f']) ? 'none' : strtolower($_GET['f']);
 $sysset = new SystemSettings();
 switch ($action) {
 	case 'update_settings':
-		echo $sysset->update_settings_info() ? 1 : 0;
+		echo $sysset->update_settings_info();
 		break;
 	default:
 		// echo $sysset->index();

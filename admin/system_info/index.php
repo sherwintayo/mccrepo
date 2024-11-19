@@ -161,11 +161,11 @@
 		})
 	})
 	$('#system-frm').submit(function (e) {
-		e.preventDefault(); // Prevent default form submission
-		var formData = new FormData(this); // Collect all form data including files
+		e.preventDefault();
+		var formData = new FormData(this);
 
 		$.ajax({
-			url: $(this).attr('action'), // Use the action attribute of the form
+			url: $(this).attr('action'),
 			type: 'POST',
 			data: formData,
 			processData: false,
@@ -185,7 +185,8 @@
 					});
 				}
 			},
-			error: function () {
+			error: function (xhr, status, error) {
+				console.error('AJAX Error:', xhr.responseText); // Debug response
 				Swal.fire({
 					title: 'Error!',
 					text: 'An unexpected error occurred.',
