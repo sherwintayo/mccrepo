@@ -313,16 +313,16 @@
         </div>
       <?php else: ?>
         <li class="nav-item" style="list-style: none;">
-          <a href="./ms_login.php" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">Sign
-            Up</a>
+          <a href="./ms_login.php" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">SIGN
+            UP</a>
         </li>
         <li class="nav-item" style="list-style: none;">
-          <a href="./login.php" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">Student
-            Sign In</a>
+          <a href="./login.php" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">STUDENT
+            SIGN IN</a>
         </li>
         <li class="nav-item" style="list-style: none;">
-          <a href="./admin" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">Admin
-            Sign In</a>
+          <a href="./admin" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">ADMIN SIGN
+            IN</a>
         </li>
       <?php endif; ?>
     </div>

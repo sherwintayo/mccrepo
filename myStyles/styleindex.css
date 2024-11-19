@@ -9,7 +9,7 @@
 }
 
 .navbar {
-  background-color: #0062cc;
+  background-color: #9b0b12;
 }
 
 .navbar .navbar-brand img {
@@ -185,7 +185,7 @@
 /* MODAL BODY */
 .modal-dialog .modal-body {
   padding-top: 65px;
-  background-color: #17161d;
+  background-color: #fff;
 }
 
 .modal-dialog .nav-link {
@@ -216,7 +216,7 @@
 /* FOOTER */
 
 .main-footer {
-  background-color: #0062cc;
+  background-color: #9b0b12;
 }
 .myFooter .myText {
   color: rgba(255, 255, 255, 0.6) !important;
@@ -228,10 +228,33 @@
     justify-content: center !important;
     gap: 10px !important;
   }
+
+  .myRightNav {
+    display: none !important;
+  }
+
+  .navbar {
+    height: 13vh;
+  }
+  .navbar .container {
+    margin-top: 0;
+  }
+
+  .navbar .navbar-brand img {
+    max-height: 40px;
+    margin-bottom: 10px;
+  }
+  .navbar .navbar-brand .myBrandName {
+    color: #f9f06d !important;
+    font-weight: 600;
+  }
 }
 
 /* Small devices (landscape phones, less than 768px) */
 @media (max-width: 767.98px) {
+  .myRightNav {
+    display: none !important;
+  }
 }
 
 /* Medium devices (tablets, less than 992px) */

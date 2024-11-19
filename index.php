@@ -19,6 +19,7 @@
     width: calc(100%);
     position: relative;
     top: -1em;
+    margin-top: 20px;
   }
 
   #header:before {

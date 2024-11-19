@@ -42,7 +42,7 @@
             <div class="col-md-3 register-left">
                 <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo" />
                 <h3>Welcome!</h3>
-                <p>Enter your MS email to receive a password reset link.</p>
+                <p>Enter your MS 365 Email Account to receive a registration link.</p>
                 <button class="myButton" onclick="location.href = '<?php echo base_url ?>'">Go Back</button>
             </div>
 
@@ -50,7 +50,7 @@
             <div class="col-md-9 register-right">
                 <div class="tab-content" id="myTabContent">
                     <div class="tab-pane fade show active" id="ms-login-tab" role="tabpanel">
-                        <h3 class="register-heading">MS Login</h3>
+                        <h3 class="register-heading">MS 365 Account Verification</h3>
                         <div class="row register-form">
                             <div class="col-md-12">
                                 <form id="forgot-password-form" method="POST">
