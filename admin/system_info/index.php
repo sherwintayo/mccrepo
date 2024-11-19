@@ -161,3 +161,53 @@
 		})
 	})
 </script>
+
+<script>
+	function updateSettings(event) {
+		event.preventDefault(); // Prevent default form submission
+		const formData = new FormData(document.getElementById('system-frm'));
+
+		$.ajax({
+			url: 'SystemSettings.php?f=update_settings',
+			method: 'POST',
+			data: formData,
+			processData: false, // Required for FormData
+			contentType: false, // Required for FormData
+			success: function (response) {
+				try {
+					const res = JSON.parse(response);
+					if (res.success) {
+						Swal.fire({
+							title: 'Success!',
+							text: res.message,
+							icon: 'success'
+						});
+					} else {
+						Swal.fire({
+							title: 'Error!',
+							text: res.message,
+							icon: 'error'
+						});
+					}
+				} catch (e) {
+					console.error('Error parsing response:', e);
+					Swal.fire({
+						title: 'Error!',
+						text: 'An unexpected error occurred.',
+						icon: 'error'
+					});
+				}
+			},
+			error: function (err) {
+				console.error('AJAX error:', err);
+				Swal.fire({
+					title: 'Error!',
+					text: 'Failed to submit data. Please try again.',
+					icon: 'error'
+				});
+			}
+		});
+	}
+
+	document.getElementById('system-frm').addEventListener('submit', updateSettings);
+</script>
