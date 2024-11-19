@@ -207,6 +207,7 @@ class Master extends DBConnection
 
 	function save_archive()
 	{
+
 		if (empty($_POST['id'])) {
 			$pref = date("Ym");
 			$code = sprintf("%'.04d", 1);
@@ -276,27 +277,42 @@ class Master extends DBConnection
 					if ($gdImg) {
 						if (is_file($dir_path))
 							unlink($dir_path);
-						imagepng($t_image, $dir_path);
+						$uploaded_img = imagepng($t_image, $dir_path);
 						imagedestroy($gdImg);
 						imagedestroy($t_image);
 					} else {
 						$resp['msg'] .= " But Image failed to upload due to unknown reason.";
 					}
 				}
-				$this->conn->query("UPDATE archive_list SET banner_path = '{$fname}' WHERE id = '{$aid}' ");
+				if (isset($uploaded_img)) {
+					$this->conn->query("UPDATE archive_list SET banner_path = CONCAT('{$fname}', '?v=', unix_timestamp(CURRENT_TIMESTAMP)) WHERE id = '{$aid}' ");
+				}
 			}
 
-			// Handle PDF Upload
+
+
+			// Handle PDF Upload and Zip Creation
 			if (isset($_FILES['pdf']) && $_FILES['pdf']['tmp_name'] != '') {
 				$type = mime_content_type($_FILES['pdf']['tmp_name']);
 				$allowed = array('application/pdf');
 				if (!in_array($type, $allowed)) {
 					$resp['msg'] .= " But Document File has failed to upload due to invalid file type.";
 				} else {
-					$pdf_path = 'uploads/pdf/Document-' . $aid . '.pdf';
-					$pdf_dir_path = base_app . $pdf_path;
-					move_uploaded_file($_FILES['pdf']['tmp_name'], $pdf_dir_path);
-					$this->conn->query("UPDATE archive_list SET document_path = '{$pdf_path}' WHERE id = '{$aid}' ");
+					$zip_pdf = new ZipArchive();
+					$pdf_zipname = 'uploads/pdf/Document-' . $aid . '.zip';
+					$pdf_dir_path = base_app . $pdf_zipname;
+
+					if ($zip_pdf->open($pdf_dir_path, ZipArchive::CREATE) !== TRUE) {
+						$resp['msg'] .= " But PDF ZIP file failed to create.";
+					} else {
+						$pdf_tmp_name = $_FILES['pdf']['tmp_name'];
+						$zip_pdf->addFile($pdf_tmp_name, $_FILES['pdf']['name']);
+						if ($zip_pdf->close()) {
+							$this->conn->query("UPDATE archive_list SET document_path = CONCAT('{$pdf_zipname}', '?v=', unix_timestamp(CURRENT_TIMESTAMP)) WHERE id = '{$aid}' ");
+						} else {
+							$resp['msg'] .= " But PDF ZIP file failed to close properly.";
+						}
+					}
 				}
 			}
 
@@ -304,7 +320,7 @@ class Master extends DBConnection
 			if (isset($_FILES['zipfiles']) && !empty($_FILES['zipfiles']['name'][0])) {
 				$zip = new ZipArchive();
 				$zipname = 'uploads/files/Files-' . $aid . '.zip';
-				$dir_path = base_app . $zipname;
+				$dir_path = base_app . $zipname; // Assuming 'base_app' is your base path constant
 
 				if ($zip->open($dir_path, ZipArchive::CREATE) !== TRUE) {
 					$resp['msg'] .= " But ZIP file failed to create.";
@@ -314,22 +330,36 @@ class Master extends DBConnection
 							$zip->addFile($tmp_name, $_FILES['zipfiles']['name'][$key]);
 						}
 					}
-					$zip->close();
-					$this->conn->query("UPDATE archive_list SET folder_path = '{$zipname}' WHERE id = '{$aid}' ");
+					if ($zip->close()) {
+						$this->conn->query("UPDATE archive_list SET folder_path = CONCAT('{$zipname}', '?v=', unix_timestamp(CURRENT_TIMESTAMP)) WHERE id = '{$aid}' ");
+					} else {
+						$resp['msg'] .= " But ZIP file failed to close properly.";
+					}
 				}
 			}
 
-			// Handle SQL File Upload
+			// Handle SQL File Upload and Zip Creation
 			if (isset($_FILES['sql']) && $_FILES['sql']['tmp_name'] != '') {
 				$allowed_extension = pathinfo($_FILES['sql']['name'], PATHINFO_EXTENSION);
 				$allowed = array('sql');
 				if (!in_array($allowed_extension, $allowed)) {
 					$resp['msg'] .= " But SQL File has failed to upload due to invalid file type.";
 				} else {
-					$sql_path = 'uploads/sql/SQL-' . $aid . '.sql';
-					$sql_dir_path = base_app . $sql_path;
-					move_uploaded_file($_FILES['sql']['tmp_name'], $sql_dir_path);
-					$this->conn->query("UPDATE archive_list SET sql_path = '{$sql_path}' WHERE id = '{$aid}' ");
+					$zip_sql = new ZipArchive();
+					$sql_zipname = 'uploads/sql/SQL-' . $aid . '.zip';
+					$sql_dir_path = base_app . $sql_zipname;
+
+					if ($zip_sql->open($sql_dir_path, ZipArchive::CREATE) !== TRUE) {
+						$resp['msg'] .= " But SQL ZIP file failed to create.";
+					} else {
+						$sql_tmp_name = $_FILES['sql']['tmp_name'];
+						$zip_sql->addFile($sql_tmp_name, $_FILES['sql']['name']);
+						if ($zip_sql->close()) {
+							$this->conn->query("UPDATE archive_list SET sql_path = CONCAT('{$sql_zipname}', '?v=', unix_timestamp(CURRENT_TIMESTAMP)) WHERE id = '{$aid}' ");
+						} else {
+							$resp['msg'] .= " But SQL ZIP file failed to close properly.";
+						}
+					}
 				}
 			}
 		} else {
@@ -341,7 +371,14 @@ class Master extends DBConnection
 	}
 
 
+	function get_upload_progress()
+	{
+		session_start();
+		$progress = $_SESSION['upload_progress'] ?? 0;
 
+		echo json_encode(['progress' => $progress]);
+		exit;
+	}
 
 
 
