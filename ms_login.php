@@ -63,7 +63,8 @@
 
                                     <!-- reCAPTCHA Widget -->
                                     <div class="form-group">
-                                        <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div>
+                                        <div class="g-recaptcha"
+                                            data-sitekey="6LdkGoUqAAAAAEmIB2Py685bbQiALvcZ3a4MOjDx"></div>
                                     </div>
 
                                     <!-- Buttons -->
