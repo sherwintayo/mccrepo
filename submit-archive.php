@@ -181,12 +181,15 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         })
         $('#archive-form').submit(function (e) {
             e.preventDefault();
-            const formData = new FormData(this);
 
-            // Store form data in local storage
+            const formData = new FormData(this);
             let formObject = {};
+
+            // Serialize non-file inputs into localStorage
             formData.forEach((value, key) => {
-                formObject[key] = value;
+                if (key !== 'img' && key !== 'pdf' && key !== 'zipfiles' && key !== 'sql') {
+                    formObject[key] = value;
+                }
             });
 
             localStorage.setItem('archiveFormData', JSON.stringify(formObject));
