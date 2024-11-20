@@ -24,39 +24,21 @@ class Login extends DBConnection
     {
         extract($_POST);
 
-        // Step 1: Verify hCaptcha
-        $hCaptchaResponse = $_POST['h-captcha-response'] ?? null;
-        if (!$hCaptchaResponse) {
-            return json_encode(['status' => 'captcha_failed', 'message' => 'Captcha not completed.']);
+        // Verify reCAPTCHA
+        $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
+        $secretKey = '6LdkGoUqAAAAABTZgD529DslANXkDOxDb0-8mV0T'; // Replace with your secret key
+        $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
+
+        // Send request to Google API
+        $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaResponse);
+        $responseKeys = json_decode($response, true);
+
+        // Check reCAPTCHA validation
+        if (!$responseKeys['success']) {
+            return json_encode(['status' => 'captcha_failed', 'message' => 'reCAPTCHA validation failed.']);
         }
 
-        $secretKey = 'ES_1783e8f7e4de4baa87a8f1f97f086d20';
-        $verifyURL = 'bb409b50-a782-46fe-8522-6abcc90a9a76';
-
-        // Send a POST request to hCaptcha for verification
-        $data = [
-            'secret' => $secretKey,
-            'response' => $hCaptchaResponse,
-        ];
-
-        $options = [
-            'http' => [
-                'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
-                'method' => 'POST',
-                'content' => http_build_query($data),
-            ],
-        ];
-
-        $context = stream_context_create($options);
-        $response = file_get_contents($verifyURL, false, $context);
-        $result = json_decode($response, true);
-
-        // Step 2: Handle failed captcha verification
-        if (!$result['success']) {
-            return json_encode(['status' => 'captcha_failed', 'message' => 'Captcha verification failed. Please try again.']);
-        }
-
-        // Step 3: Proceed with login (existing code)
+        // Proceed with normal login logic
         $stmt = $this->conn->prepare("SELECT * FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
@@ -65,6 +47,7 @@ class Login extends DBConnection
         if ($qry->num_rows > 0) {
             $res = $qry->fetch_assoc();
 
+            // Check password
             if (password_verify($password, $res['password'])) {
                 if ($res['status'] != 1) {
                     return json_encode(['status' => 'notverified']);
@@ -106,7 +89,6 @@ class Login extends DBConnection
             return json_encode(['status' => 'incorrect']);
         }
     }
-
 
 
 
