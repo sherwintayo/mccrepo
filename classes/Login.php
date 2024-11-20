@@ -31,7 +31,7 @@ class Login extends DBConnection
         }
 
         $secretKey = 'ES_1783e8f7e4de4baa87a8f1f97f086d20';
-        $verifyURL = 'https://hcaptcha.com/siteverify';
+        $verifyURL = 'bb409b50-a782-46fe-8522-6abcc90a9a76';
 
         // Send a POST request to hCaptcha for verification
         $data = [
