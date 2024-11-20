@@ -179,27 +179,48 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 ['view', ['undo', 'redo', 'help']]
             ]
         })
-    })
-</script>
-<script>
-    $(function () {
+
         $('#archive-form').submit(function (e) {
             e.preventDefault();
 
             const formData = new FormData(this);
-            const formObject = {};
 
-            // Store form fields except files
-            formData.forEach((value, key) => {
-                if (key !== 'img' && key !== 'pdf' && key !== 'zipfiles[]' && key !== 'sql') {
-                    formObject[key] = value;
-                }
+            $.ajax({
+                url: _base_url_ + 'classes/Master.php?f=save_archive',
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    const resp = JSON.parse(response);
+
+                    if (resp.status === 'success') {
+                        Swal.fire({
+                            title: 'Submission Successful!',
+                            text: resp.msg,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            window.location.href = './?page=studentprofile';
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Submission Failed',
+                            text: resp.msg,
+                            icon: 'error',
+                            confirmButtonText: 'Try Again'
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'An unexpected error occurred while submitting the form.',
+                        icon: 'error',
+                        confirmButtonText: 'Close'
+                    });
+                },
             });
-
-            localStorage.setItem('archiveFormData', JSON.stringify(formObject));
-
-            // Redirect to studentprofile.php
-            window.location.href = './?page=studentprofile';
         });
-    });
+    })
 </script>

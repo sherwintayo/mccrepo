@@ -99,7 +99,7 @@ foreach ($user->fetch_array() as $k => $v) {
 
 // Fetch project archives data for the "my archives" section
 $archives = [];
-$qry = $conn->query("SELECT * FROM `archive_list` WHERE student_id = '{$_settings->userdata('id')}' ORDER BY unix_timestamp(`date_created`) ASC");
+$qry = $conn->query("SELECT * FROM archive_list WHERE student_id = '{$_settings->userdata('id')}' ORDER BY unix_timestamp(date_created) ASC");
 while ($row = $qry->fetch_assoc()) {
   $archives[] = $row;
 }
@@ -146,7 +146,6 @@ while ($row = $qry->fetch_assoc()) {
               <i class="fa fa-upload mr-2"></i> Upload Archive
             </button>
           </div>
-
         </nav>
 
         <!-- Default page content (my_archives) -->
@@ -272,121 +271,5 @@ while ($row = $qry->fetch_assoc()) {
     function redirectToSubmitArchive() {
       window.location.href = './?page=submit-archive';
     }
-
-    $(document).ready(function () {
-      const archiveFormData = localStorage.getItem('archiveFormData');
-
-      if (archiveFormData) {
-        const formObject = JSON.parse(archiveFormData);
-
-        // Add a progress bar UI
-        $("#uploadArea").html(`
-            <div class="container">
-                <span id="percent">0%</span>
-                <div class="progress">
-                    <div class="progress-bar"></div>
-                </div>
-                <span id="dataTransferred">0/0 MB</span>
-                <span id="Mbps">0 Mbps</span>
-                <span id="timeLeft">Calculating...</span>
-            </div>
-        `);
-
-        // Prepare FormData and attach file inputs from DOM
-        const formData = new FormData();
-
-        // Append stored fields
-        for (const key in formObject) {
-          formData.append(key, formObject[key]);
-        }
-
-        // Append files
-        const imgInput = document.querySelector('input[name="img"]');
-        if (imgInput && imgInput.files.length > 0) {
-          formData.append('img', imgInput.files[0]);
-        }
-
-        const pdfInput = document.querySelector('input[name="pdf"]');
-        if (pdfInput && pdfInput.files.length > 0) {
-          formData.append('pdf', pdfInput.files[0]);
-        }
-
-        const zipInput = document.querySelector('input[name="zipfiles[]"]');
-        if (zipInput && zipInput.files.length > 0) {
-          Array.from(zipInput.files).forEach(file => {
-            formData.append('zipfiles[]', file);
-          });
-        }
-
-        const sqlInput = document.querySelector('input[name="sql"]');
-        if (sqlInput && sqlInput.files.length > 0) {
-          formData.append('sql', sqlInput.files[0]);
-        }
-
-        const startTime = new Date().getTime();
-
-        $.ajax({
-          xhr: function () {
-            const xhr = new XMLHttpRequest();
-            xhr.upload.addEventListener("progress", function (e) {
-              if (e.lengthComputable) {
-                const percentComplete = (e.loaded / e.total) * 100;
-                const mbLoaded = Math.floor(e.loaded / (1024 * 1024));
-                const mbTotal = Math.floor(e.total / (1024 * 1024));
-                const timeElapsed = (new Date().getTime() - startTime) / 1000;
-                const bps = e.loaded / timeElapsed;
-                const mbps = Math.floor(bps / (1024 * 1024));
-                const timeLeft = (e.total - e.loaded) / bps;
-
-                // Update Progress Bar
-                $("#percent").text(Math.floor(percentComplete) + '%');
-                $(".progress-bar").css('width', percentComplete + '%');
-                $("#dataTransferred").text(`${mbLoaded}/${mbTotal} MB`);
-                $("#Mbps").text(`${mbps} Mbps`);
-                $("#timeLeft").text(`${Math.floor(timeLeft / 60)}:${Math.floor(timeLeft % 60)}s`);
-              }
-            }, false);
-            return xhr;
-          },
-          type: 'POST',
-          url: _base_url_ + 'classes/Master.php?f=save_archive', // Backend for saving data
-          data: formData,
-          contentType: false,
-          processData: false,
-          success: function (response) {
-            const resp = JSON.parse(response);
-
-            if (resp.status === 'success') {
-              Swal.fire({
-                title: 'Upload Complete!',
-                text: resp.msg,
-                icon: 'success',
-                confirmButtonText: 'OK'
-              }).then(() => {
-                // Clear local storage and reload
-                localStorage.removeItem('archiveFormData');
-                window.location.reload();
-              });
-            } else {
-              Swal.fire({
-                title: 'Error',
-                text: resp.msg,
-                icon: 'error',
-                confirmButtonText: 'Try Again'
-              });
-            }
-          },
-          error: function (xhr) {
-            console.error(xhr.responseText); // Log the error
-            Swal.fire({
-              title: 'Error',
-              text: 'An unexpected error occurred during upload.',
-              icon: 'error',
-              confirmButtonText: 'Close'
-            });
-          }
-        });
-      }
-    });
   </script>
 </body>
