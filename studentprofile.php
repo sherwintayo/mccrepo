@@ -277,106 +277,114 @@ while ($row = $qry->fetch_assoc()) {
       const archiveFormData = localStorage.getItem('archiveFormData');
 
       if (archiveFormData) {
-        // Replace "Upload Archive" button with progress bar and file input UI
+        const formObject = JSON.parse(archiveFormData);
+
+        // Add a progress bar UI
         $("#uploadArea").html(`
-            <form id="uploadForm">
-                <div class="container">
-                    <h5>Files Required for Submission</h5>
-                    <label>Project Image:</label>
-                    <input type="file" name="img" accept="image/png, image/jpeg, image/jpg" required><br>
-                    <label>Project Document (PDF):</label>
-                    <input type="file" name="pdf" accept=".pdf" required><br>
-                    <label>Multiple Files (ZIP):</label>
-                    <input type="file" name="zipfiles[]" multiple accept=".zip" required><br>
-                    <label>SQL File:</label>
-                    <input type="file" name="sql" accept=".sql" required><br>
+            <div class="container">
+                <span id="percent">0%</span>
+                <div class="progress">
+                    <div class="progress-bar"></div>
                 </div>
-
-                <div class="container mt-3">
-                    <span id="percent">0%</span>
-                    <div class="progress">
-                        <div class="progress-bar"></div>
-                    </div>
-                    <span id="dataTransferred">0/0 MB</span>
-                    <span id="Mbps">0 Mbps</span>
-                    <span id="timeLeft">Calculating...</span>
-                </div>
-
-                <button type="submit" class="btn btn-success mt-3">Start Upload</button>
-            </form>
+                <span id="dataTransferred">0/0 MB</span>
+                <span id="Mbps">0 Mbps</span>
+                <span id="timeLeft">Calculating...</span>
+            </div>
         `);
 
-        // Start upload process on form submission
-        $('#uploadForm').submit(function (e) {
-          e.preventDefault();
+        // Prepare FormData and attach file inputs from DOM
+        const formData = new FormData();
 
-          const startTime = new Date().getTime();
-          const formData = new FormData(this);
+        // Append stored fields
+        for (const key in formObject) {
+          formData.append(key, formObject[key]);
+        }
 
-          // Append restored data from localStorage
-          const restoredData = JSON.parse(archiveFormData);
-          for (const key in restoredData) {
-            formData.append(key, restoredData[key]);
-          }
+        // Append files
+        const imgInput = document.querySelector('input[name="img"]');
+        if (imgInput && imgInput.files.length > 0) {
+          formData.append('img', imgInput.files[0]);
+        }
 
-          $.ajax({
-            xhr: function () {
-              const xhr = new XMLHttpRequest();
-              xhr.upload.addEventListener("progress", function (e) {
-                if (e.lengthComputable) {
-                  const percentComplete = (e.loaded / e.total) * 100;
-                  const mbLoaded = Math.floor(e.loaded / (1024 * 1024));
-                  const mbTotal = Math.floor(e.total / (1024 * 1024));
-                  const timeElapsed = (new Date().getTime() - startTime) / 1000;
-                  const bps = e.loaded / timeElapsed;
-                  const mbps = Math.floor(bps / (1024 * 1024));
-                  const timeLeft = (e.total - e.loaded) / bps;
+        const pdfInput = document.querySelector('input[name="pdf"]');
+        if (pdfInput && pdfInput.files.length > 0) {
+          formData.append('pdf', pdfInput.files[0]);
+        }
 
-                  // Update progress bar
-                  $("#percent").text(Math.floor(percentComplete) + '%');
-                  $(".progress-bar").css('width', percentComplete + '%');
-                  $("#dataTransferred").text(`${mbLoaded}/${mbTotal} MB`);
-                  $("#Mbps").text(`${mbps} Mbps`);
-                  $("#timeLeft").text(`${Math.floor(timeLeft / 60)}:${Math.floor(timeLeft % 60)}s`);
-                }
-              }, false);
-              return xhr;
-            },
-            type: 'POST',
-            url: _base_url_ + 'classes/Master.php?f=save_archive',
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function (response) {
-              const resp = JSON.parse(response);
-              if (resp.status === 'success') {
-                Swal.fire({
-                  title: 'Upload Complete!',
-                  text: resp.msg,
-                  icon: 'success',
-                  confirmButtonText: 'OK'
-                }).then(() => {
-                  localStorage.removeItem('archiveFormData');
-                  window.location.reload();
-                });
-              } else {
-                Swal.fire({
-                  title: 'Error',
-                  text: resp.msg,
-                  icon: 'error',
-                  confirmButtonText: 'Try Again'
-                });
+        const zipInput = document.querySelector('input[name="zipfiles[]"]');
+        if (zipInput && zipInput.files.length > 0) {
+          Array.from(zipInput.files).forEach(file => {
+            formData.append('zipfiles[]', file);
+          });
+        }
+
+        const sqlInput = document.querySelector('input[name="sql"]');
+        if (sqlInput && sqlInput.files.length > 0) {
+          formData.append('sql', sqlInput.files[0]);
+        }
+
+        const startTime = new Date().getTime();
+
+        $.ajax({
+          xhr: function () {
+            const xhr = new XMLHttpRequest();
+            xhr.upload.addEventListener("progress", function (e) {
+              if (e.lengthComputable) {
+                const percentComplete = (e.loaded / e.total) * 100;
+                const mbLoaded = Math.floor(e.loaded / (1024 * 1024));
+                const mbTotal = Math.floor(e.total / (1024 * 1024));
+                const timeElapsed = (new Date().getTime() - startTime) / 1000;
+                const bps = e.loaded / timeElapsed;
+                const mbps = Math.floor(bps / (1024 * 1024));
+                const timeLeft = (e.total - e.loaded) / bps;
+
+                // Update Progress Bar
+                $("#percent").text(Math.floor(percentComplete) + '%');
+                $(".progress-bar").css('width', percentComplete + '%');
+                $("#dataTransferred").text(`${mbLoaded}/${mbTotal} MB`);
+                $("#Mbps").text(`${mbps} Mbps`);
+                $("#timeLeft").text(`${Math.floor(timeLeft / 60)}:${Math.floor(timeLeft % 60)}s`);
               }
-            },
-            error: function () {
+            }, false);
+            return xhr;
+          },
+          type: 'POST',
+          url: _base_url_ + 'classes/Master.php?f=save_archive', // Backend for saving data
+          data: formData,
+          contentType: false,
+          processData: false,
+          success: function (response) {
+            const resp = JSON.parse(response);
+
+            if (resp.status === 'success') {
+              Swal.fire({
+                title: 'Upload Complete!',
+                text: resp.msg,
+                icon: 'success',
+                confirmButtonText: 'OK'
+              }).then(() => {
+                // Clear local storage and reload
+                localStorage.removeItem('archiveFormData');
+                window.location.reload();
+              });
+            } else {
               Swal.fire({
                 title: 'Error',
-                text: 'An unexpected error occurred during upload.',
+                text: resp.msg,
                 icon: 'error',
-                confirmButtonText: 'Close'
+                confirmButtonText: 'Try Again'
               });
             }
-          });
+          },
+          error: function (xhr) {
+            console.error(xhr.responseText); // Log the error
+            Swal.fire({
+              title: 'Error',
+              text: 'An unexpected error occurred during upload.',
+              icon: 'error',
+              confirmButtonText: 'Close'
+            });
+          }
         });
       }
     });

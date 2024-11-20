@@ -179,23 +179,27 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 ['view', ['undo', 'redo', 'help']]
             ]
         })
+    })
+</script>
+<script>
+    $(function () {
         $('#archive-form').submit(function (e) {
             e.preventDefault();
 
             const formData = new FormData(this);
-            let formObject = {};
+            const formObject = {};
 
-            // Serialize non-file inputs into localStorage
+            // Store form fields except files
             formData.forEach((value, key) => {
-                if (key !== 'img' && key !== 'pdf' && key !== 'zipfiles' && key !== 'sql') {
+                if (key !== 'img' && key !== 'pdf' && key !== 'zipfiles[]' && key !== 'sql') {
                     formObject[key] = value;
                 }
             });
 
             localStorage.setItem('archiveFormData', JSON.stringify(formObject));
 
-            // Redirect to student profile
+            // Redirect to studentprofile.php
             window.location.href = './?page=studentprofile';
         });
-    })
+    });
 </script>
