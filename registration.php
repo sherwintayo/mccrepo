@@ -45,6 +45,8 @@ require_once('inc/header.php');
   }
 </style>
 
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 <body class="hold-transition ">
   <script>
     start_loader();
@@ -146,6 +148,11 @@ require_once('inc/header.php');
                     <input type="password" id="cpassword" placeholder="Confirm Password"
                       class="form-control form-control-border" required>
                   </div>
+
+                  <div class="form-group">
+                    <div class="g-recaptcha" data-sitekey="6LdkGoUqAAAAAEmIB2Py685bbQiALvcZ3a4MOjDx"></div>
+                  </div>
+
 
                   <!-- Buttons -->
                   <div class="row">
