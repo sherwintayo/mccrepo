@@ -17,25 +17,26 @@ header('Content-Type: application/json');
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
 
+    $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
+
+    // reCAPTCHA Secret Key
+    $secretKey = 'YOUR_SECRET_KEY'; // Replace with your secret key
+    $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
+
+    // Validate reCAPTCHA response
+    $response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
+    $responseKeys = json_decode($response, true);
+
+    if (!$responseKeys['success']) {
+        echo json_encode(['status' => 'error', 'message' => 'reCAPTCHA validation failed.']);
+        exit();
+    }
+
     // Server-side validation
     $domain = "@mcclawis.edu.ph";
     if (!str_ends_with($email, $domain)) {
         echo json_encode(['status' => 'error', 'message' => "Invalid email address. Only emails ending with $domain are allowed."]);
         exit();
-    }
-
-    // Verify reCAPTCHA
-    $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-    $secretKey = '6LdkGoUqAAAAABTZgD529DslANXkDOxDb0-8mV0T'; // Replace with your secret key
-    $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
-
-    // Send request to Google API
-    $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaResponse);
-    $responseKeys = json_decode($response, true);
-
-    // Check reCAPTCHA validation
-    if (!$responseKeys['success']) {
-        return json_encode(['status' => 'captcha_failed', 'message' => 'reCAPTCHA validation failed.']);
     }
 
     // Check if email exists
