@@ -23,6 +23,40 @@ class Login extends DBConnection
     public function login()
     {
         extract($_POST);
+
+        // Step 1: Verify hCaptcha
+        $hCaptchaResponse = $_POST['h-captcha-response'] ?? null;
+        if (!$hCaptchaResponse) {
+            return json_encode(['status' => 'captcha_failed', 'message' => 'Captcha not completed.']);
+        }
+
+        $secretKey = 'ES_1783e8f7e4de4baa87a8f1f97f086d20';
+        $verifyURL = 'https://hcaptcha.com/siteverify';
+
+        // Send a POST request to hCaptcha for verification
+        $data = [
+            'secret' => $secretKey,
+            'response' => $hCaptchaResponse,
+        ];
+
+        $options = [
+            'http' => [
+                'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
+                'method' => 'POST',
+                'content' => http_build_query($data),
+            ],
+        ];
+
+        $context = stream_context_create($options);
+        $response = file_get_contents($verifyURL, false, $context);
+        $result = json_decode($response, true);
+
+        // Step 2: Handle failed captcha verification
+        if (!$result['success']) {
+            return json_encode(['status' => 'captcha_failed', 'message' => 'Captcha verification failed. Please try again.']);
+        }
+
+        // Step 3: Proceed with login (existing code)
         $stmt = $this->conn->prepare("SELECT * FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
@@ -31,14 +65,11 @@ class Login extends DBConnection
         if ($qry->num_rows > 0) {
             $res = $qry->fetch_assoc();
 
-            // Check if the password is hashed with bcrypt (password_hash)
             if (password_verify($password, $res['password'])) {
-                // Check account status
                 if ($res['status'] != 1) {
                     return json_encode(['status' => 'notverified']);
                 }
 
-                // Store session data
                 foreach ($res as $k => $v) {
                     if (!is_numeric($k) && $k != 'password') {
                         $this->settings->set_userdata($k, $v);
@@ -46,7 +77,6 @@ class Login extends DBConnection
                 }
                 $this->settings->set_userdata('login_type', 1);
 
-                // Optional: Rehash the password if the current hash is not up to date
                 if (password_needs_rehash($res['password'], PASSWORD_DEFAULT)) {
                     $newHash = password_hash($password, PASSWORD_DEFAULT);
                     $updateStmt = $this->conn->prepare("UPDATE users SET password = ? WHERE id = ?");
@@ -55,16 +85,12 @@ class Login extends DBConnection
                 }
 
                 return json_encode(['status' => 'success']);
-            }
-            // If the password is still hashed with MD5, verify it
-            elseif ($res['password'] === md5($password)) {
-                // Migrate MD5 hash to bcrypt
+            } elseif ($res['password'] === md5($password)) {
                 $newHash = password_hash($password, PASSWORD_DEFAULT);
                 $updateStmt = $this->conn->prepare("UPDATE users SET password = ? WHERE id = ?");
                 $updateStmt->bind_param('si', $newHash, $res['id']);
                 $updateStmt->execute();
 
-                // Store session data
                 foreach ($res as $k => $v) {
                     if (!is_numeric($k) && $k != 'password') {
                         $this->settings->set_userdata($k, $v);
@@ -74,14 +100,14 @@ class Login extends DBConnection
 
                 return json_encode(['status' => 'success']);
             } else {
-                // Incorrect password
                 return json_encode(['status' => 'incorrect']);
             }
         } else {
-            // No user found with the given username
             return json_encode(['status' => 'incorrect']);
         }
     }
+
+
 
 
     public function logout()

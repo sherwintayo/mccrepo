@@ -21,6 +21,8 @@
     background-repeat: no-repeat;
   }
 </style>
+<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+
 
 <body class="hold-transition ">
   <script>
@@ -57,6 +59,9 @@
                     <input type="password" name="password" id="password" placeholder="Password *"
                       class="form-control form-control-border" required>
                   </div>
+
+                  <!-- hCaptcha -->
+                  <div class="h-captcha" data-sitekey="your-hcaptcha-site-key"></div>
 
                   <!-- Buttons -->
                   <div class="row">
