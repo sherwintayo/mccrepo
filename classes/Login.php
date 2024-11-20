@@ -103,6 +103,20 @@ class Login extends DBConnection
         session_start(); // Start session
         extract($_POST);
 
+        // Verify reCAPTCHA
+        $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
+        $secretKey = '6LdkGoUqAAAAABTZgD529DslANXkDOxDb0-8mV0T'; // Replace with your secret key
+        $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
+
+        // Send request to Google API
+        $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaResponse);
+        $responseKeys = json_decode($response, true);
+
+        // Check reCAPTCHA validation
+        if (!$responseKeys['success']) {
+            return json_encode(['status' => 'captcha_failed', 'message' => 'reCAPTCHA validation failed.']);
+        }
+
         $qry = $this->conn->query("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS fullname FROM student_list WHERE email = '$email' AND password = MD5('$password')");
 
         if ($this->conn->error) {

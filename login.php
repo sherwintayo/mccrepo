@@ -22,6 +22,7 @@
     background-repeat: no-repeat;
   }
 </style>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 
 <body class="hold-transition">
@@ -62,6 +63,10 @@
                   <div class="form-group">
                     <input type="password" name="password" id="password" placeholder="Password *"
                       class="form-control form-control-border" required>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="g-recaptcha" data-sitekey="6LdkGoUqAAAAAEmIB2Py685bbQiALvcZ3a4MOjDx"></div>
                   </div>
 
                   <!-- Buttons -->
