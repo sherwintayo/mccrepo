@@ -24,6 +24,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
+    // Verify reCAPTCHA
+    $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
+    $secretKey = '6LdkGoUqAAAAABTZgD529DslANXkDOxDb0-8mV0T'; // Replace with your secret key
+    $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
+
+    // Send request to Google API
+    $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaResponse);
+    $responseKeys = json_decode($response, true);
+
+    // Check reCAPTCHA validation
+    if (!$responseKeys['success']) {
+        return json_encode(['status' => 'captcha_failed', 'message' => 'reCAPTCHA validation failed.']);
+    }
+
     // Check if email exists
     $stmt = $conn->prepare("SELECT id, username FROM msaccount WHERE username = ?");
     $stmt->bind_param('s', $email);

@@ -19,6 +19,7 @@
         background-repeat: no-repeat;
     }
 </style>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 <body class="hold-transition">
     <script>
@@ -59,6 +60,12 @@
                                         <input type="email" name="email" id="email" placeholder="Enter your MS account"
                                             class="form-control form-control-border" required>
                                     </div>
+
+                                    <div class="form-group">
+                                        <div class="g-recaptcha"
+                                            data-sitekey="6LdkGoUqAAAAAEmIB2Py685bbQiALvcZ3a4MOjDx"></div>
+                                    </div>
+
 
                                     <!-- Buttons -->
                                     <div class="row">
