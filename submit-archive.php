@@ -183,35 +183,16 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
             e.preventDefault();
             const formData = new FormData(this);
 
-            $.ajax({
-                type: 'POST',
-                url: './Master.php?f=save_archive', // Backend handling upload logic
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (response) {
-                    const resp = JSON.parse(response);
-                    if (resp.status === 'success') {
-                        // Redirect to student profile with archive ID
-                        window.location.href = './?page=studentprofile&upload_id=' + resp.id;
-                    } else {
-                        Swal.fire({
-                            title: 'Error',
-                            text: resp.msg,
-                            icon: 'error',
-                            confirmButtonText: 'Try Again'
-                        });
-                    }
-                },
-                error: function () {
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'An unexpected error occurred.',
-                        icon: 'error',
-                        confirmButtonText: 'Close'
-                    });
-                }
+            // Store form data in local storage
+            let formObject = {};
+            formData.forEach((value, key) => {
+                formObject[key] = value;
             });
+
+            localStorage.setItem('archiveFormData', JSON.stringify(formObject));
+
+            // Redirect to student profile
+            window.location.href = './?page=studentprofile';
         });
     })
 </script>

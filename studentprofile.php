@@ -146,6 +146,7 @@ while ($row = $qry->fetch_assoc()) {
               <i class="fa fa-upload mr-2"></i> Upload Archive
             </button>
           </div>
+
         </nav>
 
         <!-- Default page content (my_archives) -->
@@ -272,31 +273,32 @@ while ($row = $qry->fetch_assoc()) {
       window.location.href = './?page=submit-archive';
     }
 
+    $(document).ready(function () {
+      const archiveFormData = localStorage.getItem('archiveFormData');
 
-  </script>
-
-  <?php if (isset($_GET['upload_id'])): ?>
-    <script>
-      $(document).ready(function () {
-        const archiveId = <?= json_encode($_GET['upload_id']); ?>;
-
-        // Change "Upload Archive" button to progress bar UI
-        $("#uploadArea").html(`
-                <div class="container">
-                    <span id="percent">0%</span>
-                    <div class="progress">
-                        <div class="progress-bar"></div>
-                    </div>
-                    <span id="dataTransferred">0/0 MB</span>
-                    <span id="Mbps">0 Mbps</span>
-                    <span id="timeLeft">Calculating...</span>
-                </div>
-            `);
-
-        // Start upload via AJAX
+      // If local storage contains data, start upload process
+      if (archiveFormData) {
         const formData = new FormData();
-        formData.append('id', archiveId);
+        const formObject = JSON.parse(archiveFormData);
 
+        for (const key in formObject) {
+          formData.append(key, formObject[key]);
+        }
+
+        // Replace "Upload Archive" button with progress bar UI
+        $("#uploadArea").html(`
+            <div class="container">
+                <span id="percent">0%</span>
+                <div class="progress">
+                    <div class="progress-bar"></div>
+                </div>
+                <span id="dataTransferred">0/0 MB</span>
+                <span id="Mbps">0 Mbps</span>
+                <span id="timeLeft">Calculating...</span>
+            </div>
+        `);
+
+        // Start upload process
         const startTime = new Date().getTime();
 
         $.ajax({
@@ -312,6 +314,7 @@ while ($row = $qry->fetch_assoc()) {
                 const mbps = Math.floor(bps / (1024 * 1024));
                 const timeLeft = (e.total - e.loaded) / bps;
 
+                // Update UI
                 $("#percent").text(Math.floor(percentComplete) + '%');
                 $(".progress-bar").css('width', percentComplete + '%');
                 $("#dataTransferred").text(`${mbLoaded}/${mbTotal} MB`);
@@ -322,12 +325,13 @@ while ($row = $qry->fetch_assoc()) {
             return xhr;
           },
           type: 'POST',
-          url: _base_url_ + 'classes/Master.php?f=save_archive', // Backend to handle large file uploads
+          url: _base_url_ + 'classes/Master.php?f=save_archive', // Backend endpoint
           data: formData,
           contentType: false,
           processData: false,
           success: function (response) {
             const resp = JSON.parse(response);
+
             if (resp.status === 'success') {
               Swal.fire({
                 title: 'Upload Complete!',
@@ -335,6 +339,8 @@ while ($row = $qry->fetch_assoc()) {
                 icon: 'success',
                 confirmButtonText: 'OK'
               }).then(() => {
+                // Clear local storage and reload the page
+                localStorage.removeItem('archiveFormData');
                 window.location.reload();
               });
             } else {
@@ -355,8 +361,10 @@ while ($row = $qry->fetch_assoc()) {
             });
           }
         });
-      });
-    </script>
-  <?php endif; ?>
+      }
+    });
 
+
+
+  </script>
 </body>
