@@ -181,29 +181,36 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         })
         $('#archive-form').submit(function (e) {
             e.preventDefault();
-
-            // Submit form data via POST
             const formData = new FormData(this);
 
             $.ajax({
-                url: _base_url_ + 'classes/Master.php?f=save_archive',
-                method: 'POST',
+                type: 'POST',
+                url: './Master.php?f=save_archive', // Backend handling upload logic
                 data: formData,
                 contentType: false,
                 processData: false,
                 success: function (response) {
                     const resp = JSON.parse(response);
-
                     if (resp.status === 'success') {
-                        alert(resp.msg); // Show success message
-                        window.location.href = './?page=studentprofile';
+                        // Redirect to student profile with archive ID
+                        window.location.href = './?page=studentprofile&upload_id=' + resp.id;
                     } else {
-                        alert('Upload failed: ' + resp.msg);
+                        Swal.fire({
+                            title: 'Error',
+                            text: resp.msg,
+                            icon: 'error',
+                            confirmButtonText: 'Try Again'
+                        });
                     }
                 },
                 error: function () {
-                    alert('An error occurred while submitting the form.');
-                },
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'An unexpected error occurred.',
+                        icon: 'error',
+                        confirmButtonText: 'Close'
+                    });
+                }
             });
         });
     })

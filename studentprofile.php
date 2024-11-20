@@ -274,4 +274,89 @@ while ($row = $qry->fetch_assoc()) {
 
 
   </script>
+
+  <?php if (isset($_GET['upload_id'])): ?>
+    <script>
+      $(document).ready(function () {
+        const archiveId = <?= json_encode($_GET['upload_id']); ?>;
+
+        // Change "Upload Archive" button to progress bar UI
+        $("#uploadArea").html(`
+                <div class="container">
+                    <span id="percent">0%</span>
+                    <div class="progress">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <span id="dataTransferred">0/0 MB</span>
+                    <span id="Mbps">0 Mbps</span>
+                    <span id="timeLeft">Calculating...</span>
+                </div>
+            `);
+
+        // Start upload via AJAX
+        const formData = new FormData();
+        formData.append('id', archiveId);
+
+        const startTime = new Date().getTime();
+
+        $.ajax({
+          xhr: function () {
+            const xhr = new XMLHttpRequest();
+            xhr.upload.addEventListener("progress", function (e) {
+              if (e.lengthComputable) {
+                const percentComplete = (e.loaded / e.total) * 100;
+                const mbLoaded = Math.floor(e.loaded / (1024 * 1024));
+                const mbTotal = Math.floor(e.total / (1024 * 1024));
+                const timeElapsed = (new Date().getTime() - startTime) / 1000;
+                const bps = e.loaded / timeElapsed;
+                const mbps = Math.floor(bps / (1024 * 1024));
+                const timeLeft = (e.total - e.loaded) / bps;
+
+                $("#percent").text(Math.floor(percentComplete) + '%');
+                $(".progress-bar").css('width', percentComplete + '%');
+                $("#dataTransferred").text(`${mbLoaded}/${mbTotal} MB`);
+                $("#Mbps").text(`${mbps} Mbps`);
+                $("#timeLeft").text(`${Math.floor(timeLeft / 60)}:${Math.floor(timeLeft % 60)}s`);
+              }
+            }, false);
+            return xhr;
+          },
+          type: 'POST',
+          url: _base_url_ + 'classes/Master.php?f=save_archive', // Backend to handle large file uploads
+          data: formData,
+          contentType: false,
+          processData: false,
+          success: function (response) {
+            const resp = JSON.parse(response);
+            if (resp.status === 'success') {
+              Swal.fire({
+                title: 'Upload Complete!',
+                text: resp.msg,
+                icon: 'success',
+                confirmButtonText: 'OK'
+              }).then(() => {
+                window.location.reload();
+              });
+            } else {
+              Swal.fire({
+                title: 'Error',
+                text: resp.msg,
+                icon: 'error',
+                confirmButtonText: 'Try Again'
+              });
+            }
+          },
+          error: function () {
+            Swal.fire({
+              title: 'Error',
+              text: 'An unexpected error occurred during upload.',
+              icon: 'error',
+              confirmButtonText: 'Close'
+            });
+          }
+        });
+      });
+    </script>
+  <?php endif; ?>
+
 </body>
