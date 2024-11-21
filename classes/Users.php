@@ -167,7 +167,7 @@ class Users extends DBConnection
 			return json_encode(['status' => 'failed', 'msg' => 'Captcha not completed.']);
 		}
 
-		$secretKey = 'your-secret-key'; // Replace with your actual hCaptcha secret key
+		$secretKey = 'ES_1783e8f7e4de4baa87a8f1f97f086d20'; // Replace with your actual hCaptcha secret key
 		$verifyURL = 'https://hcaptcha.com/siteverify';
 
 		$data = [

@@ -152,7 +152,7 @@ require_once('inc/header.php');
 
                   <div class="form-group">
                     <!-- hCaptcha widget -->
-                    <div class="h-captcha" data-sitekey="your-hcaptcha-site-key"></div>
+                    <div class="h-captcha" data-sitekey="bb409b50-a782-46fe-8522-6abcc90a9a76"></div>
                   </div>
 
 
