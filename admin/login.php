@@ -22,14 +22,29 @@
   }
 </style>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <body class="hold-transition ">
   <script>
     start_loader()
   </script>
 
+  <?php if ($_settings->chk_flashdata('success')): ?>
+    <script>
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: "<?php echo $_settings->flashdata('success') ?>",
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+      });
+    </script>
+  <?php endif; ?>
 
-  <div class="container register" style="margin-top: 14vh;">
+
+  <div class="container register" style="margin-top: 5vh;">
     <div class="row">
       <!-- Left Section -->
       <div class="col-md-3 register-left">
@@ -97,58 +112,58 @@
 
   <!-- Validation Script -->
   <script>
-      (function ($) {
-        'use strict';
+    (function ($) {
+      'use strict';
 
-        // Check for invalid characters (single and double quotes, angle brackets)
-        var hasInvalidChars = function (input) {
-          return /['"<>&]/.test(input);
-        };
+      // Check for invalid characters (single and double quotes, angle brackets)
+      var hasInvalidChars = function (input) {
+        return /['"<>&]/.test(input);
+      };
 
-        // Validate Email Format (Ensure @ symbol is present)
-        var validateEmail = function (email) {
-          var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-          return emailReg.test(email);
-        };
+      // Validate Email Format (Ensure @ symbol is present)
+      var validateEmail = function (email) {
+        var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        return emailReg.test(email);
+      };
 
-        // Set custom validation message
-        var setValidationMessage = function (input, message) {
-          input.setCustomValidity(message);
-          input.reportValidity();
-        };
+      // Set custom validation message
+      var setValidationMessage = function (input, message) {
+        input.setCustomValidity(message);
+        input.reportValidity();
+      };
 
-        $('#login-frm').on('submit', function (event) {
-          var _this = $(this);
-          var hasError = false;
+      $('#login-frm').on('submit', function (event) {
+        var _this = $(this);
+        var hasError = false;
 
-          // XSS and Validation Checks for invalid characters and email
-          _this.find('input[type="text"], input[type="email"], input[type="password"]').each(function () {
-            var input = $(this);
-            var value = input.val();
+        // XSS and Validation Checks for invalid characters and email
+        _this.find('input[type="text"], input[type="email"], input[type="password"]').each(function () {
+          var input = $(this);
+          var value = input.val();
 
-            // Check for invalid characters (' and ") and for angle brackets (< and >)
-            if (hasInvalidChars(value)) {
-              setValidationMessage(this, "Input must not contain single quotes, double quotes, or angle brackets.");
-              hasError = true;
-              return false; // Exit loop
-            } else {
-              setValidationMessage(this, ""); // Clear custom validity if no error
-            }
+          // Check for invalid characters (' and ") and for angle brackets (< and >)
+          if (hasInvalidChars(value)) {
+            setValidationMessage(this, "Input must not contain single quotes, double quotes, or angle brackets.");
+            hasError = true;
+            return false; // Exit loop
+          } else {
+            setValidationMessage(this, ""); // Clear custom validity if no error
+          }
 
-            // Validate email input
-            if (input.attr('type') === 'email' && !validateEmail(value)) {
-              setValidationMessage(this, "Please include an '@' in the email address.");
-              hasError = true;
-              return false; // Exit loop
-            }
-          });
-
-          if (hasError) {
-            event.preventDefault(); // Prevent form submission if any input has an error
-            return false;
+          // Validate email input
+          if (input.attr('type') === 'email' && !validateEmail(value)) {
+            setValidationMessage(this, "Please include an '@' in the email address.");
+            hasError = true;
+            return false; // Exit loop
           }
         });
-      })(jQuery);
+
+        if (hasError) {
+          event.preventDefault(); // Prevent form submission if any input has an error
+          return false;
+        }
+      });
+    })(jQuery);
 
     $(document).ready(function () {
       end_loader();
