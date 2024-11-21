@@ -176,18 +176,28 @@ class Users extends DBConnection
 
 		$data = '';
 		if (isset($oldpassword)) {
-			if (md5($oldpassword) != $this->settings->userdata('password')) {
+			// Verify the old password with bcrypt
+			$stmt = $this->conn->prepare("SELECT password FROM student_list WHERE id = ?");
+			$stmt->bind_param("i", $this->settings->userdata('id'));
+			$stmt->execute();
+			$stmt->bind_result($hashed_password);
+			$stmt->fetch();
+			$stmt->close();
+
+			if (!password_verify($oldpassword, $hashed_password)) {
 				return json_encode(array(
 					"status" => 'failed',
 					"msg" => 'Old Password is Incorrect'
 				));
 			}
 		}
-		$chk = $this->conn->query("SELECT * FROM `student_list` where email ='{$email}' " . ($id > 0 ? " and id!= '{$id}' " : ""))->num_rows;
+
+		// Check for existing email
+		$chk = $this->conn->query("SELECT * FROM `student_list` WHERE email ='{$email}' " . ($id > 0 ? "AND id != '{$id}'" : ""))->num_rows;
 		if ($chk > 0) {
-			return 3;
-			exit;
+			return json_encode(['status' => 'failed', 'msg' => 'Email already exists.']);
 		}
+
 		foreach ($_POST as $k => $v) {
 			if (!in_array($k, array('id', 'oldpassword', 'cpassword', 'password'))) {
 				if (!empty($data))
@@ -195,15 +205,18 @@ class Users extends DBConnection
 				$data .= " {$k} = '{$v}' ";
 			}
 		}
+
 		if (!empty($password)) {
-			$password = md5($password);
+			// Hash the new password with bcrypt
+			$password_hash = password_hash($password, PASSWORD_BCRYPT);
 			if (!empty($data))
 				$data .= " , ";
-			$data .= " `password` = '{$password}' ";
+			$data .= " `password` = '{$password_hash}' ";
 		}
 
 		if (empty($id)) {
-			$qry = $this->conn->query("INSERT INTO student_list set {$data}");
+			// Insert new student
+			$qry = $this->conn->query("INSERT INTO student_list SET {$data}");
 			if ($qry) {
 				$id = $this->conn->insert_id;
 				$this->settings->set_flashdata('success', 'Student User Details successfully saved.');
@@ -212,29 +225,26 @@ class Users extends DBConnection
 				$resp['status'] = "failed";
 				$resp['msg'] = "An error occurred while saving the data. Error: " . $this->conn->error;
 			}
-
 		} else {
-			$qry = $this->conn->query("UPDATE student_list set $data where id = {$id}");
+			// Update existing student
+			$qry = $this->conn->query("UPDATE student_list SET {$data} WHERE id = {$id}");
 			if ($qry) {
 				$this->settings->set_flashdata('success', 'Student User Details successfully updated.');
 				if ($id == $this->settings->userdata('id')) {
 					foreach ($_POST as $k => $v) {
 						if ($k != 'id') {
-							if (!empty($data))
-								$data .= " , ";
 							$this->settings->set_userdata($k, $v);
 						}
 					}
-
 				}
 				$resp['status'] = "success";
 			} else {
 				$resp['status'] = "failed";
 				$resp['msg'] = "An error occurred while saving the data. Error: " . $this->conn->error;
 			}
-
 		}
 
+		// Image upload logic remains unchanged
 		if (isset($_FILES['img']) && $_FILES['img']['tmp_name'] != '') {
 			$fname = 'uploads/student-' . $id . '.png';
 			$dir_path = base_app . $fname;
@@ -260,11 +270,11 @@ class Users extends DBConnection
 					imagedestroy($gdImg);
 					imagedestroy($t_image);
 				} else {
-					$resp['msg'] .= " But Image failed to upload due to unkown reason.";
+					$resp['msg'] .= " But Image failed to upload due to unknown reason.";
 				}
 			}
 			if (isset($uploaded_img)) {
-				$this->conn->query("UPDATE student_list set `avatar` = CONCAT('{$fname}','?v=',unix_timestamp(CURRENT_TIMESTAMP)) where id = '{$id}' ");
+				$this->conn->query("UPDATE student_list SET `avatar` = CONCAT('{$fname}','?v=',unix_timestamp(CURRENT_TIMESTAMP)) WHERE id = '{$id}'");
 				if ($id == $this->settings->userdata('id')) {
 					$this->settings->set_userdata('avatar', $fname);
 				}
@@ -273,6 +283,7 @@ class Users extends DBConnection
 
 		return json_encode($resp);
 	}
+
 	public function delete_student()
 	{
 		extract($_POST);

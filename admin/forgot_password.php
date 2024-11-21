@@ -37,7 +37,7 @@
           <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo" />
           <h3>Forgot Password?</h3>
           <p>We'll help you reset your password in no time.</p>
-          <button class="myButton" onclick="location.href = '<?php echo base_url ?>'">Go Back</button>
+          <button class="myButton" onclick="location.href = '<?php echo base_url ?>'">Go to Site</button>
         </div>
 
         <!-- Right Section -->
