@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 include('config.php');
 require_once('inc/header.php');
 ?>
@@ -302,7 +306,8 @@ require_once('inc/header.php');
               grecaptcha.reset(); // Reset reCAPTCHA for another attempt
             }
           },
-          error: function () {
+          error: function (xhr, status, error) {
+            console.error(xhr.responseText); // Capture detailed server error
             end_loader(); // Hide loader
             Swal.fire({
               icon: 'error',

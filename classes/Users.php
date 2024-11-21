@@ -171,6 +171,7 @@ class Users extends DBConnection
 
 		// Debugging: Log or return response if needed
 		if (!$responseKeys['success']) {
+			var_dump($responseKeys); // Inspect response in debug mode
 			return json_encode([
 				'status' => 'failed',
 				'msg' => 'reCAPTCHA validation failed. Please try again.',
