@@ -1,8 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 include('config.php');
 require_once('inc/header.php');
 ?>
@@ -49,7 +45,7 @@ require_once('inc/header.php');
   }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 
 
 <body class="hold-transition ">
@@ -215,23 +211,6 @@ require_once('inc/header.php');
       // Registration Form Submit with Validations
       $('#registration-form').submit(function (e) {
         e.preventDefault();
-
-        // Get reCAPTCHA response token
-        let recaptchaResponse = grecaptcha.getResponse();
-
-        if (!recaptchaResponse) {
-          Swal.fire({
-            icon: 'error',
-            title: 'reCAPTCHA Error',
-            text: 'Please complete the reCAPTCHA challenge.'
-          });
-          return false;
-        }
-
-        // Add reCAPTCHA response to form data
-        let formData = $(this).serialize() + "&g-recaptcha-response=" + recaptchaResponse;
-
-
         var _this = $(this);
         $(".pop-msg").remove();
         $('#password, #cpassword').removeClass("is-invalid");
@@ -303,18 +282,15 @@ require_once('inc/header.php');
                 title: 'Registration Failed',
                 text: resp.msg || 'An unknown error occurred. Please try again later.'
               });
-              grecaptcha.reset(); // Reset reCAPTCHA for another attempt
             }
           },
-          error: function (xhr, status, error) {
-            console.error(xhr.responseText); // Capture detailed server error
+          error: function () {
             end_loader(); // Hide loader
             Swal.fire({
               icon: 'error',
               title: 'Server Error',
               text: 'An error occurred while processing your request. Please try again later.'
             });
-            grecaptcha.reset(); // Reset reCAPTCHA for another attempt
           }
         });
       });

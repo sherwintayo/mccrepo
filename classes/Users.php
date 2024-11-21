@@ -159,28 +159,6 @@ class Users extends DBConnection
 	public function save_student()
 	{
 		extract($_POST);
-
-		// Validate reCAPTCHA response
-		$recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-		$secretKey = '6LdkGoUqAAAAABTZgD529DslANXkDOxDb0-8mV0T'; // Replace with your reCAPTCHA secret key
-		$verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
-
-		// Send request to Google's reCAPTCHA API
-		$response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
-		$responseKeys = json_decode($response, true);
-
-		// Debugging: Log or return response if needed
-		if (!$responseKeys['success']) {
-			var_dump($responseKeys); // Inspect response in debug mode
-			return json_encode([
-				'status' => 'failed',
-				'msg' => 'reCAPTCHA validation failed. Please try again.',
-				'debug' => $responseKeys // Useful for debugging errors
-			]);
-		}
-
-
-
 		$data = '';
 
 		// Check if old password verification is needed
