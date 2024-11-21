@@ -35,7 +35,7 @@ require_once('inc/header.php');
     right: 20px;
     transform: translateY(-50%);
     cursor: pointer;
-    color: #aaa;
+    color: #0e0c0c;
   }
 
   .toggle-password:hover {
@@ -80,6 +80,45 @@ require_once('inc/header.php');
 
   #password-validation li.invalid {
     color: red;
+  }
+
+  /* Add animation for smooth fading in */
+  #password-validation {
+    opacity: 0;
+    /* Initially hidden */
+    transform: translateY(-10px);
+    /* Slight upward shift */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    /* Smooth transition */
+  }
+
+  #password-validation.show {
+    opacity: 1;
+    /* Fully visible */
+    transform: translateY(0);
+    /* Reset position */
+  }
+
+  /* Add slight bounce effect for individual list items when valid */
+  @keyframes bounceIn {
+    0% {
+      transform: scale(0.8);
+      opacity: 0.5;
+    }
+
+    50% {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  #password-validation li.valid {
+    animation: bounceIn 0.3s ease;
+    /* Bounce effect when valid */
   }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

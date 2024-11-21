@@ -1,19 +1,7 @@
-function toggleVisibility(inputId) {
-  const inputField = document.getElementById(inputId);
-  const icon = document.getElementById(`eye-${inputId}`);
-  if (inputField.type === "password") {
-    inputField.type = "text";
-    icon.classList.remove("fa-eye");
-    icon.classList.add("fa-eye-slash");
-  } else {
-    inputField.type = "password";
-    icon.classList.remove("fa-eye-slash");
-    icon.classList.add("fa-eye");
-  }
-}
-
 document.getElementById("password").addEventListener("input", function () {
   const password = this.value;
+
+  const validationContainer = document.getElementById("password-validation"); // Validation list
   const strengthContainer = document.getElementById(
     "password-strength-container"
   );
@@ -27,6 +15,16 @@ document.getElementById("password").addEventListener("input", function () {
   const number = document.getElementById("number");
   const specialChar = document.getElementById("special-char");
 
+  // Show validation hints and strength bar if user starts typing
+  if (password.length > 0) {
+    validationContainer.classList.add("show");
+    strengthContainer.style.display = "block";
+  } else {
+    validationContainer.classList.remove("show");
+    strengthContainer.style.display = "none";
+    return; // Exit early if password is empty
+  }
+
   // Validation checks
   const hasMinLength = password.length >= 8;
   const hasUpperCase = /[A-Z]/.test(password);
@@ -34,7 +32,7 @@ document.getElementById("password").addEventListener("input", function () {
   const hasNumbers = /\d/.test(password);
   const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
-  // Toggle validation hints
+  // Update validation hints dynamically
   minLength.textContent = hasMinLength
     ? "✅ At least 8 characters"
     : "❌ At least 8 characters";
@@ -60,14 +58,6 @@ document.getElementById("password").addEventListener("input", function () {
     : "❌ At least one special character";
   specialChar.className = hasSpecialChars ? "valid" : "invalid";
 
-  // Show strength bar only if user starts typing
-  if (password.length > 0) {
-    strengthContainer.style.display = "block";
-  } else {
-    strengthContainer.style.display = "none";
-    return; // Exit early if password is empty
-  }
-
   // Calculate strength
   let strength = 0;
   if (hasMinLength) strength++;
@@ -76,7 +66,7 @@ document.getElementById("password").addEventListener("input", function () {
   if (hasNumbers) strength++;
   if (hasSpecialChars) strength++;
 
-  // Update strength bar
+  // Update strength bar dynamically
   let strengthClass = "";
   let strengthMessage = "";
   switch (strength) {
