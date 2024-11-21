@@ -67,6 +67,20 @@ require_once('inc/header.php');
   .progress-bar.strong {
     background-color: green;
   }
+
+  /*Stong Password Validation*/
+
+  #password-validation li {
+    font-size: 0.9em;
+  }
+
+  #password-validation li.valid {
+    color: green;
+  }
+
+  #password-validation li.invalid {
+    color: red;
+  }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
@@ -163,6 +177,16 @@ require_once('inc/header.php');
                     <input type="email" name="email" id="email" placeholder="Email"
                       class="form-control form-control-border" required>
                   </div>
+                  <!-- Password strength meter -->
+                  <div class="form-group">
+                    <div class="password-strength mt-2" style="display: none;">
+                      <div class="progress">
+                        <div id="password-strength-bar" class="progress-bar" role="progressbar" style="width: 0%;"
+                          aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                      <small id="password-strength-text" class="text-muted">Enter a strong password.</small>
+                    </div>
+                  </div>
                   <div class="row">
                     <div class="col-md-6 form-group position-relative">
                       <input type="password" name="password" id="password" placeholder="Password"
@@ -178,17 +202,15 @@ require_once('inc/header.php');
                         <i class="fa fa-eye" id="eye-cpassword"></i>
                       </span>
                     </div>
+                    <ul id="password-validation" class="list-unstyled mt-2">
+                      <li id="min-length" class="text-muted">❌ At least 8 characters</li>
+                      <li id="uppercase" class="text-muted">❌ At least one uppercase letter</li>
+                      <li id="lowercase" class="text-muted">❌ At least one lowercase letter</li>
+                      <li id="number" class="text-muted">❌ At least one number</li>
+                      <li id="special-char" class="text-muted">❌ At least one special character</li>
+                    </ul>
                   </div>
-                  <!-- Password strength meter -->
-                  <div class="form-group">
-                    <div class="password-strength mt-2">
-                      <div class="progress">
-                        <div id="password-strength-bar" class="progress-bar" role="progressbar" style="width: 0%;"
-                          aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <small id="password-strength-text" class="text-muted">Enter a strong password.</small>
-                    </div>
-                  </div>
+
 
 
                   <div class="form-group">

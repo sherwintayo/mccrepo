@@ -12,31 +12,73 @@ function toggleVisibility(inputId) {
   }
 }
 
-// Validate password strength
 document.getElementById("password").addEventListener("input", function () {
   const password = this.value;
+  const strengthContainer = document.getElementById(
+    "password-strength-container"
+  );
   const strengthBar = document.getElementById("password-strength-bar");
   const strengthText = document.getElementById("password-strength-text");
 
-  let strength = 0;
-  let strengthClass = "";
-  let strengthMessage = "";
+  // Real-time validation elements
+  const minLength = document.getElementById("min-length");
+  const uppercase = document.getElementById("uppercase");
+  const lowercase = document.getElementById("lowercase");
+  const number = document.getElementById("number");
+  const specialChar = document.getElementById("special-char");
 
-  // Validate rules
+  // Validation checks
+  const hasMinLength = password.length >= 8;
   const hasUpperCase = /[A-Z]/.test(password);
   const hasLowerCase = /[a-z]/.test(password);
   const hasNumbers = /\d/.test(password);
   const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-  const isLongEnough = password.length >= 8;
+
+  // Toggle validation hints
+  minLength.textContent = hasMinLength
+    ? "✅ At least 8 characters"
+    : "❌ At least 8 characters";
+  minLength.className = hasMinLength ? "valid" : "invalid";
+
+  uppercase.textContent = hasUpperCase
+    ? "✅ At least one uppercase letter"
+    : "❌ At least one uppercase letter";
+  uppercase.className = hasUpperCase ? "valid" : "invalid";
+
+  lowercase.textContent = hasLowerCase
+    ? "✅ At least one lowercase letter"
+    : "❌ At least one lowercase letter";
+  lowercase.className = hasLowerCase ? "valid" : "invalid";
+
+  number.textContent = hasNumbers
+    ? "✅ At least one number"
+    : "❌ At least one number";
+  number.className = hasNumbers ? "valid" : "invalid";
+
+  specialChar.textContent = hasSpecialChars
+    ? "✅ At least one special character"
+    : "❌ At least one special character";
+  specialChar.className = hasSpecialChars ? "valid" : "invalid";
+
+  // Show strength bar only if user starts typing
+  if (password.length > 0) {
+    strengthContainer.style.display = "block";
+  } else {
+    strengthContainer.style.display = "none";
+    return; // Exit early if password is empty
+  }
 
   // Calculate strength
-  if (isLongEnough) strength++;
+  let strength = 0;
+  if (hasMinLength) strength++;
   if (hasUpperCase) strength++;
   if (hasLowerCase) strength++;
   if (hasNumbers) strength++;
   if (hasSpecialChars) strength++;
 
-  // Determine strength bar class and message
+  // Update strength bar
+  let strengthClass = "";
+  let strengthMessage = "";
   switch (strength) {
     case 1:
       strengthClass = "weak";
@@ -65,7 +107,6 @@ document.getElementById("password").addEventListener("input", function () {
       strengthBar.style.width = "0%";
   }
 
-  // Update strength bar class and text
   strengthBar.className = `progress-bar ${strengthClass}`;
   strengthText.textContent = strengthMessage;
 });
