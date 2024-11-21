@@ -45,7 +45,7 @@ require_once('inc/header.php');
   }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://www.google.com/recaptcha/api.js"></script>
+
 
 
 <body class="hold-transition ">
@@ -151,7 +151,8 @@ require_once('inc/header.php');
                   </div>
 
                   <div class="form-group">
-                    <div class="g-recaptcha" data-sitekey="6LdkGoUqAAAAAEmIB2Py685bbQiALvcZ3a4MOjDx"></div>
+                    <!-- hCaptcha widget -->
+                    <div class="h-captcha" data-sitekey="bb409b50-a782-46fe-8522-6abcc90a9a76"></div>
                   </div>
 
 
@@ -173,6 +174,8 @@ require_once('inc/header.php');
       </div>
     </div>
   </div>
+  <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
   <!-- jQuery -->
@@ -257,22 +260,12 @@ require_once('inc/header.php');
           return false; // Prevent form submission if any input has an error
         }
 
-        var recaptchaResponse = grecaptcha.getResponse();
-        if (!recaptchaResponse) {
-          Swal.fire({
-            icon: 'error',
-            title: 'ReCAPTCHA Required',
-            text: 'Please complete the reCAPTCHA verification.'
-          });
-          return false;
-        }
-
         start_loader();
         // AJAX submission
         $.ajax({
           url: _base_url_ + "classes/Users.php?f=save_student",
           method: 'POST',
-          data: _this.serialize() + '&recaptcha_response=' + recaptchaResponse,
+          data: _this.serialize(),
           dataType: 'json',
           success: function (resp) {
             end_loader(); // Hide loader

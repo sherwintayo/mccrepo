@@ -160,19 +160,45 @@ class Users extends DBConnection
 	{
 		extract($_POST);
 
-		// Verify reCAPTCHA response
-		$recaptcha_secret = '6LdkGoUqAAAAABTZgD529DslANXkDOxDb0-8mV0T';
-		$recaptcha_response = $_POST['recaptcha_response'];
+		// Step 1: Verify hCaptcha response
+		$hCaptchaResponse = $_POST['h-captcha-response'] ?? null;
 
-		$verify_response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$recaptcha_secret}&response={$recaptcha_response}");
-		$response_data = json_decode($verify_response);
-
-		if (!$response_data->success) {
+		if (!$hCaptchaResponse) {
 			return json_encode([
-				"status" => "failed",
-				"msg" => "reCAPTCHA verification failed. Please try again."
+				'status' => 'failed',
+				'msg' => 'Captcha not completed. Please verify you are human.'
 			]);
 		}
+
+		$secretKey = 'ES_1783e8f7e4de4baa87a8f1f97f086d20'; // Replace with your actual hCaptcha secret key
+		$verifyURL = 'https://hcaptcha.com/siteverify';
+
+		// Send a POST request to verify hCaptcha
+		$data = [
+			'secret' => $secretKey,
+			'response' => $hCaptchaResponse,
+		];
+
+		$options = [
+			'http' => [
+				'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
+				'method' => 'POST',
+				'content' => http_build_query($data),
+			],
+		];
+
+		$context = stream_context_create($options);
+		$response = file_get_contents($verifyURL, false, $context);
+		$result = json_decode($response, true);
+
+		if (!$result['success']) {
+			return json_encode([
+				'status' => 'failed',
+				'msg' => 'Captcha verification failed. Please try again.'
+			]);
+		}
+
+
 		$data = '';
 
 		// Check if old password verification is needed
