@@ -44,6 +44,7 @@ require_once('inc/header.php');
     border-radius: 100%;
   }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 
@@ -218,13 +219,14 @@ require_once('inc/header.php');
         el.addClass("alert pop-msg my-2");
         el.hide();
 
-        // Password match check
+        // Password match validation
         if ($("#password").val() !== $("#cpassword").val()) {
-          el.addClass("alert-danger");
-          el.text("Password does not match.");
+          Swal.fire({
+            icon: 'error',
+            title: 'Password Mismatch',
+            text: 'Password and Confirm Password do not match.'
+          });
           $('#password, #cpassword').addClass("is-invalid");
-          $('#cpassword').after(el);
-          el.show('slow');
           return false;
         }
 
@@ -256,35 +258,39 @@ require_once('inc/header.php');
         }
 
         start_loader();
+        // AJAX submission
         $.ajax({
           url: _base_url_ + "classes/Users.php?f=save_student",
           method: 'POST',
           data: _this.serialize(),
           dataType: 'json',
-          error: err => {
-            console.log(err);
-            el.text("An error occurred while saving the data.");
-            el.addClass("alert-danger");
-            _this.prepend(el);
-            el.show('slow');
-            end_loader();
-          },
           success: function (resp) {
+            end_loader(); // Hide loader
+
             if (resp.status === 'success') {
-              location.href = "./login.php";
-            } else if (!!resp.msg) {
-              el.text(resp.msg);
-              el.addClass("alert-danger");
-              _this.prepend(el);
-              el.show('slow');
+              Swal.fire({
+                icon: 'success',
+                title: 'Registration Successful',
+                text: 'Your account has been successfully created.',
+                confirmButtonText: 'Go to Login'
+              }).then(() => {
+                window.location.href = "./login.php"; // Redirect on success
+              });
             } else {
-              el.text("An error occurred while saving the data.");
-              el.addClass("alert-danger");
-              _this.prepend(el);
-              el.show('slow');
+              Swal.fire({
+                icon: 'error',
+                title: 'Registration Failed',
+                text: resp.msg || 'An unknown error occurred. Please try again later.'
+              });
             }
-            end_loader();
-            $('html, body').animate({ scrollTop: 0 }, 'fast');
+          },
+          error: function () {
+            end_loader(); // Hide loader
+            Swal.fire({
+              icon: 'error',
+              title: 'Server Error',
+              text: 'An error occurred while processing your request. Please try again later.'
+            });
           }
         });
       });
