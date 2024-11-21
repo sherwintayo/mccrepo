@@ -249,6 +249,7 @@ require_once('inc/header.php');
   <script src="<?php echo base_url ?>plugins/select2/js/select2.full.min.js"></script>
   <!-- My Script -->
   <script src="<?php echo base_url ?>plugins/myScript.js"></script>
+  <script src="<?php echo base_url ?>myScripts/strongpass.js"></script>
 
 
   <script>
@@ -373,7 +374,6 @@ require_once('inc/header.php');
     });
 
   </script>
-  <script src="<?php echo base_url ?>myScripts/strongpass.js"></script>
 </body>
 
 </html>
