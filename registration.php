@@ -135,19 +135,19 @@ require_once('inc/header.php');
                   </div>
 
                   <!-- Email and Password -->
+                  <div class="form-group">
+                    <input type="email" name="email" id="email" placeholder="Email"
+                      class="form-control form-control-border" required>
+                  </div>
                   <div class="row">
                     <div class="col-md-6 form-group">
-                      <input type="email" name="email" id="email" placeholder="Email"
+                      <input type="password" id="cpassword" placeholder="Confirm Password"
                         class="form-control form-control-border" required>
                     </div>
                     <div class="col-md-6 form-group">
                       <input type="password" name="password" id="password" placeholder="Password"
                         class="form-control form-control-border" required>
                     </div>
-                  </div>
-                  <div class="form-group">
-                    <input type="password" id="cpassword" placeholder="Confirm Password"
-                      class="form-control form-control-border" required>
                   </div>
 
                   <div class="form-group">
