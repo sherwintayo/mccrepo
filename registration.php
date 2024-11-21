@@ -23,6 +23,104 @@ require_once('inc/header.php');
     background-size: cover;
     background-repeat: no-repeat;
   }
+
+
+  /* Add CSS for the eye icon */
+  .position-relative {
+    position: relative;
+  }
+
+  .toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #0e0c0c;
+  }
+
+  .toggle-password:hover {
+    color: #000;
+  }
+
+  /*Stong Password*/
+  .password-strength .progress {
+    height: 8px;
+    border-radius: 5px;
+  }
+
+  .password-strength .progress-bar {
+    transition: width 0.5s ease-in-out;
+  }
+
+  .progress-bar.weak {
+    background-color: red;
+  }
+
+  .progress-bar.moderate {
+    background-color: orange;
+  }
+
+  .progress-bar.good {
+    background-color: yellow;
+  }
+
+  .progress-bar.strong {
+    background-color: green;
+  }
+
+  /*Stong Password Validation*/
+
+  #password-validation li {
+    font-size: 0.9em;
+  }
+
+  #password-validation li.valid {
+    color: green;
+  }
+
+  #password-validation li.invalid {
+    color: red;
+  }
+
+  /* Add animation for smooth fading in */
+  #password-validation {
+    opacity: 0;
+    /* Initially hidden */
+    transform: translateY(-10px);
+    /* Slight upward shift */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    /* Smooth transition */
+  }
+
+  #password-validation.show {
+    opacity: 1;
+    /* Fully visible */
+    transform: translateY(0);
+    /* Reset position */
+  }
+
+  /* Add slight bounce effect for individual list items when valid */
+  @keyframes bounceIn {
+    0% {
+      transform: scale(0.8);
+      opacity: 0.5;
+    }
+
+    50% {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  #password-validation li.valid {
+    animation: bounceIn 0.3s ease;
+    /* Bounce effect when valid */
+  }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
