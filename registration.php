@@ -202,13 +202,14 @@ require_once('inc/header.php');
                         <i class="fa fa-eye" id="eye-cpassword"></i>
                       </span>
                     </div>
-                    <ul id="password-validation" class="list-unstyled mt-2">
+                    <ul id="password-validation" class="list-unstyled mt-2" style="display: none;">
                       <li id="min-length" class="text-muted">❌ At least 8 characters</li>
                       <li id="uppercase" class="text-muted">❌ At least one uppercase letter</li>
                       <li id="lowercase" class="text-muted">❌ At least one lowercase letter</li>
                       <li id="number" class="text-muted">❌ At least one number</li>
                       <li id="special-char" class="text-muted">❌ At least one special character</li>
                     </ul>
+
                   </div>
 
 
@@ -248,7 +249,7 @@ require_once('inc/header.php');
   <script src="<?php echo base_url ?>plugins/select2/js/select2.full.min.js"></script>
   <!-- My Script -->
   <script src="<?php echo base_url ?>plugins/myScript.js"></script>
-  <script src="<?php echo base_url ?>myScripts/strongpass.js"></script>
+
 
   <script>
     var cur_arr = $.parseJSON('<?= json_encode($cur_arr) ?>');
@@ -290,6 +291,21 @@ require_once('inc/header.php');
 
         // Add reCAPTCHA response to form data
         let formData = $(this).serialize() + "&g-recaptcha-response=" + recaptchaResponse;
+
+        var _this = $(this);
+        $(".pop-msg").remove();
+        $('#password, #cpassword').removeClass("is-invalid");
+
+        // Password match validation
+        if ($("#password").val() !== $("#cpassword").val()) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Password Mismatch',
+            text: 'Password and Confirm Password do not match.'
+          });
+          $('#password, #cpassword').addClass("is-invalid");
+          return false;
+        }
 
         start_loader();
         // AJAX submission
@@ -356,20 +372,8 @@ require_once('inc/header.php');
       };
     });
 
-    function toggleVisibility(inputId) {
-      const inputField = document.getElementById(inputId);
-      const icon = document.getElementById(`eye-${inputId}`);
-      if (inputField.type === "password") {
-        inputField.type = "text";
-        icon.classList.remove("fa-eye");
-        icon.classList.add("fa-eye-slash");
-      } else {
-        inputField.type = "password";
-        icon.classList.remove("fa-eye-slash");
-        icon.classList.add("fa-eye");
-      }
-    }
   </script>
+  <script src="<?php echo base_url ?>myScripts/strongpass.js"></script>
 </body>
 
 </html>
