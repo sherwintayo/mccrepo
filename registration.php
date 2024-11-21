@@ -45,7 +45,7 @@ require_once('inc/header.php');
   }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 
 <body class="hold-transition ">
@@ -151,11 +151,8 @@ require_once('inc/header.php');
                   </div>
 
                   <div class="form-group">
-                    <!-- hCaptcha widget -->
-                    <div class="h-captcha" data-sitekey="bb409b50-a782-46fe-8522-6abcc90a9a76"></div>
+                    <div class="g-recaptcha" data-sitekey="6LdkGoUqAAAAAEmIB2Py685bbQiALvcZ3a4MOjDx"></div>
                   </div>
-
-
 
                   <!-- Buttons -->
                   <div class="row">
@@ -214,14 +211,25 @@ require_once('inc/header.php');
       // Registration Form Submit with Validations
       $('#registration-form').submit(function (e) {
         e.preventDefault();
-        console.log("Form Data:", $(this).serialize());
+
+        // Get reCAPTCHA response token
+        let recaptchaResponse = grecaptcha.getResponse();
+
+        if (!recaptchaResponse) {
+          Swal.fire({
+            icon: 'error',
+            title: 'reCAPTCHA Error',
+            text: 'Please complete the reCAPTCHA challenge.'
+          });
+          return false;
+        }
+
+        // Add reCAPTCHA response to form data
+        let formData = $(this).serialize() + "&g-recaptcha-response=" + recaptchaResponse;
+
         var _this = $(this);
         $(".pop-msg").remove();
         $('#password, #cpassword').removeClass("is-invalid");
-
-        var el = $("<div>");
-        el.addClass("alert pop-msg my-2");
-        el.hide();
 
         // Password match validation
         if ($("#password").val() !== $("#cpassword").val()) {
@@ -234,39 +242,12 @@ require_once('inc/header.php');
           return false;
         }
 
-        // XSS and Validation Checks for invalid characters and email
-        var hasError = false;
-        _this.find('input[type="text"], input[type="email"], input[type="password"]').each(function () {
-          var input = $(this);
-          var value = input.val();
-
-          // Check for invalid characters (' and ") and for angle brackets (< and >)
-          if (hasInvalidChars(value)) {
-            setValidationMessage(this, "Input must not contain single quotes, double quotes, or angle brackets.");
-            hasError = true;
-            return false; // Exit loop
-          } else {
-            setValidationMessage(this, ""); // Clear custom validity if no error
-          }
-
-          // Validate email input
-          if (input.attr('type') === 'email' && !validateEmail(value)) {
-            setValidationMessage(this, "Please include an '@' in the email address.");
-            hasError = true;
-            return false; // Exit loop
-          }
-        });
-
-        if (hasError) {
-          return false; // Prevent form submission if any input has an error
-        }
-
         start_loader();
         // AJAX submission
         $.ajax({
           url: _base_url_ + "classes/Users.php?f=save_student",
           method: 'POST',
-          data: _this.serialize() + '&recaptcha_response=' + recaptchaResponse,
+          data: formData,
           dataType: 'json',
           success: function (resp) {
             end_loader(); // Hide loader
@@ -286,6 +267,7 @@ require_once('inc/header.php');
                 title: 'Registration Failed',
                 text: resp.msg || 'An unknown error occurred. Please try again later.'
               });
+              grecaptcha.reset(); // Reset reCAPTCHA for another attempt
             }
           },
           error: function () {
@@ -295,6 +277,7 @@ require_once('inc/header.php');
               title: 'Server Error',
               text: 'An error occurred while processing your request. Please try again later.'
             });
+            grecaptcha.reset(); // Reset reCAPTCHA for another attempt
           }
         });
       });

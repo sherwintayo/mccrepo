@@ -160,46 +160,23 @@ class Users extends DBConnection
 	{
 		extract($_POST);
 
-		// Step 1: Verify hCaptcha
-		$hCaptchaResponse = $_POST['h-captcha-response'] ?? null;
 
-		if (!$hCaptchaResponse) {
-			return json_encode(['status' => 'failed', 'msg' => 'Captcha not completed.']);
-		}
+		// Validate reCAPTCHA response
+		$recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
+		$secretKey = '6LdkGoUqAAAAABTZgD529DslANXkDOxDb0-8mV0T'; // Replace with your reCAPTCHA secret key
+		$verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
-		$secretKey = 'ES_1783e8f7e4de4baa87a8f1f97f086d20'; // Replace with your actual hCaptcha secret key
-		$verifyURL = 'https://hcaptcha.com/siteverify';
+		// Send request to Google's reCAPTCHA API
+		$response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
+		$responseKeys = json_decode($response, true);
 
-		$data = [
-			'secret' => $secretKey,
-			'response' => $hCaptchaResponse,
-		];
-
-		$options = [
-			'http' => [
-				'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
-				'method' => 'POST',
-				'content' => http_build_query($data),
-			],
-		];
-
-		$context = stream_context_create($options);
-		$response = file_get_contents($verifyURL, false, $context);
-
-		if ($response === false) {
-			error_log("hCaptcha API unreachable.");
-			return json_encode(['status' => 'failed', 'msg' => 'Captcha verification failed.']);
-		}
-
-		$result = json_decode($response, true);
-		if (!$result['success']) {
-			error_log("hCaptcha Failed: " . json_encode($result));
-			return json_encode(['status' => 'failed', 'msg' => 'Captcha verification failed.']);
-		}
-
-		// Step 2: Validate and Process Data
-		if (empty($email) || empty($password)) {
-			return json_encode(['status' => 'failed', 'msg' => 'Required fields are missing.']);
+		// Debugging: Log or return response if needed
+		if (!$responseKeys['success']) {
+			return json_encode([
+				'status' => 'failed',
+				'msg' => 'reCAPTCHA validation failed. Please try again.',
+				'debug' => $responseKeys // Useful for debugging errors
+			]);
 		}
 
 		$data = '';
