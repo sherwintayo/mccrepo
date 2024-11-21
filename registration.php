@@ -214,6 +214,7 @@ require_once('inc/header.php');
       // Registration Form Submit with Validations
       $('#registration-form').submit(function (e) {
         e.preventDefault();
+        console.log("Form Data:", $(this).serialize());
         var _this = $(this);
         $(".pop-msg").remove();
         $('#password, #cpassword').removeClass("is-invalid");

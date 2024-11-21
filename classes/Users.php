@@ -160,20 +160,16 @@ class Users extends DBConnection
 	{
 		extract($_POST);
 
-		// Step 1: Verify hCaptcha response
+		// Step 1: Verify hCaptcha
 		$hCaptchaResponse = $_POST['h-captcha-response'] ?? null;
 
 		if (!$hCaptchaResponse) {
-			return json_encode([
-				'status' => 'failed',
-				'msg' => 'Captcha not completed. Please verify you are human.'
-			]);
+			return json_encode(['status' => 'failed', 'msg' => 'Captcha not completed.']);
 		}
 
-		$secretKey = 'ES_1783e8f7e4de4baa87a8f1f97f086d20'; // Replace with your actual hCaptcha secret key
+		$secretKey = 'your-secret-key'; // Replace with your actual hCaptcha secret key
 		$verifyURL = 'https://hcaptcha.com/siteverify';
 
-		// Send a POST request to verify hCaptcha
 		$data = [
 			'secret' => $secretKey,
 			'response' => $hCaptchaResponse,
@@ -189,13 +185,21 @@ class Users extends DBConnection
 
 		$context = stream_context_create($options);
 		$response = file_get_contents($verifyURL, false, $context);
-		$result = json_decode($response, true);
 
+		if ($response === false) {
+			error_log("hCaptcha API unreachable.");
+			return json_encode(['status' => 'failed', 'msg' => 'Captcha verification failed.']);
+		}
+
+		$result = json_decode($response, true);
 		if (!$result['success']) {
-			return json_encode([
-				'status' => 'failed',
-				'msg' => 'Captcha verification failed. Please try again.'
-			]);
+			error_log("hCaptcha Failed: " . json_encode($result));
+			return json_encode(['status' => 'failed', 'msg' => 'Captcha verification failed.']);
+		}
+
+		// Step 2: Validate and Process Data
+		if (empty($email) || empty($password)) {
+			return json_encode(['status' => 'failed', 'msg' => 'Required fields are missing.']);
 		}
 
 
