@@ -66,11 +66,25 @@
 }
 
 .myUserDropdown .myName {
+  display: flex; /* Use flexbox for alignment */
+  align-items: center; /* Vertically align image and text */
   color: rgba(255, 255, 255, 0.6) !important;
   cursor: pointer;
   text-decoration: none;
-  display: inline-block; /* or block if you want it to take the full width */
-  padding: 10px 20px; /* adjust as needed */
+  padding: 10px 20px; /* Adjust spacing */
+}
+
+.myUserDropdown .myName img {
+  width: 30px; /* Set image size */
+  height: 30px;
+  border-radius: 50%; /* Ensure the image is circular */
+  margin-right: 10px; /* Space between image and text */
+}
+
+.myUserDropdown .myName .username-text {
+  white-space: nowrap; /* Prevent wrapping if text is long */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Add ellipsis for overflow */
 }
 
 .myUserDropdown .myName:hover {
