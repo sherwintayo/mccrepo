@@ -247,27 +247,30 @@ require_once('inc/header.php');
                 window.location.href = "./login.php"; // Redirect on success
               });
             } else {
-              let debugInfo = resp.debug ? JSON.stringify(resp.debug, null, 2) : '';
               Swal.fire({
                 icon: 'error',
                 title: 'Registration Failed',
-                text: resp.msg || 'An unknown error occurred. Please try again later.',
-                footer: debugInfo ? `<pre>${debugInfo}</pre>` : ''
+                text: resp.msg || 'An unknown error occurred. Please try again later.'
               });
               grecaptcha.reset(); // Reset reCAPTCHA for another attempt
             }
           },
           error: function (xhr, status, error) {
             end_loader(); // Hide loader
+
+            // Log the response for debugging
+            console.error(xhr.responseText);
+
             Swal.fire({
               icon: 'error',
               title: 'Server Error',
               text: 'An error occurred while processing your request. Please try again later.',
-              footer: `<pre>${error}</pre>` // Display raw error for debugging
+              footer: `<pre>${xhr.responseText}</pre>` // Show raw response
             });
             grecaptcha.reset(); // Reset reCAPTCHA for another attempt
           }
         });
+
       });
 
 
