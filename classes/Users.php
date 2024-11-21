@@ -159,6 +159,20 @@ class Users extends DBConnection
 	public function save_student()
 	{
 		extract($_POST);
+
+		// Verify reCAPTCHA response
+		$recaptcha_secret = '6LdkGoUqAAAAABTZgD529DslANXkDOxDb0-8mV0T';
+		$recaptcha_response = $_POST['recaptcha_response'];
+
+		$verify_response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$recaptcha_secret}&response={$recaptcha_response}");
+		$response_data = json_decode($verify_response);
+
+		if (!$response_data->success) {
+			return json_encode([
+				"status" => "failed",
+				"msg" => "reCAPTCHA verification failed. Please try again."
+			]);
+		}
 		$data = '';
 
 		// Check if old password verification is needed
