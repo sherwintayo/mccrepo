@@ -1,6 +1,4 @@
-document.getElementById("password").addEventListener("input", function () {
-  const password = this.value;
-
+function updatePasswordStrength(password) {
   const validationContainer = document.getElementById("password-validation"); // Validation list
   const strengthContainer = document.getElementById(
     "password-strength-container"
@@ -99,4 +97,30 @@ document.getElementById("password").addEventListener("input", function () {
 
   strengthBar.className = `progress-bar ${strengthClass}`;
   strengthText.textContent = strengthMessage;
+}
+
+// Event listeners for password fields
+document.getElementById("password").addEventListener("input", function () {
+  const password = this.value;
+  updatePasswordStrength(password);
+});
+
+// Confirm Password validation for additional feedback
+document.getElementById("cpassword").addEventListener("input", function () {
+  const confirmPassword = this.value;
+  const password = document.getElementById("password").value;
+
+  const validationContainer = document.getElementById("password-validation");
+
+  // Show validation hints if "Confirm Password" is active and password isn't empty
+  if (confirmPassword.length > 0 && password.length > 0) {
+    validationContainer.classList.add("show");
+  }
+
+  // Check for password match
+  if (confirmPassword !== password) {
+    this.classList.add("is-invalid");
+  } else {
+    this.classList.remove("is-invalid");
+  }
 });
