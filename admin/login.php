@@ -44,7 +44,7 @@
   <?php endif; ?>
 
 
-  <div class="container register" style="margin-top: 5vh;">
+  <div class="container register" style="margin-top: 7vh;">
     <div class="row">
       <!-- Left Section -->
       <div class="col-md-3 register-left">
