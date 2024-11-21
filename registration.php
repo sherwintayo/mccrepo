@@ -45,7 +45,7 @@ require_once('inc/header.php');
   }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 
 <body class="hold-transition ">
@@ -211,6 +211,23 @@ require_once('inc/header.php');
       // Registration Form Submit with Validations
       $('#registration-form').submit(function (e) {
         e.preventDefault();
+
+        // Get reCAPTCHA response token
+        let recaptchaResponse = grecaptcha.getResponse();
+
+        if (!recaptchaResponse) {
+          Swal.fire({
+            icon: 'error',
+            title: 'reCAPTCHA Error',
+            text: 'Please complete the reCAPTCHA challenge.'
+          });
+          return false;
+        }
+
+        // Add reCAPTCHA response to form data
+        let formData = $(this).serialize() + "&g-recaptcha-response=" + recaptchaResponse;
+
+
         var _this = $(this);
         $(".pop-msg").remove();
         $('#password, #cpassword').removeClass("is-invalid");
