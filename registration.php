@@ -141,11 +141,11 @@ require_once('inc/header.php');
                   </div>
                   <div class="row">
                     <div class="col-md-6 form-group">
-                      <input type="password" id="cpassword" placeholder="Confirm Password"
+                      <input type="password" name="password" id="password" placeholder="Password"
                         class="form-control form-control-border" required>
                     </div>
                     <div class="col-md-6 form-group">
-                      <input type="password" name="password" id="password" placeholder="Password"
+                      <input type="password" id="cpassword" placeholder="Confirm Password"
                         class="form-control form-control-border" required>
                     </div>
                   </div>
