@@ -162,19 +162,20 @@ class Users extends DBConnection
 
 		// Verify reCAPTCHA
 		$recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-		$secretKey = '6LdkGoUqAAAAABTZgD529DslANXkDOxDb0-8mV0T'; // Replace with your secret key
+		$secretKey = '6LdkGoUqAAAAABTZgD529DslANXkDOxDb0-8mV0T';
 		$verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
-
-		// Send request to Google API
 		$response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaResponse);
 		$responseKeys = json_decode($response, true);
 
-		// Check reCAPTCHA validation
 		if (!$responseKeys['success']) {
 			return json_encode(['status' => 'captcha_failed', 'message' => 'reCAPTCHA validation failed.']);
 		}
 
 		$data = '';
+		$email = $this->conn->real_escape_string($email);
+		$firstname = $this->conn->real_escape_string($firstname);
+		$lastname = $this->conn->real_escape_string($lastname);
+
 		if (isset($oldpassword)) {
 			// Verify the old password with bcrypt
 			$stmt = $this->conn->prepare("SELECT password FROM student_list WHERE id = ?");
@@ -185,63 +186,59 @@ class Users extends DBConnection
 			$stmt->close();
 
 			if (!password_verify($oldpassword, $hashed_password)) {
-				return json_encode(array(
+				return json_encode([
 					"status" => 'failed',
 					"msg" => 'Old Password is Incorrect'
-				));
+				]);
 			}
 		}
 
 		// Check for existing email
-		$chk = $this->conn->query("SELECT * FROM `student_list` WHERE email ='{$email}' " . ($id > 0 ? "AND id != '{$id}'" : ""))->num_rows;
-		if ($chk > 0) {
+		$chk = $this->conn->query("SELECT * FROM `student_list` WHERE email = '{$email}' " . ($id > 0 ? "AND id != '{$id}'" : ""));
+		if ($chk->num_rows > 0) {
 			return json_encode(['status' => 'failed', 'msg' => 'Email already exists.']);
 		}
 
 		foreach ($_POST as $k => $v) {
-			if (!in_array($k, array('id', 'oldpassword', 'cpassword', 'password'))) {
-				if (!empty($data))
-					$data .= " , ";
-				$data .= " {$k} = '{$v}' ";
+			if (!in_array($k, ['id', 'oldpassword', 'cpassword', 'password'])) {
+				$v = $this->conn->real_escape_string($v);
+				if (!empty($data)) {
+					$data .= ", ";
+				}
+				$data .= "{$k} = '{$v}'";
 			}
 		}
 
 		if (!empty($password)) {
 			// Hash the new password with bcrypt
 			$password_hash = password_hash($password, PASSWORD_BCRYPT);
-			if (!empty($data))
-				$data .= " , ";
-			$data .= " `password` = '{$password_hash}' ";
+			if (!$password_hash) {
+				return json_encode(['status' => 'failed', 'msg' => 'Password hashing failed.']);
+			}
+			if (!empty($data)) {
+				$data .= ", ";
+			}
+			$data .= "`password` = '{$password_hash}'";
 		}
 
+		// Insert or update student
 		if (empty($id)) {
-			// Insert new student
-			$qry = $this->conn->query("INSERT INTO student_list SET {$data}");
-			if ($qry) {
+			$sql = "INSERT INTO student_list SET {$data}";
+		} else {
+			$sql = "UPDATE student_list SET {$data} WHERE id = {$id}";
+		}
+
+		$qry = $this->conn->query($sql);
+		if ($qry) {
+			$resp['status'] = "success";
+			if (empty($id)) {
 				$id = $this->conn->insert_id;
-				$this->settings->set_flashdata('success', 'Student User Details successfully saved.');
-				$resp['status'] = "success";
-			} else {
-				$resp['status'] = "failed";
-				$resp['msg'] = "An error occurred while saving the data. Error: " . $this->conn->error;
 			}
 		} else {
-			// Update existing student
-			$qry = $this->conn->query("UPDATE student_list SET {$data} WHERE id = {$id}");
-			if ($qry) {
-				$this->settings->set_flashdata('success', 'Student User Details successfully updated.');
-				if ($id == $this->settings->userdata('id')) {
-					foreach ($_POST as $k => $v) {
-						if ($k != 'id') {
-							$this->settings->set_userdata($k, $v);
-						}
-					}
-				}
-				$resp['status'] = "success";
-			} else {
-				$resp['status'] = "failed";
-				$resp['msg'] = "An error occurred while saving the data. Error: " . $this->conn->error;
-			}
+			// Log SQL error
+			error_log("SQL Error: " . $this->conn->error . " | Query: " . $sql);
+			$resp['status'] = "failed";
+			$resp['msg'] = "An error occurred while saving the data. Error: " . $this->conn->error;
 		}
 
 		// Image upload logic remains unchanged
@@ -250,7 +247,7 @@ class Users extends DBConnection
 			$dir_path = base_app . $fname;
 			$upload = $_FILES['img']['tmp_name'];
 			$type = mime_content_type($upload);
-			$allowed = array('image/png', 'image/jpeg');
+			$allowed = ['image/png', 'image/jpeg'];
 			if (!in_array($type, $allowed)) {
 				$resp['msg'] .= " But Image failed to upload due to invalid file type.";
 			} else {
@@ -264,13 +261,14 @@ class Users extends DBConnection
 				$gdImg = ($type == 'image/png') ? imagecreatefrompng($upload) : imagecreatefromjpeg($upload);
 				imagecopyresampled($t_image, $gdImg, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
 				if ($gdImg) {
-					if (is_file($dir_path))
+					if (is_file($dir_path)) {
 						unlink($dir_path);
+					}
 					$uploaded_img = imagepng($t_image, $dir_path);
 					imagedestroy($gdImg);
 					imagedestroy($t_image);
 				} else {
-					$resp['msg'] .= " But Image failed to upload due to unknown reason.";
+					$resp['msg'] .= " But Image failed to upload due to an unknown reason.";
 				}
 			}
 			if (isset($uploaded_img)) {
@@ -283,6 +281,7 @@ class Users extends DBConnection
 
 		return json_encode($resp);
 	}
+
 
 	public function delete_student()
 	{
