@@ -20,6 +20,8 @@
     }
 </style>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 <body class="hold-transition">
     <script>
@@ -96,27 +98,32 @@
         $(document).ready(function () {
             $('#forgot-password-form').on('submit', function (e) {
                 e.preventDefault();
+
                 let email = $('#email').val();
                 let domain = "@mcclawis.edu.ph";
 
                 if (!email.endsWith(domain)) {
-                    alert("Please enter a valid email address with the domain " + domain);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid Email',
+                        text: `Please enter a valid email address with the domain ${domain}.`
+                    });
                     return false;
                 }
 
-                // Start the loader before sending the AJAX request
                 start_loader();
 
-                // Get the reCAPTCHA response token
                 let recaptchaResponse = grecaptcha.getResponse();
-
                 if (!recaptchaResponse) {
-                    alert("Please complete the reCAPTCHA challenge.");
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Incomplete reCAPTCHA',
+                        text: 'Please complete the reCAPTCHA challenge.'
+                    });
                     end_loader();
                     return false;
                 }
 
-                // AJAX request
                 $.ajax({
                     url: 'ms_login_process.php',
                     method: 'POST',
@@ -126,18 +133,28 @@
                         $('#response-message').hide().removeClass('alert-success alert-danger');
                     },
                     success: function (response) {
-                        if (response.status === 'success') {
-                            $('#response-message').addClass('alert-success').text(response.message).show();
-                        } else {
-                            $('#response-message').addClass('alert-danger').text(response.message).show();
-                        }
-                        // Stop the loader when the request is successful
                         end_loader();
+                        if (response.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.message
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.message
+                            });
+                        }
                     },
                     error: function () {
-                        $('#response-message').addClass('alert-danger').text('An error occurred. Please try again.').show();
-                        // Stop the loader on error
                         end_loader();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Server Error',
+                            text: 'An error occurred. Please try again later.'
+                        });
                     }
                 });
             });
