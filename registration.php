@@ -219,7 +219,7 @@ require_once('inc/header.php');
                   </div>
                   <!-- Password strength meter -->
                   <div class="form-group">
-                    <div class="password-strength mt-2">
+                    <div class="password-strength mt-2" style="display: none;">
                       <div class="progress">
                         <div id="password-strength-bar" class="progress-bar" role="progressbar" style="width: 0%;"
                           aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
@@ -242,7 +242,7 @@ require_once('inc/header.php');
                         <i class="fa fa-eye" id="eye-cpassword"></i>
                       </span>
                     </div>
-                    <ul id="password-validation" class="list-unstyled mt-2">
+                    <ul id="password-validation" class="list-unstyled mt-2" style="display: none;">
                       <li id="min-length" class="text-muted">❌ At least 8 characters</li>
                       <li id="uppercase" class="text-muted">❌ At least one uppercase letter</li>
                       <li id="lowercase" class="text-muted">❌ At least one lowercase letter</li>

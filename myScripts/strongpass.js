@@ -1,5 +1,20 @@
-function updatePasswordStrength(password) {
-  const validationContainer = document.getElementById("password-validation"); // Validation list
+function toggleVisibility(inputId) {
+  const inputField = document.getElementById(inputId);
+  const icon = document.getElementById(`eye-${inputId}`);
+  if (inputField.type === "password") {
+    inputField.type = "text";
+    icon.classList.remove("fa-eye");
+    icon.classList.add("fa-eye-slash");
+  } else {
+    inputField.type = "password";
+    icon.classList.remove("fa-eye-slash");
+    icon.classList.add("fa-eye");
+  }
+}
+
+// Password strength validation logic
+function validatePassword(password) {
+  const validationContainer = document.getElementById("password-validation");
   const strengthContainer = document.getElementById(
     "password-strength-container"
   );
@@ -13,15 +28,9 @@ function updatePasswordStrength(password) {
   const number = document.getElementById("number");
   const specialChar = document.getElementById("special-char");
 
-  // Show validation hints and strength bar if user starts typing
-  if (password.length > 0) {
-    validationContainer.classList.add("show");
-    strengthContainer.style.display = "block";
-  } else {
-    validationContainer.classList.remove("show");
-    strengthContainer.style.display = "none";
-    return; // Exit early if password is empty
-  }
+  // Show validation hints and strength bar
+  validationContainer.classList.add("show");
+  strengthContainer.style.display = "block";
 
   // Validation checks
   const hasMinLength = password.length >= 8;
@@ -97,30 +106,43 @@ function updatePasswordStrength(password) {
 
   strengthBar.className = `progress-bar ${strengthClass}`;
   strengthText.textContent = strengthMessage;
+
+  // Return strength score
+  return strength;
 }
 
-// Event listeners for password fields
+// Attach input listener for real-time validation
 document.getElementById("password").addEventListener("input", function () {
-  const password = this.value;
-  updatePasswordStrength(password);
+  validatePassword(this.value);
 });
 
-// Confirm Password validation for additional feedback
-document.getElementById("cpassword").addEventListener("input", function () {
-  const confirmPassword = this.value;
-  const password = document.getElementById("password").value;
+// Attach submit listener to enforce password strength check
+document
+  .getElementById("registration-form")
+  .addEventListener("submit", function (e) {
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("cpassword").value;
 
-  const validationContainer = document.getElementById("password-validation");
+    const strength = validatePassword(password);
 
-  // Show validation hints if "Confirm Password" is active and password isn't empty
-  if (confirmPassword.length > 0 && password.length > 0) {
-    validationContainer.classList.add("show");
-  }
+    // Ensure the bar and validation hints are visible on submit
+    if (strength < 4) {
+      e.preventDefault(); // Stop form submission
+      Swal.fire({
+        icon: "error",
+        title: "Weak Password",
+        text: "Your password must meet all strength requirements to proceed.",
+      });
+      return false;
+    }
 
-  // Check for password match
-  if (confirmPassword !== password) {
-    this.classList.add("is-invalid");
-  } else {
-    this.classList.remove("is-invalid");
-  }
-});
+    if (password !== confirmPassword) {
+      e.preventDefault(); // Stop form submission
+      Swal.fire({
+        icon: "error",
+        title: "Password Mismatch",
+        text: "Password and Confirm Password do not match.",
+      });
+      return false;
+    }
+  });
