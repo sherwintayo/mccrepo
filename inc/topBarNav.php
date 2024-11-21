@@ -304,7 +304,7 @@
             <span class="sr-only">Toggle Dropdown</span>
           </button>
           <div class="dropdown-menu myUserDropdown" role="menu">
-            <a href="./?page=profile" class="myName">
+            <a href="./?page=profile" class="myName" style="display: inline-block;">
               <span>
                 <img src="<?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>"
                   class="img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar">
