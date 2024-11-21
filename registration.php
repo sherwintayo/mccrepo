@@ -214,6 +214,7 @@ require_once('inc/header.php');
       // Registration Form Submit with Validations
       $('#registration-form').submit(function (e) {
         e.preventDefault();
+        console.log("Form Data:", $(this).serialize());
         var _this = $(this);
         $(".pop-msg").remove();
         $('#password, #cpassword').removeClass("is-invalid");
@@ -265,7 +266,7 @@ require_once('inc/header.php');
         $.ajax({
           url: _base_url_ + "classes/Users.php?f=save_student",
           method: 'POST',
-          data: _this.serialize(),
+          data: _this.serialize() + '&recaptcha_response=' + recaptchaResponse,
           dataType: 'json',
           success: function (resp) {
             end_loader(); // Hide loader
