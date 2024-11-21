@@ -299,6 +299,7 @@ require_once('inc/header.php');
                 title: 'Registration Failed',
                 text: resp.msg || 'An unknown error occurred. Please try again later.'
               });
+              grecaptcha.reset(); // Reset reCAPTCHA for another attempt
             }
           },
           error: function () {
@@ -308,6 +309,7 @@ require_once('inc/header.php');
               title: 'Server Error',
               text: 'An error occurred while processing your request. Please try again later.'
             });
+            grecaptcha.reset(); // Reset reCAPTCHA for another attempt
           }
         });
       });
