@@ -227,21 +227,6 @@ require_once('inc/header.php');
         // Add reCAPTCHA response to form data
         let formData = $(this).serialize() + "&g-recaptcha-response=" + recaptchaResponse;
 
-        var _this = $(this);
-        $(".pop-msg").remove();
-        $('#password, #cpassword').removeClass("is-invalid");
-
-        // Password match validation
-        if ($("#password").val() !== $("#cpassword").val()) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Password Mismatch',
-            text: 'Password and Confirm Password do not match.'
-          });
-          $('#password, #cpassword').addClass("is-invalid");
-          return false;
-        }
-
         start_loader();
         // AJAX submission
         $.ajax({
@@ -262,25 +247,29 @@ require_once('inc/header.php');
                 window.location.href = "./login.php"; // Redirect on success
               });
             } else {
+              let debugInfo = resp.debug ? JSON.stringify(resp.debug, null, 2) : '';
               Swal.fire({
                 icon: 'error',
                 title: 'Registration Failed',
-                text: resp.msg || 'An unknown error occurred. Please try again later.'
+                text: resp.msg || 'An unknown error occurred. Please try again later.',
+                footer: debugInfo ? `<pre>${debugInfo}</pre>` : ''
               });
               grecaptcha.reset(); // Reset reCAPTCHA for another attempt
             }
           },
-          error: function () {
+          error: function (xhr, status, error) {
             end_loader(); // Hide loader
             Swal.fire({
               icon: 'error',
               title: 'Server Error',
-              text: 'An error occurred while processing your request. Please try again later.'
+              text: 'An error occurred while processing your request. Please try again later.',
+              footer: `<pre>${error}</pre>` // Display raw error for debugging
             });
             grecaptcha.reset(); // Reset reCAPTCHA for another attempt
           }
         });
       });
+
 
       // Function to check for invalid characters
       var hasInvalidChars = function (input) {

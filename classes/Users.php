@@ -170,12 +170,12 @@ class Users extends DBConnection
 		$response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
 		$responseKeys = json_decode($response, true);
 
-		// Debugging: Log or return response if needed
+		// Log or return detailed reCAPTCHA response for debugging
 		if (!$responseKeys['success']) {
 			return json_encode([
 				'status' => 'failed',
 				'msg' => 'reCAPTCHA validation failed. Please try again.',
-				'debug' => $responseKeys // Useful for debugging errors
+				'debug' => $responseKeys // Debugging info
 			]);
 		}
 
