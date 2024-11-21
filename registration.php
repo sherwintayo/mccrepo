@@ -24,24 +24,22 @@ require_once('inc/header.php');
     background-repeat: no-repeat;
   }
 
-  .login-title {
-    text-shadow: 2px 2px black;
+  /* Add CSS for the eye icon */
+  .position-relative {
+    position: relative;
   }
 
-  #login {
-    direction: rtl;
+  .toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #aaa;
   }
 
-  #login>* {
-    direction: ltr;
-  }
-
-  #logo-img {
-    height: 150px;
-    width: 150px;
-    object-fit: scale-down;
-    object-position: center center;
-    border-radius: 100%;
+  .toggle-password:hover {
+    color: #000;
   }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -140,15 +138,22 @@ require_once('inc/header.php');
                       class="form-control form-control-border" required>
                   </div>
                   <div class="row">
-                    <div class="col-md-6 form-group">
+                    <div class="col-md-6 form-group position-relative">
                       <input type="password" name="password" id="password" placeholder="Password"
                         class="form-control form-control-border" required>
+                      <span class="toggle-password" onclick="toggleVisibility('password')">
+                        <i class="fa fa-eye" id="eye-password"></i>
+                      </span>
                     </div>
-                    <div class="col-md-6 form-group">
+                    <div class="col-md-6 form-group position-relative">
                       <input type="password" id="cpassword" placeholder="Confirm Password"
                         class="form-control form-control-border" required>
+                      <span class="toggle-password" onclick="toggleVisibility('cpassword')">
+                        <i class="fa fa-eye" id="eye-cpassword"></i>
+                      </span>
                     </div>
                   </div>
+
 
                   <div class="form-group">
                     <div class="g-recaptcha" data-sitekey="6LdkGoUqAAAAAEmIB2Py685bbQiALvcZ3a4MOjDx"></div>
@@ -276,7 +281,7 @@ require_once('inc/header.php');
 
       // Function to check for invalid characters
       var hasInvalidChars = function (input) {
-        return /['"<>]/.test(input); // Prevents single quotes, double quotes, and angle brackets
+        return /['"<script>]/.test(input); // Prevents single quotes, double quotes, and angle brackets
       };
 
       // Validate Email Format (Ensure @ symbol is present)
@@ -291,6 +296,20 @@ require_once('inc/header.php');
         input.reportValidity();
       };
     });
+
+    function toggleVisibility(inputId) {
+      const inputField = document.getElementById(inputId);
+      const icon = document.getElementById(`eye-${inputId}`);
+      if (inputField.type === "password") {
+        inputField.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+      } else {
+        inputField.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+      }
+    }
   </script>
 </body>
 
