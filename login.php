@@ -34,7 +34,7 @@
   <?php if ($_settings->chk_flashdata('success')): ?>
     <script>
       Swal.fire({
-        icon: 'success',
+        icon: 'warning',
         title: 'Success',
         text: "<?php echo $_settings->flashdata('success') ?>",
         toast: true,
