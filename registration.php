@@ -32,7 +32,7 @@ require_once('inc/header.php');
   .toggle-password {
     position: absolute;
     top: 50%;
-    right: 10px;
+    right: 20px;
     transform: translateY(-50%);
     cursor: pointer;
     color: #aaa;
@@ -40,6 +40,32 @@ require_once('inc/header.php');
 
   .toggle-password:hover {
     color: #000;
+  }
+
+  /*Stong Password*/
+  .password-strength .progress {
+    height: 8px;
+    border-radius: 5px;
+  }
+
+  .password-strength .progress-bar {
+    transition: width 0.5s ease-in-out;
+  }
+
+  .progress-bar.weak {
+    background-color: red;
+  }
+
+  .progress-bar.moderate {
+    background-color: orange;
+  }
+
+  .progress-bar.good {
+    background-color: yellow;
+  }
+
+  .progress-bar.strong {
+    background-color: green;
   }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -153,6 +179,16 @@ require_once('inc/header.php');
                       </span>
                     </div>
                   </div>
+                  <!-- Password strength meter -->
+                  <div class="form-group">
+                    <div class="password-strength mt-2">
+                      <div class="progress">
+                        <div id="password-strength-bar" class="progress-bar" role="progressbar" style="width: 0%;"
+                          aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                      <small id="password-strength-text" class="text-muted">Enter a strong password.</small>
+                    </div>
+                  </div>
 
 
                   <div class="form-group">
@@ -190,6 +226,7 @@ require_once('inc/header.php');
   <script src="<?php echo base_url ?>plugins/select2/js/select2.full.min.js"></script>
   <!-- My Script -->
   <script src="<?php echo base_url ?>plugins/myScript.js"></script>
+  <script src="<?php echo base_url ?>myScripts/strongpass.js"></script>
 
   <script>
     var cur_arr = $.parseJSON('<?= json_encode($cur_arr) ?>');
