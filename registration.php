@@ -151,8 +151,7 @@ require_once('inc/header.php');
                   </div>
 
                   <div class="form-group">
-                    <!-- hCaptcha widget -->
-                    <div class="h-captcha" data-sitekey="bb409b50-a782-46fe-8522-6abcc90a9a76"></div>
+                    <div class="g-recaptcha" data-sitekey="6LdkGoUqAAAAAEmIB2Py685bbQiALvcZ3a4MOjDx"></div>
                   </div>
 
 
@@ -174,8 +173,6 @@ require_once('inc/header.php');
       </div>
     </div>
   </div>
-  <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
-
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
   <!-- jQuery -->
@@ -214,7 +211,6 @@ require_once('inc/header.php');
       // Registration Form Submit with Validations
       $('#registration-form').submit(function (e) {
         e.preventDefault();
-        console.log("Form Data:", $(this).serialize());
         var _this = $(this);
         $(".pop-msg").remove();
         $('#password, #cpassword').removeClass("is-invalid");

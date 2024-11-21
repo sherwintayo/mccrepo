@@ -159,50 +159,6 @@ class Users extends DBConnection
 	public function save_student()
 	{
 		extract($_POST);
-
-		// Step 1: Verify hCaptcha
-		$hCaptchaResponse = $_POST['h-captcha-response'] ?? null;
-
-		if (!$hCaptchaResponse) {
-			return json_encode(['status' => 'failed', 'msg' => 'Captcha not completed.']);
-		}
-
-		$secretKey = 'your-secret-key'; // Replace with your actual hCaptcha secret key
-		$verifyURL = 'https://hcaptcha.com/siteverify';
-
-		$data = [
-			'secret' => $secretKey,
-			'response' => $hCaptchaResponse,
-		];
-
-		$options = [
-			'http' => [
-				'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
-				'method' => 'POST',
-				'content' => http_build_query($data),
-			],
-		];
-
-		$context = stream_context_create($options);
-		$response = file_get_contents($verifyURL, false, $context);
-
-		if ($response === false) {
-			error_log("hCaptcha API unreachable.");
-			return json_encode(['status' => 'failed', 'msg' => 'Captcha verification failed.']);
-		}
-
-		$result = json_decode($response, true);
-		if (!$result['success']) {
-			error_log("hCaptcha Failed: " . json_encode($result));
-			return json_encode(['status' => 'failed', 'msg' => 'Captcha verification failed.']);
-		}
-
-		// Step 2: Validate and Process Data
-		if (empty($email) || empty($password)) {
-			return json_encode(['status' => 'failed', 'msg' => 'Required fields are missing.']);
-		}
-
-
 		$data = '';
 
 		// Check if old password verification is needed
