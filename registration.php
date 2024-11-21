@@ -242,14 +242,6 @@ require_once('inc/header.php');
                         <i class="fa fa-eye" id="eye-cpassword"></i>
                       </span>
                     </div>
-                    <ul id="password-validation" class="list-unstyled mt-2" style="display: none;">
-                      <li id="min-length" class="text-muted">❌ At least 8 characters</li>
-                      <li id="uppercase" class="text-muted">❌ At least one uppercase letter</li>
-                      <li id="lowercase" class="text-muted">❌ At least one lowercase letter</li>
-                      <li id="number" class="text-muted">❌ At least one number</li>
-                      <li id="special-char" class="text-muted">❌ At least one special character</li>
-                    </ul>
-
                   </div>
 
 
