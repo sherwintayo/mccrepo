@@ -27,10 +27,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
     $responseKeys = json_decode($response, true);
 
+    // Debugging reCAPTCHA response
     if (!$responseKeys['success']) {
-        echo json_encode(['status' => 'error', 'message' => 'reCAPTCHA validation failed.']);
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'reCAPTCHA validation failed.',
+            'debug' => $responseKeys // Include this for debugging
+        ]);
         exit();
     }
+
 
     // Server-side validation
     $domain = "@mcclawis.edu.ph";

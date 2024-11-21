@@ -107,11 +107,20 @@
                 // Start the loader before sending the AJAX request
                 start_loader();
 
+                // Get the reCAPTCHA response token
+                let recaptchaResponse = grecaptcha.getResponse();
+
+                if (!recaptchaResponse) {
+                    alert("Please complete the reCAPTCHA challenge.");
+                    end_loader();
+                    return false;
+                }
+
                 // AJAX request
                 $.ajax({
                     url: 'ms_login_process.php',
                     method: 'POST',
-                    data: { email: email },
+                    data: { email: email, 'g-recaptcha-response': recaptchaResponse },
                     dataType: 'json',
                     beforeSend: function () {
                         $('#response-message').hide().removeClass('alert-success alert-danger');
