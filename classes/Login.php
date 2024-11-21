@@ -100,55 +100,58 @@ class Login extends DBConnection
     }
     public function student_login()
     {
-        session_start(); // Start session
+        session_start();
         extract($_POST);
 
         // Verify reCAPTCHA
         $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-        $secretKey = '6LdkGoUqAAAAABTZgD529DslANXkDOxDb0-8mV0T'; // Replace with your secret key
+        $secretKey = '6LdkGoUqAAAAABTZgD529DslANXkDOxDb0-8mV0T';
         $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
-
-        // Send request to Google API
         $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaResponse);
         $responseKeys = json_decode($response, true);
 
-        // Check reCAPTCHA validation
         if (!$responseKeys['success']) {
-            return json_encode(['status' => 'captcha_failed', 'message' => 'reCAPTCHA validation failed.']);
+            return json_encode([
+                'status' => 'captcha_failed',
+                'msg' => 'reCAPTCHA validation failed. Please try again.'
+            ]);
         }
 
         $qry = $this->conn->query("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS fullname FROM student_list WHERE email = '$email' AND password = MD5('$password')");
 
         if ($this->conn->error) {
-            $resp['status'] = 'failed';
-            $resp['msg'] = "An error occurred while fetching data. Error: " . $this->conn->error;
-        } else {
-            if ($qry->num_rows > 0) {
-                $res = $qry->fetch_array();
-
-                if ($res['status'] == 1) {
-                    // Set session variables for logged-in status and user ID
-                    $_SESSION['user_logged_in'] = true;
-                    $_SESSION['user_id'] = $res['id']; // Set to the user ID or relevant identifier
-
-                    // Set other session data
-                    foreach ($res as $k => $v) {
-                        $this->settings->set_userdata($k, $v);
-                    }
-
-                    $this->settings->set_userdata('login_type', 2); // Example login type for students
-                    $resp['status'] = 'success';
-                } else {
-                    $resp['status'] = 'failed';
-                    $resp['msg'] = "Your account is not verified yet.";
-                }
-            } else {
-                $resp['status'] = 'failed';
-                $resp['msg'] = "Invalid email or password.";
-            }
+            return json_encode([
+                'status' => 'failed',
+                'msg' => "An error occurred while fetching data. Error: " . $this->conn->error
+            ]);
         }
-        return json_encode($resp);
+
+        if ($qry->num_rows > 0) {
+            $res = $qry->fetch_array();
+
+            if ($res['status'] == 1) {
+                $_SESSION['user_logged_in'] = true;
+                $_SESSION['user_id'] = $res['id'];
+                foreach ($res as $k => $v) {
+                    $this->settings->set_userdata($k, $v);
+                }
+                $this->settings->set_userdata('login_type', 2);
+
+                return json_encode(['status' => 'success']);
+            } else {
+                return json_encode([
+                    'status' => 'failed',
+                    'msg' => 'Your account is not verified yet.'
+                ]);
+            }
+        } else {
+            return json_encode([
+                'status' => 'failed',
+                'msg' => 'Invalid email or password.'
+            ]);
+        }
     }
+
 
 
     public function student_logout()

@@ -23,6 +23,7 @@
   }
 </style>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 <body class="hold-transition">
@@ -32,11 +33,20 @@
 
   <?php if ($_settings->chk_flashdata('success')): ?>
     <script>
-      alert_toast("<?php echo $_settings->flashdata('success') ?>", 'success')
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: "<?php echo $_settings->flashdata('success') ?>",
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+      });
     </script>
   <?php endif; ?>
-  <div class="container register" style="margin-top: 14vh;" id="login">
-    <div class="row">
+
+  <div class="container register" style="margin-top: 5vh; height: 600px;" id="login">
+    <div class="row" style="height: 500px;">
       <!-- Left Section -->
       <div class="col-md-3 register-left">
         <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo" />
@@ -178,7 +188,11 @@
           dataType: 'json',
           error: err => {
             console.log(err);
-            alert("An error occurred.");
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'An error occurred. Please try again later.',
+            });
             end_loader();
           },
           success: function (resp) {
@@ -187,7 +201,11 @@
               <?php $_SESSION['user_logged_in'] = true; ?>
               window.location.href = "./";
             } else {
-              alert("Login failed: " + (resp.msg || "Invalid credentials."));
+              Swal.fire({
+                icon: 'error',
+                title: 'Login Failed',
+                text: resp.msg || 'Invalid credentials. Please try again.',
+              });
             }
           }
         });
