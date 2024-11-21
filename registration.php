@@ -151,8 +151,10 @@ require_once('inc/header.php');
                   </div>
 
                   <div class="form-group">
-                    <div class="g-recaptcha" data-sitekey="6LdkGoUqAAAAAEmIB2Py685bbQiALvcZ3a4MOjDx"></div>
+                    <!-- hCaptcha widget -->
+                    <div class="h-captcha" data-sitekey="your-hcaptcha-site-key"></div>
                   </div>
+
 
 
                   <!-- Buttons -->
@@ -173,6 +175,7 @@ require_once('inc/header.php');
       </div>
     </div>
   </div>
+  <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
   <!-- jQuery -->
