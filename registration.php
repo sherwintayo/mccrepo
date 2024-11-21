@@ -218,14 +218,12 @@ require_once('inc/header.php');
                       class="form-control form-control-border" required>
                   </div>
                   <!-- Password strength meter -->
-                  <div class="form-group">
-                    <div class="password-strength mt-2" style="display: none;">
-                      <div class="progress">
-                        <div id="password-strength-bar" class="progress-bar" role="progressbar" style="width: 0%;"
-                          aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <small id="password-strength-text" class="text-muted">Enter a strong password.</small>
+                  <div id="password-strength-container" class="password-strength mt-2" style="display: none;">
+                    <div class="progress">
+                      <div id="password-strength-bar" class="progress-bar" role="progressbar" style="width: 0%;"
+                        aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
+                    <small id="password-strength-text" class="text-muted">Enter a strong password.</small>
                   </div>
                   <div class="row">
                     <div class="col-md-6 form-group position-relative">
