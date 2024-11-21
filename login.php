@@ -34,11 +34,11 @@
   <?php if ($_settings->chk_flashdata('success')): ?>
     <script>
       Swal.fire({
-        icon: 'warning',
+        icon: 'success',
         title: 'Success',
         text: "<?php echo $_settings->flashdata('success') ?>",
         toast: true,
-        position: 'top-end',
+        position: 'top-center',
         showConfirmButton: false,
         timer: 3000
       });
