@@ -93,7 +93,7 @@
 </head>
 
 <!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg w-100" id="login-nav">
+<nav class="navbar w-100" id="login-nav">
   <div class="container ">
     <a href="./" class="navbar-brand">
       <img src="<?php echo htmlspecialchars(validate_image($_settings->info('logo')), ENT_QUOTES, 'UTF-8') ?>"
