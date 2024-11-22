@@ -1,12 +1,15 @@
 <IfModule mod_rewrite.c>
-Header set Access-Control-Allow-Origin "*"
-RewriteEngine on
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$    /index.php/$2/?page=$1   [L]
-</IfModule>
+    # Allow CORS
+    Header set Access-Control-Allow-Origin "*"
+    RewriteEngine on
 
-RewriteEngine on
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule ^(.*)$ $1.php
+    # Check if the request is not a real file or directory
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Rewrite requests without .php extension to .php files
+    RewriteRule ^([a-zA-Z0-9_-]+)$ $1.php [L,QSA]
+
+    # Rewrite all other URLs to index.php for the page parameter
+    RewriteRule ^(.*)$ /index.php/$2/?page=$1 [L]
+</IfModule>
