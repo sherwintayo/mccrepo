@@ -72,7 +72,7 @@
                                     <!-- Buttons -->
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <a href="<?php echo base_url ?>" class="btn btn-light">Go Back</a>
+                                            <a href="login" class="btn btn-light">Sign In</a>
                                         </div>
                                         <div class="col-md-6 text-right">
                                             <button type="submit" class="btn btn-primary btn-flat">Send</button>

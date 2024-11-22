@@ -85,7 +85,7 @@
                       <a href="ms_login" class="btn btn-light">Sign Up</a>
                     </div>
                     <div class="col-md-6 text-right">
-                      <button class="btn btn-primary btn-flat">Sign In</button>
+                      <button class="btn btn-primary btn-flat">Login</button>
                     </div>
                   </div>
 

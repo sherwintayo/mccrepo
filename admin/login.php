@@ -81,7 +81,7 @@
                   <!-- Buttons -->
                   <div class="row">
                     <div class="col-md-6">
-                      <a href="../index.php" class="btn btn-light">Go Back</a>
+                      <a href="../login" class="btn btn-light">Student Signin</a>
                     </div>
                     <div class="col-md-6 text-right">
                       <button type="submit" class="btn btn-primary btn-flat">Login</button>
