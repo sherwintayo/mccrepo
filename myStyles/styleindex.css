@@ -89,8 +89,8 @@
 }
 
 .myUserDropdown .myName:hover {
-  background-color: #fff;
-  color: #0f0f0f;
+  background-color: #fff !important;
+  color: #0f0f0f !important;
 }
 
 /* HAMBURGER */
@@ -135,6 +135,105 @@
 
 .navbar #toggle-menu:checked + label.toggle-btn .bar:nth-child(3) {
   transform: translateY(-8px) rotate(-45deg);
+}
+
+/* MODAL */
+
+.myNavs .modal-dialog {
+  margin-left: -3px;
+  margin-top: -3px;
+  width: 85%;
+}
+
+.myNavs .modal-dialog .modal-content {
+  background-color: #b51b23 !important;
+}
+
+/* MODAL HEADER */
+
+.myNavs .modal-dialog .modal-header,
+.myNavs .modal-dialog .modal-footer {
+  border: none;
+}
+
+.myNavs .modal-dialog .modal-header {
+  height: 86px;
+}
+
+.myNavs .modal-dialog .modal-header img {
+  max-height: 40px;
+  opacity: 0.8;
+}
+
+.myNavs .modal-dialog .modal-header .myHeaderLeft {
+  margin: 2px 0 5px 2px;
+}
+
+.myNavs .modal-dialog .nav-link i,
+.myNavs
+  .modal-dialog
+  .modal-header
+  .myHeaderRight
+  .dropdown
+  .dropdown-menu
+  .dropdown-item
+  i {
+  margin-right: 10px;
+  color: #f9f06d !important;
+}
+
+.myNavs .modal-dialog .modal-header .myHeaderRight .notification-icon i {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.myNavs
+  .modal-dialog
+  .modal-header
+  .myHeaderRight
+  .dropdown
+  .dropdown-menu
+  .myName {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.myNavs .modal-dialog .modal-header .myBrandName {
+  color: #f9f06d !important;
+  font-weight: 600;
+  font-size: 20px;
+  padding-top: 3px;
+  margin-top: 3px;
+}
+
+/* MODAL BODY */
+.myNavs .modal-dialog .modal-body {
+  padding-top: 65px;
+  background-color: #5b060a;
+}
+
+.myNavs .modal-dialog .nav-link {
+  font-size: 18px;
+  margin-bottom: 30px;
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.myNavs .modal-dialog .nav-link.active {
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-weight: 600;
+}
+
+.myNavs .modal-dialog .btn-secondary {
+  color: #2a252e !important;
+  background-color: #f9f06d !important;
+}
+
+/* MODAL HEADER */
+
+.myNavs .modal-dialog .modal-footer .btn {
+  max-height: 35px;
+}
+
+.myNavs .modal-dialog .modal-footer .btn label {
+  align-items: center;
 }
 
 /* FOOTER */
