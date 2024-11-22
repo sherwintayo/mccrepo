@@ -585,7 +585,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><label
-              for="toggle-menu"></label></button>
+              for="toggle-menu">Close</label></button>
         </div>
       </div>
     </div>
