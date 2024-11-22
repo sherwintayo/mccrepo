@@ -182,6 +182,19 @@ a {
 }
 
 /* Responsiveness */
+@media (min-width: 374.98px) {
+  .header__wrapper .cols__container .right__col .page {
+    height: 365px;
+    overflow: auto;
+    padding: 0 0 30px;
+    margin: 15px auto;
+  }
+
+  .header__wrapper .cols__container .right__col nav ul {
+    flex-direction: row;
+    gap: 30px;
+  }
+}
 
 @media (min-width: 575.98px) {
   .header__wrapper .cols__container .right__col .page {
