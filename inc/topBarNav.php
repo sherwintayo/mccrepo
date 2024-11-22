@@ -271,7 +271,6 @@
                       <?php endif; ?>
                     </a>
                   <?php else: ?>
-
                     <a href="javascript:void(0);" class="dropdown-item notification-link" data-id="<?= $notif['id'] ?>"
                       data-download="false" onclick="handleNotificationClick(this)">
                       <i class="fas fa-envelope text-info"></i>
@@ -628,38 +627,42 @@
   async function handleNotificationClick(element) {
     const isDownload = element.getAttribute('data-download') === 'true';
 
-    if (isDownload) {
-      const filePaths = JSON.parse(element.getAttribute('data-files')); // File paths in JSON format
-      const zip = new JSZip();
-
-      try {
-        // Fetch and add each file to the ZIP
-        for (const [type, url] of Object.entries(filePaths)) {
-          const fileName = `${type}_File.zip`;
-          const fileData = await fetchFile(url);
-          if (fileData) zip.file(fileName, fileData);
-        }
-
-        // Generate and trigger the ZIP download
-        zip.generateAsync({ type: "blob" }).then(content => {
-          const link = document.createElement('a');
-          link.href = URL.createObjectURL(content);
-          link.download = "All_Files.zip";
-          link.click();
-          URL.revokeObjectURL(link.href); // Clean up memory
-        });
-      } catch (error) {
-        console.error("Error downloading files:", error);
-        alert("Failed to download files. Please try again later.");
-      }
-    }
-
     // Mark the notification as read
     const notificationId = element.getAttribute('data-id');
     fetch(`./mark_notification_read.php?id=${notificationId}&isDownload=${isDownload}`, { method: 'POST' })
       .then(response => response.json())
       .then(data => {
-        if (!data.success) console.error("Failed to mark notification as read.");
+        if (data.success) {
+          if (isDownload) {
+            // Handle downloads
+            const filePaths = JSON.parse(element.getAttribute('data-files')); // File paths in JSON format
+            const zip = new JSZip();
+
+            // Fetch and add each file to the ZIP
+            Promise.all(Object.entries(filePaths).map(async ([type, url]) => {
+              const fileName = `${type}_File.zip`;
+              const fileData = await fetchFile(url);
+              if (fileData) zip.file(fileName, fileData);
+            }))
+              .then(() => zip.generateAsync({ type: "blob" }))
+              .then(content => {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(content);
+                link.download = "All_Files.zip";
+                link.click();
+                URL.revokeObjectURL(link.href); // Clean up memory
+              })
+              .catch(error => {
+                console.error("Error downloading files:", error);
+                alert("Failed to download files. Please try again later.");
+              });
+          } else {
+            // Redirect to student profile if it's a regular notification
+            window.location.href = "./studentprofile";
+          }
+        } else {
+          console.error("Failed to mark notification as read.");
+        }
       })
       .catch(err => console.error("Error:", err));
   }
