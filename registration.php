@@ -244,20 +244,28 @@ require_once('inc/header.php');
       });
 
       // Registration Form Submit with Validations
-      // Registration Form Submit with Validations
       $('#registration-form').submit(function (e) {
         e.preventDefault();
 
-        // Check if all password rules are met
-        if (!isPasswordValid()) {
+
+        // Get reCAPTCHA response token
+        let recaptchaResponse = grecaptcha.getResponse();
+
+        if (!recaptchaResponse) {
           Swal.fire({
             icon: 'error',
-            title: 'Weak Password',
-            text: 'Please ensure your password meets all the requirements.'
+            title: 'reCAPTCHA Error',
+            text: 'Please complete the reCAPTCHA challenge.'
           });
-          $('#password').addClass("is-invalid");
           return false;
         }
+
+        // Add reCAPTCHA response to form data
+        let formData = $(this).serialize() + "&g-recaptcha-response=" + recaptchaResponse;
+
+        var _this = $(this);
+        $(".pop-msg").remove();
+        $('#password, #cpassword').removeClass("is-invalid");
 
         // Password match validation
         if ($("#password").val() !== $("#cpassword").val()) {
@@ -270,27 +278,16 @@ require_once('inc/header.php');
           return false;
         }
 
-        // Other existing validations (e.g., reCAPTCHA)
-        let recaptchaResponse = grecaptcha.getResponse();
-        if (!recaptchaResponse) {
-          Swal.fire({
-            icon: 'error',
-            title: 'reCAPTCHA Error',
-            text: 'Please complete the reCAPTCHA challenge.'
-          });
-          return false;
-        }
-
-        // Prepare form data and submit via AJAX
-        let formData = $(this).serialize() + "&g-recaptcha-response=" + recaptchaResponse;
         start_loader();
+        // AJAX submission
         $.ajax({
           url: _base_url_ + "classes/Users.php?f=save_student",
           method: 'POST',
           data: formData,
           dataType: 'json',
           success: function (resp) {
-            end_loader();
+            end_loader(); // Hide loader
+
             if (resp.status === 'success') {
               Swal.fire({
                 icon: 'success',
@@ -298,7 +295,7 @@ require_once('inc/header.php');
                 text: 'Your account has been successfully created.',
                 confirmButtonText: 'Go to Login'
               }).then(() => {
-                window.location.href = "./login.php";
+                window.location.href = "./login.php"; // Redirect on success
               });
             } else {
               Swal.fire({
@@ -306,21 +303,27 @@ require_once('inc/header.php');
                 title: 'Registration Failed',
                 text: resp.msg || 'An unknown error occurred. Please try again later.'
               });
-              grecaptcha.reset();
+              grecaptcha.reset(); // Reset reCAPTCHA for another attempt
             }
           },
-          error: function (xhr) {
-            end_loader();
+          error: function (xhr, status, error) {
+            end_loader(); // Hide loader
+
+            // Log the response for debugging
+            console.error(xhr.responseText);
+
             Swal.fire({
               icon: 'error',
               title: 'Server Error',
-              text: 'An error occurred. Please try again later.',
-              footer: `<pre>${xhr.responseText}</pre>`
+              text: 'An error occurred while processing your request. Please try again later.',
+              footer: `<pre>${xhr.responseText}</pre>` // Show raw response
             });
-            grecaptcha.reset();
+            grecaptcha.reset(); // Reset reCAPTCHA for another attempt
           }
         });
+
       });
+
 
       // Function to check for invalid characters
       var hasInvalidChars = function (input) {
