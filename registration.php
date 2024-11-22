@@ -243,9 +243,10 @@ require_once('inc/header.php');
                   </div>
                   <div class="row">
                     <div class="content">
-                      <div class="form-group col-md-6">
-                        <p>Password must contains</p>
-                        <ul class="requirement-list">
+                      <p>Password must contains</p>
+                      <ul class="requirement-list d-flex flex-wrap">
+                        <!-- Left Column -->
+                        <div class="left-column">
                           <li>
                             <i class="fa-solid fa-circle"></i>
                             <span>At least 8 characters length</span>
@@ -254,42 +255,40 @@ require_once('inc/header.php');
                             <i class="fa-solid fa-circle"></i>
                             <span>At least 1 number (0...9)</span>
                           </li>
-                        </ul>
+                        </div>
+                        <!-- Right Column -->
+                        <div class="right-column">
+                          <li>
+                            <i class="fa-solid fa-circle"></i>
+                            <span>At least 1 lowercase letter (a...z)</span>
+                          </li>
+                          <li>
+                            <i class="fa-solid fa-circle"></i>
+                            <span>At least 1 special symbol (!...$)</span>
+                          </li>
+                          <li>
+                            <i class="fa-solid fa-circle"></i>
+                            <span>At least 1 uppercase letter (A...Z)</span>
+                          </li>
+                        </div>
+                      </ul>
+                    </div>
+
+
+
+                    <div class="form-group">
+                      <div class="g-recaptcha" data-sitekey="6LdkGoUqAAAAAEmIB2Py685bbQiALvcZ3a4MOjDx"></div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="row">
+                      <div class="col-md-6">
+                        <a href="<?php echo base_url ?>" class="btn btn-light">Go Back</a>
                       </div>
-                      <div class="form-group col-md-6">
-                        <ul class="requirement-list"></ul>
-                        <li>
-                          <i class="fa-solid fa-circle"></i>
-                          <span>At least 1 lowercase letter (a...z)</span>
-                        </li>
-                        <li>
-                          <i class="fa-solid fa-circle"></i>
-                          <span>At least 1 special symbol (!...$)</span>
-                        </li>
-                        <li>
-                          <i class="fa-solid fa-circle"></i>
-                          <span>At least 1 uppercase letter (A...Z)</span>
-                        </li>
-                        </ul>
+                      <div class="col-md-6 text-right">
+                        <button type="submit" class="btn btn-primary">Register</button>
                       </div>
                     </div>
-                  </div>
-
-
-
-                  <div class="form-group">
-                    <div class="g-recaptcha" data-sitekey="6LdkGoUqAAAAAEmIB2Py685bbQiALvcZ3a4MOjDx"></div>
-                  </div>
-
-                  <!-- Buttons -->
-                  <div class="row">
-                    <div class="col-md-6">
-                      <a href="<?php echo base_url ?>" class="btn btn-light">Go Back</a>
-                    </div>
-                    <div class="col-md-6 text-right">
-                      <button type="submit" class="btn btn-primary">Register</button>
-                    </div>
-                  </div>
                 </form>
               </div>
             </div>
