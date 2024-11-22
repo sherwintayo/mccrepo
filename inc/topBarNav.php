@@ -479,7 +479,7 @@
             <?php if ($_settings->userdata('id') > 0): ?>
               <div class="dropdown">
                 <button type="button" class="btn btn-rounded badge badge-light dropdown-toggle dropdown-icon"
-                  data-toggle=" dropdown">
+                  data-toggle="dropdown">
                   <span>
                     <img
                       src="<?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>"
@@ -491,8 +491,8 @@
                 <div class="dropdown-menu myUserDropdown" role="menu">
                   <a href="./?page=profile" class="myName">
                     <img
-                      src=" <?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>"
-                      class="img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar"
+                      src="<?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>"
+                      class=" img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar"
                       style="border: none;">
                     <span class="username-text">
                       <?= htmlspecialchars(!empty($_settings->userdata('email')) ? $_settings->userdata('email') : $_settings->userdata('username'), ENT_QUOTES, 'UTF-8') ?>
@@ -509,14 +509,8 @@
                   UP</a>
               </li>
               <li class="nav-item" style="list-style: none;">
-                <a href="./login" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">STUDENT
-                  SIGN IN</a>
-              </li>
-              <li class="nav-item" style="list-style: none;">
-                <a href="./admin/login" class="navlink mx-1 text-light"
-                  style="text-decoration: none; list-style: none;">ADMIN
-                  SIGN
-                  IN</a>
+                <a href="#" class="navlink mx-1 text-light" style="text-decoration: none;" data-bs-toggle="modal"
+                  data-bs-target="#signInModal">SIGN IN</a>
               </li>
             <?php endif; ?>
           </div>
