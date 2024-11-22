@@ -97,7 +97,7 @@
   <div class="container ">
     <a href="./" class="navbar-brand">
       <img src="<?php echo htmlspecialchars(validate_image($_settings->info('logo')), ENT_QUOTES, 'UTF-8') ?>"
-        alt="Site Logo" class="brand-image img-circle elevation-3">
+        alt="Site Logo" class="brand-image img-circle">
       <span class="myBrandName"><?= $_settings->info('short_name') ?></span>
     </a>
 
