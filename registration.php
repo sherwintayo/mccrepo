@@ -247,6 +247,18 @@ require_once('inc/header.php');
       $('#registration-form').submit(function (e) {
         e.preventDefault();
 
+        // Check if all password rules are met
+        if (!isPasswordValid()) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Weak Password',
+            text: 'Please ensure your password meets all the requirements.'
+          });
+          $('#password').addClass("is-invalid");
+          return false;
+        }
+
+
         // Get reCAPTCHA response token
         let recaptchaResponse = grecaptcha.getResponse();
 
