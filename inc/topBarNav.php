@@ -251,7 +251,7 @@
 
             <!-- Notification Dropdown -->
             <div class="dropdown-menu dropdown-menu-right">
-              <span class="dropdown-item dropdown-header"><?= count($notifications) ?> Notifications</span>
+              <span class="dropdown-item dropdown-header"><?= count($unread_count) ?> Notifications</span>
               <div class="dropdown-divider"></div>
               <?php if (count($notifications) > 0): ?>
                 <?php foreach ($notifications as $notif): ?>
