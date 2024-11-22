@@ -246,12 +246,12 @@
               <i class="fa fa-bell text-white"></i>
               <?php if ($unread_count > 0): ?>
                 <span class="badge badge-danger navbar-badge"><?= $unread_count ?></span>
-              <?php endif; ?>
-            </a>
+              </a>
 
-            <!-- Notification Dropdown -->
-            <div class="dropdown-menu dropdown-menu-right">
-              <span class="dropdown-item dropdown-header"><?= count($unread_count) ?> Notifications</span>
+              <!-- Notification Dropdown -->
+              <div class="dropdown-menu dropdown-menu-right">
+                <span class="dropdown-item dropdown-header"><?= count($unread_count) ?> Notifications</span>
+              <?php endif; ?>
               <div class="dropdown-divider"></div>
               <?php if (count($notifications) > 0): ?>
                 <?php foreach ($notifications as $notif): ?>
