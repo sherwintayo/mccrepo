@@ -326,7 +326,8 @@
             SIGN IN</a>
         </li>
         <li class="nav-item" style="list-style: none;">
-          <a href="./admin" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">ADMIN SIGN
+          <a href="./admin/login" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">ADMIN
+            SIGN
             IN</a>
         </li>
       <?php endif; ?>
