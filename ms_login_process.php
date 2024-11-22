@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $update->execute();
 
         // PHPMailer
-        $register_link = base_url . "registration.php?token=$token";
+        $register_link = base_url . "registration?token=$token";
         $mail = new PHPMailer(true);
 
         try {
