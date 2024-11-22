@@ -6,7 +6,7 @@
       position: fixed !important;
       top: 0 !important;
       z-index: 1037;
-      padding: 1em 1.5em !important;
+      padding: .5em 1em !important;
     }
 
     .nav-item .dropdown-menu {

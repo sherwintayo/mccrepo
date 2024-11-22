@@ -79,6 +79,7 @@
   height: 30px;
   border-radius: 50%; /* Ensure the image is circular */
   margin-right: 10px; /* Space between image and text */
+  box-shadow: none;
 }
 
 .myUserDropdown .myName .username-text {
@@ -247,9 +248,9 @@
     display: none !important;
   }
 
-  .navbar {
+  /* .navbar {
     height: 13vh;
-  }
+  } */
   .navbar .container {
     margin-top: 0;
   }
