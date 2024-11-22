@@ -278,6 +278,17 @@ require_once('inc/header.php');
           return false;
         }
 
+        // Check if all password rules are met
+        if (!isPasswordValid()) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Weak Password',
+            text: 'Please ensure your password meets all the requirements.'
+          });
+          $('#password').addClass("is-invalid");
+          return false;
+        }
+
         start_loader();
         // AJAX submission
         $.ajax({

@@ -36,3 +36,8 @@ passwordInput.addEventListener("keyup", (e) => {
     }
   });
 });
+
+// Check if all password requirements are met
+function isPasswordValid() {
+  return requirements.every((req) => req.regex.test(passwordInput.value));
+}
