@@ -40,15 +40,3 @@ passwordInput.addEventListener("input", (e) => {
 function isPasswordValid() {
   return requirements.every((req) => req.regex.test(passwordInput.value));
 }
-
-// Toggle visibility for password fields
-eyeIcons.forEach((icon) => {
-  icon.addEventListener("click", (e) => {
-    const targetInput =
-      e.target.id === "eye-password" ? passwordInput : cpasswordInput;
-    const inputType = targetInput.type === "password" ? "text" : "password";
-    targetInput.type = inputType;
-    e.target.className =
-      inputType === "password" ? "fa fa-eye" : "fa fa-eye-slash";
-  });
-});
