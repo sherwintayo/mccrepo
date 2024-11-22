@@ -182,12 +182,6 @@
           return; // Stop submission if validation fails
         }
 
-        // Validate password format
-        // if (!validatePassword(password)) {
-        //   setValidationMessage(passwordInput, "Password must be at least 8 characters long and contain an uppercase letter, lowercase letter, number, and special character.");
-        //   return; // Stop submission if validation fails
-        // }
-
         // Check for invalid characters in email and password
         if (hasInvalidChars(email)) {
           setValidationMessage(emailInput, "Email must not contain single quotes: '" + email + "'");

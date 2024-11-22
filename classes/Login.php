@@ -113,7 +113,7 @@ class Login extends DBConnection
         if (!$responseKeys['success']) {
             return json_encode([
                 'status' => 'captcha_failed',
-                'msg' => 'reCAPTCHA validation failed. Please try again.'
+                'msg' => 'reCAPTCHA validation failed. Please try again or reload the page.'
             ]);
         }
 

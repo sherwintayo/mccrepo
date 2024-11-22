@@ -92,51 +92,51 @@
 
     /* MODAL */
 
-    .modal-dialog {
+    .myNavs .modal-dialog {
       margin-left: -3px;
       margin-top: -3px;
       width: 85%;
     }
 
-    .modal-dialog .modal-content {
+    .myNavs .modal-dialog .modal-content {
       background-color: #b51b23 !important;
     }
 
     /* MODAL HEADER */
 
-    .modal-dialog .modal-header,
-    .modal-dialog .modal-footer {
+    .myNavs .modal-dialog .modal-header,
+    .myNavs .modal-dialog .modal-footer {
       border: none;
     }
 
-    .modal-dialog .modal-header {
+    .myNavs .modal-dialog .modal-header {
       height: 86px;
     }
 
-    .modal-dialog .modal-header img {
+    .myNavs .modal-dialog .modal-header img {
       max-height: 40px;
       opacity: 0.8;
     }
 
-    .modal-dialog .modal-header .myHeaderLeft {
+    .myNavs .modal-dialog .modal-header .myHeaderLeft {
       margin: 2px 0 5px 2px;
     }
 
-    .modal-dialog .nav-link i,
-    .modal-dialog .modal-header .myHeaderRight .dropdown .dropdown-menu .dropdown-item i {
+    .myNavs .modal-dialog .nav-link i,
+    .myNavs .modal-dialog .modal-header .myHeaderRight .dropdown .dropdown-menu .dropdown-item i {
       margin-right: 10px;
       color: #f9f06d !important;
     }
 
-    .modal-dialog .modal-header .myHeaderRight .notification-icon i {
+    .myNavs .modal-dialog .modal-header .myHeaderRight .notification-icon i {
       color: rgba(255, 255, 255, 0.6) !important;
     }
 
-    .modal-dialog .modal-header .myHeaderRight .dropdown .dropdown-menu .myName {
+    .myNavs .modal-dialog .modal-header .myHeaderRight .dropdown .dropdown-menu .myName {
       color: rgba(255, 255, 255, 0.6) !important;
     }
 
-    .modal-dialog .modal-header .myBrandName {
+    .myNavs .modal-dialog .modal-header .myBrandName {
       color: #f9f06d !important;
       font-weight: 600;
       font-size: 20px;
@@ -145,456 +145,74 @@
     }
 
     /* MODAL BODY */
-    .modal-dialog .modal-body {
+    .myNavs .modal-dialog .modal-body {
       padding-top: 65px;
       background-color: #5b060a;
     }
 
-    .modal-dialog .nav-link {
+    .myNavs .modal-dialog .nav-link {
       font-size: 18px;
       margin-bottom: 30px;
       color: rgba(255, 255, 255, 0.6) !important;
     }
 
-    .modal-dialog .nav-link.active {
+    .myNavs .modal-dialog .nav-link.active {
       color: rgba(255, 255, 255, 0.6) !important;
       font-weight: 600;
     }
 
-    .modal-dialog .btn-secondary {
+    .myNavs .modal-dialog .btn-secondary {
       color: #2a252e !important;
       background-color: #f9f06d !important;
     }
 
     /* MODAL HEADER */
 
-    .modal-dialog .modal-footer .btn {
+    .myNavs .modal-dialog .modal-footer .btn {
       max-height: 35px;
     }
 
-    .modal-dialog .modal-footer .btn label {
+    .myNavs .modal-dialog .modal-footer .btn label {
       align-items: center;
     }
   </style>
 </head>
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg w-100" id="login-nav">
-  <div class="container ">
-    <a href="./" class="navbar-brand">
-      <img src="<?php echo htmlspecialchars(validate_image($_settings->info('logo')), ENT_QUOTES, 'UTF-8') ?>"
-        alt="Site Logo" class="brand-image img-circle">
-      <span class="myBrandName"><?= $_settings->info('short_name') ?></span>
-    </a>
+<div class="myNavs">
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg w-100" id="login-nav">
+    <div class="container ">
+      <a href="./" class="navbar-brand">
+        <img src="<?php echo htmlspecialchars(validate_image($_settings->info('logo')), ENT_QUOTES, 'UTF-8') ?>"
+          alt="Site Logo" class="brand-image img-circle">
+        <span class="myBrandName"><?= $_settings->info('short_name') ?></span>
+      </a>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="modal" data-bs-target="#navbar-modal"
-      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-bs-toggle="modal" data-bs-target="#navbar-modal"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 
-      <!-- Button Toggle -->
-      <input type="checkbox" id="toggle-menu" class="toggle-menu">
-      <label for="toggle-menu" class="toggle-btn">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
-      </label>
-    </button>
+        <!-- Button Toggle -->
+        <input type="checkbox" id="toggle-menu" class="toggle-menu">
+        <label for="toggle-menu" class="toggle-btn">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </label>
+      </button>
 
-    <div class="collapse navbar-collapse mr-20" id="navbarSupportedContent">
-      <ul class="navbar-nav justify-content-center flex-grow-1 ms-auto mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active <?= isset($page) && $page == 'home' ? "active" : "" ?>" aria-current="page"
-            href="./">HOME</a>
-        </li>
-        <li class="nav-item">
-          <a href="./?page=projects"
-            class="nav-link <?= isset($page) && $page == 'projects' ? "active" : "" ?>">PROJECTS</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-            class="nav-link dropdown-toggle <?= isset($page) && $page == 'projects_per_program' ? "active" : "" ?>">PROGRAM</a>
-          <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow"
-            style="left: 0px; right: inherit;">
-            <?php
-            $programs = $conn->query("SELECT * FROM program_list where status = 1 order by name asc");
-            $dI = $programs->num_rows;
-            while ($row = $programs->fetch_assoc()):
-              $dI--;
-              ?>
-              <li>
-                <a href="./?page=projects_per_program&id=<?= htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8') ?>"
-                  class="dropdown-item"><?= ucwords($row['name']) ?></a>
-                <?php if ($dI != 0): ?>
-                <li class="dropdown-divider"></li>
-              <?php endif; ?>
-          </li>
-        <?php endwhile; ?>
-      </ul>
-      </li>
-      <li class="nav-item dropdown">
-        <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-          class="nav-link dropdown-toggle <?= isset($page) && $page == 'projects_per_curriculum' ? "active" : "" ?>">CURRICULUM</a>
-        <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow" style="left: 0px; right: inherit;">
-          <?php
-          $curriculums = $conn->query("SELECT * FROM curriculum_list where status = 1 order by name asc");
-          $cI = $curriculums->num_rows;
-          while ($row = $curriculums->fetch_assoc()):
-            $cI--;
-            ?>
-            <li>
-              <a href="./?page=projects_per_curriculum&id=<?= htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8') ?>"
-                class="dropdown-item"><?= ucwords($row['name']) ?></a>
-              <?php if ($cI != 0): ?>
-              <li class="dropdown-divider"></li>
-            <?php endif; ?>
-        </li>
-      <?php endwhile; ?>
-      </ul>
-      </li>
-      <li class="nav-item">
-        <a href="./?page=about" class="nav-link <?= isset($page) && $page == 'about' ? "active" : "" ?>">ABOUT US</a>
-      </li>
-      <?php if ($_settings->userdata('id') > 0): ?>
-        <li class="nav-item">
-          <a href="./?page=studentprofile"
-            class="nav-link <?= isset($page) && $page == 'profile' ? "active" : "" ?>">Profile</a>
-        </li>
-        <li class="nav-item">
-          <a href="./?page=submit-archive"
-            class="nav-link <?= isset($page) && $page == 'submit-archive' ? "active" : "" ?>">Submit Thesis/Capstone</a>
-        </li>
-      <?php endif; ?>
-      </ul>
-    </div>
-
-    <!-- Right Section: Search and User Profile -->
-    <div class="myRightNav d-flex gap-3 align-items-center">
-      <!-- Search Icon -->
-      <div class="me-3">
-        <a href="javascript:void(0)" class="text-navy" id="search_icon">
-          <i class="fa fa-search text-white"></i>
-        </a>
-        <div class="position-relative">
-          <div id="search-field" class="position-absolute">
-            <input type="search" id="search-input" class="form-control rounded-0" required placeholder="Search..."
-              value="<?= htmlspecialchars(isset($_GET['q']) ? $_GET['q'] : '', ENT_QUOTES, 'UTF-8') ?>">
-          </div>
-        </div>
-      </div>
-
-      <?php
-      $student_id = $_settings->userdata('id'); // Current logged-in user ID
-      $notifications = [];
-      $unread_count = 0;
-
-      if ($student_id) {
-        // Fetch general notifications
-        $notif_query = $conn->query("SELECT id, message, status, date_created, NULL as download_id, NULL as file_title 
-                                FROM notifications 
-                                WHERE student_id = $student_id
-                                ORDER BY date_created DESC");
-        while ($row = $notif_query->fetch_assoc()) {
-          $notifications[] = $row;
-          if ($row['status'] === 'unread') {
-            $unread_count++;
-          }
-        }
-
-        // Fetch approved download requests
-        $download_query = $conn->query("
-        SELECT dr.file_id as archive_id, dr.id as download_id, dr.status_read as status, al.title as file_title, dr.requested_at as date_created 
-        FROM download_requests dr
-        JOIN archive_list al ON dr.file_id = al.id
-        WHERE dr.user_id = $student_id AND dr.status = 'approved'
-        ORDER BY dr.requested_at DESC
-    ");
-        while ($row = $download_query->fetch_assoc()) {
-          $row['message'] = "Your request to download '<b>" . htmlspecialchars($row['file_title'], ENT_QUOTES, 'UTF-8') . "</b>' is approved.";
-          $notifications[] = $row;
-          if ($row['status'] === 'unread') {
-            $unread_count++;
-          }
-        }
-
-        // Sort all notifications by date
-        usort($notifications, function ($a, $b) {
-          return strtotime($b['date_created']) - strtotime($a['date_created']);
-        });
-      }
-      ?>
-
-
-      <?php if ($student_id): ?> <!-- Only show if user is logged in -->
-        <div class="me-3 position-relative">
-          <a class="notification_icon" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-            aria-expanded="false">
-            <i class="fa fa-bell text-white"></i>
-            <?php if ($unread_count > 0): ?>
-              <span class="badge badge-danger navbar-badge"><?= $unread_count ?></span>
-            <?php endif; ?>
-          </a>
-
-          <!-- Notification Dropdown -->
-          <div class="dropdown-menu dropdown-menu-right">
-            <span class="dropdown-item dropdown-header"><?= count($notifications) ?> Notifications</span>
-            <div class="dropdown-divider"></div>
-            <?php if (count($notifications) > 0): ?>
-              <?php foreach ($notifications as $notif): ?>
-                <?php if (isset($notif['download_id'])): ?>
-                  <a href="javascript:void(0);" class="dropdown-item notification-link" data-id="<?= $notif['download_id'] ?>"
-                    data-files="<?= htmlspecialchars(json_encode([
-                      'document' => base_url . 'uploads/pdf/Document-' . $notif['archive_id'] . '.zip',
-                      'project' => base_url . 'uploads/files/Files-' . $notif['archive_id'] . '.zip',
-                      'sql' => base_url . 'uploads/sql/SQL-' . $notif['archive_id'] . '.zip',
-                    ]), ENT_QUOTES, 'UTF-8') ?>" data-download="true" onclick="handleNotificationClick(this)">
-                    <i class="fas fa-download text-success"></i>
-                    Your request to download '<b><?= htmlspecialchars($notif['file_title'], ENT_QUOTES, 'UTF-8') ?></b>' is
-                    approved.
-                    <span class="notification-time"><?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
-                    <?php if ($notif['status'] === 'unread'): ?>
-                      <span class="unread-indicator"></span> <!-- Blue circle for unread -->
-                    <?php endif; ?>
-                  </a>
-                <?php else: ?>
-
-                  <a href="javascript:void(0);" class="dropdown-item notification-link" data-id="<?= $notif['id'] ?>"
-                    data-download="false" onclick="handleNotificationClick(this)">
-                    <i class="fas fa-envelope text-info"></i>
-                    <span><?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?></span>
-                    <span class="notification-time"><?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
-                    <?php if ($notif['status'] === 'unread'): ?>
-                      <span class="unread-indicator"></span>
-                    <?php endif; ?>
-                  </a>
-                <?php endif; ?>
-                <div class="dropdown-divider"></div>
-              <?php endforeach; ?>
-            <?php else: ?>
-              <span class="dropdown-item text-light-50">No notifications</span>
-            <?php endif; ?>
-            <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
-          </div>
-        </div>
-      <?php endif; ?>
-
-
-
-      <!-- User Profile -->
-      <?php if ($_settings->userdata('id') > 0): ?>
-        <div class="dropdown">
-          <button type="button" class="btn btn-rounded badge badge-light dropdown-toggle dropdown-icon"
-            data-toggle="dropdown">
-            <span>
-              <img src="<?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>"
-                class="img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar">
-            </span>
-            <span class="sr-only">Toggle Dropdown</span>
-          </button>
-          <div class="dropdown-menu myUserDropdown" role="menu">
-            <a href="./?page=profile" class="myName">
-              <img src="<?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>"
-                class="img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar">
-              <span class="username-text">
-                <?= htmlspecialchars(!empty($_settings->userdata('email')) ? $_settings->userdata('email') : $_settings->userdata('username'), ENT_QUOTES, 'UTF-8') ?>
-              </span>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="<?= base_url . 'classes/Login.php?f=student_logout' ?>"><i
-                class="fas fa-sign-out-alt"></i> Logout</a>
-          </div>
-        </div>
-      <?php else: ?>
-        <li class="nav-item" style="list-style: none;">
-          <a href="./ms_login" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">SIGN
-            UP</a>
-        </li>
-        <li class="nav-item" style="list-style: none;">
-          <a href="./login" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">STUDENT
-            SIGN IN</a>
-        </li>
-        <li class="nav-item" style="list-style: none;">
-          <a href="./admin/login" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">ADMIN
-            SIGN
-            IN</a>
-        </li>
-      <?php endif; ?>
-    </div>
-  </div>
-</nav>
-
-<!-- Modal -->
-<div class="modal fade" data-bs-backdrop="static" id="navbar-modal" tabindex="-1" aria-labelledby="navbar-modalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div class="myHeaderLeft my-1">
-          <img src="<?php echo htmlspecialchars(validate_image($_settings->info('logo')), ENT_QUOTES, 'UTF-8') ?>"
-            alt="Site Logo" class="brand-image img-circle elevation-3">
-          <span class="myBrandName"><?= $_settings->info('short_name') ?></span>
-        </div>
-        <div class="myHeaderRight d-flex align-items-center">
-          <!-- Search Icon -->
-          <div class="me-3">
-            <a href="javascript:void(0)" class="text-navy" id="search_icon">
-              <i class="fa fa-search text-white"></i>
-            </a>
-            <div class="position-relative">
-              <div id="search-field" class="position-absolute">
-                <input type="search" id="search-input" class="form-control rounded-0" required placeholder="Search..."
-                  value="<?= htmlspecialchars(isset($_GET['q']) ? $_GET['q'] : '', ENT_QUOTES, 'UTF-8') ?>">
-              </div>
-            </div>
-          </div>
-
-          <?php
-          $student_id = $_settings->userdata('id'); // Current logged-in user ID
-          $notifications = [];
-          $unread_count = 0;
-
-          if ($student_id) {
-            // Fetch general notifications
-            $notif_query = $conn->query("SELECT id, message, status, date_created, NULL as download_id, NULL as file_title 
-                                FROM notifications 
-                                WHERE student_id = $student_id
-                                ORDER BY date_created DESC");
-            while ($row = $notif_query->fetch_assoc()) {
-              $notifications[] = $row;
-              if ($row['status'] === 'unread') {
-                $unread_count++;
-              }
-            }
-
-            // Fetch approved download requests
-            $download_query = $conn->query("
-        SELECT dr.file_id as archive_id, dr.id as download_id, dr.status_read as status, al.title as file_title, dr.requested_at as date_created 
-        FROM download_requests dr
-        JOIN archive_list al ON dr.file_id = al.id
-        WHERE dr.user_id = $student_id AND dr.status = 'approved'
-        ORDER BY dr.requested_at DESC
-    ");
-            while ($row = $download_query->fetch_assoc()) {
-              $row['message'] = "Your request to download '<b>" . htmlspecialchars($row['file_title'], ENT_QUOTES, 'UTF-8') . "</b>' is approved.";
-              $notifications[] = $row;
-              if ($row['status'] === 'unread') {
-                $unread_count++;
-              }
-            }
-
-            // Sort all notifications by date
-            usort($notifications, function ($a, $b) {
-              return strtotime($b['date_created']) - strtotime($a['date_created']);
-            });
-          }
-          ?>
-
-
-          <?php if ($student_id): ?> <!-- Only show if user is logged in -->
-            <div class="me-3 position-relative">
-              <a class="notification_icon" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-                aria-expanded="false">
-                <i class="fa fa-bell text-white"></i>
-                <?php if ($unread_count > 0): ?>
-                  <span class="badge badge-danger navbar-badge"><?= $unread_count ?></span>
-                <?php endif; ?>
-              </a>
-
-              <!-- Notification Dropdown -->
-              <div class="dropdown-menu dropdown-menu-right">
-                <span class="dropdown-item dropdown-header"><?= count($notifications) ?> Notifications</span>
-                <div class="dropdown-divider"></div>
-                <?php if (count($notifications) > 0): ?>
-                  <?php foreach ($notifications as $notif): ?>
-                    <?php if (isset($notif['download_id'])): ?>
-                      <a href="javascript:void(0);" class="dropdown-item notification-link"
-                        data-id="<?= $notif['download_id'] ?>" data-files="<?= htmlspecialchars(json_encode([
-                            'document' => base_url . 'uploads/pdf/Document-' . $notif['archive_id'] . '.zip',
-                            'project' => base_url . 'uploads/files/Files-' . $notif['archive_id'] . '.zip',
-                            'sql' => base_url . 'uploads/sql/SQL-' . $notif['archive_id'] . '.zip',
-                          ]), ENT_QUOTES, 'UTF-8') ?>" data-download="true" onclick="handleNotificationClick(this)">
-                        <i class="fas fa-download text-success"></i>
-                        Your request to download '<b><?= htmlspecialchars($notif['file_title'], ENT_QUOTES, 'UTF-8') ?></b>' is
-                        approved.
-                        <span class="notification-time"><?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
-                        <?php if ($notif['status'] === 'unread'): ?>
-                          <span class="unread-indicator"></span> <!-- Blue circle for unread -->
-                        <?php endif; ?>
-                      </a>
-                    <?php else: ?>
-
-                      <a href="javascript:void(0);" class="dropdown-item notification-link" data-id="<?= $notif['id'] ?>"
-                        data-download="false" onclick="handleNotificationClick(this)">
-                        <i class="fas fa-envelope text-info"></i>
-                        <span><?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?></span>
-                        <span class="notification-time"><?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
-                        <?php if ($notif['status'] === 'unread'): ?>
-                          <span class="unread-indicator"></span>
-                        <?php endif; ?>
-                      </a>
-                    <?php endif; ?>
-                    <div class="dropdown-divider"></div>
-                  <?php endforeach; ?>
-                <?php else: ?>
-                  <span class="dropdown-item text-light-50">No notifications</span>
-                <?php endif; ?>
-                <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
-              </div>
-            </div>
-          <?php endif; ?>
-
-
-
-          <!-- User Profile -->
-          <?php if ($_settings->userdata('id') > 0): ?>
-            <div class="dropdown">
-              <button type="button" class="btn btn-rounded badge badge-light dropdown-toggle dropdown-icon"
-                data-toggle="dropdown">
-                <span>
-                  <img src="<?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>"
-                    class="img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar">
-                </span>
-                <span class="sr-only">Toggle Dropdown</span>
-              </button>
-              <div class="dropdown-menu myUserDropdown" role="menu">
-                <a href="./?page=profile" class="myName">
-                  <img src="<?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>"
-                    class="img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar">
-                  <span class="username-text">
-                    <?= htmlspecialchars(!empty($_settings->userdata('email')) ? $_settings->userdata('email') : $_settings->userdata('username'), ENT_QUOTES, 'UTF-8') ?>
-                  </span>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="<?= base_url . 'classes/Login.php?f=student_logout' ?>"><i
-                    class="fas fa-sign-out-alt"></i> Logout</a>
-              </div>
-            </div>
-          <?php else: ?>
-            <li class="nav-item" style="list-style: none;">
-              <a href="./ms_login" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">SIGN
-                UP</a>
-            </li>
-            <li class="nav-item" style="list-style: none;">
-              <a href="#" class="navlink mx-1 text-light" style="text-decoration: none;" data-bs-toggle="modal"
-                data-bs-target="#signInModal">SIGN IN</a>
-            </li>
-          <?php endif; ?>
-        </div>
-      </div>
-
-      <!-- MODAL BODY -->
-      <div class="modal-body">
-        <ul class="navbar-nav ms-auto mb-lg-0">
+      <div class="collapse navbar-collapse mr-20" id="navbarSupportedContent">
+        <ul class="navbar-nav justify-content-center flex-grow-1 ms-auto mb-lg-0">
           <li class="nav-item">
             <a class="nav-link active <?= isset($page) && $page == 'home' ? "active" : "" ?>" aria-current="page"
-              href="./"><i class="fa fa-home"></i> HOME</a>
+              href="./">HOME</a>
           </li>
           <li class="nav-item">
-            <a href="./?page=projects" class="nav-link <?= isset($page) && $page == 'projects' ? "active" : "" ?>"><i
-                class="fa fa-project-diagram"></i> PROJECTS</a>
+            <a href="./?page=projects"
+              class="nav-link <?= isset($page) && $page == 'projects' ? "active" : "" ?>">PROJECTS</a>
           </li>
           <li class="nav-item dropdown">
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-              class="nav-link dropdown-toggle <?= isset($page) && $page == 'projects_per_program' ? "active" : "" ?>"><i
-                class="fa fa-graduation-cap"></i> PROGRAM</a>
+              class="nav-link dropdown-toggle <?= isset($page) && $page == 'projects_per_program' ? "active" : "" ?>">PROGRAM</a>
             <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow"
               style="left: 0px; right: inherit;">
               <?php
@@ -615,8 +233,7 @@
         </li>
         <li class="nav-item dropdown">
           <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-            class="nav-link dropdown-toggle <?= isset($page) && $page == 'projects_per_curriculum' ? "active" : "" ?>"><i
-              class="fa fa-school"></i> CURRICULUM</a>
+            class="nav-link dropdown-toggle <?= isset($page) && $page == 'projects_per_curriculum' ? "active" : "" ?>">CURRICULUM</a>
           <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow"
             style="left: 0px; right: inherit;">
             <?php
@@ -636,29 +253,418 @@
         </ul>
         </li>
         <li class="nav-item">
-          <a href="./?page=about" class="nav-link <?= isset($page) && $page == 'about' ? "active" : "" ?>"><i
-              class="fa fa-info-circle"></i> ABOUT US</a>
+          <a href="./?page=about" class="nav-link <?= isset($page) && $page == 'about' ? "active" : "" ?>">ABOUT US</a>
         </li>
+        <?php if ($_settings->userdata('id') > 0): ?>
+          <li class="nav-item">
+            <a href="./?page=studentprofile"
+              class="nav-link <?= isset($page) && $page == 'profile' ? "active" : "" ?>">Profile</a>
+          </li>
+          <li class="nav-item">
+            <a href="./?page=submit-archive"
+              class="nav-link <?= isset($page) && $page == 'submit-archive' ? "active" : "" ?>">Submit Thesis/Capstone</a>
+          </li>
+        <?php endif; ?>
         </ul>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+      <!-- Right Section: Search and User Profile -->
+      <div class="myRightNav d-flex gap-3 align-items-center">
+        <!-- Search Icon -->
+        <div class="me-3">
+          <a href="javascript:void(0)" class="text-navy" id="search_icon">
+            <i class="fa fa-search text-white"></i>
+          </a>
+          <div class="position-relative">
+            <div id="search-field" class="position-absolute">
+              <input type="search" id="search-input" class="form-control rounded-0" required placeholder="Search..."
+                value="<?= htmlspecialchars(isset($_GET['q']) ? $_GET['q'] : '', ENT_QUOTES, 'UTF-8') ?>">
+            </div>
+          </div>
+        </div>
+
+        <?php
+        $student_id = $_settings->userdata('id'); // Current logged-in user ID
+        $notifications = [];
+        $unread_count = 0;
+
+        if ($student_id) {
+          // Fetch general notifications
+          $notif_query = $conn->query("SELECT id, message, status, date_created, NULL as download_id, NULL as file_title 
+                                FROM notifications 
+                                WHERE student_id = $student_id
+                                ORDER BY date_created DESC");
+          while ($row = $notif_query->fetch_assoc()) {
+            $notifications[] = $row;
+            if ($row['status'] === 'unread') {
+              $unread_count++;
+            }
+          }
+
+          // Fetch approved download requests
+          $download_query = $conn->query("
+        SELECT dr.file_id as archive_id, dr.id as download_id, dr.status_read as status, al.title as file_title, dr.requested_at as date_created 
+        FROM download_requests dr
+        JOIN archive_list al ON dr.file_id = al.id
+        WHERE dr.user_id = $student_id AND dr.status = 'approved'
+        ORDER BY dr.requested_at DESC
+    ");
+          while ($row = $download_query->fetch_assoc()) {
+            $row['message'] = "Your request to download '<b>" . htmlspecialchars($row['file_title'], ENT_QUOTES, 'UTF-8') . "</b>' is approved.";
+            $notifications[] = $row;
+            if ($row['status'] === 'unread') {
+              $unread_count++;
+            }
+          }
+
+          // Sort all notifications by date
+          usort($notifications, function ($a, $b) {
+            return strtotime($b['date_created']) - strtotime($a['date_created']);
+          });
+        }
+        ?>
+
+
+        <?php if ($student_id): ?> <!-- Only show if user is logged in -->
+          <div class="me-3 position-relative">
+            <a class="notification_icon" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+              aria-expanded="false">
+              <i class="fa fa-bell text-white"></i>
+              <?php if ($unread_count > 0): ?>
+                <span class="badge badge-danger navbar-badge"><?= $unread_count ?></span>
+              <?php endif; ?>
+            </a>
+
+            <!-- Notification Dropdown -->
+            <div class="dropdown-menu dropdown-menu-right">
+              <span class="dropdown-item dropdown-header"><?= count($notifications) ?> Notifications</span>
+              <div class="dropdown-divider"></div>
+              <?php if (count($notifications) > 0): ?>
+                <?php foreach ($notifications as $notif): ?>
+                  <?php if (isset($notif['download_id'])): ?>
+                    <a href="javascript:void(0);" class="dropdown-item notification-link" data-id="<?= $notif['download_id'] ?>"
+                      data-files="<?= htmlspecialchars(json_encode([
+                        'document' => base_url . 'uploads/pdf/Document-' . $notif['archive_id'] . '.zip',
+                        'project' => base_url . 'uploads/files/Files-' . $notif['archive_id'] . '.zip',
+                        'sql' => base_url . 'uploads/sql/SQL-' . $notif['archive_id'] . '.zip',
+                      ]), ENT_QUOTES, 'UTF-8') ?>" data-download="true" onclick="handleNotificationClick(this)">
+                      <i class="fas fa-download text-success"></i>
+                      Your request to download '<b><?= htmlspecialchars($notif['file_title'], ENT_QUOTES, 'UTF-8') ?></b>' is
+                      approved.
+                      <span class="notification-time"><?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
+                      <?php if ($notif['status'] === 'unread'): ?>
+                        <span class="unread-indicator"></span> <!-- Blue circle for unread -->
+                      <?php endif; ?>
+                    </a>
+                  <?php else: ?>
+
+                    <a href="javascript:void(0);" class="dropdown-item notification-link" data-id="<?= $notif['id'] ?>"
+                      data-download="false" onclick="handleNotificationClick(this)">
+                      <i class="fas fa-envelope text-info"></i>
+                      <span><?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?></span>
+                      <span class="notification-time"><?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
+                      <?php if ($notif['status'] === 'unread'): ?>
+                        <span class="unread-indicator"></span>
+                      <?php endif; ?>
+                    </a>
+                  <?php endif; ?>
+                  <div class="dropdown-divider"></div>
+                <?php endforeach; ?>
+              <?php else: ?>
+                <span class="dropdown-item text-light-50">No notifications</span>
+              <?php endif; ?>
+              <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+            </div>
+          </div>
+        <?php endif; ?>
+
+
+
+        <!-- User Profile -->
+        <?php if ($_settings->userdata('id') > 0): ?>
+          <div class="dropdown">
+            <button type="button" class="btn btn-rounded badge badge-light dropdown-toggle dropdown-icon"
+              data-toggle="dropdown">
+              <span>
+                <img src="<?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>"
+                  class="img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar">
+              </span>
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div class="dropdown-menu myUserDropdown" role="menu">
+              <a href="./?page=profile" class="myName">
+                <img src="<?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>"
+                  class="img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar">
+                <span class="username-text">
+                  <?= htmlspecialchars(!empty($_settings->userdata('email')) ? $_settings->userdata('email') : $_settings->userdata('username'), ENT_QUOTES, 'UTF-8') ?>
+                </span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="<?= base_url . 'classes/Login.php?f=student_logout' ?>"><i
+                  class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+          </div>
+        <?php else: ?>
+          <li class="nav-item" style="list-style: none;">
+            <a href="./ms_login" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">SIGN
+              UP</a>
+          </li>
+          <li class="nav-item" style="list-style: none;">
+            <a href="./login" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">STUDENT
+              SIGN IN</a>
+          </li>
+          <li class="nav-item" style="list-style: none;">
+            <a href="./admin/login" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">ADMIN
+              SIGN
+              IN</a>
+          </li>
+        <?php endif; ?>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Modal -->
+  <div class="modal fade" data-bs-backdrop="static" id="navbar-modal" tabindex="-1" aria-labelledby="navbar-modalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="myHeaderLeft my-1">
+            <img src="<?php echo htmlspecialchars(validate_image($_settings->info('logo')), ENT_QUOTES, 'UTF-8') ?>"
+              alt="Site Logo" class="brand-image img-circle elevation-3">
+            <span class="myBrandName"><?= $_settings->info('short_name') ?></span>
+          </div>
+          <div class="myHeaderRight d-flex align-items-center">
+            <!-- Search Icon -->
+            <div class="me-3">
+              <a href="javascript:void(0)" class="text-navy" id="search_icon">
+                <i class="fa fa-search text-white"></i>
+              </a>
+              <div class="position-relative">
+                <div id="search-field" class="position-absolute">
+                  <input type="search" id="search-input" class="form-control rounded-0" required placeholder="Search..."
+                    value="<?= htmlspecialchars(isset($_GET['q']) ? $_GET['q'] : '', ENT_QUOTES, 'UTF-8') ?>">
+                </div>
+              </div>
+            </div>
+
+            <?php
+            $student_id = $_settings->userdata('id'); // Current logged-in user ID
+            $notifications = [];
+            $unread_count = 0;
+
+            if ($student_id) {
+              // Fetch general notifications
+              $notif_query = $conn->query("SELECT id, message, status, date_created, NULL as download_id, NULL as file_title 
+                                FROM notifications 
+                                WHERE student_id = $student_id
+                                ORDER BY date_created DESC");
+              while ($row = $notif_query->fetch_assoc()) {
+                $notifications[] = $row;
+                if ($row['status'] === 'unread') {
+                  $unread_count++;
+                }
+              }
+
+              // Fetch approved download requests
+              $download_query = $conn->query("
+        SELECT dr.file_id as archive_id, dr.id as download_id, dr.status_read as status, al.title as file_title, dr.requested_at as date_created 
+        FROM download_requests dr
+        JOIN archive_list al ON dr.file_id = al.id
+        WHERE dr.user_id = $student_id AND dr.status = 'approved'
+        ORDER BY dr.requested_at DESC
+    ");
+              while ($row = $download_query->fetch_assoc()) {
+                $row['message'] = "Your request to download '<b>" . htmlspecialchars($row['file_title'], ENT_QUOTES, 'UTF-8') . "</b>' is approved.";
+                $notifications[] = $row;
+                if ($row['status'] === 'unread') {
+                  $unread_count++;
+                }
+              }
+
+              // Sort all notifications by date
+              usort($notifications, function ($a, $b) {
+                return strtotime($b['date_created']) - strtotime($a['date_created']);
+              });
+            }
+            ?>
+
+
+            <?php if ($student_id): ?> <!-- Only show if user is logged in -->
+              <div class="me-3 position-relative">
+                <a class="notification_icon" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+                  aria-expanded="false">
+                  <i class="fa fa-bell text-white"></i>
+                  <?php if ($unread_count > 0): ?>
+                    <span class="badge badge-danger navbar-badge"><?= $unread_count ?></span>
+                  <?php endif; ?>
+                </a>
+
+                <!-- Notification Dropdown -->
+                <div class="dropdown-menu dropdown-menu-right">
+                  <span class="dropdown-item dropdown-header"><?= count($notifications) ?> Notifications</span>
+                  <div class="dropdown-divider"></div>
+                  <?php if (count($notifications) > 0): ?>
+                    <?php foreach ($notifications as $notif): ?>
+                      <?php if (isset($notif['download_id'])): ?>
+                        <a href="javascript:void(0);" class="dropdown-item notification-link"
+                          data-id="<?= $notif['download_id'] ?>" data-files="<?= htmlspecialchars(json_encode([
+                              'document' => base_url . 'uploads/pdf/Document-' . $notif['archive_id'] . '.zip',
+                              'project' => base_url . 'uploads/files/Files-' . $notif['archive_id'] . '.zip',
+                              'sql' => base_url . 'uploads/sql/SQL-' . $notif['archive_id'] . '.zip',
+                            ]), ENT_QUOTES, 'UTF-8') ?>" data-download="true" onclick="handleNotificationClick(this)">
+                          <i class="fas fa-download text-success"></i>
+                          Your request to download '<b><?= htmlspecialchars($notif['file_title'], ENT_QUOTES, 'UTF-8') ?></b>'
+                          is
+                          approved.
+                          <span class="notification-time"><?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
+                          <?php if ($notif['status'] === 'unread'): ?>
+                            <span class="unread-indicator"></span> <!-- Blue circle for unread -->
+                          <?php endif; ?>
+                        </a>
+                      <?php else: ?>
+
+                        <a href="javascript:void(0);" class="dropdown-item notification-link" data-id="<?= $notif['id'] ?>"
+                          data-download="false" onclick="handleNotificationClick(this)">
+                          <i class="fas fa-envelope text-info"></i>
+                          <span><?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?></span>
+                          <span class="notification-time"><?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
+                          <?php if ($notif['status'] === 'unread'): ?>
+                            <span class="unread-indicator"></span>
+                          <?php endif; ?>
+                        </a>
+                      <?php endif; ?>
+                      <div class="dropdown-divider"></div>
+                    <?php endforeach; ?>
+                  <?php else: ?>
+                    <span class="dropdown-item text-light-50">No notifications</span>
+                  <?php endif; ?>
+                  <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+                </div>
+              </div>
+            <?php endif; ?>
+
+
+
+            <!-- User Profile -->
+            <?php if ($_settings->userdata('id') > 0): ?>
+              <div class="dropdown">
+                <button type="button" class="btn btn-rounded badge badge-light dropdown-toggle dropdown-icon"
+                  data-toggle="dropdown">
+                  <span>
+                    <img
+                      src="<?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>"
+                      class="img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar">
+                  </span>
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu myUserDropdown" role="menu">
+                  <a href="./?page=profile" class="myName">
+                    <img
+                      src="<?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>"
+                      class="img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar">
+                    <span class="username-text">
+                      <?= htmlspecialchars(!empty($_settings->userdata('email')) ? $_settings->userdata('email') : $_settings->userdata('username'), ENT_QUOTES, 'UTF-8') ?>
+                    </span>
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="<?= base_url . 'classes/Login.php?f=student_logout' ?>"><i
+                      class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+              </div>
+            <?php else: ?>
+              <li class="nav-item" style="list-style: none;">
+                <a href="./ms_login" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">SIGN
+                  UP</a>
+              </li>
+              <li class="nav-item" style="list-style: none;">
+                <a href="#" class="navlink mx-1 text-light" style="text-decoration: none;" data-bs-toggle="modal"
+                  data-bs-target="#signInModal">SIGN IN</a>
+              </li>
+            <?php endif; ?>
+          </div>
+        </div>
+
+        <!-- MODAL BODY -->
+        <div class="modal-body">
+          <ul class="navbar-nav ms-auto mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active <?= isset($page) && $page == 'home' ? "active" : "" ?>" aria-current="page"
+                href="./"><i class="fa fa-home"></i> HOME</a>
+            </li>
+            <li class="nav-item">
+              <a href="./?page=projects" class="nav-link <?= isset($page) && $page == 'projects' ? "active" : "" ?>"><i
+                  class="fa fa-project-diagram"></i> PROJECTS</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                class="nav-link dropdown-toggle <?= isset($page) && $page == 'projects_per_program' ? "active" : "" ?>"><i
+                  class="fa fa-graduation-cap"></i> PROGRAM</a>
+              <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow"
+                style="left: 0px; right: inherit;">
+                <?php
+                $programs = $conn->query("SELECT * FROM program_list where status = 1 order by name asc");
+                $dI = $programs->num_rows;
+                while ($row = $programs->fetch_assoc()):
+                  $dI--;
+                  ?>
+                  <li>
+                    <a href="./?page=projects_per_program&id=<?= htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8') ?>"
+                      class="dropdown-item"><?= ucwords($row['name']) ?></a>
+                    <?php if ($dI != 0): ?>
+                    <li class="dropdown-divider"></li>
+                  <?php endif; ?>
+              </li>
+            <?php endwhile; ?>
+          </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+              class="nav-link dropdown-toggle <?= isset($page) && $page == 'projects_per_curriculum' ? "active" : "" ?>"><i
+                class="fa fa-school"></i> CURRICULUM</a>
+            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow"
+              style="left: 0px; right: inherit;">
+              <?php
+              $curriculums = $conn->query("SELECT * FROM curriculum_list where status = 1 order by name asc");
+              $cI = $curriculums->num_rows;
+              while ($row = $curriculums->fetch_assoc()):
+                $cI--;
+                ?>
+                <li>
+                  <a href="./?page=projects_per_curriculum&id=<?= htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8') ?>"
+                    class="dropdown-item"><?= ucwords($row['name']) ?></a>
+                  <?php if ($cI != 0): ?>
+                  <li class="dropdown-divider"></li>
+                <?php endif; ?>
+            </li>
+          <?php endwhile; ?>
+          </ul>
+          </li>
+          <li class="nav-item">
+            <a href="./?page=about" class="nav-link <?= isset($page) && $page == 'about' ? "active" : "" ?>"><i
+                class="fa fa-info-circle"></i> ABOUT US</a>
+          </li>
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Sign In Modal -->
-<div class="modal fade" id="signInModal" tabindex="-1" aria-labelledby="signInModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="signInModalLabel">Sign in as</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body text-center">
-        <button id="studentSignIn" class="btn btn-primary mx-2">Student</button>
-        <button id="adminSignIn" class="btn btn-secondary mx-2">Admin</button>
+  <!-- Sign In Modal -->
+  <div class="modal fade" id="signInModal" tabindex="-1" aria-labelledby="signInModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="signInModalLabel">Sign in as</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+          <button id="studentSignIn" class="btn btn-primary mx-2">Student</button>
+          <button id="adminSignIn" class="btn btn-secondary mx-2">Admin</button>
+        </div>
       </div>
     </div>
   </div>
