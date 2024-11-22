@@ -8,7 +8,9 @@ require_once('inc/header.php');
 <head>
   <title>MS Login</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
   <link rel="stylesheet" href="myStyles/registerstyle.css">
+  <link rel="stylesheet" href="myStyles/registrationvalidation.css">
 </head>
 
 <style>
@@ -22,104 +24,6 @@ require_once('inc/header.php');
     background-image: url("dist/img/background.png");
     background-size: cover;
     background-repeat: no-repeat;
-  }
-
-
-  /* Add CSS for the eye icon */
-  .position-relative {
-    position: relative;
-  }
-
-  .toggle-password {
-    position: absolute;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
-    cursor: pointer;
-    color: #0e0c0c;
-  }
-
-  .toggle-password:hover {
-    color: #000;
-  }
-
-  /*Stong Password*/
-  .password-strength .progress {
-    height: 8px;
-    border-radius: 5px;
-  }
-
-  .password-strength .progress-bar {
-    transition: width 0.5s ease-in-out;
-  }
-
-  .progress-bar.weak {
-    background-color: red;
-  }
-
-  .progress-bar.moderate {
-    background-color: orange;
-  }
-
-  .progress-bar.good {
-    background-color: yellow;
-  }
-
-  .progress-bar.strong {
-    background-color: green;
-  }
-
-  /*Stong Password Validation*/
-
-  #password-validation li {
-    font-size: 0.9em;
-  }
-
-  #password-validation li.valid {
-    color: green;
-  }
-
-  #password-validation li.invalid {
-    color: red;
-  }
-
-  /* Add animation for smooth fading in */
-  #password-validation {
-    opacity: 0;
-    /* Initially hidden */
-    transform: translateY(-10px);
-    /* Slight upward shift */
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    /* Smooth transition */
-  }
-
-  #password-validation.show {
-    opacity: 1;
-    /* Fully visible */
-    transform: translateY(0);
-    /* Reset position */
-  }
-
-  /* Add slight bounce effect for individual list items when valid */
-  @keyframes bounceIn {
-    0% {
-      transform: scale(0.8);
-      opacity: 0.5;
-    }
-
-    50% {
-      transform: scale(1.1);
-      opacity: 1;
-    }
-
-    100% {
-      transform: scale(1);
-    }
-  }
-
-  #password-validation li.valid {
-    animation: bounceIn 0.3s ease;
-    /* Bounce effect when valid */
   }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -226,14 +130,14 @@ require_once('inc/header.php');
                     <small id="password-strength-text" class="text-muted">Enter a strong password.</small>
                   </div>
                   <div class="row">
-                    <div class="col-md-6 form-group position-relative">
+                    <div class="col-md-6 form-group position-relative pass-field">
                       <input type="password" name="password" id="password" placeholder="Password"
                         class="form-control form-control-border" required>
                       <span class="toggle-password" onclick="toggleVisibility('password')">
                         <i class="fa fa-eye" id="eye-password"></i>
                       </span>
                     </div>
-                    <div class="col-md-6 form-group position-relative">
+                    <div class="col-md-6 form-group position-relative pass-field">
                       <input type="password" id="cpassword" placeholder="Confirm Password"
                         class="form-control form-control-border" required>
                       <span class="toggle-password" onclick="toggleVisibility('cpassword')">
@@ -242,33 +146,35 @@ require_once('inc/header.php');
                     </div>
                   </div>
                   <div class="row">
-                    <div class="content">
-                      <p>Password must contains</p>
+                    <div class="content hidden">
+                      <small>
+                        <p>Password must contains</p>
+                      </small>
                       <ul class="requirement-list d-flex flex-wrap">
                         <!-- Left Column -->
                         <div class="left-column">
                           <li>
                             <i class="fa-solid fa-circle"></i>
-                            <span>At least 8 characters length</span>
+                            <small><span>At least 8 characters length</span></small>
                           </li>
                           <li>
                             <i class="fa-solid fa-circle"></i>
-                            <span>At least 1 number (0...9)</span>
+                            <small><span>At least 1 number (0...9)</span></small>
                           </li>
                         </div>
                         <!-- Right Column -->
-                        <div class="right-column">
+                        <div class="right-column ml-3">
                           <li>
                             <i class="fa-solid fa-circle"></i>
-                            <span>At least 1 lowercase letter (a...z)</span>
+                            <small><span>At least 1 lowercase letter (a...z)</span></small>
                           </li>
                           <li>
                             <i class="fa-solid fa-circle"></i>
-                            <span>At least 1 special symbol (!...$)</span>
+                            <small><span>At least 1 special symbol (!...$)</span></small>
                           </li>
                           <li>
                             <i class="fa-solid fa-circle"></i>
-                            <span>At least 1 uppercase letter (A...Z)</span>
+                            <small><span>At least 1 uppercase letter (A...Z)</span></small>
                           </li>
                         </div>
                       </ul>
@@ -312,6 +218,7 @@ require_once('inc/header.php');
   <!-- My Script -->
   <script src="<?php echo base_url ?>plugins/myScript.js"></script>
   <script src="<?php echo base_url ?>myScripts/strongpass.js"></script>
+  <script src="<?php echo base_url ?>myScripts/passvalidation.js"></script>
 
 
   <script>

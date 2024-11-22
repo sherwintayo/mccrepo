@@ -1,0 +1,68 @@
+/* Add CSS for the eye icon */
+.position-relative {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #0e0c0c;
+}
+
+.toggle-password:hover {
+  color: #000;
+}
+
+/*Stong Password*/
+.password-strength .progress {
+  height: 8px;
+  border-radius: 5px;
+}
+
+.password-strength .progress-bar {
+  transition: width 0.5s ease-in-out;
+}
+
+.progress-bar.weak {
+  background-color: red;
+}
+
+.progress-bar.moderate {
+  background-color: orange;
+}
+
+.progress-bar.good {
+  background-color: yellow;
+}
+
+.progress-bar.strong {
+  background-color: green;
+}
+
+/* Pass validation */
+.hidden {
+  display: none;
+}
+
+.requirement-list li {
+  list-style: none;
+}
+.requirement-list li i {
+  width: 20px;
+  color: #aaa;
+  font-size: 0.6rem;
+}
+.requirement-list li.valid i {
+  font-size: 1.2rem;
+  color: #4285f4;
+}
+.requirement-list li span {
+  margin-left: 12px;
+  color: #333;
+}
+.requirement-list li.valid span {
+  color: #999;
+}
