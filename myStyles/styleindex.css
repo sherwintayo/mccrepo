@@ -257,6 +257,7 @@
   .navbar .navbar-brand img {
     max-height: 40px;
     margin-bottom: 10px;
+    box-shadow: none;
   }
   .navbar .navbar-brand .myBrandName {
     color: #f9f06d !important;
