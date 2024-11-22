@@ -51,7 +51,7 @@
         <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo" />
         <h3>Welcome Admin</h3>
         <p>Enter your credentials to access the admin panel.</p>
-        <button class="myButton" onclick="location.href = '../index.php'">Go to Site</button>
+        <button class="myButton" onclick="location.href = '../'">Go to Site</button>
       </div>
 
       <!-- Right Section -->

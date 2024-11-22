@@ -52,14 +52,14 @@
         <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo" />
         <h3>Welcome Back</h3>
         <p>Enter your credentials to access your account.</p>
-        <button class="myButton" onclick="location.href = 'ms_login.php'">Sign Up</button>
+        <button class="myButton" onclick="location.href = '<?php echo base_url ?>'">Go to Website</button>
       </div>
 
       <!-- Right Section -->
       <div class="col-md-9 register-right">
         <div class="tab-content" id="myTabContent">
           <div class="tab-pane fade show active" id="login-tab" role="tabpanel">
-            <h3 class="register-heading">Login to Your Account</h3>
+            <h3 class="register-heading">Sign to Your Account</h3>
             <div class="row register-form">
               <div class="col-md-12">
                 <form action="" id="slogin-form">
@@ -82,10 +82,10 @@
                   <!-- Buttons -->
                   <div class="row">
                     <div class="col-md-6">
-                      <a href="<?php echo base_url ?>" class="btn btn-light">Go Back</a>
+                      <a href="ms_login" class="btn btn-light">Sign Up</a>
                     </div>
                     <div class="col-md-6 text-right">
-                      <button class="btn btn-primary btn-flat">Login</button>
+                      <button class="btn btn-primary btn-flat">Sign In</button>
                     </div>
                   </div>
 

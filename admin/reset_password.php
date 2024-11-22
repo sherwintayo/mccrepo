@@ -50,8 +50,8 @@ if (isset($_GET['token'])) {
                             <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo" />
                             <h3>Password Reset</h3>
                             <p>Enter your new password to reset your account credentials.</p>
-                            <button class="myButton" onclick="location.href = '<?php echo base_url ?>admin/login.php'">Go
-                                Back</button>
+                            <button class="myButton" onclick="location.href = '<?php echo base_url ?>'">Go
+                                to site</button>
                         </div>
 
                         <!-- Right Section -->
@@ -72,12 +72,8 @@ if (isset($_GET['token'])) {
                                                 </div>
 
                                                 <!-- Buttons -->
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <a href="<?php echo base_url ?>admin/login.php" class="btn btn-light">Go
-                                                            Back</a>
-                                                    </div>
-                                                    <div class="col-md-6 text-right">
+                                                <div class="row mt-4">
+                                                    <div class="col-lg-12 text-center">
                                                         <button type="submit" class="btn btn-primary btn-flat">Reset
                                                             Password</button>
                                                     </div>

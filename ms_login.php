@@ -46,7 +46,7 @@
                 <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo" />
                 <h3>Welcome!</h3>
                 <p>Enter your MS 365 Email Account to receive a registration link.</p>
-                <button class="myButton" onclick="location.href = '<?php echo base_url ?>'">Go Back</button>
+                <button class="myButton" onclick="location.href = '<?php echo base_url ?>'">Go to Website</button>
             </div>
 
             <!-- Right Section -->
