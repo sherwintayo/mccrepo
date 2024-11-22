@@ -124,31 +124,32 @@ class Login extends DBConnection
                 'status' => 'failed',
                 'msg' => "An error occurred while fetching data. Error: " . $this->conn->error
             ]);
-        }
+        } else {
 
-        if ($qry->num_rows > 0) {
-            $res = $qry->fetch_array();
+            if ($qry->num_rows > 0) {
+                $res = $qry->fetch_array();
 
-            if ($res['status'] == 1) {
-                $_SESSION['user_logged_in'] = true;
-                $_SESSION['user_id'] = $res['id'];
-                foreach ($res as $k => $v) {
-                    $this->settings->set_userdata($k, $v);
+                if ($res['status'] == 1) {
+                    $_SESSION['user_logged_in'] = true;
+                    $_SESSION['user_id'] = $res['id'];
+                    foreach ($res as $k => $v) {
+                        $this->settings->set_userdata($k, $v);
+                    }
+                    $this->settings->set_userdata('login_type', 2);
+
+                    return json_encode(['status' => 'success']);
+                } else {
+                    return json_encode([
+                        'status' => 'failed',
+                        'msg' => 'Your account is not verified yet.'
+                    ]);
                 }
-                $this->settings->set_userdata('login_type', 2);
-
-                return json_encode(['status' => 'success']);
             } else {
                 return json_encode([
                     'status' => 'failed',
-                    'msg' => 'Your account is not verified yet.'
+                    'msg' => 'Invalid email or password.'
                 ]);
             }
-        } else {
-            return json_encode([
-                'status' => 'failed',
-                'msg' => 'Invalid email or password.'
-            ]);
         }
     }
 
