@@ -241,6 +241,39 @@ require_once('inc/header.php');
                       </span>
                     </div>
                   </div>
+                  <div class="row">
+                    <div class="content">
+                      <div class="form-group col-md-6">
+                        <p>Password must contains</p>
+                        <ul class="requirement-list">
+                          <li>
+                            <i class="fa-solid fa-circle"></i>
+                            <span>At least 8 characters length</span>
+                          </li>
+                          <li>
+                            <i class="fa-solid fa-circle"></i>
+                            <span>At least 1 number (0...9)</span>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <ul class="requirement-list"></ul>
+                        <li>
+                          <i class="fa-solid fa-circle"></i>
+                          <span>At least 1 lowercase letter (a...z)</span>
+                        </li>
+                        <li>
+                          <i class="fa-solid fa-circle"></i>
+                          <span>At least 1 special symbol (!...$)</span>
+                        </li>
+                        <li>
+                          <i class="fa-solid fa-circle"></i>
+                          <span>At least 1 uppercase letter (A...Z)</span>
+                        </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
 
 
 
