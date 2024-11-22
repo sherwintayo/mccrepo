@@ -421,7 +421,14 @@
 
                 <!-- Notification Dropdown -->
                 <div class="dropdown-menu dropdown-menu-right">
-                  <span class="dropdown-item dropdown-header"><?= count($notifications) ?> Notifications</span>
+                  <span class="dropdown-item dropdown-header">
+                    <?php if ($unread_count > 0): ?>
+                      You have <?= $unread_count ?> New Notification
+                      <?= $unread_count > 1 ? 's' : '' ?>
+                    <?php else: ?>
+                      You have no new notifications
+                    <?php endif; ?>
+                  </span>
                   <div class="dropdown-divider"></div>
                   <?php if (count($notifications) > 0): ?>
                     <?php foreach ($notifications as $notif): ?>
@@ -433,21 +440,24 @@
                               'sql' => base_url . 'uploads/sql/SQL-' . $notif['archive_id'] . '.zip',
                             ]), ENT_QUOTES, 'UTF-8') ?>" data-download="true" onclick="handleNotificationClick(this)">
                           <i class="fas fa-download text-success"></i>
-                          Your request to download '<b><?= htmlspecialchars($notif['file_title'], ENT_QUOTES, 'UTF-8') ?></b>'
-                          is
+                          Your request to download '<b>
+                            <?= htmlspecialchars($notif['file_title'], ENT_QUOTES, 'UTF-8') ?>
+                          </b>' is
                           approved.
-                          <span class="notification-time"><?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
+                          <span class="notification-time">
+                            <?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
                           <?php if ($notif['status'] === 'unread'): ?>
                             <span class="unread-indicator"></span> <!-- Blue circle for unread -->
                           <?php endif; ?>
                         </a>
                       <?php else: ?>
-
-                        <a href="javascript:void(0);" class="dropdown-item notification-link" data-id="<?= $notif['id'] ?>"
+                        <a href="./?page=studentprofile" class="dropdown-item notification-link" data-id="<?= $notif['id'] ?>"
                           data-download="false" onclick="handleNotificationClick(this)">
                           <i class="fas fa-envelope text-info"></i>
                           <span><?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?></span>
-                          <span class="notification-time"><?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
+                          <span class="notification-time">
+                            <?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?>
+                          </span>
                           <?php if ($notif['status'] === 'unread'): ?>
                             <span class="unread-indicator"></span>
                           <?php endif; ?>
@@ -469,7 +479,7 @@
             <?php if ($_settings->userdata('id') > 0): ?>
               <div class="dropdown">
                 <button type="button" class="btn btn-rounded badge badge-light dropdown-toggle dropdown-icon"
-                  data-toggle="dropdown">
+                  data-toggle=" dropdown">
                   <span>
                     <img
                       src="<?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>"
@@ -481,7 +491,7 @@
                 <div class="dropdown-menu myUserDropdown" role="menu">
                   <a href="./?page=profile" class="myName">
                     <img
-                      src="<?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>"
+                      src=" <?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>"
                       class="img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar"
                       style="border: none;">
                     <span class="username-text">
@@ -499,8 +509,14 @@
                   UP</a>
               </li>
               <li class="nav-item" style="list-style: none;">
-                <a href="#" class="navlink mx-1 text-light" style="text-decoration: none;" data-bs-toggle="modal"
-                  data-bs-target="#signInModal">SIGN IN</a>
+                <a href="./login" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">STUDENT
+                  SIGN IN</a>
+              </li>
+              <li class="nav-item" style="list-style: none;">
+                <a href="./admin/login" class="navlink mx-1 text-light"
+                  style="text-decoration: none; list-style: none;">ADMIN
+                  SIGN
+                  IN</a>
               </li>
             <?php endif; ?>
           </div>
