@@ -271,7 +271,7 @@
                       <?php endif; ?>
                     </a>
                   <?php else: ?>
-                    <a href="./studentprofile" class="dropdown-item notification-link" data-id="<?= $notif['id'] ?>"
+                    <a href="./?page=studentprofile" class="dropdown-item notification-link" data-id="<?= $notif['id'] ?>"
                       data-download="false" onclick="handleNotificationClick(this)">
                       <i class="fas fa-envelope text-info"></i>
                       <span><?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?></span>
