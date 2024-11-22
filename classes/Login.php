@@ -117,19 +117,26 @@ class Login extends DBConnection
             ]);
         }
 
-        $qry = $this->conn->query("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS fullname FROM student_list WHERE email = '$email' AND password = MD5('$password')");
+        // Fetch user details by email
+        $qry = $this->conn->prepare("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS fullname FROM student_list WHERE email = ?");
+        $qry->bind_param("s", $email);
+        $qry->execute();
+        $result = $qry->get_result();
 
         if ($this->conn->error) {
             return json_encode([
                 'status' => 'failed',
                 'msg' => "An error occurred while fetching data. Error: " . $this->conn->error
             ]);
-        } else {
+        }
 
-            if ($qry->num_rows > 0) {
-                $res = $qry->fetch_array();
+        if ($result->num_rows > 0) {
+            $res = $result->fetch_assoc();
 
+            // Verify the password using bcrypt
+            if (password_verify($password, $res['password'])) {
                 if ($res['status'] == 1) {
+                    // Set session variables for logged-in user
                     $_SESSION['user_logged_in'] = true;
                     $_SESSION['user_id'] = $res['id'];
                     foreach ($res as $k => $v) {
@@ -145,11 +152,18 @@ class Login extends DBConnection
                     ]);
                 }
             } else {
+                // Invalid password
                 return json_encode([
                     'status' => 'failed',
                     'msg' => 'Invalid email or password.'
                 ]);
             }
+        } else {
+            // No user found with the given email
+            return json_encode([
+                'status' => 'failed',
+                'msg' => 'Invalid email or password.'
+            ]);
         }
     }
 
