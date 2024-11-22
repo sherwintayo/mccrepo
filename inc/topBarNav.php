@@ -6,7 +6,7 @@
       position: fixed !important;
       top: 0 !important;
       z-index: 1037;
-      padding: .5em 1em !important;
+      padding: 1em 1.5em !important;
     }
 
     .nav-item .dropdown-menu {
@@ -88,6 +88,92 @@
       right: 1rem;
       top: 50%;
       transform: translateY(-50%);
+    }
+
+    /* MODAL */
+
+    .modal-dialog {
+      margin-left: -3px;
+      margin-top: -3px;
+      width: 85%;
+    }
+
+    .modal-dialog .modal-content {
+      background-color: #b51b23 !important;
+    }
+
+    /* MODAL HEADER */
+
+    .modal-dialog .modal-header,
+    .modal-dialog .modal-footer {
+      border: none;
+    }
+
+    .modal-dialog .modal-header {
+      height: 86px;
+    }
+
+    .modal-dialog .modal-header img {
+      max-height: 40px;
+      opacity: 0.8;
+    }
+
+    .modal-dialog .modal-header .myHeaderLeft {
+      margin: 2px 0 5px 2px;
+    }
+
+    .modal-dialog .nav-link i,
+    .modal-dialog .modal-header .myHeaderRight .dropdown .dropdown-menu .dropdown-item i {
+      margin-right: 10px;
+      color: #f9f06d !important;
+    }
+
+    .modal-dialog .modal-header .myHeaderRight .notification-icon i {
+      color: rgba(255, 255, 255, 0.6) !important;
+    }
+
+    .modal-dialog .modal-header .myHeaderRight .dropdown .dropdown-menu .myName {
+      color: rgba(255, 255, 255, 0.6) !important;
+    }
+
+    .modal-dialog .modal-header .myBrandName {
+      color: #f9f06d !important;
+      font-weight: 600;
+      font-size: 20px;
+      padding-top: 3px;
+      margin-top: 3px;
+    }
+
+    /* MODAL BODY */
+    .modal-dialog .modal-body {
+      padding-top: 65px;
+      background-color: #5b060a;
+    }
+
+    .modal-dialog .nav-link {
+      font-size: 18px;
+      margin-bottom: 30px;
+      color: rgba(255, 255, 255, 0.6) !important;
+    }
+
+    .modal-dialog .nav-link.active {
+      color: rgba(255, 255, 255, 0.6) !important;
+      font-weight: 600;
+    }
+
+    .modal-dialog .btn-secondary {
+      color: #2a252e !important;
+      background-color: #f9f06d !important;
+    }
+
+    /* MODAL HEADER */
+
+    .modal-dialog .modal-footer .btn {
+      max-height: 35px;
+    }
+
+    .modal-dialog .modal-footer .btn label {
+      align-items: center;
     }
   </style>
 </head>
@@ -346,8 +432,7 @@
             alt="Site Logo" class="brand-image img-circle elevation-3">
           <span class="myBrandName"><?= $_settings->info('short_name') ?></span>
         </div>
-        <!-- Right Section: Search and User Profile -->
-        <div class="myRightNav d-flex align-items-center">
+        <div class="myHeaderRight d-flex align-items-center">
           <!-- Search Icon -->
           <div class="me-3">
             <a href="javascript:void(0)" class="text-navy" id="search_icon">
@@ -488,18 +573,13 @@
                 UP</a>
             </li>
             <li class="nav-item" style="list-style: none;">
-              <a href="./login" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">STUDENT
-                SIGN IN</a>
-            </li>
-            <li class="nav-item" style="list-style: none;">
-              <a href="./admin/login" class="navlink mx-1 text-light"
-                style="text-decoration: none; list-style: none;">ADMIN
-                SIGN
-                IN</a>
+              <a href="#" class="navlink mx-1 text-light" style="text-decoration: none;" data-bs-toggle="modal"
+                data-bs-target="#signInModal">SIGN IN</a>
             </li>
           <?php endif; ?>
         </div>
       </div>
+
       <!-- MODAL BODY -->
       <div class="modal-body">
         <ul class="navbar-nav ms-auto mb-lg-0">
@@ -568,6 +648,32 @@
   </div>
 </div>
 
+<!-- Sign In Modal -->
+<div class="modal fade" id="signInModal" tabindex="-1" aria-labelledby="signInModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="signInModalLabel">Sign in as</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <button id="studentSignIn" class="btn btn-primary mx-2">Student</button>
+        <button id="adminSignIn" class="btn btn-secondary mx-2">Admin</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- JavaScript -->
+<script>
+  // Redirect user based on selection
+  document.getElementById('studentSignIn').addEventListener('click', function () {
+    window.location.href = './login';
+  });
+
+  document.getElementById('adminSignIn').addEventListener('click', function () {
+    window.location.href = './admin/login';
+  });
+</script>
 <!-- /.navbar -->
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>

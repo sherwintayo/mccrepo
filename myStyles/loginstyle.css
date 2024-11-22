@@ -120,4 +120,20 @@ body {
   width: 35%;
 }
 
-/* ahhahah */
+/* Eye Toggle */
+.position-relative {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #0e0c0c;
+}
+
+.toggle-password:hover {
+  color: #000;
+}

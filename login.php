@@ -21,6 +21,24 @@
     background-size: cover;
     background-repeat: no-repeat;
   }
+
+  .position-relative {
+    position: relative;
+  }
+
+  .toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    /* Adjust as needed for proper alignment */
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #aaa;
+  }
+
+  .toggle-password:hover {
+    color: #000;
+  }
 </style>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -70,13 +88,16 @@
                   </div>
 
                   <!-- Password Field -->
-                  <div class="form-group">
+                  <div class="form-group position-relative">
                     <input type="password" name="password" id="password" placeholder="Password *"
                       class="form-control form-control-border" required>
+                    <span class="toggle-password" onclick="toggleVisibility('password')">
+                      <i class="fa fa-eye" id="eye-password"></i>
+                    </span>
                   </div>
 
                   <div class="form-group">
-                    <div class="g-recaptcha" data-sitekey="6LdkGoUqAAAAAEmIB2Py685bbQiALvcZ3a4MOjDx"></div>
+                    <div class="g-recaptcha" data-sitekey="6LfFJYcqAAAAAK6Djr0QOH68F4r_Aehziia0XYa9"></div>
                   </div>
 
                   <!-- Buttons -->
@@ -211,6 +232,21 @@
         });
       });
     });
+  </script>
+  <script>
+    function toggleVisibility(inputId) {
+      const inputField = document.getElementById(inputId);
+      const icon = document.getElementById(`eye-${inputId}`);
+      if (inputField.type === "password") {
+        inputField.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+      } else {
+        inputField.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+      }
+    }
   </script>
 
 </body>

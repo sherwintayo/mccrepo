@@ -164,7 +164,7 @@ class Users extends DBConnection
 		try {
 			// Validate reCAPTCHA response
 			$recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-			$secretKey = '6LdkGoUqAAAAABTZgD529DslANXkDOxDb0-8mV0T'; // Replace with your reCAPTCHA secret key
+			$secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO'; // Replace with your reCAPTCHA secret key
 			$verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
 			// Send request to Google's reCAPTCHA API

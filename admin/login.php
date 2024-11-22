@@ -75,7 +75,7 @@
                   </div>
 
                   <div class="form-group">
-                    <div class="g-recaptcha" data-sitekey="6LdkGoUqAAAAAEmIB2Py685bbQiALvcZ3a4MOjDx"></div>
+                    <div class="g-recaptcha" data-sitekey="6LfFJYcqAAAAAK6Djr0QOH68F4r_Aehziia0XYa9"></div>
                   </div>
 
                   <!-- Buttons -->

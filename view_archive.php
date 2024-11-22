@@ -243,7 +243,12 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error',
-                                text: 'Could not submit your request. Please try again later.'
+                                text: 'Could not submit your request. You need to login again.'
+                           confirmButtonText: 'OK'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = "login.php";
+                                }
                             });
                         }
                     },
