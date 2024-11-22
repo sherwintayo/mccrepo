@@ -6,7 +6,7 @@
       position: fixed !important;
       top: 0 !important;
       z-index: 1037;
-      padding: .5em 1em !important;
+      padding: 1em 1.5em !important;
     }
 
     .nav-item .dropdown-menu {
@@ -93,11 +93,11 @@
 </head>
 
 <!-- NAVBAR -->
-<nav class="navbar w-100" id="login-nav">
+<nav class="navbar navbar-expand-lg w-100" id="login-nav">
   <div class="container ">
     <a href="./" class="navbar-brand">
       <img src="<?php echo htmlspecialchars(validate_image($_settings->info('logo')), ENT_QUOTES, 'UTF-8') ?>"
-        alt="Site Logo" class="brand-image img-circle">
+        alt="Site Logo" class="brand-image img-circle elevation-3">
       <span class="myBrandName"><?= $_settings->info('short_name') ?></span>
     </a>
 
