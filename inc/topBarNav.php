@@ -347,7 +347,7 @@
           <span class="myBrandName"><?= $_settings->info('short_name') ?></span>
         </div>
         <!-- Right Section: Search and User Profile -->
-        <div class="myRightNav d-flex gap-3 align-items-center">
+        <div class="myRightNav d-flex align-items-center">
           <!-- Search Icon -->
           <div class="me-3">
             <a href="javascript:void(0)" class="text-navy" id="search_icon">
