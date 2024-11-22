@@ -97,7 +97,7 @@
   <div class="container ">
     <a href="./" class="navbar-brand">
       <img src="<?php echo htmlspecialchars(validate_image($_settings->info('logo')), ENT_QUOTES, 'UTF-8') ?>"
-        alt="Site Logo" class="brand-image img-circle elevation-3">
+        alt="Site Logo" class="brand-image img-circle">
       <span class="myBrandName"><?= $_settings->info('short_name') ?></span>
     </a>
 
@@ -346,8 +346,8 @@
             alt="Site Logo" class="brand-image img-circle elevation-3">
           <span class="myBrandName"><?= $_settings->info('short_name') ?></span>
         </div>
-        <div class="myHeaderRight d-flex align-items-center">
-
+        <!-- Right Section: Search and User Profile -->
+        <div class="myRightNav d-flex gap-3 align-items-center">
           <!-- Search Icon -->
           <div class="me-3">
             <a href="javascript:void(0)" class="text-navy" id="search_icon">
@@ -361,31 +361,101 @@
             </div>
           </div>
 
-          <!-- Notification Bell Icon -->
-          <div class="me-3 position-relative">
-            <a class="notification_icon" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-              aria-expanded="false">
-              <i class="fa fa-bell text-white"></i>
-              <span class="badge badge-danger navbar-badge">3</span> <!-- Example notification count -->
-            </a>
+          <?php
+          $student_id = $_settings->userdata('id'); // Current logged-in user ID
+          $notifications = [];
+          $unread_count = 0;
 
-            <!-- Dropdown Menu -->
-            <div class="dropdown-menu dropdown-menu-right">
-              <span class="dropdown-item dropdown-header">3 Notifications</span>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">
-                <i class="fas fa-envelope mr-2"></i> 1 new message
-                <span class="float-right text-muted text-sm">3 mins</span>
+          if ($student_id) {
+            // Fetch general notifications
+            $notif_query = $conn->query("SELECT id, message, status, date_created, NULL as download_id, NULL as file_title 
+                                FROM notifications 
+                                WHERE student_id = $student_id
+                                ORDER BY date_created DESC");
+            while ($row = $notif_query->fetch_assoc()) {
+              $notifications[] = $row;
+              if ($row['status'] === 'unread') {
+                $unread_count++;
+              }
+            }
+
+            // Fetch approved download requests
+            $download_query = $conn->query("
+        SELECT dr.file_id as archive_id, dr.id as download_id, dr.status_read as status, al.title as file_title, dr.requested_at as date_created 
+        FROM download_requests dr
+        JOIN archive_list al ON dr.file_id = al.id
+        WHERE dr.user_id = $student_id AND dr.status = 'approved'
+        ORDER BY dr.requested_at DESC
+    ");
+            while ($row = $download_query->fetch_assoc()) {
+              $row['message'] = "Your request to download '<b>" . htmlspecialchars($row['file_title'], ENT_QUOTES, 'UTF-8') . "</b>' is approved.";
+              $notifications[] = $row;
+              if ($row['status'] === 'unread') {
+                $unread_count++;
+              }
+            }
+
+            // Sort all notifications by date
+            usort($notifications, function ($a, $b) {
+              return strtotime($b['date_created']) - strtotime($a['date_created']);
+            });
+          }
+          ?>
+
+
+          <?php if ($student_id): ?> <!-- Only show if user is logged in -->
+            <div class="me-3 position-relative">
+              <a class="notification_icon" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+                aria-expanded="false">
+                <i class="fa fa-bell text-white"></i>
+                <?php if ($unread_count > 0): ?>
+                  <span class="badge badge-danger navbar-badge"><?= $unread_count ?></span>
+                <?php endif; ?>
               </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">
-                <i class="fas fa-users mr-2"></i> 5 friend requests
-                <span class="float-right text-muted text-sm">12 hours</span>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+
+              <!-- Notification Dropdown -->
+              <div class="dropdown-menu dropdown-menu-right">
+                <span class="dropdown-item dropdown-header"><?= count($notifications) ?> Notifications</span>
+                <div class="dropdown-divider"></div>
+                <?php if (count($notifications) > 0): ?>
+                  <?php foreach ($notifications as $notif): ?>
+                    <?php if (isset($notif['download_id'])): ?>
+                      <a href="javascript:void(0);" class="dropdown-item notification-link"
+                        data-id="<?= $notif['download_id'] ?>" data-files="<?= htmlspecialchars(json_encode([
+                            'document' => base_url . 'uploads/pdf/Document-' . $notif['archive_id'] . '.zip',
+                            'project' => base_url . 'uploads/files/Files-' . $notif['archive_id'] . '.zip',
+                            'sql' => base_url . 'uploads/sql/SQL-' . $notif['archive_id'] . '.zip',
+                          ]), ENT_QUOTES, 'UTF-8') ?>" data-download="true" onclick="handleNotificationClick(this)">
+                        <i class="fas fa-download text-success"></i>
+                        Your request to download '<b><?= htmlspecialchars($notif['file_title'], ENT_QUOTES, 'UTF-8') ?></b>' is
+                        approved.
+                        <span class="notification-time"><?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
+                        <?php if ($notif['status'] === 'unread'): ?>
+                          <span class="unread-indicator"></span> <!-- Blue circle for unread -->
+                        <?php endif; ?>
+                      </a>
+                    <?php else: ?>
+
+                      <a href="javascript:void(0);" class="dropdown-item notification-link" data-id="<?= $notif['id'] ?>"
+                        data-download="false" onclick="handleNotificationClick(this)">
+                        <i class="fas fa-envelope text-info"></i>
+                        <span><?= htmlspecialchars($notif['message'], ENT_QUOTES, 'UTF-8') ?></span>
+                        <span class="notification-time"><?= date('M d, Y h:i A', strtotime($notif['date_created'])) ?></span>
+                        <?php if ($notif['status'] === 'unread'): ?>
+                          <span class="unread-indicator"></span>
+                        <?php endif; ?>
+                      </a>
+                    <?php endif; ?>
+                    <div class="dropdown-divider"></div>
+                  <?php endforeach; ?>
+                <?php else: ?>
+                  <span class="dropdown-item text-light-50">No notifications</span>
+                <?php endif; ?>
+                <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+              </div>
             </div>
-          </div>
+          <?php endif; ?>
+
 
 
           <!-- User Profile -->
@@ -399,27 +469,38 @@
                 </span>
                 <span class="sr-only">Toggle Dropdown</span>
               </button>
-              <div class="dropdown-menu" role="menu">
-                <span class="myName">Howdy,
-                  <?= htmlspecialchars(!empty($_settings->userdata('email')) ? $_settings->userdata('email') : $_settings->userdata('username'), ENT_QUOTES, 'UTF-8') ?></span>
+              <div class="dropdown-menu myUserDropdown" role="menu">
+                <a href="./?page=profile" class="myName">
+                  <img src="<?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>"
+                    class="img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar">
+                  <span class="username-text">
+                    <?= htmlspecialchars(!empty($_settings->userdata('email')) ? $_settings->userdata('email') : $_settings->userdata('username'), ENT_QUOTES, 'UTF-8') ?>
+                  </span>
+                </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="<?= base_url . 'classes/Login.php?f=student_logout' ?>"><i
                     class="fas fa-sign-out-alt"></i> Logout</a>
               </div>
             </div>
           <?php else: ?>
-            <li class="nav-item">
-              <a href="./ms_login.php" class="myNavLinks mx-1 text-light" style="text-decoration: none;">Sign Up</a>
+            <li class="nav-item" style="list-style: none;">
+              <a href="./ms_login" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">SIGN
+                UP</a>
             </li>
-            <li class="nav-item">
-              <a href="./login.php" class="myNavLinks mx-1 text-light" style="text-decoration: none;">Student Sign In</a>
+            <li class="nav-item" style="list-style: none;">
+              <a href="./login" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">STUDENT
+                SIGN IN</a>
             </li>
-            <li class="nav-item">
-              <a href="./admin" class="myNavLinks mx-1 text-light" style="text-decoration: none;">Admin Sign In</a>
+            <li class="nav-item" style="list-style: none;">
+              <a href="./admin/login" class="navlink mx-1 text-light"
+                style="text-decoration: none; list-style: none;">ADMIN
+                SIGN
+                IN</a>
             </li>
           <?php endif; ?>
         </div>
       </div>
+      <!-- MODAL BODY -->
       <div class="modal-body">
         <ul class="navbar-nav ms-auto mb-lg-0">
           <li class="nav-item">
