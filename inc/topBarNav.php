@@ -301,14 +301,14 @@
               data-toggle="dropdown">
               <span>
                 <img src="<?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>"
-                  class="img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar">
+                  class="img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar" style="border: none;">
               </span>
               <span class="sr-only">Toggle Dropdown</span>
             </button>
             <div class="dropdown-menu myUserDropdown" role="menu">
               <a href="./?page=profile" class="myName">
                 <img src="<?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>"
-                  class="img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar">
+                  class="img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar" style="border: none;">
                 <span class="username-text">
                   <?= htmlspecialchars(!empty($_settings->userdata('email')) ? $_settings->userdata('email') : $_settings->userdata('username'), ENT_QUOTES, 'UTF-8') ?>
                 </span>
@@ -468,7 +468,8 @@
                   <span>
                     <img
                       src="<?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>"
-                      class="img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar">
+                      class="img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar"
+                      style="border: none;">
                   </span>
                   <span class="sr-only">Toggle Dropdown</span>
                 </button>
@@ -476,7 +477,8 @@
                   <a href="./?page=profile" class="myName">
                     <img
                       src="<?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>"
-                      class="img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar">
+                      class="img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar"
+                      style="border: none;">
                     <span class="username-text">
                       <?= htmlspecialchars(!empty($_settings->userdata('email')) ? $_settings->userdata('email') : $_settings->userdata('username'), ENT_QUOTES, 'UTF-8') ?>
                     </span>
