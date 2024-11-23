@@ -96,13 +96,13 @@ while ($row = $qry->fetch_assoc()) {
         <!-- Default page content (my_archives) -->
         <div id="my_archives" class="page active">
           <h2>My Submitted Projects</h2>
-          <div class="card-deck d-flex flex-wrap">
+          <div class="card-deck">
             <?php foreach ($archives as $archive): ?>
               <?php
               $statusLabel = $archive['status'] == 1 ? 'Published' : 'Unpublished';
               $statusClass = $archive['status'] == 1 ? 'badge-success' : 'badge-secondary';
               ?>
-              <div class="card shadow-sm border-light m-2" style="width: 18rem;">
+              <div class="card shadow-sm border-light">
                 <img
                   src="<?= $archive['banner_path'] ? base_url . $archive['banner_path'] : '/dist/img/no-image-available.png'; ?>"
                   class="card-img-top" alt="Project Banner" style="height: 180px; object-fit: cover;">
@@ -133,6 +133,7 @@ while ($row = $qry->fetch_assoc()) {
             <?php endforeach; ?>
           </div>
         </div>
+
 
 
 
