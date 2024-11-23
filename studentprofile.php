@@ -109,7 +109,7 @@ while ($row = $qry->fetch_assoc()) {
                   <h5 class="card-title"><?= htmlspecialchars($archive['title']); ?></h5>
                   <p class="card-text">Archive Code: <?= htmlspecialchars($archive['archive_code']); ?></p>
                 </div>
-                <div class="card-footer d-flex justify-content-between align-items-center">
+                <div class="card-footer d-flex justify-content-between align-items-center gap-2">
                   <span class="badge <?= $statusClass; ?>"><?= $statusLabel; ?></span>
                   <div class="dropdown">
                     <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown"
