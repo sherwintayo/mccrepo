@@ -158,12 +158,24 @@ while ($row = $qry->fetch_assoc()) {
 
   <script>
     // Set the active page and show its content
+    // Set the active page and show its content
     function setActive(link, pageId) {
+      // Remove 'active' class from all navigation links
       document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
+
+      // Hide all pages
       document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
 
+      // Add 'active' class to the clicked link
       link.classList.add('active');
-      document.getElementById(pageId).classList.add('active');
+
+      // Show the selected page
+      const page = document.getElementById(pageId);
+      if (page) {
+        page.classList.add('active');
+      } else {
+        console.error(`Page with ID "${pageId}" not found.`);
+      }
     }
 
 
