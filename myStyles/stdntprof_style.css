@@ -181,47 +181,51 @@ a {
   object-fit: cover;
 }
 
+/* Styling for my_archives */
 #my_archives {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-wrap: wrap;
   justify-content: center;
-  height: 100%; /* Ensures it takes full height */
+  align-items: center;
+  gap: 20px;
+  min-height: 100vh; /* Ensures full height for vertical centering */
+  text-align: center;
 }
 
-.card-deck {
+#my_archives .card-deck {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
   justify-content: center;
-  align-items: center;
+  gap: 20px;
+  width: 100%;
 }
 
-.card {
-  flex: 1 1 calc(100% / 3 - 1rem); /* Allows 3 cards per row with spacing */
-  max-width: calc(100% / 3 - 1rem);
-  min-width: 18rem;
-  height: auto; /* Card will adjust dynamically */
-  margin: 0 auto;
+#my_archives .card {
+  flex: 1 1 calc(33.333% - 40px); /* Default three cards per row */
+  max-width: calc(33.333% - 40px); /* Limit the size */
+  margin: 10px;
+  transition: all 0.3s ease;
 }
 
 #my_archives .card:nth-child(1):only-child {
-  /* Single card: center */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: auto;
+  flex: 0 0 50%; /* Center single card */
+  max-width: 50%;
 }
 
-#my_archives .card:nth-child(2):nth-last-child(1) {
-  /* Two cards: center and space */
-  justify-content: space-between;
+#my_archives .card:nth-child(1):nth-child(2) {
+  flex: 1 1 45%; /* Center two cards */
+  max-width: 45%;
 }
 
+#my_archives .card img {
+  height: 180px;
+  object-fit: cover;
+}
+
+/* Mobile view adjustments */
 @media (max-width: 768px) {
-  /* Adjust layout for small screens */
-  .card {
-    flex: 1 1 100%;
+  #my_archives .card {
+    flex: 1 1 100%; /* Stack all cards vertically */
     max-width: 100%;
   }
 }
