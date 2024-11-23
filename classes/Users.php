@@ -325,13 +325,13 @@ class Users extends DBConnection
 			if (!$hashed_password) {
 				$response["msg"] = "Unable to verify the old password. Please try again.";
 				echo json_encode($response);
-				return;
+				exit;
 			}
 
 			if (!password_verify($oldpassword, $hashed_password)) {
 				$response["msg"] = "Old Password is Incorrect.";
 				echo json_encode($response);
-				return;
+				exit;
 			}
 		}
 
@@ -340,7 +340,7 @@ class Users extends DBConnection
 		if ($chk > 0) {
 			$response["msg"] = "Email already exists. Please use a different email address.";
 			echo json_encode($response);
-			return;
+			exit;
 		}
 
 		// Step 3: Prepare data for SQL update query
@@ -361,7 +361,7 @@ class Users extends DBConnection
 			if (!$password_hash) {
 				$response["msg"] = "Password hashing failed. Please try again.";
 				echo json_encode($response);
-				return;
+				exit;
 			}
 			if (!empty($data)) {
 				$data .= ", ";
@@ -374,7 +374,7 @@ class Users extends DBConnection
 		if (!$qry) {
 			$response["msg"] = "Failed to update the student details. Database error: " . $this->conn->error;
 			echo json_encode($response);
-			return;
+			exit;
 		}
 
 		// Step 6: Update session data if the user updates their own profile
@@ -397,7 +397,7 @@ class Users extends DBConnection
 			if (!in_array($type, $allowed)) {
 				$response["msg"] = "Invalid image type. Please upload a PNG or JPEG file.";
 				echo json_encode($response);
-				return;
+				exit;
 			}
 
 			$new_height = 200;
@@ -420,7 +420,7 @@ class Users extends DBConnection
 			} else {
 				$response["msg"] = "Image upload failed due to an unknown reason.";
 				echo json_encode($response);
-				return;
+				exit;
 			}
 
 			// Update avatar in the database
@@ -434,9 +434,7 @@ class Users extends DBConnection
 		$response["status"] = "success";
 		$response["msg"] = "Student details updated successfully.";
 		echo json_encode($response);
-		return;
 	}
-
 
 
 
