@@ -237,7 +237,7 @@ class Users extends DBConnection
 		extract($_POST);
 
 		try {
-			// Check if old password verification is needed
+			// Verify old password if provided
 			if (isset($oldpassword)) {
 				$stmt = $this->conn->prepare("SELECT password FROM student_list WHERE id = ?");
 				$stmt->bind_param("i", $this->settings->userdata('id'));
@@ -263,7 +263,7 @@ class Users extends DBConnection
 				]);
 			}
 
-			// Prepare data for SQL query
+			// Prepare data for SQL update query
 			$data = '';
 			foreach ($_POST as $k => $v) {
 				if (!in_array($k, ['id', 'oldpassword', 'cpassword', 'password'])) {
@@ -275,7 +275,7 @@ class Users extends DBConnection
 				}
 			}
 
-			// Hash the password if provided
+			// Update password if provided
 			if (!empty($password)) {
 				$password_hash = password_hash($password, PASSWORD_BCRYPT);
 				if (!$password_hash) {
@@ -287,7 +287,7 @@ class Users extends DBConnection
 				$data .= " `password` = '{$password_hash}' ";
 			}
 
-			// Update the student record
+			// Execute the update query
 			$qry = $this->conn->query("UPDATE student_list SET {$data} WHERE id = {$id}");
 			if ($qry) {
 				$this->settings->set_flashdata('success', 'Student User Details successfully updated.');
@@ -298,47 +298,6 @@ class Users extends DBConnection
 					'msg' => 'Database error: ' . $this->conn->error
 				]);
 			}
-
-			// Image upload logic
-			if (isset($_FILES['img']) && $_FILES['img']['tmp_name'] != '') {
-				$fname = 'uploads/student-' . $id . '.png';
-				$dir_path = base_app . $fname;
-				$upload = $_FILES['img']['tmp_name'];
-				$type = mime_content_type($upload);
-				$allowed = ['image/png', 'image/jpeg'];
-
-				if (!in_array($type, $allowed)) {
-					$resp['msg'] .= " But Image failed to upload due to invalid file type.";
-				} else {
-					$new_height = 200;
-					$new_width = 200;
-					list($width, $height) = getimagesize($upload);
-
-					$t_image = imagecreatetruecolor($new_width, $new_height);
-					imagealphablending($t_image, false);
-					imagesavealpha($t_image, true);
-					$gdImg = ($type == 'image/png') ? imagecreatefrompng($upload) : imagecreatefromjpeg($upload);
-					imagecopyresampled($t_image, $gdImg, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
-
-					if ($gdImg) {
-						if (is_file($dir_path)) {
-							unlink($dir_path);
-						}
-						$uploaded_img = imagepng($t_image, $dir_path);
-						imagedestroy($gdImg);
-						imagedestroy($t_image);
-					} else {
-						$resp['msg'] .= " But Image failed to upload due to an unknown reason.";
-					}
-				}
-
-				if (isset($uploaded_img)) {
-					$this->conn->query("UPDATE student_list SET `avatar` = CONCAT('{$fname}','?v=',unix_timestamp(CURRENT_TIMESTAMP)) WHERE id = '{$id}'");
-					if ($id == $this->settings->userdata('id')) {
-						$this->settings->set_userdata('avatar', $fname);
-					}
-				}
-			}
 		} catch (Exception $e) {
 			return json_encode([
 				'status' => 'failed',
@@ -347,6 +306,7 @@ class Users extends DBConnection
 			]);
 		}
 	}
+
 
 
 
