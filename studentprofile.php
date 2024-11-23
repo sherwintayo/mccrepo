@@ -271,63 +271,6 @@ while ($row = $qry->fetch_assoc()) {
           </div>
         </div>
 
-        <script>
-          // Display the selected image
-          function displayImg(input, _this) {
-            if (input.files && input.files[0]) {
-              const reader = new FileReader();
-              reader.onload = function (e) {
-                $('#cimg').attr('src', e.target.result);
-              };
-              reader.readAsDataURL(input.files[0]);
-            } else {
-              $('#cimg').attr('src', "<?= validate_image(isset($avatar) ? $avatar : '') ?>");
-            }
-          }
-
-          $(function () {
-            // Handle form submission
-            $('#update-form').submit(function (e) {
-              e.preventDefault();
-              const _this = $(this);
-              $('#password, #cpassword').removeClass('is-invalid');
-
-              // Validate password match
-              if ($('#password').val() !== $('#cpassword').val()) {
-                Swal.fire('Error', 'Passwords do not match.', 'error');
-                $('#password, #cpassword').addClass('is-invalid');
-                return false;
-              }
-
-              start_loader();
-              $.ajax({
-                url: _base_url_ + "classes/Users.php?f=update_student",
-                data: new FormData(_this[0]),
-                cache: false,
-                contentType: false,
-                processData: false,
-                method: 'POST',
-                dataType: 'json',
-                success: function (resp) {
-                  end_loader();
-                  if (resp.status === 'success') {
-                    Swal.fire('Success', 'Your details have been updated.', 'success').then(() => {
-                      location.reload();
-                    });
-                  } else {
-                    Swal.fire('Error', resp.msg || 'An error occurred.', 'error');
-                  }
-                },
-                error: function (err) {
-                  end_loader();
-                  Swal.fire('Error', 'An unexpected error occurred.', 'error');
-                }
-              });
-            });
-          });
-        </script>
-
-
 
 
       </div>
@@ -400,4 +343,61 @@ while ($row = $qry->fetch_assoc()) {
       window.location.href = './?page=submit-archive';
     }
   </script>
+
+  <script>
+    // Display the selected image
+    function displayImg(input, _this) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          $('#cimg').attr('src', e.target.result);
+        };
+        reader.readAsDataURL(input.files[0]);
+      } else {
+        $('#cimg').attr('src', "<?= validate_image(isset($avatar) ? $avatar : '') ?>");
+      }
+    }
+
+    $(function () {
+      // Handle form submission
+      $('#update-form').submit(function (e) {
+        e.preventDefault();
+        const _this = $(this);
+        $('#password, #cpassword').removeClass('is-invalid');
+
+        // Validate password match
+        if ($('#password').val() !== $('#cpassword').val()) {
+          Swal.fire('Error', 'Passwords do not match.', 'error');
+          $('#password, #cpassword').addClass('is-invalid');
+          return false;
+        }
+
+        start_loader();
+        $.ajax({
+          url: _base_url_ + "classes/Users.php?f=update_student",
+          data: new FormData(_this[0]),
+          cache: false,
+          contentType: false,
+          processData: false,
+          method: 'POST',
+          dataType: 'json',
+          success: function (resp) {
+            end_loader();
+            if (resp.status === 'success') {
+              Swal.fire('Success', 'Your details have been updated.', 'success').then(() => {
+                location.reload();
+              });
+            } else {
+              Swal.fire('Error', resp.msg || 'An error occurred.', 'error');
+            }
+          },
+          error: function (err) {
+            end_loader();
+            Swal.fire('Error', 'An unexpected error occurred.', 'error');
+          }
+        });
+      });
+    });
+  </script>
+
 </body>
