@@ -161,8 +161,8 @@ class Users extends DBConnection
 		extract($_POST);
 
 		try {
-			// Validate reCAPTCHA only during insertion
-			if (empty($id)) {
+			// Validate reCAPTCHA only when creating a new account
+			if (empty($id)) { // $id is empty during account creation
 				$recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
 				$secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO'; // Replace with your reCAPTCHA secret key
 				$verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
@@ -307,8 +307,6 @@ class Users extends DBConnection
 			]);
 		}
 	}
-
-
 
 
 
