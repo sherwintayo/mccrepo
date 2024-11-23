@@ -188,7 +188,7 @@ a {
   justify-content: center;
   align-items: center;
   gap: 20px;
-  min-height: 100vh; /* Ensures full height for vertical centering */
+  height: 100%; /* Ensures full height for vertical centering */
   text-align: center;
 }
 
