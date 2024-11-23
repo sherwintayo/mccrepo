@@ -188,7 +188,7 @@ a {
   justify-content: center;
   align-items: center;
   gap: 20px;
-  min-height: 100vh; /* Ensures full height for vertical centering */
+
   text-align: center;
 }
 
@@ -243,6 +243,10 @@ a {
     flex-direction: row;
     gap: 30px;
   }
+  #my_archives .card {
+    flex: 1 1 100%; /* Stack all cards vertically */
+    max-width: 100%;
+  }
 }
 
 @media (min-width: 575.98px) {
@@ -256,6 +260,10 @@ a {
   .header__wrapper .cols__container .right__col nav ul {
     flex-direction: row;
     gap: 30px;
+  }
+  #my_archives .card {
+    flex: 1 1 100%; /* Stack all cards vertically */
+    max-width: 100%;
   }
 }
 
