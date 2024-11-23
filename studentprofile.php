@@ -106,12 +106,10 @@ while ($row = $qry->fetch_assoc()) {
                   src="<?= $archive['banner_path'] ? base_url . $archive['banner_path'] : '/dist/img/no-image-available.png'; ?>"
                   class="card-img-top" alt="Project Banner" style="height: 180px; object-fit: cover;">
                 <div class="card-body">
-                  <h5 class="card-title" style="font-weight: 500;"><?= htmlspecialchars($archive['title']); ?></h5>
-                  <p class="card-text text-success">Archive Code:
-                    <strong><?= htmlspecialchars($archive['archive_code']); ?></strong>
-                  </p>
+                  <h5 class="card-title"><?= htmlspecialchars($archive['title']); ?></h5>
+                  <p class="card-text">Archive Code: <?= htmlspecialchars($archive['archive_code']); ?></p>
                 </div>
-                <div class="card-footer d-flex justify-content-between align-items-center gap-2">
+                <div class="card-footer d-flex justify-content-between align-items-center">
                   <span class="badge <?= $statusClass; ?>"><?= $statusLabel; ?></span>
                   <div class="dropdown">
                     <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown"
@@ -158,24 +156,12 @@ while ($row = $qry->fetch_assoc()) {
 
   <script>
     // Set the active page and show its content
-    // Set the active page and show its content
     function setActive(link, pageId) {
-      // Remove 'active' class from all navigation links
       document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
-
-      // Hide all pages
       document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
 
-      // Add 'active' class to the clicked link
       link.classList.add('active');
-
-      // Show the selected page
-      const page = document.getElementById(pageId);
-      if (page) {
-        page.classList.add('active');
-      } else {
-        console.error(`Page with ID "${pageId}" not found.`);
-      }
+      document.getElementById(pageId).classList.add('active');
     }
 
 
