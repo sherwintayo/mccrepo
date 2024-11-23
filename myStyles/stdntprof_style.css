@@ -182,14 +182,14 @@ a {
 }
 
 /* Styling for my_archives */
-#my_archives {
+/* #my_archives {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   gap: 20px;
   text-align: center;
-}
+} */
 
 #my_archives .card-deck {
   display: flex;
