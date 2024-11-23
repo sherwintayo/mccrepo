@@ -144,8 +144,193 @@ while ($row = $qry->fetch_assoc()) {
 
         <div id="account_settings" class="page">
           <h2>Account Settings</h2>
-          <p>Manage your account preferences here.</p>
+          <div class="content py-4">
+            <div class="card card-outline card-primary shadow rounded-0">
+              <div class="card-header rounded-0">
+                <h5 class="card-title">Update Details</h5>
+              </div>
+              <div class="card-body rounded-0">
+                <div class="container-fluid">
+                  <form action="" id="update-form">
+                    <input type="hidden" name="id" value="<?= $_settings->userdata('id') ?>">
+
+                    <!-- Profile Image -->
+                    <div class="row mb-4 text-center">
+                      <div class="col-lg-12">
+                        <div class="form-group text-center">
+                          <img src="<?= validate_image(isset($avatar) ? $avatar : "") ?>" alt="My Avatar" id="cimg"
+                            class="img-fluid student-img bg-gradient-dark border">
+                        </div>
+                        <div class="form-group">
+                          <label for="img" class="control-label text-muted">Choose Image</label>
+                          <input type="file" id="img" name="img" class="form-control form-control-border"
+                            accept="image/png,image/jpeg" onchange="displayImg(this, $(this))">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- User Details -->
+                    <div class="row">
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label for="firstname" class="control-label text-navy">First Name</label>
+                          <input type="text" name="firstname" id="firstname" placeholder="First Name"
+                            class="form-control form-control-border" value="<?= isset($firstname) ? $firstname : "" ?>"
+                            required>
+                        </div>
+                      </div>
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label for="middlename" class="control-label text-navy">Middle Name</label>
+                          <input type="text" name="middlename" id="middlename" placeholder="Middle Name (optional)"
+                            class="form-control form-control-border"
+                            value="<?= isset($middlename) ? $middlename : "" ?>">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label for="lastname" class="control-label text-navy">Last Name</label>
+                          <input type="text" name="lastname" id="lastname" placeholder="Last Name"
+                            class="form-control form-control-border" value="<?= isset($lastname) ? $lastname : "" ?>"
+                            required>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Gender -->
+                    <div class="row">
+                      <div class="form-group col-auto">
+                        <label class="control-label text-navy">Gender</label>
+                      </div>
+                      <div class="form-group col-auto">
+                        <div class="custom-control custom-radio">
+                          <input class="custom-control-input" type="radio" id="genderMale" name="gender" value="Male"
+                            required <?= isset($gender) && $gender == "Male" ? "checked" : "" ?>>
+                          <label for="genderMale" class="custom-control-label">Male</label>
+                        </div>
+                      </div>
+                      <div class="form-group col-auto">
+                        <div class="custom-control custom-radio">
+                          <input class="custom-control-input" type="radio" id="genderFemale" name="gender"
+                            value="Female" <?= isset($gender) && $gender == "Female" ? "checked" : "" ?>>
+                          <label for="genderFemale" class="custom-control-label">Female</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Email and Password -->
+                    <div class="row">
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label for="email" class="control-label text-navy">Email</label>
+                          <input type="email" name="email" id="email" placeholder="Email"
+                            class="form-control form-control-border" required
+                            value="<?= isset($email) ? $email : "" ?>">
+                        </div>
+                        <div class="form-group">
+                          <label for="password" class="control-label text-navy">New Password</label>
+                          <input type="password" name="password" id="password" placeholder="New Password"
+                            class="form-control form-control-border">
+                        </div>
+                        <div class="form-group">
+                          <label for="cpassword" class="control-label text-navy">Confirm New Password</label>
+                          <input type="password" id="cpassword" placeholder="Confirm New Password"
+                            class="form-control form-control-border">
+                        </div>
+                        <small class="text-muted">Leave the New Password and Confirm Password blank if you do not wish
+                          to change
+                          your password.</small>
+                      </div>
+                    </div>
+
+                    <!-- Current Password -->
+                    <div class="row">
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label for="oldpassword" class="control-label text-navy">Current Password</label>
+                          <input type="password" name="oldpassword" id="oldpassword" placeholder="Current Password"
+                            class="form-control form-control-border" required>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="row">
+                      <div class="col-lg-12 text-center">
+                        <div class="form-group">
+                          <button class="btn btn-default bg-navy btn-flat">Update</button>
+                          <a href="./?page=profile" class="btn btn-light border btn-flat">Cancel</a>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <script>
+          // Display the selected image
+          function displayImg(input, _this) {
+            if (input.files && input.files[0]) {
+              const reader = new FileReader();
+              reader.onload = function (e) {
+                $('#cimg').attr('src', e.target.result);
+              };
+              reader.readAsDataURL(input.files[0]);
+            } else {
+              $('#cimg').attr('src', "<?= validate_image(isset($avatar) ? $avatar : '') ?>");
+            }
+          }
+
+          $(function () {
+            // Handle form submission
+            $('#update-form').submit(function (e) {
+              e.preventDefault();
+              const _this = $(this);
+              $('#password, #cpassword').removeClass('is-invalid');
+
+              // Validate password match
+              if ($('#password').val() !== $('#cpassword').val()) {
+                Swal.fire('Error', 'Passwords do not match.', 'error');
+                $('#password, #cpassword').addClass('is-invalid');
+                return false;
+              }
+
+              start_loader();
+              $.ajax({
+                url: _base_url_ + "classes/Users.php?f=update_student",
+                data: new FormData(_this[0]),
+                cache: false,
+                contentType: false,
+                processData: false,
+                method: 'POST',
+                dataType: 'json',
+                success: function (resp) {
+                  end_loader();
+                  if (resp.status === 'success') {
+                    Swal.fire('Success', 'Your details have been updated.', 'success').then(() => {
+                      location.reload();
+                    });
+                  } else {
+                    Swal.fire('Error', resp.msg || 'An error occurred.', 'error');
+                  }
+                },
+                error: function (err) {
+                  end_loader();
+                  Swal.fire('Error', 'An unexpected error occurred.', 'error');
+                }
+              });
+            });
+          });
+        </script>
+
+
+
+
       </div>
     </div>
   </div>
