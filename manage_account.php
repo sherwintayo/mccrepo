@@ -144,7 +144,7 @@ foreach ($user->fetch_array() as $k => $v) {
     $(function () {
         // Update Form Submit
         $('#update-form').submit(function (e) {
-            e.preventDefault()
+            e.preventDefault();
             var _this = $(this);
             $('#password, #cpassword').removeClass("is-invalid");
 
@@ -174,6 +174,7 @@ foreach ($user->fetch_array() as $k => $v) {
                 success: function (resp) {
                     end_loader();
 
+                    // Handle Success or Failure
                     if (resp.status === 'success') {
                         Swal.fire({
                             icon: 'success',
@@ -184,16 +185,15 @@ foreach ($user->fetch_array() as $k => $v) {
                             location.href = "./?page=profile";
                         });
                     } else {
-                        // Display error message
-                        let debugMessage = resp.debug ? `\n\nDebug Info: ${resp.debug}` : '';
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
-                            text: resp.msg || 'An error occurred while updating your details.' + debugMessage,
+                            text: resp.msg || 'An error occurred while updating your details.',
                         });
                     }
                 },
                 error: function (err) {
+                    // Handle Unexpected Errors
                     console.error(err);
                     end_loader();
                     Swal.fire({

@@ -310,6 +310,9 @@ class Users extends DBConnection
 	{
 		extract($_POST);
 
+		// Response array to build the result
+		$response = ["status" => "failed", "msg" => "An unknown error occurred."];
+
 		// Step 1: Verify old password if required
 		if (isset($oldpassword)) {
 			$stmt = $this->conn->prepare("SELECT password FROM student_list WHERE id = ?");
@@ -320,28 +323,25 @@ class Users extends DBConnection
 			$stmt->close();
 
 			if (!$hashed_password) {
-				return json_encode([
-					"status" => "failed",
-					"msg" => "Unable to verify the old password. Please try again."
-				]);
+				$response["msg"] = "Unable to verify the old password. Please try again.";
+				echo json_encode($response);
+				return;
 			}
 
 			if (!password_verify($oldpassword, $hashed_password)) {
-				return json_encode([
-					"status" => "failed",
-					"msg" => "Old Password is Incorrect."
-				]);
+				$response["msg"] = "Old Password is Incorrect.";
+				echo json_encode($response);
+				return;
 			}
 		}
 
 		// Step 2: Check for duplicate email
-		// $chk = $this->conn->query("SELECT * FROM student_list WHERE email = '{$email}' " . ($id > 0 ? "AND id != '{$id}'" : ""))->num_rows;
-		// if ($chk > 0) {
-		// 	return json_encode([
-		// 		"status" => "failed",
-		// 		"msg" => "Email already exists. Please use a different email address."
-		// 	]);
-		// }
+		$chk = $this->conn->query("SELECT * FROM student_list WHERE email = '{$email}' " . ($id > 0 ? "AND id != '{$id}'" : ""))->num_rows;
+		if ($chk > 0) {
+			$response["msg"] = "Email already exists. Please use a different email address.";
+			echo json_encode($response);
+			return;
+		}
 
 		// Step 3: Prepare data for SQL update query
 		$data = '';
@@ -359,10 +359,9 @@ class Users extends DBConnection
 		if (!empty($password)) {
 			$password_hash = password_hash($password, PASSWORD_BCRYPT);
 			if (!$password_hash) {
-				return json_encode([
-					"status" => "failed",
-					"msg" => "Password hashing failed. Please try again."
-				]);
+				$response["msg"] = "Password hashing failed. Please try again.";
+				echo json_encode($response);
+				return;
 			}
 			if (!empty($data)) {
 				$data .= ", ";
@@ -373,10 +372,9 @@ class Users extends DBConnection
 		// Step 5: Execute the update query
 		$qry = $this->conn->query("UPDATE student_list SET {$data} WHERE id = {$id}");
 		if (!$qry) {
-			return json_encode([
-				"status" => "failed",
-				"msg" => "Failed to update the student details. Database error: " . $this->conn->error
-			]);
+			$response["msg"] = "Failed to update the student details. Database error: " . $this->conn->error;
+			echo json_encode($response);
+			return;
 		}
 
 		// Step 6: Update session data if the user updates their own profile
@@ -397,10 +395,9 @@ class Users extends DBConnection
 			$allowed = ['image/png', 'image/jpeg'];
 
 			if (!in_array($type, $allowed)) {
-				return json_encode([
-					"status" => "failed",
-					"msg" => "Invalid image type. Please upload a PNG or JPEG file."
-				]);
+				$response["msg"] = "Invalid image type. Please upload a PNG or JPEG file.";
+				echo json_encode($response);
+				return;
 			}
 
 			$new_height = 200;
@@ -421,10 +418,9 @@ class Users extends DBConnection
 				imagedestroy($gdImg);
 				imagedestroy($t_image);
 			} else {
-				return json_encode([
-					"status" => "failed",
-					"msg" => "Image upload failed due to an unknown reason."
-				]);
+				$response["msg"] = "Image upload failed due to an unknown reason.";
+				echo json_encode($response);
+				return;
 			}
 
 			// Update avatar in the database
@@ -434,12 +430,13 @@ class Users extends DBConnection
 			}
 		}
 
-		// Step 8: Return success response
-		return json_encode([
-			"status" => "success",
-			"msg" => "Student details updated successfully."
-		]);
+		// Final Success Response
+		$response["status"] = "success";
+		$response["msg"] = "Student details updated successfully.";
+		echo json_encode($response);
+		return;
 	}
+
 
 
 
