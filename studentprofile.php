@@ -107,7 +107,8 @@ while ($row = $qry->fetch_assoc()) {
                   class="card-img-top" alt="Project Banner" style="height: 180px; object-fit: cover;">
                 <div class="card-body">
                   <h5 class="card-title"><?= htmlspecialchars($archive['title']); ?></h5>
-                  <p class="card-text">Archive Code: <?= htmlspecialchars($archive['archive_code']); ?></p>
+                  <p class="card-text text-success">Archive Code:
+                    <strong><?= htmlspecialchars($archive['archive_code']); ?></strong></p>
                 </div>
                 <div class="card-footer d-flex justify-content-between align-items-center gap-2">
                   <span class="badge <?= $statusClass; ?>"><?= $statusLabel; ?></span>
