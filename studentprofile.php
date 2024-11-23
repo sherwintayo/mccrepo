@@ -1,4 +1,4 @@
-<head>
+<>
 
   <link rel="stylesheet" href="<?php echo base_url ?>myStyles/stdntprof_style.css?v=<?php echo time(); ?>">
   <style>
@@ -17,7 +17,7 @@
       display: block;
     }
   </style>
-</head>
+</>
 <?php require_once('./config.php'); ?>
 <?php
 $user = $conn->query("
@@ -96,16 +96,16 @@ while ($row = $qry->fetch_assoc()) {
         <!-- Default page content (my_archives) -->
         <div id="my_archives" class="page active">
           <h2>My Submitted Projects</h2>
-          <div class="card-deck">
+          <div class="card-deck d-flex flex-wrap">
             <?php foreach ($archives as $archive): ?>
               <?php
               $statusLabel = $archive['status'] == 1 ? 'Published' : 'Unpublished';
               $statusClass = $archive['status'] == 1 ? 'badge-success' : 'badge-secondary';
               ?>
-              <div class="card shadow-sm border-light">
+              <div class="card shadow-sm border-light m-2" style="width: 18rem;">
                 <img
                   src="<?= $archive['banner_path'] ? base_url . $archive['banner_path'] : '/dist/img/no-image-available.png'; ?>"
-                  class="card-img-top" alt="Project Banner">
+                  class="card-img-top" alt="Project Banner" style="height: 180px; object-fit: cover;">
                 <div class="card-body">
                   <h5 class="card-title"><?= htmlspecialchars($archive['title']); ?></h5>
                   <p class="card-text">Archive Code: <?= htmlspecialchars($archive['archive_code']); ?></p>
@@ -133,7 +133,6 @@ while ($row = $qry->fetch_assoc()) {
             <?php endforeach; ?>
           </div>
         </div>
-
 
 
 
