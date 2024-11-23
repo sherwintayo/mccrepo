@@ -160,24 +160,25 @@ class Users extends DBConnection
 	{
 		extract($_POST);
 
-
 		try {
-			// Validate reCAPTCHA response
-			$recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-			$secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO'; // Replace with your reCAPTCHA secret key
-			$verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
+			// Validate reCAPTCHA only during insertion
+			if (empty($id)) {
+				$recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
+				$secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO'; // Replace with your reCAPTCHA secret key
+				$verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
-			// Send request to Google's reCAPTCHA API
-			$response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
-			$responseKeys = json_decode($response, true);
+				// Send request to Google's reCAPTCHA API
+				$response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
+				$responseKeys = json_decode($response, true);
 
-			// Check reCAPTCHA validation
-			if (!$responseKeys['success']) {
-				return json_encode([
-					'status' => 'failed',
-					'msg' => 'reCAPTCHA validation failed. Please try again.',
-					'debug' => $responseKeys // For debugging reCAPTCHA issues
-				]);
+				// Check reCAPTCHA validation
+				if (!$responseKeys['success']) {
+					return json_encode([
+						'status' => 'failed',
+						'msg' => 'reCAPTCHA validation failed. Please try again.',
+						'debug' => $responseKeys // For debugging reCAPTCHA issues
+					]);
+				}
 			}
 
 			$data = '';
@@ -256,6 +257,7 @@ class Users extends DBConnection
 					]);
 				}
 			}
+
 			// Image upload logic
 			if (isset($_FILES['img']) && $_FILES['img']['tmp_name'] != '') {
 				$fname = 'uploads/student-' . $id . '.png';
@@ -305,6 +307,7 @@ class Users extends DBConnection
 			]);
 		}
 	}
+
 
 
 
