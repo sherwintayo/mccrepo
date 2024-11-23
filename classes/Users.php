@@ -395,7 +395,7 @@ switch ($action) {
 		echo $users->save_student();
 		break;
 	case 'update_student':
-		echo $users->save_student();
+		echo $users->update_student();
 		break;
 	case 'delete_student':
 		echo $users->delete_student();
