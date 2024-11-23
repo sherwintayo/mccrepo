@@ -95,7 +95,6 @@ while ($row = $qry->fetch_assoc()) {
 
         <!-- Default page content (my_archives) -->
         <div id="my_archives" class="page active">
-          <h2>My Submitted Projects</h2>
           <div class="card-deck d-flex flex-wrap">
             <?php foreach ($archives as $archive): ?>
               <?php
