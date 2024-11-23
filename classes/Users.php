@@ -161,28 +161,82 @@ class Users extends DBConnection
 		extract($_POST);
 
 		try {
-			// Validate reCAPTCHA only when creating a new account
-			if (empty($id)) { // $id is empty during account creation
-				$recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-				$secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO'; // Replace with your reCAPTCHA secret key
-				$verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
+			// Validate reCAPTCHA response
+			$recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
+			$secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO'; // Replace with your reCAPTCHA secret key
+			$verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
-				// Send request to Google's reCAPTCHA API
-				$response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
-				$responseKeys = json_decode($response, true);
+			// Send request to Google's reCAPTCHA API
+			$response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
+			$responseKeys = json_decode($response, true);
 
-				// Check reCAPTCHA validation
-				if (!$responseKeys['success']) {
-					return json_encode([
-						'status' => 'failed',
-						'msg' => 'reCAPTCHA validation failed. Please try again.',
-						'debug' => $responseKeys // For debugging reCAPTCHA issues
-					]);
+			// Check reCAPTCHA validation
+			if (!$responseKeys['success']) {
+				return json_encode([
+					'status' => 'failed',
+					'msg' => 'reCAPTCHA validation failed. Please try again.'
+				]);
+			}
+
+			// Check for duplicate email
+			$chk = $this->conn->query("SELECT * FROM `student_list` WHERE email = '{$email}'")->num_rows;
+			if ($chk > 0) {
+				return json_encode([
+					'status' => 'failed',
+					'msg' => 'Email already exists.'
+				]);
+			}
+
+			// Prepare data for SQL query
+			$data = '';
+			foreach ($_POST as $k => $v) {
+				if (!in_array($k, ['id', 'g-recaptcha-response', 'password', 'cpassword'])) {
+					$v = $this->conn->real_escape_string($v);
+					if (!empty($data)) {
+						$data .= ", ";
+					}
+					$data .= " {$k} = '{$v}' ";
 				}
 			}
 
-			$data = '';
+			// Hash the password
+			if (!empty($password)) {
+				$password_hash = password_hash($password, PASSWORD_BCRYPT);
+				if (!$password_hash) {
+					return json_encode(['status' => 'failed', 'msg' => 'Password hashing failed.']);
+				}
+				if (!empty($data)) {
+					$data .= ", ";
+				}
+				$data .= " `password` = '{$password_hash}' ";
+			}
 
+			// Insert the student record
+			$qry = $this->conn->query("INSERT INTO student_list SET {$data}");
+			if ($qry) {
+				$id = $this->conn->insert_id;
+				$this->settings->set_flashdata('success', 'Student User Details successfully saved.');
+				return json_encode(['status' => 'success']);
+			} else {
+				return json_encode([
+					'status' => 'failed',
+					'msg' => 'Database error: ' . $this->conn->error
+				]);
+			}
+		} catch (Exception $e) {
+			return json_encode([
+				'status' => 'failed',
+				'msg' => 'An unexpected error occurred.',
+				'debug' => $e->getMessage()
+			]);
+		}
+	}
+
+	public function update_student()
+	{
+		extract($_POST);
+
+		try {
 			// Check if old password verification is needed
 			if (isset($oldpassword)) {
 				$stmt = $this->conn->prepare("SELECT password FROM student_list WHERE id = ?");
@@ -201,7 +255,7 @@ class Users extends DBConnection
 			}
 
 			// Check for duplicate email
-			$chk = $this->conn->query("SELECT * FROM `student_list` WHERE email = '{$email}' " . ($id > 0 ? "AND id != '{$id}'" : ""))->num_rows;
+			$chk = $this->conn->query("SELECT * FROM `student_list` WHERE email = '{$email}' AND id != '{$id}'")->num_rows;
 			if ($chk > 0) {
 				return json_encode([
 					'status' => 'failed',
@@ -210,8 +264,9 @@ class Users extends DBConnection
 			}
 
 			// Prepare data for SQL query
+			$data = '';
 			foreach ($_POST as $k => $v) {
-				if (!in_array($k, ['id', 'oldpassword', 'cpassword', 'password', 'g-recaptcha-response'])) {
+				if (!in_array($k, ['id', 'oldpassword', 'cpassword', 'password'])) {
 					$v = $this->conn->real_escape_string($v);
 					if (!empty($data)) {
 						$data .= ", ";
@@ -232,30 +287,16 @@ class Users extends DBConnection
 				$data .= " `password` = '{$password_hash}' ";
 			}
 
-			// Insert or update the student record
-			if (empty($id)) {
-				$qry = $this->conn->query("INSERT INTO student_list SET {$data}");
-				if ($qry) {
-					$id = $this->conn->insert_id;
-					$this->settings->set_flashdata('success', 'Student User Details successfully saved.');
-					return json_encode(['status' => 'success']);
-				} else {
-					return json_encode([
-						'status' => 'failed',
-						'msg' => 'Database error: ' . $this->conn->error // Provide detailed error
-					]);
-				}
+			// Update the student record
+			$qry = $this->conn->query("UPDATE student_list SET {$data} WHERE id = {$id}");
+			if ($qry) {
+				$this->settings->set_flashdata('success', 'Student User Details successfully updated.');
+				return json_encode(['status' => 'success']);
 			} else {
-				$qry = $this->conn->query("UPDATE student_list SET {$data} WHERE id = {$id}");
-				if ($qry) {
-					$this->settings->set_flashdata('success', 'Student User Details successfully updated.');
-					return json_encode(['status' => 'success']);
-				} else {
-					return json_encode([
-						'status' => 'failed',
-						'msg' => 'Database error: ' . $this->conn->error // Provide detailed error
-					]);
-				}
+				return json_encode([
+					'status' => 'failed',
+					'msg' => 'Database error: ' . $this->conn->error
+				]);
 			}
 
 			// Image upload logic
@@ -299,14 +340,14 @@ class Users extends DBConnection
 				}
 			}
 		} catch (Exception $e) {
-			// Catch any unexpected errors and return JSON
 			return json_encode([
 				'status' => 'failed',
 				'msg' => 'An unexpected error occurred.',
-				'debug' => $e->getMessage() // Include exception message for debugging
+				'debug' => $e->getMessage()
 			]);
 		}
 	}
+
 
 
 
