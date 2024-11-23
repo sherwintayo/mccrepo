@@ -335,13 +335,13 @@ class Users extends DBConnection
 		}
 
 		// Step 2: Check for duplicate email
-		$chk = $this->conn->query("SELECT * FROM student_list WHERE email = '{$email}' " . ($id > 0 ? "AND id != '{$id}'" : ""))->num_rows;
-		if ($chk > 0) {
-			return json_encode([
-				"status" => "failed",
-				"msg" => "Email already exists. Please use a different email address."
-			]);
-		}
+		// $chk = $this->conn->query("SELECT * FROM student_list WHERE email = '{$email}' " . ($id > 0 ? "AND id != '{$id}'" : ""))->num_rows;
+		// if ($chk > 0) {
+		// 	return json_encode([
+		// 		"status" => "failed",
+		// 		"msg" => "Email already exists. Please use a different email address."
+		// 	]);
+		// }
 
 		// Step 3: Prepare data for SQL update query
 		$data = '';
