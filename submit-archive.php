@@ -15,6 +15,38 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 }
 ?>
 <style>
+    .modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        z-index: 1050;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        min-width: 300px;
+    }
+
+    .progress {
+        background-color: #f0f0f0;
+        height: 8px;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-top: 15px;
+    }
+
+    .progress-bar {
+        background-color: #007bff;
+        height: 100%;
+        width: 0%;
+    }
+
+    .upload-details p {
+        margin: 5px 0;
+    }
+</style>
+<style>
     .banner-img {
         object-fit: scale-down;
         object-position: center center;
@@ -144,29 +176,23 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 </div>
 
 <!-- Modal for Upload Progress -->
-<div id="uploadModal" class="modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Upload Progress</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="hideModal()">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p id="progressDetails">Loaded: 0 MB / Total: 0 MB | Speed: 0 Mbps | Time Left: 0s</p>
-                <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0"
-                        aria-valuemax="100"></div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button id="cancelUpload" class="btn btn-danger" onclick="cancelUpload()">Cancel</button>
-                <button class="btn btn-secondary" onclick="hideModal()">Hide</button>
-            </div>
+<div id="uploadModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <h4>Uploading...</h4>
+        <div class="progress">
+            <div class="progress-bar"></div>
         </div>
+        <div class="upload-details">
+            <p id="dataTransferred">Loaded/Total: 0 MB</p>
+            <p id="Mbps">Speed: 0 Mbps</p>
+            <p id="timeLeft">Time Left: --:--</p>
+        </div>
+        <button id="hideBtn" class="btn btn-secondary">Hide</button>
+        <button id="cancelBtn" class="btn btn-danger" disabled>Cancel</button>
+        <p id="percent">0%</p>
     </div>
 </div>
+
 <script>
     function displayImg(input, _this) {
         if (input.files && input.files[0]) {
@@ -250,100 +276,82 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         // });
     })
 </script>
-<!-- Modal for Upload Progress -->
-<div id="uploadModal" class="modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Upload Progress</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="hideModal()">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p id="progressDetails">Loaded: 0 MB / Total: 0 MB | Speed: 0 Mbps | Time Left: 0s</p>
-                <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0"
-                        aria-valuemax="100"></div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button id="cancelUpload" class="btn btn-danger" onclick="cancelUpload()">Cancel</button>
-                <button class="btn btn-secondary" onclick="hideModal()">Hide</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
-    let uploadXHR = null;
-
-    // Display Modal
-    function showModal() {
-        $('#uploadModal').modal('show');
-    }
-
-    // Hide Modal
-    function hideModal() {
-        $('#uploadModal').modal('hide');
-    }
-
-    // Cancel Upload
-    function cancelUpload() {
-        if (uploadXHR) {
-            uploadXHR.abort();
-            alert('Upload canceled!');
-            $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
-            $('#progressDetails').text('Upload canceled.');
-        }
-    }
-
     $('#archive-form').submit(function (e) {
         e.preventDefault();
-        const formData = new FormData(this);
-        const startTime = new Date().getTime();
+        $('#uploadModal').show();
 
-        $.ajax({
-            url: _base_url_ + 'classes/Master.php?f=save_archive',
-            method: 'POST',
+        const formData = new FormData(this); // Collect form data
+        const startTime = new Date().getTime();
+        let xhr;
+
+        xhr = $.ajax({
+            xhr: function () {
+                const customXHR = new XMLHttpRequest();
+                customXHR.upload.addEventListener("progress", function (e) {
+                    if (e.lengthComputable) {
+                        const percentComplete = ((e.loaded / e.total) * 100).toFixed(2);
+
+                        // Convert bytes to MB
+                        const mbTotal = (e.total / (1024 * 1024)).toFixed(2);
+                        const mbLoaded = (e.loaded / (1024 * 1024)).toFixed(2);
+
+                        // Calculate speed in Mbps
+                        const elapsedTime = (new Date().getTime() - startTime) / 1000;
+                        const bps = e.loaded / elapsedTime;
+                        const Mbps = (bps / (1024 * 1024)).toFixed(2);
+
+                        // Estimate remaining time
+                        const remainingTime = ((e.total - e.loaded) / bps).toFixed(0);
+                        const minutes = Math.floor(remainingTime / 60);
+                        const seconds = remainingTime % 60;
+
+                        // Update progress details
+                        $('.progress-bar').css('width', percentComplete + '%');
+                        $('#percent').text(`${percentComplete}%`);
+                        $('#dataTransferred').text(`Loaded/Total: ${mbLoaded}/${mbTotal} MB`);
+                        $('#Mbps').text(`Speed: ${Mbps} Mbps`);
+                        $('#timeLeft').text(`Time Left: ${minutes}:${seconds}`);
+                        $('#cancelBtn').prop('disabled', percentComplete === '100.00');
+                    }
+                }, false);
+
+                return customXHR;
+            },
+            type: 'POST',
+            url: _base_url_ + 'classes/Master.php?f=save_archive', // Point to your backend endpoint
             data: formData,
             contentType: false,
             processData: false,
-            xhr: function () {
-                const xhr = new XMLHttpRequest();
-
-                xhr.upload.addEventListener('progress', function (e) {
-                    if (e.lengthComputable) {
-                        const percentComplete = (e.loaded / e.total) * 100;
-                        const loadedMB = (e.loaded / (1024 * 1024)).toFixed(2);
-                        const totalMB = (e.total / (1024 * 1024)).toFixed(2);
-                        const elapsedTime = (new Date().getTime() - startTime) / 1000;
-                        const Mbps = ((e.loaded * 8) / (1024 * 1024)) / elapsedTime;
-                        const timeLeft = ((e.total - e.loaded) / (e.loaded / elapsedTime)).toFixed(2);
-
-                        // Update UI
-                        $('.progress-bar').css('width', percentComplete + '%').attr('aria-valuenow', percentComplete);
-                        $('#progressDetails').text(
-                            `Loaded: ${loadedMB} MB / Total: ${totalMB} MB | Speed: ${Mbps.toFixed(2)} Mbps | Time Left: ${timeLeft}s`
-                        );
-                    }
-                });
-
-                return xhr;
-            },
             success: function (response) {
                 const resp = JSON.parse(response);
 
                 if (resp.status === 'success') {
-                    alert('Upload completed successfully!');
-                    window.location.href = './?page=studentprofile';
+                    Swal.fire('Success', resp.msg, 'success').then(() => {
+                        window.location.href = './?page=studentprofile'; // Redirect after completion
+                    });
                 } else {
-                    alert('Upload failed: ' + resp.msg);
+                    Swal.fire('Error', resp.msg, 'error');
                 }
+
+                $('#uploadModal').hide();
             },
             error: function () {
-                alert('An error occurred during the upload. Please try again.');
-            },
+                Swal.fire('Error', 'An unexpected error occurred.', 'error');
+                $('#uploadModal').hide();
+            }
+        });
+
+        // Cancel upload
+        $('#cancelBtn').on('click', function () {
+            xhr.abort();
+            Swal.fire('Cancelled', 'File upload cancelled.', 'info');
+            $('#uploadModal').hide();
+        });
+
+        // Hide modal
+        $('#hideBtn').on('click', function () {
+            $('#uploadModal').hide();
         });
     });
 </script>
