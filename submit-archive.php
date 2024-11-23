@@ -301,10 +301,9 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
     $('#archive-form').submit(function (e) {
         e.preventDefault();
         const formData = new FormData(this);
-        showModal();
+        const startTime = new Date().getTime();
 
-        // Start Ajax Upload
-        uploadXHR = $.ajax({
+        $.ajax({
             url: _base_url_ + 'classes/Master.php?f=save_archive',
             method: 'POST',
             data: formData,
@@ -313,21 +312,19 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
             xhr: function () {
                 const xhr = new XMLHttpRequest();
 
-                // Progress Event
                 xhr.upload.addEventListener('progress', function (e) {
                     if (e.lengthComputable) {
                         const percentComplete = (e.loaded / e.total) * 100;
                         const loadedMB = (e.loaded / (1024 * 1024)).toFixed(2);
                         const totalMB = (e.total / (1024 * 1024)).toFixed(2);
-                        const timeElapsed = (new Date().getTime() - startTime) / 1000;
-                        const bps = e.loaded / timeElapsed;
-                        const Mbps = (bps / (1024 * 1024)).toFixed(2);
-                        const timeRemaining = ((e.total - e.loaded) / bps).toFixed(2);
+                        const elapsedTime = (new Date().getTime() - startTime) / 1000;
+                        const Mbps = ((e.loaded * 8) / (1024 * 1024)) / elapsedTime;
+                        const timeLeft = ((e.total - e.loaded) / (e.loaded / elapsedTime)).toFixed(2);
 
-                        // Update Progress Bar and Details
+                        // Update UI
                         $('.progress-bar').css('width', percentComplete + '%').attr('aria-valuenow', percentComplete);
                         $('#progressDetails').text(
-                            `Loaded: ${loadedMB} MB / Total: ${totalMB} MB | Speed: ${Mbps} Mbps | Time Left: ${timeRemaining}s`
+                            `Loaded: ${loadedMB} MB / Total: ${totalMB} MB | Speed: ${Mbps.toFixed(2)} Mbps | Time Left: ${timeLeft}s`
                         );
                     }
                 });
