@@ -143,7 +143,6 @@ while ($row = $qry->fetch_assoc()) {
         </div>
 
         <div id="account_settings" class="page">
-          <h2>Account Settings</h2>
           <div class="content py-4">
             <div class="card card-outline card-primary shadow rounded-0">
               <div class="card-header rounded-0">
