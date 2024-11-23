@@ -163,7 +163,8 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="form-group text-center">
-                                <button class="btn btn-default btn-flat" style="background-color: #0062cc;">
+                                <button class="btn btn-default btn-flat"
+                                    style="background-color: #0062cc; color:white;">
                                     Submit</button>
                                 <a href="./?page=profile" class="btn btn-light border btn-flat"> Cancel</a>
                             </div>
@@ -175,21 +176,27 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
     </div>
 </div>
 
-<!-- Modal for Upload Progress -->
-<div id="uploadModal" class="modal" style="display:none;">
-    <div class="modal-content">
-        <h4>Uploading...</h4>
-        <div class="progress">
-            <div class="progress-bar"></div>
+<!-- Bootstrap Modal for Upload Progress -->
+<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="border-radius: 8px; padding: 20px;">
+            <h4 class="modal-title" id="uploadModalLabel">Uploading...</h4>
+            <div class="progress"
+                style="background-color: #f0f0f0; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 15px;">
+                <div class="progress-bar" style="background-color: #007bff; height: 100%; width: 0%;"></div>
+            </div>
+            <div class="upload-details mt-3">
+                <p id="dataTransferred">Loaded/Total: 0 MB</p>
+                <p id="Mbps">Speed: 0 Mbps</p>
+                <p id="timeLeft">Time Left: --:--</p>
+            </div>
+            <div class="mt-3">
+                <button id="hideBtn" class="btn btn-secondary">Hide</button>
+                <button id="cancelBtn" class="btn btn-danger" disabled>Cancel</button>
+                <p id="percent" class="mt-2">0%</p>
+            </div>
         </div>
-        <div class="upload-details">
-            <p id="dataTransferred">Loaded/Total: 0 MB</p>
-            <p id="Mbps">Speed: 0 Mbps</p>
-            <p id="timeLeft">Time Left: --:--</p>
-        </div>
-        <button id="hideBtn" class="btn btn-secondary">Hide</button>
-        <button id="cancelBtn" class="btn btn-danger" disabled>Cancel</button>
-        <p id="percent">0%</p>
     </div>
 </div>
 
@@ -277,81 +284,83 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
     })
 </script>
 <script>
-    $('#archive-form').submit(function (e) {
-        e.preventDefault();
-        $('#uploadModal').show();
+    $(document).ready(function () {
+        $('#archive-form').submit(function (e) {
+            e.preventDefault();
+            $('#uploadModal').modal('show'); // Show Bootstrap modal
 
-        const formData = new FormData(this); // Collect form data
-        const startTime = new Date().getTime();
-        let xhr;
+            const formData = new FormData(this); // Collect form data
+            const startTime = new Date().getTime();
+            let xhr;
 
-        xhr = $.ajax({
-            xhr: function () {
-                const customXHR = new XMLHttpRequest();
-                customXHR.upload.addEventListener("progress", function (e) {
-                    if (e.lengthComputable) {
-                        const percentComplete = ((e.loaded / e.total) * 100).toFixed(2);
+            xhr = $.ajax({
+                xhr: function () {
+                    const customXHR = new XMLHttpRequest();
+                    customXHR.upload.addEventListener("progress", function (e) {
+                        if (e.lengthComputable) {
+                            const percentComplete = ((e.loaded / e.total) * 100).toFixed(2);
 
-                        // Convert bytes to MB
-                        const mbTotal = (e.total / (1024 * 1024)).toFixed(2);
-                        const mbLoaded = (e.loaded / (1024 * 1024)).toFixed(2);
+                            // Convert bytes to MB
+                            const mbTotal = (e.total / (1024 * 1024)).toFixed(2);
+                            const mbLoaded = (e.loaded / (1024 * 1024)).toFixed(2);
 
-                        // Calculate speed in Mbps
-                        const elapsedTime = (new Date().getTime() - startTime) / 1000;
-                        const bps = e.loaded / elapsedTime;
-                        const Mbps = (bps / (1024 * 1024)).toFixed(2);
+                            // Calculate speed in Mbps
+                            const elapsedTime = (new Date().getTime() - startTime) / 1000;
+                            const bps = e.loaded / elapsedTime;
+                            const Mbps = (bps / (1024 * 1024)).toFixed(2);
 
-                        // Estimate remaining time
-                        const remainingTime = ((e.total - e.loaded) / bps).toFixed(0);
-                        const minutes = Math.floor(remainingTime / 60);
-                        const seconds = remainingTime % 60;
+                            // Estimate remaining time
+                            const remainingTime = ((e.total - e.loaded) / bps).toFixed(0);
+                            const minutes = Math.floor(remainingTime / 60);
+                            const seconds = remainingTime % 60;
 
-                        // Update progress details
-                        $('.progress-bar').css('width', percentComplete + '%');
-                        $('#percent').text(`${percentComplete}%`);
-                        $('#dataTransferred').text(`Loaded/Total: ${mbLoaded}/${mbTotal} MB`);
-                        $('#Mbps').text(`Speed: ${Mbps} Mbps`);
-                        $('#timeLeft').text(`Time Left: ${minutes}:${seconds}`);
-                        $('#cancelBtn').prop('disabled', percentComplete === '100.00');
+                            // Update progress details
+                            $('.progress-bar').css('width', percentComplete + '%');
+                            $('#percent').text(`${percentComplete}%`);
+                            $('#dataTransferred').text(`Loaded/Total: ${mbLoaded}/${mbTotal} MB`);
+                            $('#Mbps').text(`Speed: ${Mbps} Mbps`);
+                            $('#timeLeft').text(`Time Left: ${minutes}:${seconds}`);
+                            $('#cancelBtn').prop('disabled', percentComplete === '100.00');
+                        }
+                    }, false);
+
+                    return customXHR;
+                },
+                type: 'POST',
+                url: _base_url_ + 'classes/Master.php?f=save_archive', // Point to your backend endpoint
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    const resp = JSON.parse(response);
+
+                    if (resp.status === 'success') {
+                        Swal.fire('Success', resp.msg, 'success').then(() => {
+                            window.location.href = './?page=studentprofile'; // Redirect after completion
+                        });
+                    } else {
+                        Swal.fire('Error', resp.msg, 'error');
                     }
-                }, false);
 
-                return customXHR;
-            },
-            type: 'POST',
-            url: _base_url_ + 'classes/Master.php?f=save_archive', // Point to your backend endpoint
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function (response) {
-                const resp = JSON.parse(response);
-
-                if (resp.status === 'success') {
-                    Swal.fire('Success', resp.msg, 'success').then(() => {
-                        window.location.href = './?page=studentprofile'; // Redirect after completion
-                    });
-                } else {
-                    Swal.fire('Error', resp.msg, 'error');
+                    $('#uploadModal').modal('hide'); // Hide Bootstrap modal
+                },
+                error: function () {
+                    Swal.fire('Error', 'An unexpected error occurred.', 'error');
+                    $('#uploadModal').modal('hide'); // Hide Bootstrap modal
                 }
+            });
 
-                $('#uploadModal').hide();
-            },
-            error: function () {
-                Swal.fire('Error', 'An unexpected error occurred.', 'error');
-                $('#uploadModal').hide();
-            }
-        });
+            // Cancel upload
+            $('#cancelBtn').on('click', function () {
+                xhr.abort();
+                Swal.fire('Cancelled', 'File upload cancelled.', 'info');
+                $('#uploadModal').modal('hide'); // Hide Bootstrap modal
+            });
 
-        // Cancel upload
-        $('#cancelBtn').on('click', function () {
-            xhr.abort();
-            Swal.fire('Cancelled', 'File upload cancelled.', 'info');
-            $('#uploadModal').hide();
-        });
-
-        // Hide modal
-        $('#hideBtn').on('click', function () {
-            $('#uploadModal').hide();
+            // Hide modal manually
+            $('#hideBtn').on('click', function () {
+                $('#uploadModal').modal('hide'); // Hide Bootstrap modal
+            });
         });
     });
 </script>
