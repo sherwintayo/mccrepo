@@ -353,7 +353,10 @@ class Users extends DBConnection
 			if (!empty($password)) {
 				$password_hash = password_hash($password, PASSWORD_BCRYPT);
 				if (!$password_hash) {
-					return json_encode(['status' => 'failed', 'msg' => 'Password hashing failed.']);
+					return json_encode([
+						"status" => "failed",
+						"msg" => "Password hashing failed."
+					]);
 				}
 				if (!empty($data)) {
 					$data .= ", ";
@@ -432,11 +435,12 @@ class Users extends DBConnection
 		} catch (Exception $e) {
 			return json_encode([
 				"status" => "failed",
-				"msg" => "An unexpected error occurred.",
+				"msg" => "An unexpected error occurred. Please try again later.",
 				"debug" => $e->getMessage()
 			]);
 		}
 	}
+
 
 
 
