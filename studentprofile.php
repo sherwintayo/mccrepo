@@ -106,9 +106,10 @@ while ($row = $qry->fetch_assoc()) {
                   src="<?= $archive['banner_path'] ? base_url . $archive['banner_path'] : '/dist/img/no-image-available.png'; ?>"
                   class="card-img-top" alt="Project Banner" style="height: 180px; object-fit: cover;">
                 <div class="card-body">
-                  <h5 class="card-title"><?= htmlspecialchars($archive['title']); ?></h5>
+                  <h5 class="card-title" style="font-weight: 500;"><?= htmlspecialchars($archive['title']); ?></h5>
                   <p class="card-text text-success">Archive Code:
-                    <strong><?= htmlspecialchars($archive['archive_code']); ?></strong></p>
+                    <strong><?= htmlspecialchars($archive['archive_code']); ?></strong>
+                  </p>
                 </div>
                 <div class="card-footer d-flex justify-content-between align-items-center gap-2">
                   <span class="badge <?= $statusClass; ?>"><?= $statusLabel; ?></span>
