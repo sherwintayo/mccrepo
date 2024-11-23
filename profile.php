@@ -19,7 +19,7 @@ foreach ($user->fetch_array() as $k => $v) {
 <body>
 
 
-    <div class="content py-4">
+    <div class="content py-4 mb-5">
         <div class="card card-outline card-primary shadow rounded-0">
             <div class="card-header rounded-0">
                 <h5 class="card-title">Your Information:</h5>
