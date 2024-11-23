@@ -311,7 +311,7 @@ class Users extends DBConnection
 		extract($_POST);
 
 		try {
-			// Verify old password if required
+			// Step 1: Verify old password if required
 			if (isset($oldpassword)) {
 				$stmt = $this->conn->prepare("SELECT password FROM student_list WHERE id = ?");
 				$stmt->bind_param("i", $this->settings->userdata('id'));
@@ -319,6 +319,13 @@ class Users extends DBConnection
 				$stmt->bind_result($hashed_password);
 				$stmt->fetch();
 				$stmt->close();
+
+				if (!$hashed_password) {
+					return json_encode([
+						"status" => "failed",
+						"msg" => "Unable to verify the old password. Please try again."
+					]);
+				}
 
 				if (!password_verify($oldpassword, $hashed_password)) {
 					return json_encode([
@@ -328,7 +335,7 @@ class Users extends DBConnection
 				}
 			}
 
-			// Check for duplicate email
+			// Step 2: Check for duplicate email
 			$chk = $this->conn->query("SELECT * FROM student_list WHERE email = '{$email}' " . ($id > 0 ? "AND id != '{$id}'" : ""))->num_rows;
 			if ($chk > 0) {
 				return json_encode([
@@ -337,7 +344,7 @@ class Users extends DBConnection
 				]);
 			}
 
-			// Prepare data for SQL update query
+			// Step 3: Prepare data for SQL update query
 			$data = '';
 			foreach ($_POST as $k => $v) {
 				if (!in_array($k, ['id', 'oldpassword', 'cpassword', 'password'])) {
@@ -349,13 +356,13 @@ class Users extends DBConnection
 				}
 			}
 
-			// Hash the password if provided
+			// Step 4: Hash the password if provided
 			if (!empty($password)) {
 				$password_hash = password_hash($password, PASSWORD_BCRYPT);
 				if (!$password_hash) {
 					return json_encode([
 						"status" => "failed",
-						"msg" => "Password hashing failed."
+						"msg" => "Password hashing failed. Please try again."
 					]);
 				}
 				if (!empty($data)) {
@@ -364,16 +371,16 @@ class Users extends DBConnection
 				$data .= " password = '{$password_hash}' ";
 			}
 
-			// Execute the update query
+			// Step 5: Execute the update query
 			$qry = $this->conn->query("UPDATE student_list SET {$data} WHERE id = {$id}");
 			if (!$qry) {
 				return json_encode([
 					"status" => "failed",
-					"msg" => "An error occurred while updating your details. Error: " . $this->conn->error
+					"msg" => "Failed to update the student details. Database error: " . $this->conn->error
 				]);
 			}
 
-			// Update session data if the user updates their own profile
+			// Step 6: Update session data if the user updates their own profile
 			if ($id == $this->settings->userdata('id')) {
 				foreach ($_POST as $k => $v) {
 					if ($k != 'id' && $k != 'password') {
@@ -382,7 +389,7 @@ class Users extends DBConnection
 				}
 			}
 
-			// Handle image upload
+			// Step 7: Handle image upload
 			if (isset($_FILES['img']) && $_FILES['img']['tmp_name'] != '') {
 				$fname = 'uploads/student-' . $id . '.png';
 				$dir_path = base_app . $fname;
@@ -428,6 +435,7 @@ class Users extends DBConnection
 				}
 			}
 
+			// Step 8: Return success response
 			return json_encode([
 				"status" => "success",
 				"msg" => "Student details updated successfully."
