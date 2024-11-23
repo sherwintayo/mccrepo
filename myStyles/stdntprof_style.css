@@ -181,6 +181,55 @@ a {
   object-fit: cover;
 }
 
+/* Styling for my_archives */
+#my_archives {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  min-height: 100vh; /* Ensures full height for vertical centering */
+  text-align: center;
+}
+
+#my_archives .card-deck {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+}
+
+#my_archives .card {
+  flex: 1 1 calc(33.333% - 40px); /* Default three cards per row */
+  max-width: calc(33.333% - 40px); /* Limit the size */
+  margin: 10px;
+  transition: all 0.3s ease;
+}
+
+#my_archives .card:nth-child(1):only-child {
+  flex: 0 0 50%; /* Center single card */
+  max-width: 50%;
+}
+
+#my_archives .card:nth-child(1):nth-child(2) {
+  flex: 1 1 45%; /* Center two cards */
+  max-width: 45%;
+}
+
+#my_archives .card img {
+  height: 180px;
+  object-fit: cover;
+}
+
+/* Mobile view adjustments */
+@media (max-width: 768px) {
+  #my_archives .card {
+    flex: 1 1 100%; /* Stack all cards vertically */
+    max-width: 100%;
+  }
+}
+
 /* Responsiveness */
 @media (min-width: 374.98px) {
   .header__wrapper .cols__container .right__col .page {

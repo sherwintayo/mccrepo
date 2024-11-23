@@ -16,61 +16,6 @@
     .page.active {
       display: block;
     }
-
-    /* Center the confirmation dialog */
-    .confirm-modal {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 1050;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      width: 400px;
-      max-width: 90%;
-      text-align: center;
-      padding: 20px;
-    }
-
-    .confirm-modal h5 {
-      margin: 0 0 15px;
-    }
-
-    .confirm-modal .btn-container {
-      display: flex;
-      justify-content: space-around;
-      margin-top: 20px;
-    }
-
-    .confirm-modal .btn {
-      padding: 8px 15px;
-      border-radius: 4px;
-      border: none;
-      cursor: pointer;
-    }
-
-    .confirm-modal .btn-confirm {
-      background-color: #dc3545;
-      color: white;
-    }
-
-    .confirm-modal .btn-cancel {
-      background-color: #6c757d;
-      color: white;
-    }
-
-    /* Modal backdrop */
-    .modal-backdrop {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1049;
-    }
   </style>
 </head>
 <?php require_once('./config.php'); ?>
@@ -151,16 +96,16 @@ while ($row = $qry->fetch_assoc()) {
         <!-- Default page content (my_archives) -->
         <div id="my_archives" class="page active">
           <h2>My Submitted Projects</h2>
-          <div class="card-deck d-flex flex-wrap">
+          <div class="card-deck">
             <?php foreach ($archives as $archive): ?>
               <?php
               $statusLabel = $archive['status'] == 1 ? 'Published' : 'Unpublished';
               $statusClass = $archive['status'] == 1 ? 'badge-success' : 'badge-secondary';
               ?>
-              <div class="card shadow-sm border-light m-2" style="width: 18rem;">
+              <div class="card shadow-sm border-light">
                 <img
                   src="<?= $archive['banner_path'] ? base_url . $archive['banner_path'] : '/dist/img/no-image-available.png'; ?>"
-                  class="card-img-top" alt="Project Banner" style="height: 180px; object-fit: cover;">
+                  class="card-img-top" alt="Project Banner">
                 <div class="card-body">
                   <h5 class="card-title"><?= htmlspecialchars($archive['title']); ?></h5>
                   <p class="card-text">Archive Code: <?= htmlspecialchars($archive['archive_code']); ?></p>
@@ -188,6 +133,7 @@ while ($row = $qry->fetch_assoc()) {
             <?php endforeach; ?>
           </div>
         </div>
+
 
 
 
