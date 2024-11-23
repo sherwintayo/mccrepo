@@ -160,6 +160,7 @@ class Users extends DBConnection
 	{
 		extract($_POST);
 
+
 		try {
 			// Validate reCAPTCHA response
 			$recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
@@ -174,12 +175,32 @@ class Users extends DBConnection
 			if (!$responseKeys['success']) {
 				return json_encode([
 					'status' => 'failed',
-					'msg' => 'reCAPTCHA validation failed. Please try again.'
+					'msg' => 'reCAPTCHA validation failed. Please try again.',
+					'debug' => $responseKeys // For debugging reCAPTCHA issues
 				]);
 			}
 
+			$data = '';
+
+			// Check if old password verification is needed
+			if (isset($oldpassword)) {
+				$stmt = $this->conn->prepare("SELECT password FROM student_list WHERE id = ?");
+				$stmt->bind_param("i", $this->settings->userdata('id'));
+				$stmt->execute();
+				$stmt->bind_result($hashed_password);
+				$stmt->fetch();
+				$stmt->close();
+
+				if (!password_verify($oldpassword, $hashed_password)) {
+					return json_encode([
+						'status' => 'failed',
+						'msg' => 'Old Password is Incorrect'
+					]);
+				}
+			}
+
 			// Check for duplicate email
-			$chk = $this->conn->query("SELECT * FROM `student_list` WHERE email = '{$email}'")->num_rows;
+			$chk = $this->conn->query("SELECT * FROM student_list WHERE email = '{$email}' " . ($id > 0 ? "AND id != '{$id}'" : ""))->num_rows;
 			if ($chk > 0) {
 				return json_encode([
 					'status' => 'failed',
@@ -188,9 +209,8 @@ class Users extends DBConnection
 			}
 
 			// Prepare data for SQL query
-			$data = '';
 			foreach ($_POST as $k => $v) {
-				if (!in_array($k, ['id', 'g-recaptcha-response', 'password', 'cpassword'])) {
+				if (!in_array($k, ['id', 'oldpassword', 'cpassword', 'password', 'g-recaptcha-response'])) {
 					$v = $this->conn->real_escape_string($v);
 					if (!empty($data)) {
 						$data .= ", ";
@@ -199,7 +219,137 @@ class Users extends DBConnection
 				}
 			}
 
-			// Hash the password
+			// Hash the password if provided
+			if (!empty($password)) {
+				$password_hash = password_hash($password, PASSWORD_BCRYPT);
+				if (!$password_hash) {
+					return json_encode(['status' => 'failed', 'msg' => 'Password hashing failed.']);
+				}
+				if (!empty($data)) {
+					$data .= ", ";
+				}
+				$data .= " password = '{$password_hash}' ";
+			}
+
+			// Insert or update the student record
+			if (empty($id)) {
+				$qry = $this->conn->query("INSERT INTO student_list SET {$data}");
+				if ($qry) {
+					$id = $this->conn->insert_id;
+					$this->settings->set_flashdata('success', 'Student User Details successfully saved.');
+					return json_encode(['status' => 'success']);
+				} else {
+					return json_encode([
+						'status' => 'failed',
+						'msg' => 'Database error: ' . $this->conn->error // Provide detailed error
+					]);
+				}
+			} else {
+				$qry = $this->conn->query("UPDATE student_list SET {$data} WHERE id = {$id}");
+				if ($qry) {
+					$this->settings->set_flashdata('success', 'Student User Details successfully updated.');
+					return json_encode(['status' => 'success']);
+				} else {
+					return json_encode([
+						'status' => 'failed',
+						'msg' => 'Database error: ' . $this->conn->error // Provide detailed error
+					]);
+				}
+			}
+			// Image upload logic
+			if (isset($_FILES['img']) && $_FILES['img']['tmp_name'] != '') {
+				$fname = 'uploads/student-' . $id . '.png';
+				$dir_path = base_app . $fname;
+				$upload = $_FILES['img']['tmp_name'];
+				$type = mime_content_type($upload);
+				$allowed = ['image/png', 'image/jpeg'];
+
+				if (!in_array($type, $allowed)) {
+					$resp['msg'] .= " But Image failed to upload due to invalid file type.";
+				} else {
+					$new_height = 200;
+					$new_width = 200;
+					list($width, $height) = getimagesize($upload);
+
+					$t_image = imagecreatetruecolor($new_width, $new_height);
+					imagealphablending($t_image, false);
+					imagesavealpha($t_image, true);
+					$gdImg = ($type == 'image/png') ? imagecreatefrompng($upload) : imagecreatefromjpeg($upload);
+					imagecopyresampled($t_image, $gdImg, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+
+					if ($gdImg) {
+						if (is_file($dir_path)) {
+							unlink($dir_path);
+						}
+						$uploaded_img = imagepng($t_image, $dir_path);
+						imagedestroy($gdImg);
+						imagedestroy($t_image);
+					} else {
+						$resp['msg'] .= " But Image failed to upload due to an unknown reason.";
+					}
+				}
+
+				if (isset($uploaded_img)) {
+					$this->conn->query("UPDATE student_list SET avatar = CONCAT('{$fname}','?v=',unix_timestamp(CURRENT_TIMESTAMP)) WHERE id = '{$id}'");
+					if ($id == $this->settings->userdata('id')) {
+						$this->settings->set_userdata('avatar', $fname);
+					}
+				}
+			}
+		} catch (Exception $e) {
+			// Catch any unexpected errors and return JSON
+			return json_encode([
+				'status' => 'failed',
+				'msg' => 'An unexpected error occurred.',
+				'debug' => $e->getMessage() // Include exception message for debugging
+			]);
+		}
+	}
+
+	public function update_student()
+	{
+		extract($_POST);
+
+		try {
+			// Verify old password if provided
+			if (isset($oldpassword)) {
+				$stmt = $this->conn->prepare("SELECT password FROM student_list WHERE id = ?");
+				$stmt->bind_param("i", $this->settings->userdata('id'));
+				$stmt->execute();
+				$stmt->bind_result($hashed_password);
+				$stmt->fetch();
+				$stmt->close();
+
+				if (!password_verify($oldpassword, $hashed_password)) {
+					return json_encode([
+						'status' => 'failed',
+						'msg' => 'Old Password is Incorrect'
+					]);
+				}
+			}
+
+			// Check for duplicate email
+			$chk = $this->conn->query("SELECT * FROM `student_list` WHERE email = '{$email}' AND id != '{$id}'")->num_rows;
+			if ($chk > 0) {
+				return json_encode([
+					'status' => 'failed',
+					'msg' => 'Email already exists.'
+				]);
+			}
+
+			// Prepare data for SQL update query
+			$data = '';
+			foreach ($_POST as $k => $v) {
+				if (!in_array($k, ['id', 'oldpassword', 'cpassword', 'password'])) {
+					$v = $this->conn->real_escape_string($v);
+					if (!empty($data)) {
+						$data .= ", ";
+					}
+					$data .= " {$k} = '{$v}' ";
+				}
+			}
+
+			// Update password if provided
 			if (!empty($password)) {
 				$password_hash = password_hash($password, PASSWORD_BCRYPT);
 				if (!$password_hash) {
@@ -211,11 +361,10 @@ class Users extends DBConnection
 				$data .= " `password` = '{$password_hash}' ";
 			}
 
-			// Insert the student record
-			$qry = $this->conn->query("INSERT INTO student_list SET {$data}");
+			// Execute the update query
+			$qry = $this->conn->query("UPDATE student_list SET {$data} WHERE id = {$id}");
 			if ($qry) {
-				$id = $this->conn->insert_id;
-				$this->settings->set_flashdata('success', 'Student User Details successfully saved.');
+				$this->settings->set_flashdata('success', 'Student User Details successfully updated.');
 				return json_encode(['status' => 'success']);
 			} else {
 				return json_encode([
@@ -230,135 +379,6 @@ class Users extends DBConnection
 				'debug' => $e->getMessage()
 			]);
 		}
-	}
-
-	public function update_student()
-	{
-		extract($_POST);
-		$data = '';
-
-		// Check if old password verification is needed
-		if (isset($oldpassword)) {
-			// Fetch the hashed password from the database
-			$stmt = $this->conn->prepare("SELECT password FROM student_list WHERE id = ?");
-			$stmt->bind_param("i", $this->settings->userdata('id'));
-			$stmt->execute();
-			$stmt->bind_result($hashed_password);
-			$stmt->fetch();
-			$stmt->close();
-
-			// Verify old password using bcrypt
-			if (!password_verify($oldpassword, $hashed_password)) {
-				return json_encode([
-					"status" => 'failed',
-					"msg" => 'Old Password is Incorrect'
-				]);
-			}
-		}
-
-		// Check for duplicate email
-		$chk = $this->conn->query("SELECT * FROM student_list WHERE email = '{$email}' " . ($id > 0 ? "AND id != '{$id}'" : ""))->num_rows;
-		if ($chk > 0) {
-			return json_encode([
-				"status" => 'failed',
-				"msg" => 'Email already exists.'
-			]);
-		}
-
-		// Prepare data for SQL query
-		foreach ($_POST as $k => $v) {
-			if (!in_array($k, ['id', 'oldpassword', 'cpassword', 'password'])) {
-				$v = $this->conn->real_escape_string($v); // Prevent SQL injection
-				if (!empty($data)) {
-					$data .= ", ";
-				}
-				$data .= " {$k} = '{$v}' ";
-			}
-		}
-
-		// Hash the password if provided
-		if (!empty($password)) {
-			$password_hash = password_hash($password, PASSWORD_BCRYPT); // Secure hashing with bcrypt
-			if (!$password_hash) {
-				return json_encode(['status' => 'failed', 'msg' => 'Password hashing failed.']);
-			}
-			if (!empty($data)) {
-				$data .= ", ";
-			}
-			$data .= " password = '{$password_hash}' ";
-		}
-
-		// Insert or update the student record
-		if (empty($id)) {
-			$qry = $this->conn->query("INSERT INTO student_list SET {$data}");
-			if ($qry) {
-				$id = $this->conn->insert_id;
-				$this->settings->set_flashdata('success', 'Student User Details successfully saved.');
-				$resp['status'] = "success";
-			} else {
-				$resp['status'] = "failed";
-				$resp['msg'] = "An error occurred while saving the data. Error: " . $this->conn->error;
-			}
-		} else {
-			$qry = $this->conn->query("UPDATE student_list SET {$data} WHERE id = {$id}");
-			if ($qry) {
-				$this->settings->set_flashdata('success', 'Student User Details successfully updated.');
-				if ($id == $this->settings->userdata('id')) {
-					foreach ($_POST as $k => $v) {
-						if ($k != 'id') {
-							$this->settings->set_userdata($k, $v);
-						}
-					}
-				}
-				$resp['status'] = "success";
-			} else {
-				$resp['status'] = "failed";
-				$resp['msg'] = "An error occurred while saving the data. Error: " . $this->conn->error;
-			}
-		}
-
-		// Image upload logic
-		if (isset($_FILES['img']) && $_FILES['img']['tmp_name'] != '') {
-			$fname = 'uploads/student-' . $id . '.png';
-			$dir_path = base_app . $fname;
-			$upload = $_FILES['img']['tmp_name'];
-			$type = mime_content_type($upload);
-			$allowed = ['image/png', 'image/jpeg'];
-
-			if (!in_array($type, $allowed)) {
-				$resp['msg'] .= " But Image failed to upload due to invalid file type.";
-			} else {
-				$new_height = 200;
-				$new_width = 200;
-				list($width, $height) = getimagesize($upload);
-
-				$t_image = imagecreatetruecolor($new_width, $new_height);
-				imagealphablending($t_image, false);
-				imagesavealpha($t_image, true);
-				$gdImg = ($type == 'image/png') ? imagecreatefrompng($upload) : imagecreatefromjpeg($upload);
-				imagecopyresampled($t_image, $gdImg, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
-
-				if ($gdImg) {
-					if (is_file($dir_path)) {
-						unlink($dir_path);
-					}
-					$uploaded_img = imagepng($t_image, $dir_path);
-					imagedestroy($gdImg);
-					imagedestroy($t_image);
-				} else {
-					$resp['msg'] .= " But Image failed to upload due to an unknown reason.";
-				}
-			}
-
-			if (isset($uploaded_img)) {
-				$this->conn->query("UPDATE student_list SET avatar = CONCAT('{$fname}','?v=',unix_timestamp(CURRENT_TIMESTAMP)) WHERE id = '{$id}'");
-				if ($id == $this->settings->userdata('id')) {
-					$this->settings->set_userdata('avatar', $fname);
-				}
-			}
-		}
-
-		return json_encode($resp);
 	}
 
 
