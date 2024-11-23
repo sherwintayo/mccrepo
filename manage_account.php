@@ -140,60 +140,68 @@ foreach ($user->fetch_array() as $k => $v) {
             $('#cimg').attr('src', "<?= validate_image(isset($avatar) ? $avatar : "") ?>");
         }
     }
+
     $(function () {
         // Update Form Submit
         $('#update-form').submit(function (e) {
             e.preventDefault()
-            var _this = $(this)
-            $(".pop-msg").remove()
-            $('#password, #cpassword').removeClass("is-invalid")
-            var el = $("<div>")
-            el.addClass("alert pop-msg my-2")
-            el.hide()
-            if ($("#password").val() != $("#cpassword").val()) {
-                el.addClass("alert-danger")
-                el.text("Password does not match.")
-                $('#password, #cpassword').addClass("is-invalid")
-                $('#cpassword').after(el)
-                el.show('slow')
+            var _this = $(this);
+            $('#password, #cpassword').removeClass("is-invalid");
+
+            // Check if passwords match
+            if ($("#password").val() !== $("#cpassword").val()) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Password and Confirm Password do not match.'
+                });
+                $('#password, #cpassword').addClass("is-invalid");
                 return false;
             }
+
+            // Start Loader
             start_loader();
+
+            // AJAX Request
             $.ajax({
                 url: _base_url_ + "classes/Users.php?f=update_student",
-                data: new FormData($(this)[0]),
+                data: new FormData(_this[0]),
                 cache: false,
                 contentType: false,
                 processData: false,
                 method: 'POST',
-                type: 'POST',
                 dataType: 'json',
-                error: err => {
-                    console.log(err)
-                    el.text("An error occured while saving the data")
-                    el.addClass("alert-danger")
-                    _this.prepend(el)
-                    el.show('slow')
-                    end_loader()
-                },
                 success: function (resp) {
-                    if (resp.status == 'success') {
-                        location.href = "./?page=profile"
-                    } else if (!!resp.msg) {
-                        el.text(resp.msg)
-                        el.addClass("alert-danger")
-                        _this.prepend(el)
-                        el.show('show')
-                    } else {
-                        el.text("An error occured while saving the data")
-                        el.addClass("alert-danger")
-                        _this.prepend(el)
-                        el.show('show')
-                    }
                     end_loader();
-                    $('html, body').animate({ scrollTop: 0 }, 'fast')
+
+                    if (resp.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'Your details have been updated successfully.',
+                        }).then(() => {
+                            // Redirect to profile page
+                            location.href = "./?page=profile";
+                        });
+                    } else {
+                        // Display error message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: resp.msg || 'An error occurred while updating your details.',
+                        });
+                    }
+                },
+                error: function (err) {
+                    console.error(err);
+                    end_loader();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An unexpected error occurred. Please try again later.',
+                    });
                 }
-            })
-        })
-    })
+            });
+        });
+    });
 </script>
