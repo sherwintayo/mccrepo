@@ -188,7 +188,7 @@ a {
   justify-content: center;
   align-items: center;
   gap: 20px;
-
+  min-height: auto; /* Ensures full height for vertical centering */
   text-align: center;
 }
 
@@ -243,6 +243,7 @@ a {
     flex-direction: row;
     gap: 30px;
   }
+
   #my_archives .card {
     flex: 1 1 100%; /* Stack all cards vertically */
     max-width: 100%;
@@ -261,6 +262,7 @@ a {
     flex-direction: row;
     gap: 30px;
   }
+
   #my_archives .card {
     flex: 1 1 100%; /* Stack all cards vertically */
     max-width: 100%;
@@ -289,6 +291,11 @@ a {
     overflow: auto;
     padding: 0 0 30px;
     margin: 0 auto;
+  }
+
+  #my_archives .card {
+    flex: 1 1 100%; /* Stack all cards vertically */
+    max-width: 100%;
   }
 }
 
