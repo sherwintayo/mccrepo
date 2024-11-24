@@ -169,7 +169,7 @@
         <li class="nav-item">
           <a href="./?page=about" class="nav-link <?= isset($page) && $page == 'about' ? "active" : "" ?>">ABOUT US</a>
         </li>
-        <?php if ($_settings->userdata('id') > 0): ?>
+        <!-- <?php if ($_settings->userdata('id') > 0): ?>
           <li class="nav-item">
             <a href="./?page=studentprofile"
               class="nav-link <?= isset($page) && $page == 'profile' ? "active" : "" ?>">Profile</a>
@@ -178,7 +178,7 @@
             <a href="./?page=submit-archive"
               class="nav-link <?= isset($page) && $page == 'submit-archive' ? "active" : "" ?>">Submit Thesis/Capstone</a>
           </li>
-        <?php endif; ?>
+        <?php endif; ?> -->
         </ul>
       </div>
 
@@ -311,7 +311,7 @@
               <span class="sr-only">Toggle Dropdown</span>
             </button>
             <div class="dropdown-menu myUserDropdown" role="menu">
-              <a href="./?page=profile" class="myName">
+              <a href="./?page=studentprofile" class="myName">
                 <img src="<?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>"
                   class="img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar" style="border: none;">
                 <span class="username-text">
@@ -488,7 +488,7 @@
                   <span class="sr-only">Toggle Dropdown</span>
                 </button>
                 <div class="dropdown-menu myUserDropdown" role="menu">
-                  <a href="./?page=profile" class="myName">
+                  <a href="./?page=studentprofile" class="myName">
                     <img
                       src="<?= htmlspecialchars(validate_image($_settings->userdata('avatar')), ENT_QUOTES, 'UTF-8') ?>"
                       class=" img-circle elevation-2 user-img" id="student-img-avatar" alt="User Avatar"
