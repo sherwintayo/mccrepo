@@ -13,7 +13,7 @@
 }
 
 .navbar .navbar-brand img {
-  max-height: 40px;
+  max-height: 45px;
 }
 .navbar .navbar-brand .myBrandName {
   color: #f9f06d !important;
@@ -160,9 +160,8 @@
   height: 86px;
 }
 
-.myNavs .modal-dialog .modal-header img {
-  max-height: 40px;
-  opacity: 0.8;
+.myNavs .modal .modal-dialog .modal-header img {
+  max-height: 45px !important;
 }
 
 .myNavs .modal-dialog .modal-header .myHeaderLeft {
@@ -194,6 +193,15 @@
   .dropdown-menu
   .myName {
   color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.myNavs .modal-dialog .modal-header .myHeaderRight .nav-item .login {
+  color: #2a252e !important;
+  background-color: #f9f06d;
+  border-radius: 5px;
+  padding: 2px 4px;
+  height: 20px;
+  font-size: 15px;
 }
 
 .myNavs .modal-dialog .modal-header .myBrandName {

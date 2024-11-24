@@ -350,8 +350,7 @@
         <div class="modal-header">
           <div class="myHeaderLeft my-1">
             <img src="<?php echo htmlspecialchars(validate_image($_settings->info('logo')), ENT_QUOTES, 'UTF-8') ?>"
-              alt="Site Logo" class="brand-image img-circle elevation-3">
-            <span class="myBrandName"><?= $_settings->info('short_name') ?></span>
+              alt="Site Logo" class="brand-image img-circle">
           </div>
           <div class="myHeaderRight d-flex align-items-center">
             <!-- Search Icon -->
@@ -505,12 +504,13 @@
               </div>
             <?php else: ?>
               <li class="nav-item" style="list-style: none;">
-                <a href="./ms_login" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">SIGN
+                <a href="./ms_login" class="navlink login  mx-1 text-light"
+                  style="text-decoration: none; list-style: none;">SIGN
                   UP</a>
               </li>
               <li class="nav-item" style="list-style: none;">
-                <a href="#" class="navlink mx-1 text-light" style="text-decoration: none;" data-bs-toggle="modal"
-                  data-bs-target="#signInModal">SIGN IN</a>
+                <a href="#" class="navlink login mx-1 text-light" style="text-decoration: none;" id="signInButton">SIGN
+                  IN</a>
               </li>
             <?php endif; ?>
           </div>
@@ -593,12 +593,15 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="signInModalLabel">Sign in as</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title d-flex justify-content-center " id="signInModalLabel">Sign in as</h5>
       </div>
       <div class="modal-body text-center">
         <button id="studentSignIn" class="btn btn-primary mx-2">Student</button>
         <button id="adminSignIn" class="btn btn-secondary mx-2">Admin</button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><label
+            for="toggle-menu">Close</label></button>
       </div>
     </div>
   </div>
@@ -700,5 +703,26 @@
       });
     });
   }
-
+</script>
+<script>
+  // Handle SIGN IN button click
+  document.getElementById('signInButton').addEventListener('click', function () {
+    Swal.fire({
+      title: 'Sign in as',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Student',
+      cancelButtonText: 'Admin',
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Redirect to Student Login
+        window.location.href = './login';
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        // Redirect to Admin Login
+        window.location.href = './admin/login';
+      }
+    });
+  });
 </script>
