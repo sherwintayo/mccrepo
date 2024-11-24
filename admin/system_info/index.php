@@ -181,14 +181,14 @@
 			success: function (response) {
 				try {
 					let res = JSON.parse(response);
-					if (res.status == 'success') {
+					if (res.status === 'success') {
 						Swal.fire('Success', 'System Information Updated!', 'success');
 					} else {
-						Swal.fire('Error', res.msg || 'Failed to update settings.', 'error');
+						Swal.fire('Error', res.msg || 'An error occurred while updating.', 'error');
 					}
 				} catch (err) {
 					console.error('Response parsing error:', err, response);
-					Swal.fire('Error', 'An unexpected error occurred.', 'error');
+					Swal.fire('Error', 'Unexpected server response. Check console logs.', 'error');
 				}
 			},
 			error: function (xhr, status, error) {

@@ -36,108 +36,117 @@ class SystemSettings extends DBConnection
 	}
 	function update_settings()
 	{
-		$data = "";
-		$resp = ['msg' => '']; // Initialize $resp as an array with a default message key.
+		$resp = ['status' => 'success', 'msg' => '']; // Default response
 
+		// Update database for text fields
 		foreach ($_POST as $key => $value) {
-			if (!in_array($key, array("content")))
-				if (isset($_SESSION['system_info'][$key])) {
-					$value = str_replace("'", "&apos;", $value);
-					$qry = $this->conn->query("UPDATE system_info set meta_value = '{$value}' where meta_field = '{$key}' ");
-				} else {
-					$qry = $this->conn->query("INSERT into system_info set meta_value = '{$value}', meta_field = '{$key}' ");
+			if (!in_array($key, array("content"))) {
+				$value = $this->conn->real_escape_string(str_replace("'", "&apos;", $value));
+				$sql = isset($_SESSION['system_info'][$key])
+					? "UPDATE system_info SET meta_value = '{$value}' WHERE meta_field = '{$key}'"
+					: "INSERT INTO system_info (meta_value, meta_field) VALUES ('{$value}', '{$key}')";
+				$qry = $this->conn->query($sql);
+				if (!$qry) {
+					$resp['status'] = 'error';
+					$resp['msg'] .= "Failed to update {$key}. ";
+					error_log("DB Error [{$key}]: " . $this->conn->error);
 				}
+			}
 		}
-		if (isset($_POST['content']))
+
+		// Save content fields to files
+		if (isset($_POST['content'])) {
 			foreach ($_POST['content'] as $k => $v) {
-				file_put_contents("../{$k}.html", $v);
-
+				$file_path = "../{$k}.html";
+				if (!file_put_contents($file_path, $v)) {
+					$resp['status'] = 'error';
+					$resp['msg'] .= "Failed to save {$k}.html. ";
+					error_log("File write error: {$file_path}");
+				}
 			}
+		}
 
+		// Handle logo upload
 		if (isset($_FILES['img']) && $_FILES['img']['tmp_name'] != '') {
-			$fname = 'uploads/logo-' . (time()) . '.png';
-			$dir_path = base_app . $fname;
-			$upload = $_FILES['img']['tmp_name'];
-			$type = mime_content_type($upload);
-			$allowed = array('image/png', 'image/jpeg');
-			if (!in_array($type, $allowed)) {
-				$resp['msg'] .= " But Image failed to upload due to invalid file type.";
-			} else {
-				$new_height = 200;
-				$new_width = 200;
-
-				list($width, $height) = getimagesize($upload);
-				$t_image = imagecreatetruecolor($new_width, $new_height);
-				imagealphablending($t_image, false);
-				imagesavealpha($t_image, true);
-				$gdImg = ($type == 'image/png') ? imagecreatefrompng($upload) : imagecreatefromjpeg($upload);
-				imagecopyresampled($t_image, $gdImg, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
-				if ($gdImg) {
-					if (is_file($dir_path))
-						unlink($dir_path);
-					$uploaded_img = imagepng($t_image, $dir_path);
-					imagedestroy($gdImg);
-					imagedestroy($t_image);
-				} else {
-					$resp['msg'] .= " But Image failed to upload due to unkown reason.";
-				}
-			}
-			if (isset($uploaded_img) && $uploaded_img == true) {
-				if (isset($_SESSION['system_info']['logo'])) {
-					$qry = $this->conn->query("UPDATE system_info set meta_value = '{$fname}' where meta_field = 'logo' ");
-					if (is_file(base_app . $_SESSION['system_info']['logo']))
-						unlink(base_app . $_SESSION['system_info']['logo']);
-				} else {
-					$qry = $this->conn->query("INSERT into system_info set meta_value = '{$fname}',meta_field = 'logo' ");
-				}
-				unset($uploaded_img);
+			$upload_result = $this->handle_file_upload($_FILES['img'], 'logo', 200, 200, 'uploads/logo-');
+			if ($upload_result['status'] !== 'success') {
+				$resp['status'] = 'error';
+				$resp['msg'] .= $upload_result['msg'];
 			}
 		}
+
+		// Handle cover upload
 		if (isset($_FILES['cover']) && $_FILES['cover']['tmp_name'] != '') {
-			$fname = 'uploads/cover-' . time() . '.png';
-			$dir_path = base_app . $fname;
-			$upload = $_FILES['cover']['tmp_name'];
-			$type = mime_content_type($upload);
-			$allowed = array('image/png', 'image/jpeg');
-			if (!in_array($type, $allowed)) {
-				$resp['msg'] .= " But Image failed to upload due to invalid file type.";
-			} else {
-				$new_height = 720;
-				$new_width = 1280;
-
-				list($width, $height) = getimagesize($upload);
-				$t_image = imagecreatetruecolor($new_width, $new_height);
-				$gdImg = ($type == 'image/png') ? imagecreatefrompng($upload) : imagecreatefromjpeg($upload);
-				imagecopyresampled($t_image, $gdImg, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
-				if ($gdImg) {
-					if (is_file($dir_path))
-						unlink($dir_path);
-					$uploaded_img = imagepng($t_image, $dir_path);
-					imagedestroy($gdImg);
-					imagedestroy($t_image);
-				} else {
-					$resp['msg'] .= " But Image failed to upload due to unkown reason.";
-				}
-			}
-			if (isset($uploaded_img) && $uploaded_img == true) {
-				if (isset($_SESSION['system_info']['cover'])) {
-					$qry = $this->conn->query("UPDATE system_info set meta_value = '{$fname}' where meta_field = 'cover' ");
-					if (is_file(base_app . $_SESSION['system_info']['cover']))
-						unlink(base_app . $_SESSION['system_info']['cover']);
-				} else {
-					$qry = $this->conn->query("INSERT into system_info set meta_value = '{$fname}',meta_field = 'cover' ");
-				}
-				unset($uploaded_img);
+			$upload_result = $this->handle_file_upload($_FILES['cover'], 'cover', 1280, 720, 'uploads/cover-');
+			if ($upload_result['status'] !== 'success') {
+				$resp['status'] = 'error';
+				$resp['msg'] .= $upload_result['msg'];
 			}
 		}
 
-		$update = $this->update_system_info();
-		$flash = $this->set_flashdata('success', 'System Info Successfully Updated.');
-		if ($update && $flash) {
-			// var_dump($_SESSION);
-			return true;
+		// Update system info in session
+		if ($this->update_system_info() && $resp['status'] === 'success') {
+			$this->set_flashdata('success', 'System Info Successfully Updated.');
+		} else {
+			$resp['status'] = 'error';
+			$resp['msg'] .= " Failed to refresh system info.";
 		}
+
+		return json_encode($resp);
 	}
+
+	/**
+	 * Handle file upload and resizing.
+	 */
+	private function handle_file_upload($file, $field, $new_width, $new_height, $prefix)
+	{
+		$resp = ['status' => 'success', 'msg' => ''];
+		$fname = $prefix . time() . '.png';
+		$dir_path = base_app . $fname;
+		$upload = $file['tmp_name'];
+		$type = mime_content_type($upload);
+		$allowed = ['image/png', 'image/jpeg'];
+
+		if (!in_array($type, $allowed)) {
+			$resp['status'] = 'error';
+			$resp['msg'] = " Invalid file type for {$field}.";
+			return $resp;
+		}
+
+		list($width, $height) = getimagesize($upload);
+		$t_image = imagecreatetruecolor($new_width, $new_height);
+		imagealphablending($t_image, false);
+		imagesavealpha($t_image, true);
+		$gdImg = ($type === 'image/png') ? imagecreatefrompng($upload) : imagecreatefromjpeg($upload);
+		imagecopyresampled($t_image, $gdImg, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+
+		if ($gdImg) {
+			if (is_file($dir_path))
+				unlink($dir_path);
+			if (!imagepng($t_image, $dir_path)) {
+				$resp['status'] = 'error';
+				$resp['msg'] = " Failed to save resized image for {$field}.";
+			} else {
+				$sql = isset($_SESSION['system_info'][$field])
+					? "UPDATE system_info SET meta_value = '{$fname}' WHERE meta_field = '{$field}'"
+					: "INSERT INTO system_info (meta_value, meta_field) VALUES ('{$fname}', '{$field}')";
+				$qry = $this->conn->query($sql);
+				if (!$qry) {
+					$resp['status'] = 'error';
+					$resp['msg'] = " Failed to save file path for {$field} to the database.";
+					error_log("DB Error [{$field}]: " . $this->conn->error);
+				}
+			}
+			imagedestroy($gdImg);
+			imagedestroy($t_image);
+		} else {
+			$resp['status'] = 'error';
+			$resp['msg'] = " Failed to process image for {$field}.";
+		}
+
+		return $resp;
+	}
+
 	function set_userdata($field = '', $value = '')
 	{
 		if (!empty($field) && !empty($value)) {
