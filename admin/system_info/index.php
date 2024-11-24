@@ -110,11 +110,6 @@
 
 	</div>
 </div>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="../plugins/jquery/jquery.min.js"></script>
-<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="../dist/js/adminlte.min.js"></script>
 <script>
 	function displayImg(input, _this) {
 		if (input.files && input.files[0]) {
@@ -165,36 +160,4 @@
 			]
 		})
 	})
-
-	// Form submission via AJAX
-	$('#system-frm').on('submit', function (e) {
-		e.preventDefault(); // Prevent default form submission
-		let formData = new FormData(this); // Serialize form data
-		formData.append('f', 'update_settings'); // Add the action parameter
-
-		$.ajax({
-			url: 'System_Settings.php', // Endpoint for processing
-			type: 'POST',
-			data: formData,
-			contentType: false,
-			processData: false,
-			success: function (response) {
-				try {
-					let res = JSON.parse(response);
-					if (res.status === 'success') {
-						Swal.fire('Success', 'System Information Updated!', 'success');
-					} else {
-						Swal.fire('Error', res.msg || 'An error occurred while updating.', 'error');
-					}
-				} catch (err) {
-					console.error('Response parsing error:', err, response);
-					Swal.fire('Error', 'Unexpected server response. Check console logs.', 'error');
-				}
-			},
-			error: function (xhr, status, error) {
-				console.error('AJAX Error:', status, error);
-				Swal.fire('Error', 'Failed to submit data.', 'error');
-			}
-		});
-	});
 </script>
