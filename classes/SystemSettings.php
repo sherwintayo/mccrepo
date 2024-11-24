@@ -37,6 +37,8 @@ class SystemSettings extends DBConnection
 	function update_settings()
 	{
 		$data = "";
+		$resp = ['msg' => '']; // Initialize $resp as an array with a default message key.
+
 		foreach ($_POST as $key => $value) {
 			if (!in_array($key, array("content")))
 				if (isset($_SESSION['system_info'][$key])) {
@@ -226,8 +228,15 @@ $action = !isset($_GET['f']) ? 'none' : strtolower($_GET['f']);
 $sysset = new SystemSettings();
 switch ($action) {
 	case 'update_settings':
-		echo $sysset->update_settings();
+		header('Content-Type: application/json'); // Return JSON response
+		$result = $sysset->update_settings();
+		if ($result) {
+			echo json_encode(['status' => 'success']);
+		} else {
+			echo json_encode(['status' => 'error', 'msg' => 'Failed to update settings.']);
+		}
 		break;
+
 	default:
 		// echo $sysset->index();
 		break;
