@@ -585,18 +585,20 @@
     </div>
   </div>
 
-  <!-- Sign In Modal -->
-  <div class="modal fade" id="signInModal" tabindex="-1" aria-labelledby="signInModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="signInModalLabel">Sign in as</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body text-center">
-          <button id="studentSignIn" class="btn btn-primary mx-2">Student</button>
-          <button id="adminSignIn" class="btn btn-secondary mx-2">Admin</button>
-        </div>
+
+</div>
+
+<!-- Sign In Modal -->
+<div class="modal fade" id="signInModal" tabindex="-1" aria-labelledby="signInModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="signInModalLabel">Sign in as</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <button id="studentSignIn" class="btn btn-primary mx-2">Student</button>
+        <button id="adminSignIn" class="btn btn-secondary mx-2">Admin</button>
       </div>
     </div>
   </div>
