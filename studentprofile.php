@@ -1,4 +1,4 @@
-<>
+<head>
 
   <link rel="stylesheet" href="<?php echo base_url ?>myStyles/stdntprof_style.css?v=<?php echo time(); ?>">
   <style>
@@ -17,7 +17,7 @@
       display: block;
     }
   </style>
-</>
+</head>
 <?php require_once('./config.php'); ?>
 <?php
 $user = $conn->query("
