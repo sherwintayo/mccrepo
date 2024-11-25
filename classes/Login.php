@@ -81,12 +81,12 @@ class Login extends DBConnection
                 $mail->isSMTP();
                 $mail->Host = 'smtp.gmail.com';
                 $mail->SMTPAuth = true;
-                $mail->Username = 'your_email@gmail.com'; // Replace with your email
-                $mail->Password = 'your_email_password'; // Replace with your password
-                $mail->SMTPSecure = 'tls';
+                $mail->Username = 'sherwintayo08@gmail.com'; // Replace with your email
+                $mail->Password = 'jlbm iyke zqjv zwtr'; // Replace with your password
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                 $mail->Port = 587;
 
-                $mail->setFrom('your_email@gmail.com', 'Admin');
+                $mail->setFrom('MADRIDEJOS COMMUNITY COLLEGE', 'Admin');
                 $mail->addAddress($to);
                 $mail->Subject = $subject;
                 $mail->Body = $message;
