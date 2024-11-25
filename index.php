@@ -121,7 +121,10 @@
         <!-- Chatbot Button -->
         <div class="floating-btn-container">
           <button class="floating-btn chatbot-btn" onclick="toggleSidebar('chatbotSidebar')">
-            <i class="fa fa-comments"></i>
+            <a href="https://mccbsitquizandexam.com" target="_blank">
+              <i class="fa fa-comments"></i>
+            </a>
+
           </button>
           <span class="floating-btn-text">Click Chatbot</span>
         </div>
@@ -141,14 +144,7 @@
       <!-- Background Overlay -->
       <div id="overlay" class="overlay hidden" onclick="closeAllSidebars()"></div>
 
-      <!-- Sidebar for Chatbot -->
-      <div id="chatbotSidebar" class="sidebar hidden">
-        <a href="javascript:void(0)" class="closebtn" onclick="toggleSidebar('chatbotSidebar')">&times;</a>
-        <h2>Chatbot</h2>
-        <div class="sidebar-content">
-          <p>Welcome to the chatbot!</p>
-        </div>
-      </div>
+
 
       <!-- /.content -->
       <div class="modal fade" id="confirm_modal" role='dialog'>
@@ -218,9 +214,7 @@
     document.getElementById(id + 'Sidebar').style.width = "0";
   }
 
-  function openChatbot() {
-    openSidebar('chatbot');
-  }
+
 
   function toggleSidebar(id) {
     const sidebar = document.getElementById(id);
