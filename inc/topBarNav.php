@@ -92,7 +92,7 @@
   </style>
 </head>
 
-<div class="myNavs">
+<div class="myNavs" style="z-index: 1000;">
   <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg w-100" id="login-nav">
     <div class="container ">

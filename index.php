@@ -55,7 +55,39 @@
     bottom: 0;
   }
 
-  /* Floating Buttons */
+  /* Sidebar styles */
+  .sidebar {
+    height: 100%;
+    width: 300px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    background-color: #f9f9f9;
+    overflow-x: hidden;
+    padding-top: 60px;
+    box-shadow: -3px 0 5px rgba(0, 0, 0, 0.2);
+    z-index: 1100;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .sidebar.hidden {
+    transform: translateX(100%);
+  }
+
+  .sidebar.visible {
+    transform: translateX(0);
+  }
+
+  .sidebar .closebtn {
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    font-size: 36px;
+    cursor: pointer;
+  }
+
+  /* Floating buttons */
   .floating-buttons {
     position: fixed;
     bottom: 20px;
@@ -84,35 +116,6 @@
   .floating-btn:hover {
     background-color: #0056b3;
   }
-
-  /* Sidebar Modal */
-  .sidebar {
-    height: 100%;
-    width: 0;
-    position: fixed;
-    z-index: 1001;
-    top: 0;
-    right: 0;
-    background-color: #f9f9f9;
-    overflow-x: hidden;
-    transition: 0.5s;
-    padding-top: 60px;
-    box-shadow: -3px 0 5px rgba(0, 0, 0, 0.2);
-  }
-
-  .sidebar .closebtn {
-    position: absolute;
-    top: 10px;
-    right: 25px;
-    font-size: 36px;
-    cursor: pointer;
-  }
-
-  .sidebar .sidebar-content {
-    padding: 20px;
-    color: #333;
-  }
-
 
   /* Add this to make sure large images or content don't cause overflow */
   img,
@@ -169,35 +172,34 @@
       <div class="floating-buttons">
         <?php if ($_settings->userdata('id') > 0): ?>
           <!-- User Manual Button (Visible for Logged-in Users) -->
-          <button class="floating-btn user-manual-btn" onclick="openSidebar('userManual')">
+          <button class="floating-btn user-manual-btn" onclick="toggleSidebar('userManualSidebar')">
             <i class="fa fa-book"></i>
           </button>
         <?php endif; ?>
         <!-- Chatbot Button (Always Visible) -->
-        <button class="floating-btn chatbot-btn" onclick="openChatbot()">
+        <button class="floating-btn chatbot-btn" onclick="toggleSidebar('chatbotSidebar')">
           <i class="fa fa-comments"></i>
         </button>
       </div>
 
-      <!-- Sidebar/Modal for User Manual -->
-      <div id="userManualSidebar" class="sidebar">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeSidebar('userManual')">&times;</a>
+      <!-- Sidebar for User Manual -->
+      <div id="userManualSidebar" class="sidebar hidden">
+        <a href="javascript:void(0)" class="closebtn" onclick="toggleSidebar('userManualSidebar')">&times;</a>
         <h2>User Manual</h2>
         <div class="sidebar-content">
-          <!-- Load user manual content dynamically or place here -->
           <p>This is the user manual content.</p>
         </div>
       </div>
 
-      <!-- Sidebar/Modal for Chatbot -->
-      <div id="chatbotSidebar" class="sidebar">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeSidebar('chatbot')">&times;</a>
+      <!-- Sidebar for Chatbot -->
+      <div id="chatbotSidebar" class="sidebar hidden">
+        <a href="javascript:void(0)" class="closebtn" onclick="toggleSidebar('chatbotSidebar')">&times;</a>
         <h2>Chatbot</h2>
         <div class="sidebar-content">
-          <!-- Include chatbot functionality here -->
           <p>Welcome to the chatbot!</p>
         </div>
       </div>
+
       <!-- /.content -->
       <div class="modal fade" id="confirm_modal" role='dialog'>
         <div class="modal-dialog modal-md modal-dialog-centered" role="document">
@@ -269,6 +271,18 @@
   function openChatbot() {
     openSidebar('chatbot');
   }
+
+  function toggleSidebar(id) {
+    const sidebar = document.getElementById(id);
+    if (sidebar.classList.contains('hidden')) {
+      sidebar.classList.remove('hidden');
+      sidebar.classList.add('visible');
+    } else {
+      sidebar.classList.remove('visible');
+      sidebar.classList.add('hidden');
+    }
+  }
+
 </script>
 
 </html>
