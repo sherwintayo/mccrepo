@@ -183,7 +183,7 @@
               });
               setTimeout(() => {
                 window.location.href = '../admin/'; // Redirect to dashboard
-              }, 3000);
+              }, 2000);
             } else if (response.status === 'captcha_failed') {
               Swal.fire({
                 icon: 'error',

@@ -1,5 +1,10 @@
 <?php
 require_once '../config.php';
+require '../vendor/autoload.php'; // Adjust path to your PHPMailer
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
 class Login extends DBConnection
 {
@@ -20,22 +25,29 @@ class Login extends DBConnection
     {
         echo "<h1>Access Denied</h1> <a href='" . base_url . "'>Go Back.</a>";
     }
+
+
+
+
     public function login()
     {
         extract($_POST);
 
+        // Verify reCAPTCHA
         $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-        $secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO';
+        $secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO'; // Replace with your secret key
         $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
+        // Send request to Google API
         $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaResponse);
         $responseKeys = json_decode($response, true);
 
         if (!$responseKeys['success']) {
-            echo json_encode(['status' => 'captcha_failed', 'message' => 'reCAPTCHA validation failed.']);
+            echo json_encode(['status' => 'error', 'message' => 'reCAPTCHA validation failed.']);
             return;
         }
 
+        // Proceed with normal login logic
         $stmt = $this->conn->prepare("SELECT * FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
@@ -46,8 +58,43 @@ class Login extends DBConnection
 
             if (password_verify($password, $res['password'])) {
                 if ($res['status'] != 1) {
-                    echo json_encode(['status' => 'notverified', 'message' => 'Your account is not verified.']);
+                    echo json_encode(['status' => 'error', 'message' => 'Your account is not verified.']);
                     return;
+                }
+
+                // Generate OTP
+                $otp = random_int(100000, 999999);
+                $_SESSION['otp'] = $otp;
+                $_SESSION['otp_expiry'] = time() + 90; // OTP expires in 90 seconds
+                $_SESSION['temp_username'] = $username;
+
+                // Send OTP via email
+                $to = $res['email'];
+                $subject = "Your Admin OTP Code";
+                $message = "Your OTP code is: $otp. It is valid for 1 minute and 30 seconds.";
+                $headers = "From: admin@yourdomain.com\r\n";
+                $headers .= "Content-Type: text/plain; charset=UTF-8";
+
+
+
+                $mail = new PHPMailer();
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'your_email@gmail.com'; // Replace with your email
+                $mail->Password = 'your_email_password'; // Replace with your password
+                $mail->SMTPSecure = 'tls';
+                $mail->Port = 587;
+
+                $mail->setFrom('your_email@gmail.com', 'Admin');
+                $mail->addAddress($to);
+                $mail->Subject = $subject;
+                $mail->Body = $message;
+
+                if (!$mail->send()) {
+                    echo json_encode(['status' => 'error', 'message' => 'Failed to send OTP.']);
+                } else {
+                    echo json_encode(['status' => 'otp_sent']);
                 }
 
                 foreach ($res as $k => $v) {
@@ -64,15 +111,39 @@ class Login extends DBConnection
                     $updateStmt->execute();
                 }
 
-                echo json_encode(['status' => 'success']);
+                echo json_encode(['status' => 'success', 'message' => 'Welcome to the admin panel!']);
             } else {
-                echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
+                echo json_encode(['status' => 'error', 'message' => 'Incorrect username or password.']);
             }
         } else {
-            echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
+            echo json_encode(['status' => 'error', 'message' => 'User not found.']);
         }
     }
 
+    public function verify_otp()
+    {
+        session_start();
+        $userInputOtp = $_POST['otp'] ?? '';
+
+        if (!isset($_SESSION['otp']) || time() > $_SESSION['otp_expiry']) {
+            // OTP expired
+            session_destroy();
+            echo json_encode(['status' => 'expired', 'message' => 'OTP has expired. Please login again.']);
+            return;
+        }
+
+        if ($_SESSION['otp'] == $userInputOtp) {
+            // OTP verified
+            unset($_SESSION['otp']);
+            unset($_SESSION['otp_expiry']);
+            $_SESSION['username'] = $_SESSION['temp_username'];
+            unset($_SESSION['temp_username']);
+
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid OTP.']);
+        }
+    }
 
 
 
