@@ -88,7 +88,7 @@ while ($row = $qry->fetch_assoc()) {
           <div id="uploadArea">
             <button id="uploadArchiveBtn" class="btn btn-primary d-flex align-items-center"
               onclick="redirectToSubmitArchive()">
-              <i class="fa fa-upload mr-2"></i> Upload Archive
+              <i class="fa fa-upload mr-2"></i> Upload Project
             </button>
           </div>
         </nav>

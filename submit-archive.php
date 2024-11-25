@@ -40,10 +40,27 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         height: 30vh;
         width: calc(100%);
     }
+
+
+    .card {
+        width: 100%;
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: center;
+        background-color: #cfcfcf;
+    }
+
+    .card-title {
+        color: #272424;
+        font-weight: 700;
+        font-size: 25px;
+    }
 </style>
 <div class="content py-4">
-    <div class="card card-outline card-primary shadow rounded-0">
-        <div class="card-header rounded-0">
+    <div class="card card-outline shadow rounded-3">
+        <div class="card-header rounded-3">
             <h5 class="card-title"><?= htmlspecialchars(isset($id) ? "Update Archive-{$archive_code} Details" :
                 "Submit Project", ENT_QUOTES, 'UTF-8') ?></h5>
         </div>
@@ -130,8 +147,8 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="form-group">
-                                <label for="zipfiles" class="control-label text-muted">Create Zip of Multiples Uploded
-                                    Files</label>
+                                <label for="zipfiles" class="control-label text-muted">Source
+                                    Code(Zip Files Only)</label>
                                 <input type="file" id="zipfiles" name="zipfiles[]"
                                     class="form-control form-control-border" multiple accept=".zip" <?= !isset($id) ? "required" : "" ?>>
 
@@ -141,7 +158,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="form-group">
-                                <label for="sql" class="control-label text-muted">SQL File Only</label>
+                                <label for="sql" class="control-label text-muted">Database(SQL File Only)</label>
                                 <input type="file" id="sql" name="sql" class="form-control form-control-border"
                                     accept=".sql" v<?= !isset($id) ? "required" : "" ?>>
                             </div>
@@ -153,7 +170,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                                 <button class="btn btn-default btn-flat"
                                     style="background-color: #0062cc; color:white;">
                                     Submit</button>
-                                <a href="./?page=profile" class="btn btn-light border btn-flat"> Cancel</a>
+                                <a href="./?page=profile" class="btn btn-danger border btn-flat"> Cancel</a>
                             </div>
                         </div>
                     </div>

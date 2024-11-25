@@ -1,6 +1,7 @@
 <?php require_once('./config.php'); ?>
 <!DOCTYPE html>
 <html lang="en" class="" style="height: auto;">
+<link rel="stylesheet" href="./myStyles/index.css">
 <style>
   /* General fix for overflow issues */
   html,
@@ -21,6 +22,7 @@
     top: -1em;
     margin-top: 20px;
   }
+
 
   #header:before {
     content: "";
@@ -55,68 +57,6 @@
     bottom: 0;
   }
 
-  /* Sidebar styles */
-  .sidebar {
-    height: 100%;
-    width: 300px;
-    position: fixed;
-    top: 0;
-    right: 0;
-    background-color: #f9f9f9;
-    overflow-x: hidden;
-    padding-top: 60px;
-    box-shadow: -3px 0 5px rgba(0, 0, 0, 0.2);
-    z-index: 1100;
-    transform: translateX(100%);
-    transition: transform 0.3s ease-in-out;
-  }
-
-  .sidebar.hidden {
-    transform: translateX(100%);
-  }
-
-  .sidebar.visible {
-    transform: translateX(0);
-  }
-
-  .sidebar .closebtn {
-    position: absolute;
-    top: 10px;
-    right: 25px;
-    font-size: 36px;
-    cursor: pointer;
-  }
-
-  /* Floating buttons */
-  .floating-buttons {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    z-index: 1000;
-  }
-
-  .floating-btn {
-    width: 50px;
-    height: 50px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    font-size: 20px;
-  }
-
-  .floating-btn:hover {
-    background-color: #0056b3;
-  }
-
   /* Add this to make sure large images or content don't cause overflow */
   img,
   iframe,
@@ -130,7 +70,7 @@
 <?php require_once('inc/header.php') ?>
 
 <body class="layout-top-nav layout-fixed layout-navbar-fixed" style="height: auto;">
-  <div class="wrapper">
+  <div class="wrapper" style="background-color: #fafcfd;">
     <?php $page = isset($_GET['page']) ? $_GET['page'] : 'home'; ?>
     <?php require_once('inc/topBarNav.php') ?>
     <?php if ($_settings->chk_flashdata('success')): ?>
@@ -168,28 +108,38 @@
         </div>
       </section>
 
-      <!-- Floating Fix Buttons -->
       <div class="floating-buttons">
         <?php if ($_settings->userdata('id') > 0): ?>
-          <!-- User Manual Button (Visible for Logged-in Users) -->
-          <button class="floating-btn user-manual-btn" onclick="toggleSidebar('userManualSidebar')">
-            <i class="fa fa-book"></i>
-          </button>
+          <!-- User Manual Button -->
+          <div class="floating-btn-container">
+            <button class="floating-btn user-manual-btn" onclick="toggleSidebar('userManualSidebar')">
+              <i class="fa fa-book"></i>
+            </button>
+            <span class="floating-btn-text">Click User Manual</span>
+          </div>
         <?php endif; ?>
-        <!-- Chatbot Button (Always Visible) -->
-        <button class="floating-btn chatbot-btn" onclick="toggleSidebar('chatbotSidebar')">
-          <i class="fa fa-comments"></i>
-        </button>
+        <!-- Chatbot Button -->
+        <div class="floating-btn-container">
+          <button class="floating-btn chatbot-btn" onclick="toggleSidebar('chatbotSidebar')">
+            <i class="fa fa-comments"></i>
+          </button>
+          <span class="floating-btn-text">Click Chatbot</span>
+        </div>
       </div>
+
 
       <!-- Sidebar for User Manual -->
       <div id="userManualSidebar" class="sidebar hidden">
         <a href="javascript:void(0)" class="closebtn" onclick="toggleSidebar('userManualSidebar')">&times;</a>
-        <h2>User Manual</h2>
-        <div class="sidebar-content">
-          <p>This is the user manual content.</p>
+        <div class="container">
+          <h2>User Manual</h2>
+          <div class="sidebar-content">
+            <p>This is the user manual content.</p>
+          </div>
         </div>
       </div>
+      <!-- Background Overlay -->
+      <div id="overlay" class="overlay hidden" onclick="closeAllSidebars()"></div>
 
       <!-- Sidebar for Chatbot -->
       <div id="chatbotSidebar" class="sidebar hidden">
@@ -274,14 +224,28 @@
 
   function toggleSidebar(id) {
     const sidebar = document.getElementById(id);
+    const overlay = document.getElementById('overlay');
     if (sidebar.classList.contains('hidden')) {
       sidebar.classList.remove('hidden');
       sidebar.classList.add('visible');
+      overlay.classList.add('visible'); // Show overlay
     } else {
       sidebar.classList.remove('visible');
       sidebar.classList.add('hidden');
+      overlay.classList.remove('visible'); // Hide overlay
     }
   }
+
+  function closeAllSidebars() {
+    const sidebars = document.querySelectorAll('.sidebar');
+    const overlay = document.getElementById('overlay');
+    sidebars.forEach(sidebar => {
+      sidebar.classList.remove('visible');
+      sidebar.classList.add('hidden');
+    });
+    overlay.classList.remove('visible'); // Hide overlay
+  }
+
 
 </script>
 
