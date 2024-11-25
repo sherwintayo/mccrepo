@@ -120,11 +120,10 @@
         <?php endif; ?>
         <!-- Chatbot Button -->
         <div class="floating-btn-container">
-          <button class="floating-btn chatbot-btn" onclick="toggleSidebar('chatbotSidebar')">
+          <button class="floating-btn chatbot-btn">
             <a href="https://mccbsitquizandexam.com" target="_blank">
               <i class="fa fa-comments"></i>
             </a>
-
           </button>
           <span class="floating-btn-text">Click Chatbot</span>
         </div>
