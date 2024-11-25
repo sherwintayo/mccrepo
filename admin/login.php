@@ -133,6 +133,8 @@
       };
 
       $('#login-frm').on('submit', function (event) {
+        event.preventDefault(); // Prevent default form submission
+
         var _this = $(this);
         var hasError = false;
 
@@ -159,16 +161,76 @@
         });
 
         if (hasError) {
-          event.preventDefault(); // Prevent form submission if any input has an error
-          return false;
+          return false; // Exit if validation fails
         }
+
+        // If validation passes, submit via AJAX
+        var formData = _this.serialize(); // Serialize form data
+
+        $.ajax({
+          url: _base_url_ + "classes/Login.php?f=login", // Adjust URL for the backend login script
+          method: 'POST',
+          data: formData,
+          dataType: 'json',
+          success: function (response) {
+            if (response.status === 'success') {
+              Swal.fire({
+                icon: 'success',
+                title: 'Login Successful',
+                text: 'Redirecting to dashboard...',
+                showConfirmButton: false,
+                timer: 3000
+              });
+              setTimeout(() => {
+                window.location.href = '../admin/'; // Redirect to dashboard
+              }, 3000);
+            } else if (response.status === 'captcha_failed') {
+              Swal.fire({
+                icon: 'error',
+                title: 'Captcha Failed',
+                text: response.message,
+                confirmButtonText: 'Try Again'
+              });
+            } else if (response.status === 'notverified') {
+              Swal.fire({
+                icon: 'error',
+                title: 'Account Not Verified',
+                text: 'Please contact admin to verify your account.',
+                confirmButtonText: 'OK'
+              });
+            } else if (response.status === 'incorrect') {
+              Swal.fire({
+                icon: 'error',
+                title: 'Login Failed',
+                text: 'Incorrect username or password.',
+                confirmButtonText: 'Retry'
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An unexpected error occurred. Please try again later.',
+                confirmButtonText: 'OK'
+              });
+            }
+          },
+          error: function () {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Unable to process your request at this time.',
+              confirmButtonText: 'OK'
+            });
+          }
+        });
+      });
+
+      $(document).ready(function () {
+        end_loader(); // Ensure loader is ended when the document is ready
       });
     })(jQuery);
-
-    $(document).ready(function () {
-      end_loader();
-    });
   </script>
+
 
 </body>
 
