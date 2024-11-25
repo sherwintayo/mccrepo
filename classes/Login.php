@@ -1,10 +1,5 @@
 <?php
 require_once '../config.php';
-require '../vendor/autoload.php'; // Adjust path to your PHPMailer
-
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
 
 class Login extends DBConnection
 {
@@ -25,10 +20,6 @@ class Login extends DBConnection
     {
         echo "<h1>Access Denied</h1> <a href='" . base_url . "'>Go Back.</a>";
     }
-
-
-
-
     public function login()
     {
         extract($_POST);
@@ -62,41 +53,6 @@ class Login extends DBConnection
                     return;
                 }
 
-                // Generate OTP
-                $otp = random_int(100000, 999999);
-                $_SESSION['otp'] = $otp;
-                $_SESSION['otp_expiry'] = time() + 90; // OTP expires in 90 seconds
-                $_SESSION['temp_username'] = $username;
-
-                // Send OTP via email
-                $to = $res['email'];
-                $subject = "Your Admin OTP Code";
-                $message = "Your OTP code is: $otp. It is valid for 1 minute and 30 seconds.";
-                $headers = "From: admin@yourdomain.com\r\n";
-                $headers .= "Content-Type: text/plain; charset=UTF-8";
-
-
-
-                $mail = new PHPMailer();
-                $mail->isSMTP();
-                $mail->Host = 'smtp.gmail.com';
-                $mail->SMTPAuth = true;
-                $mail->Username = 'sherwintayo08@gmail.com'; // Replace with your email
-                $mail->Password = 'jlbm iyke zqjv zwtr'; // Replace with your password
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                $mail->Port = 587;
-
-                $mail->setFrom('MADRIDEJOS COMMUNITY COLLEGE', 'Admin');
-                $mail->addAddress($to);
-                $mail->Subject = $subject;
-                $mail->Body = $message;
-
-                if (!$mail->send()) {
-                    echo json_encode(['status' => 'error', 'message' => 'Failed to send OTP.']);
-                } else {
-                    echo json_encode(['status' => 'otp_sent']);
-                }
-
                 foreach ($res as $k => $v) {
                     if (!is_numeric($k) && $k != 'password') {
                         $this->settings->set_userdata($k, $v);
@@ -120,30 +76,6 @@ class Login extends DBConnection
         }
     }
 
-    public function verify_otp()
-    {
-        session_start();
-        $userInputOtp = $_POST['otp'] ?? '';
-
-        if (!isset($_SESSION['otp']) || time() > $_SESSION['otp_expiry']) {
-            // OTP expired
-            session_destroy();
-            echo json_encode(['status' => 'expired', 'message' => 'OTP has expired. Please login again.']);
-            return;
-        }
-
-        if ($_SESSION['otp'] == $userInputOtp) {
-            // OTP verified
-            unset($_SESSION['otp']);
-            unset($_SESSION['otp_expiry']);
-            $_SESSION['username'] = $_SESSION['temp_username'];
-            unset($_SESSION['temp_username']);
-
-            echo json_encode(['status' => 'success']);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid OTP.']);
-        }
-    }
 
 
 

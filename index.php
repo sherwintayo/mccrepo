@@ -55,6 +55,65 @@
     bottom: 0;
   }
 
+  /* Floating Buttons */
+  .floating-buttons {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+  }
+
+  .floating-btn {
+    width: 50px;
+    height: 50px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 20px;
+  }
+
+  .floating-btn:hover {
+    background-color: #0056b3;
+  }
+
+  /* Sidebar Modal */
+  .sidebar {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1001;
+    top: 0;
+    right: 0;
+    background-color: #f9f9f9;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    box-shadow: -3px 0 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .sidebar .closebtn {
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    font-size: 36px;
+    cursor: pointer;
+  }
+
+  .sidebar .sidebar-content {
+    padding: 20px;
+    color: #333;
+  }
+
+
   /* Add this to make sure large images or content don't cause overflow */
   img,
   iframe,
@@ -105,6 +164,40 @@
           ?>
         </div>
       </section>
+
+      <!-- Floating Fix Buttons -->
+      <div class="floating-buttons">
+        <?php if ($_settings->userdata('id') > 0): ?>
+          <!-- User Manual Button (Visible for Logged-in Users) -->
+          <button class="floating-btn user-manual-btn" onclick="openSidebar('userManual')">
+            <i class="fa fa-book"></i>
+          </button>
+        <?php endif; ?>
+        <!-- Chatbot Button (Always Visible) -->
+        <button class="floating-btn chatbot-btn" onclick="openChatbot()">
+          <i class="fa fa-comments"></i>
+        </button>
+      </div>
+
+      <!-- Sidebar/Modal for User Manual -->
+      <div id="userManualSidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeSidebar('userManual')">&times;</a>
+        <h2>User Manual</h2>
+        <div class="sidebar-content">
+          <!-- Load user manual content dynamically or place here -->
+          <p>This is the user manual content.</p>
+        </div>
+      </div>
+
+      <!-- Sidebar/Modal for Chatbot -->
+      <div id="chatbotSidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeSidebar('chatbot')">&times;</a>
+        <h2>Chatbot</h2>
+        <div class="sidebar-content">
+          <!-- Include chatbot functionality here -->
+          <p>Welcome to the chatbot!</p>
+        </div>
+      </div>
       <!-- /.content -->
       <div class="modal fade" id="confirm_modal" role='dialog'>
         <div class="modal-dialog modal-md modal-dialog-centered" role="document">
@@ -164,5 +257,18 @@
     <!-- /content-wrapper -->
     <?php require_once('inc/footer.php') ?>
 </body>
+<script>
+  function openSidebar(id) {
+    document.getElementById(id + 'Sidebar').style.width = "300px";
+  }
+
+  function closeSidebar(id) {
+    document.getElementById(id + 'Sidebar').style.width = "0";
+  }
+
+  function openChatbot() {
+    openSidebar('chatbot');
+  }
+</script>
 
 </html>
