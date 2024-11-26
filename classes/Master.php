@@ -265,8 +265,6 @@ class Master extends DBConnection
 				$allowed = array('image/png', 'image/jpeg', 'image/jpg');
 				if (!in_array($type, $allowed)) {
 					$resp['msg'] .= " But Image failed to upload due to invalid file type.";
-				} elseif (!scanFileForViruses($upload)) { // Scan for malicious content
-					$resp['msg'] .= " Image upload failed due to detection of malicious content.";
 				} else {
 					list($width, $height) = getimagesize($upload);
 					$new_width = 1280;
@@ -299,8 +297,6 @@ class Master extends DBConnection
 				$allowed = array('application/pdf');
 				if (!in_array($type, $allowed)) {
 					$resp['msg'] .= " But Document File has failed to upload due to invalid file type.";
-				} elseif (!scanFileForViruses($_FILES['pdf']['tmp_name'])) { // Scan for malicious content
-					$resp['msg'] .= " Document upload failed due to detection of malicious content.";
 				} else {
 					$zip_pdf = new ZipArchive();
 					$pdf_zipname = 'uploads/pdf/Document-' . $aid . '.zip';
@@ -328,8 +324,6 @@ class Master extends DBConnection
 
 				if ($zip->open($dir_path, ZipArchive::CREATE) !== TRUE) {
 					$resp['msg'] .= " But ZIP file failed to create.";
-				} elseif (!scanFileForViruses($_FILES['zipfiles']['name'][0])) { // Scan for malicious content
-					$resp['msg'] .= " Document upload failed due to detection of malicious content.";
 				} else {
 					foreach ($_FILES['zipfiles']['tmp_name'] as $key => $tmp_name) {
 						if (is_uploaded_file($tmp_name)) {
@@ -357,8 +351,6 @@ class Master extends DBConnection
 
 					if ($zip_sql->open($sql_dir_path, ZipArchive::CREATE) !== TRUE) {
 						$resp['msg'] .= " But SQL ZIP file failed to create.";
-					} elseif (!scanFileForViruses($_FILES['sql']['tmp_name'] != '')) { // Scan for malicious content
-						$resp['msg'] .= " Document upload failed due to detection of malicious content.";
 					} else {
 						$sql_tmp_name = $_FILES['sql']['tmp_name'];
 						$zip_sql->addFile($sql_tmp_name, $_FILES['sql']['name']);
@@ -376,19 +368,6 @@ class Master extends DBConnection
 		}
 
 		return json_encode($resp);
-	}
-
-	/**
-	 * Scan a file for viruses or malicious code using ClamAV.
-	 *
-	 * @param string $filePath
-	 * @return bool True if file is clean, False if malicious
-	 */
-	function scanFileForViruses($filePath)
-	{
-		$cmd = "clamscan --stdout --no-summary " . escapeshellarg($filePath);
-		$output = shell_exec($cmd);
-		return strpos($output, 'OK') !== false;
 	}
 
 
