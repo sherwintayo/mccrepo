@@ -1,6 +1,10 @@
 <?php
 require_once '../config.php';
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 class Login extends DBConnection
 {
     private $settings;
@@ -53,6 +57,9 @@ class Login extends DBConnection
                     return;
                 }
 
+                $_SESSION['temp_email'] = $res['email']; // Save email for OTP sending
+                echo json_encode(['status' => 'otp_verification']);
+
                 foreach ($res as $k => $v) {
                     if (!is_numeric($k) && $k != 'password') {
                         $this->settings->set_userdata($k, $v);
@@ -76,7 +83,65 @@ class Login extends DBConnection
         }
     }
 
+    public function send_otp()
+    {
+        session_start();
+        if (!isset($_SESSION['temp_email'])) {
+            echo json_encode(['status' => 'error', 'message' => 'Session expired. Please login again.']);
+            return;
+        }
 
+        $otp = random_int(100000, 999999); // Generate OTP
+        $_SESSION['otp'] = $otp;
+        $_SESSION['otp_expiry'] = time() + 90; // OTP valid for 90 seconds
+
+        $email = $_SESSION['temp_email'];
+        $subject = "Your Admin OTP Code";
+        $message = "Your OTP code is: $otp. It is valid for 1 minute and 30 seconds.";
+
+        // Send email using PHPMailer
+        require '../vendor/autoload.php';
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'your_email@gmail.com';
+            $mail->Password = 'your_password'; // Use app password if needed
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+
+            $mail->setFrom('your_email@gmail.com', 'Admin');
+            $mail->addAddress($email);
+            $mail->Subject = $subject;
+            $mail->Body = $message;
+
+            $mail->send();
+            echo json_encode(['status' => 'success', 'message' => 'OTP sent successfully.']);
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to send OTP.']);
+        }
+    }
+
+
+    public function verify_otp()
+    {
+        session_start();
+        $userInputOtp = $_POST['otp'] ?? '';
+
+        if (!isset($_SESSION['otp']) || time() > $_SESSION['otp_expiry']) {
+            echo json_encode(['status' => 'expired', 'message' => 'OTP has expired. Please login again.']);
+            return;
+        }
+
+        if ($_SESSION['otp'] == $userInputOtp) {
+            unset($_SESSION['otp'], $_SESSION['otp_expiry'], $_SESSION['temp_email']);
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid OTP.']);
+        }
+    }
 
 
     public function logout()

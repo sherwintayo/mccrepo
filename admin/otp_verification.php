@@ -25,40 +25,70 @@
       </div>
       <div class="col-md-9 register-right">
         <h3 class="register-heading">OTP Verification</h3>
-        <form id="otp-frm" method="POST">
+        <form action="" method="POST">
           <div class="form-group">
-            <input type="number" name="otp" id="otp" placeholder="Enter OTP *" class="form-control" required>
+            <input type="number" id="otp" class="form-control w-50 mx-auto" placeholder="Enter OTP" required>
           </div>
-          <button type="submit" class="btn btn-primary">Verify OTP</button>
+          <button id="verify-btn" class="btn btn-primary mt-3">Verify OTP</button>
         </form>
+        <div id="timer" class="mt-3"></div>
       </div>
     </div>
   </div>
 
   <script>
-    $(document).ready(function () {
-      $('#otp-frm').on('submit', function (e) {
-        e.preventDefault();
-        $.ajax({
-          url: _base_url_ + "classes/Login.php?f=verify_otp",
-          method: "POST",
-          data: { otp: $('#otp').val() },
-          dataType: "json",
-          success: function (response) {
-            if (response.status === 'success') {
-              window.location.href = '../admin/'; // Redirect to dashboard
-            } else if (response.status === 'expired') {
-              alert('OTP expired. Redirecting to login.');
-              window.location.href = '../admin/login.php'; // Redirect to login
-            } else {
-              alert('Invalid OTP.');
-            }
-          },
-          error: function () {
-            alert('Unable to process request.');
+    // Countdown Timer
+    let expiryTime = 90; // 1 minute and 30 seconds
+    const timerElement = document.getElementById('timer');
+
+    const countdown = setInterval(() => {
+      const minutes = Math.floor(expiryTime / 60);
+      const seconds = expiryTime % 60;
+      timerElement.textContent = `Time remaining: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      expiryTime--;
+
+      if (expiryTime < 0) {
+        clearInterval(countdown);
+        Swal.fire({
+          icon: 'error',
+          title: 'OTP Expired',
+          text: 'Redirecting to login page...',
+          showConfirmButton: false,
+          timer: 2000
+        }).then(() => {
+          window.location.href = 'login.php';
+        });
+      }
+    }, 1000);
+
+    // OTP Verification
+    document.getElementById('verify-btn').addEventListener('click', () => {
+      const otp = document.getElementById('otp').value;
+
+      fetch('classes/Login.php?f=verify_otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ otp })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            Swal.fire({
+              icon: 'success',
+              title: 'OTP Verified',
+              text: 'Redirecting to dashboard...',
+              showConfirmButton: false,
+              timer: 2000
+            }).then(() => {
+              window.location.href = 'dashboard.php';
+            });
+          } else if (data.status === 'expired') {
+            Swal.fire('OTP Expired', 'Please login again.', 'error')
+              .then(() => window.location.href = 'login.php');
+          } else {
+            Swal.fire('Invalid OTP', data.message, 'error');
           }
         });
-      });
     });
   </script>
 </body>

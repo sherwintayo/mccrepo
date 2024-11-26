@@ -173,16 +173,16 @@
           data: formData,
           dataType: 'json',
           success: function (response) {
-            if (response.status === 'success') {
+            if (response.status === 'otp_verification') {
               Swal.fire({
                 icon: 'success',
-                title: 'Login Successful',
-                text: 'Redirecting to dashboard...',
+                title: 'Verification Required',
+                text: 'Redirecting to OTP verification...',
                 showConfirmButton: false,
-                timer: 3000
+                timer: 2000
               });
               setTimeout(() => {
-                window.location.href = '../admin/'; // Redirect to dashboard
+                window.location.href = 'otp_verification.php'; // Redirect to OTP page
               }, 2000);
             } else if (response.status === 'captcha_failed') {
               Swal.fire({
