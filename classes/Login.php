@@ -28,21 +28,18 @@ class Login extends DBConnection
     {
         extract($_POST);
 
-        // Verify reCAPTCHA
         $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-        $secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO'; // Replace with your secret key
+        $secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO';
         $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
-        // Send request to Google API
         $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaResponse);
         $responseKeys = json_decode($response, true);
 
         if (!$responseKeys['success']) {
-            echo json_encode(['status' => 'error', 'message' => 'reCAPTCHA validation failed.']);
+            echo json_encode(['status' => 'captcha_failed', 'message' => 'reCAPTCHA validation failed.']);
             return;
         }
 
-        // Proceed with normal login logic
         $stmt = $this->conn->prepare("SELECT * FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
@@ -53,12 +50,9 @@ class Login extends DBConnection
 
             if (password_verify($password, $res['password'])) {
                 if ($res['status'] != 1) {
-                    echo json_encode(['status' => 'error', 'message' => 'Your account is not verified.']);
+                    echo json_encode(['status' => 'notverified', 'message' => 'Your account is not verified.']);
                     return;
                 }
-
-                $_SESSION['temp_email'] = $res['email']; // Save email for OTP sending
-                echo json_encode(['status' => 'otp_verification']);
 
                 foreach ($res as $k => $v) {
                     if (!is_numeric($k) && $k != 'password') {
@@ -74,72 +68,12 @@ class Login extends DBConnection
                     $updateStmt->execute();
                 }
 
-                echo json_encode(['status' => 'success', 'message' => 'Welcome to the admin panel!']);
+                echo json_encode(['status' => 'success']);
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'Incorrect username or password.']);
+                echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
             }
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'User not found.']);
-        }
-    }
-
-    public function send_otp()
-    {
-        session_start();
-        if (!isset($_SESSION['temp_email'])) {
-            echo json_encode(['status' => 'error', 'message' => 'Session expired. Please login again.']);
-            return;
-        }
-
-        $otp = random_int(100000, 999999); // Generate OTP
-        $_SESSION['otp'] = $otp;
-        $_SESSION['otp_expiry'] = time() + 90; // OTP valid for 90 seconds
-
-        $email = $_SESSION['temp_email'];
-        $subject = "Your Admin OTP Code";
-        $message = "Your OTP code is: $otp. It is valid for 1 minute and 30 seconds.";
-
-        // Send email using PHPMailer
-        require '../vendor/autoload.php';
-        $mail = new PHPMailer(true);
-
-        try {
-            $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'your_email@gmail.com';
-            $mail->Password = 'your_password'; // Use app password if needed
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port = 587;
-
-            $mail->setFrom('your_email@gmail.com', 'Admin');
-            $mail->addAddress($email);
-            $mail->Subject = $subject;
-            $mail->Body = $message;
-
-            $mail->send();
-            echo json_encode(['status' => 'success', 'message' => 'OTP sent successfully.']);
-        } catch (Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => 'Failed to send OTP.']);
-        }
-    }
-
-
-    public function verify_otp()
-    {
-        session_start();
-        $userInputOtp = $_POST['otp'] ?? '';
-
-        if (!isset($_SESSION['otp']) || time() > $_SESSION['otp_expiry']) {
-            echo json_encode(['status' => 'expired', 'message' => 'OTP has expired. Please login again.']);
-            return;
-        }
-
-        if ($_SESSION['otp'] == $userInputOtp) {
-            unset($_SESSION['otp'], $_SESSION['otp_expiry'], $_SESSION['temp_email']);
-            echo json_encode(['status' => 'success']);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid OTP.']);
+            echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
         }
     }
 
