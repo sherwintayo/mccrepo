@@ -207,7 +207,7 @@ class Master extends DBConnection
 
 	function save_archive()
 	{
-		// Generate Archive Code
+
 		if (empty($_POST['id'])) {
 			$pref = date("Ym");
 			$code = sprintf("%'.04d", 1);
@@ -224,140 +224,151 @@ class Master extends DBConnection
 			$_POST['curriculum_id'] = $this->settings->userdata('curriculum_id');
 		}
 
-		// Sanitize Inputs
-		if (isset($_POST['abstract'])) {
-			$_POST['abstract'] = htmlentities($_POST['abstract'], ENT_QUOTES, 'UTF-8');
-		}
-		if (isset($_POST['members'])) {
-			$_POST['members'] = htmlentities($_POST['members'], ENT_QUOTES, 'UTF-8');
-		}
+		if (isset($_POST['abstract']))
+			$_POST['abstract'] = htmlentities($_POST['abstract']);
+		if (isset($_POST['members']))
+			$_POST['members'] = htmlentities($_POST['members']);
 
 		extract($_POST);
 		$data = "";
 
 		foreach ($_POST as $k => $v) {
-			if (!in_array($k, ['id']) && !is_array($_POST[$k])) {
-				$v = $this->conn->real_escape_string($v);
-				$data .= !empty($data) ? ", {$k}='{$v}'" : "{$k}='{$v}'";
+			if (!in_array($k, array('id')) && !is_array($_POST[$k])) {
+				if (!is_numeric($v))
+					$v = $this->conn->real_escape_string($v);
+				if (!empty($data))
+					$data .= ",";
+				$data .= " {$k}='{$v}' ";
 			}
 		}
 
-		// Save to Database
-		$sql = empty($id) ? "INSERT INTO archive_list SET {$data}" : "UPDATE archive_list SET {$data} WHERE id = '{$id}'";
+		if (empty($id)) {
+			$sql = "INSERT INTO archive_list SET {$data} ";
+		} else {
+			$sql = "UPDATE archive_list SET {$data} WHERE id = '{$id}' ";
+		}
+
 		$save = $this->conn->query($sql);
 
 		if ($save) {
 			$aid = !empty($id) ? $id : $this->conn->insert_id;
-			$resp = [
-				'status' => 'success',
-				'id' => $aid,
-				'msg' => empty($id) ? "Archive was successfully submitted." : "Archive details were updated successfully."
-			];
+			$resp['status'] = 'success';
+			$resp['id'] = $aid;
+			$resp['msg'] = empty($id) ? "Archive was successfully submitted" : "Archive details were updated successfully.";
 
-			// Create Upload Directories
-			$uploadDirs = [
-				'banners' => 'uploads/banners/',
-				'pdf' => 'uploads/pdf/',
-				'files' => 'uploads/files/',
-				'sql' => 'uploads/sql/'
-			];
-			foreach ($uploadDirs as $dir) {
-				if (!is_dir(base_app . $dir)) {
-					mkdir(base_app . $dir, 0755, true);
+			// Handle Image Upload
+			if (isset($_FILES['img']) && $_FILES['img']['tmp_name'] != '') {
+				$fname = 'uploads/banners/banner-' . $aid . '.png';
+				$dir_path = base_app . $fname;
+				$upload = $_FILES['img']['tmp_name'];
+				$type = mime_content_type($upload);
+				$allowed = array('image/png', 'image/jpeg', 'image/jpg');
+				if (!in_array($type, $allowed)) {
+					$resp['msg'] .= " But Image failed to upload due to invalid file type.";
+				} else {
+					list($width, $height) = getimagesize($upload);
+					$new_width = 1280;
+					$new_height = 720;
+					$t_image = imagecreatetruecolor($new_width, $new_height);
+					imagealphablending($t_image, false);
+					imagesavealpha($t_image, true);
+					$gdImg = ($type == 'image/png') ? imagecreatefrompng($upload) : imagecreatefromjpeg($upload);
+					imagecopyresampled($t_image, $gdImg, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+					if ($gdImg) {
+						if (is_file($dir_path))
+							unlink($dir_path);
+						$uploaded_img = imagepng($t_image, $dir_path);
+						imagedestroy($gdImg);
+						imagedestroy($t_image);
+					} else {
+						$resp['msg'] .= " But Image failed to upload due to unknown reason.";
+					}
+				}
+				if (isset($uploaded_img)) {
+					$this->conn->query("UPDATE archive_list SET banner_path = CONCAT('{$fname}', '?v=', unix_timestamp(CURRENT_TIMESTAMP)) WHERE id = '{$aid}' ");
 				}
 			}
 
-			// Handle File Uploads
-			handleFileUpload($_FILES['img'], $aid, 'image', $uploadDirs['banners'], ['png', 'jpeg', 'jpg']);
-			handleFileUpload($_FILES['pdf'], $aid, 'pdf', $uploadDirs['pdf'], ['pdf']);
-			handleZipUpload($_FILES['zipfiles'], $aid, $uploadDirs['files'], ['zip']);
-			handleFileUpload($_FILES['sql'], $aid, 'sql', $uploadDirs['sql'], ['sql'], true);
 
+
+			// Handle PDF Upload and Zip Creation
+			if (isset($_FILES['pdf']) && $_FILES['pdf']['tmp_name'] != '') {
+				$type = mime_content_type($_FILES['pdf']['tmp_name']);
+				$allowed = array('application/pdf');
+				if (!in_array($type, $allowed)) {
+					$resp['msg'] .= " But Document File has failed to upload due to invalid file type.";
+				} else {
+					$zip_pdf = new ZipArchive();
+					$pdf_zipname = 'uploads/pdf/Document-' . $aid . '.zip';
+					$pdf_dir_path = base_app . $pdf_zipname;
+
+					if ($zip_pdf->open($pdf_dir_path, ZipArchive::CREATE) !== TRUE) {
+						$resp['msg'] .= " But PDF ZIP file failed to create.";
+					} else {
+						$pdf_tmp_name = $_FILES['pdf']['tmp_name'];
+						$zip_pdf->addFile($pdf_tmp_name, $_FILES['pdf']['name']);
+						if ($zip_pdf->close()) {
+							$this->conn->query("UPDATE archive_list SET document_path = CONCAT('{$pdf_zipname}', '?v=', unix_timestamp(CURRENT_TIMESTAMP)) WHERE id = '{$aid}' ");
+						} else {
+							$resp['msg'] .= " But PDF ZIP file failed to close properly.";
+						}
+					}
+				}
+			}
+
+			// Handle Zip Upload
+			if (isset($_FILES['zipfiles']) && !empty($_FILES['zipfiles']['name'][0])) {
+				$zip = new ZipArchive();
+				$zipname = 'uploads/files/Files-' . $aid . '.zip';
+				$dir_path = base_app . $zipname; // Assuming 'base_app' is your base path constant
+
+				if ($zip->open($dir_path, ZipArchive::CREATE) !== TRUE) {
+					$resp['msg'] .= " But ZIP file failed to create.";
+				} else {
+					foreach ($_FILES['zipfiles']['tmp_name'] as $key => $tmp_name) {
+						if (is_uploaded_file($tmp_name)) {
+							$zip->addFile($tmp_name, $_FILES['zipfiles']['name'][$key]);
+						}
+					}
+					if ($zip->close()) {
+						$this->conn->query("UPDATE archive_list SET folder_path = CONCAT('{$zipname}', '?v=', unix_timestamp(CURRENT_TIMESTAMP)) WHERE id = '{$aid}' ");
+					} else {
+						$resp['msg'] .= " But ZIP file failed to close properly.";
+					}
+				}
+			}
+
+			// Handle SQL File Upload and Zip Creation
+			if (isset($_FILES['sql']) && $_FILES['sql']['tmp_name'] != '') {
+				$allowed_extension = pathinfo($_FILES['sql']['name'], PATHINFO_EXTENSION);
+				$allowed = array('sql');
+				if (!in_array($allowed_extension, $allowed)) {
+					$resp['msg'] .= " But SQL File has failed to upload due to invalid file type.";
+				} else {
+					$zip_sql = new ZipArchive();
+					$sql_zipname = 'uploads/sql/SQL-' . $aid . '.zip';
+					$sql_dir_path = base_app . $sql_zipname;
+
+					if ($zip_sql->open($sql_dir_path, ZipArchive::CREATE) !== TRUE) {
+						$resp['msg'] .= " But SQL ZIP file failed to create.";
+					} else {
+						$sql_tmp_name = $_FILES['sql']['tmp_name'];
+						$zip_sql->addFile($sql_tmp_name, $_FILES['sql']['name']);
+						if ($zip_sql->close()) {
+							$this->conn->query("UPDATE archive_list SET sql_path = CONCAT('{$sql_zipname}', '?v=', unix_timestamp(CURRENT_TIMESTAMP)) WHERE id = '{$aid}' ");
+						} else {
+							$resp['msg'] .= " But SQL ZIP file failed to close properly.";
+						}
+					}
+				}
+			}
 		} else {
-			$resp = [
-				'status' => 'failed',
-				'msg' => "An error occurred while saving the data."
-			];
+			$resp['status'] = 'failed';
+			$resp['msg'] = "An error occurred while saving the data.";
 		}
 
 		return json_encode($resp);
 	}
-
-	/**
-	 * Function to handle file upload
-	 */
-	function handleFileUpload($file, $aid, $type, $dir, $allowedExtensions, $zip = false)
-	{
-		if (isset($file) && $file['tmp_name'] != '') {
-			$ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-			$allowed = $allowedExtensions;
-			if (!in_array($ext, $allowed)) {
-				echo json_encode(['status' => 'failed', 'msg' => ucfirst($type) . " file type not allowed."]);
-				exit;
-			}
-
-			$fileName = "{$type}-{$aid}.{$ext}";
-			$filePath = base_app . $dir . $fileName;
-
-			if ($zip) {
-				$zipFile = new ZipArchive();
-				$zipFileName = "{$type}-{$aid}.zip";
-				$zipFilePath = base_app . $dir . $zipFileName;
-
-				if ($zipFile->open($zipFilePath, ZipArchive::CREATE) === TRUE) {
-					$zipFile->addFile($file['tmp_name'], $file['name']);
-					$zipFile->close();
-					updateArchiveList($aid, "{$dir}{$zipFileName}");
-				} else {
-					echo json_encode(['status' => 'failed', 'msg' => ucfirst($type) . " ZIP creation failed."]);
-					exit;
-				}
-			} else {
-				if (move_uploaded_file($file['tmp_name'], $filePath)) {
-					updateArchiveList($aid, "{$dir}{$fileName}");
-				} else {
-					echo json_encode(['status' => 'failed', 'msg' => ucfirst($type) . " upload failed."]);
-					exit;
-				}
-			}
-		}
-	}
-
-	/**
-	 * Function to handle zip uploads for multiple files
-	 */
-	function handleZipUpload($files, $aid, $dir, $allowedExtensions)
-	{
-		if (isset($files) && !empty($files['name'][0])) {
-			$zipFile = new ZipArchive();
-			$zipFileName = "Files-{$aid}.zip";
-			$zipFilePath = base_app . $dir . $zipFileName;
-
-			if ($zipFile->open($zipFilePath, ZipArchive::CREATE) === TRUE) {
-				foreach ($files['tmp_name'] as $key => $tmp_name) {
-					$ext = strtolower(pathinfo($files['name'][$key], PATHINFO_EXTENSION));
-					if (in_array($ext, $allowedExtensions) && is_uploaded_file($tmp_name)) {
-						$zipFile->addFile($tmp_name, $files['name'][$key]);
-					}
-				}
-				$zipFile->close();
-				updateArchiveList($aid, "{$dir}{$zipFileName}");
-			} else {
-				echo json_encode(['status' => 'failed', 'msg' => "ZIP file creation failed."]);
-				exit;
-			}
-		}
-	}
-
-	/**
-	 * Update archive_list with file paths
-	 */
-	function updateArchiveList($aid, $path)
-	{
-		global $conn;
-		$conn->query("UPDATE archive_list SET folder_path = CONCAT('{$path}', '?v=', unix_timestamp(CURRENT_TIMESTAMP)) WHERE id = '{$aid}'");
-	}
-
 
 
 	function get_upload_progress()
