@@ -242,52 +242,9 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 ['view', ['undo', 'redo', 'help']]
             ]
         })
-
-        // $('#archive-form').submit(function (e) {
-        //     e.preventDefault();
-
-        //     const formData = new FormData(this);
-
-        //     $.ajax({
-        //         url: _base_url_ + 'classes/Master.php?f=save_archive',
-        //         method: 'POST',
-        //         data: formData,
-        //         contentType: false,
-        //         processData: false,
-        //         success: function (response) {
-        //             const resp = JSON.parse(response);
-
-        //             if (resp.status === 'success') {
-        //                 Swal.fire({
-        //                     title: 'Submission Successful!',
-        //                     text: resp.msg,
-        //                     icon: 'success',
-        //                     confirmButtonText: 'OK'
-        //                 }).then(() => {
-        //                     window.location.href = './?page=studentprofile';
-        //                 });
-        //             } else {
-        //                 Swal.fire({
-        //                     title: 'Submission Failed',
-        //                     text: resp.msg,
-        //                     icon: 'error',
-        //                     confirmButtonText: 'Try Again'
-        //                 });
-        //             }
-        //         },
-        //         error: function () {
-        //             Swal.fire({
-        //                 title: 'Error',
-        //                 text: 'An unexpected error occurred while submitting the form.',
-        //                 icon: 'error',
-        //                 confirmButtonText: 'Close'
-        //             });
-        //         },
-        //     });
-        // });
     })
 </script>
-<script>
+<!-- <script>
     $(document).ready(function () {
         $('#archive-form').submit(function (e) {
             e.preventDefault();
@@ -366,5 +323,117 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 $('#uploadModal').modal('hide'); // Hide Bootstrap modal
             });
         });
+    });
+</script> -->
+<script>
+    $(document).ready(function () {
+        $('#archive-form').submit(function (e) {
+            e.preventDefault(); // Prevent form submission
+            $('#uploadModal').modal('show'); // Show Bootstrap modal
+
+            const formData = new FormData(this); // Collect form data
+
+            // Step 1: Scan files for malware
+            $.ajax({
+                url: _base_url_ + 'scan-files.php', // Malware scanning endpoint
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                beforeSend: function () {
+                    Swal.fire({
+                        title: 'Scanning Files',
+                        text: 'Please wait while your files are being scanned for malware.',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+                },
+                success: function (response) {
+                    const resp = JSON.parse(response);
+                    if (resp.status === 'clean') {
+                        Swal.fire({
+                            title: 'Files are Clean',
+                            text: 'Your files passed the security scan. Proceeding to upload.',
+                            icon: 'success'
+                        }).then(() => {
+                            // Proceed with file upload
+                            uploadFiles(formData);
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Malicious Files Detected',
+                            text: resp.msg,
+                            icon: 'error'
+                        });
+                        $('#uploadModal').modal('hide');
+                    }
+                },
+                error: function () {
+                    Swal.fire('Error', 'File scanning failed. Please try again.', 'error');
+                    $('#uploadModal').modal('hide');
+                }
+            });
+        });
+
+        function uploadFiles(formData) {
+            const startTime = new Date().getTime();
+            let xhr;
+
+            xhr = $.ajax({
+                xhr: function () {
+                    const customXHR = new XMLHttpRequest();
+                    customXHR.upload.addEventListener("progress", function (e) {
+                        if (e.lengthComputable) {
+                            const percentComplete = ((e.loaded / e.total) * 100).toFixed(2);
+
+                            // Convert bytes to MB
+                            const mbTotal = (e.total / (1024 * 1024)).toFixed(2);
+                            const mbLoaded = (e.loaded / (1024 * 1024)).toFixed(2);
+
+                            // Calculate speed in Mbps
+                            const elapsedTime = (new Date().getTime() - startTime) / 1000;
+                            const bps = e.loaded / elapsedTime;
+                            const Mbps = (bps / (1024 * 1024)).toFixed(2);
+
+                            // Estimate remaining time
+                            const remainingTime = ((e.total - e.loaded) / bps).toFixed(0);
+                            const minutes = Math.floor(remainingTime / 60);
+                            const seconds = remainingTime % 60;
+
+                            // Update progress details
+                            $('.progress-bar').css('width', percentComplete + '%');
+                            $('#percent').text(`${percentComplete}%`);
+                            $('#dataTransferred').text(`Loaded/Total: ${mbLoaded}/${mbTotal} MB`);
+                            $('#Mbps').text(`Speed: ${Mbps} Mbps`);
+                            $('#timeLeft').text(`Time Left: ${minutes}:${seconds}`);
+                            $('#cancelBtn').prop('disabled', percentComplete === '100.00');
+                        }
+                    }, false);
+
+                    return customXHR;
+                },
+                type: 'POST',
+                url: _base_url_ + 'classes/Master.php?f=save_archive',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    const resp = JSON.parse(response);
+                    if (resp.status === 'success') {
+                        Swal.fire('Success', resp.msg, 'success').then(() => {
+                            window.location.href = './?page=studentprofile'; // Redirect
+                        });
+                    } else {
+                        Swal.fire('Error', resp.msg, 'error');
+                    }
+                    $('#uploadModal').modal('hide');
+                },
+                error: function () {
+                    Swal.fire('Error', 'File upload failed.', 'error');
+                    $('#uploadModal').modal('hide');
+                }
+            });
+        }
     });
 </script>
