@@ -327,97 +327,107 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 </script> -->
 <script>
     $(document).ready(function () {
+        let isScanning = false; // Prevent duplicate scans
+
         $('#archive-form').submit(function (e) {
             e.preventDefault(); // Prevent form submission
-            $('#uploadModal').modal('show'); // Show Bootstrap modal
 
             const formData = new FormData(this); // Collect form data
 
-            // Step 1: Scan files for malware
-            $.ajax({
-                url: _base_url_ + 'scan-files.php', // Malware scanning endpoint
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                beforeSend: function () {
-                    Swal.fire({
-                        title: 'Scanning Files',
-                        text: 'Please wait while your files are being scanned for malware.',
-                        allowOutsideClick: false,
-                        showConfirmButton: false,
-                        didOpen: () => Swal.showLoading()
-                    });
-                },
-                success: function (response) {
-                    const resp = JSON.parse(response);
-                    if (resp.status === 'clean') {
+            if (!isScanning) {
+                isScanning = true;
+                // Step 1: Scan files for malware
+                $.ajax({
+                    url: _base_url_ + 'scan-files.php', // Malware scanning endpoint
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function () {
                         Swal.fire({
-                            title: 'Files are Clean',
-                            text: 'Your files passed the security scan. Proceeding to upload.',
-                            icon: 'success'
-                        }).then(() => {
-                            // Proceed with file upload
-                            uploadFiles(formData);
+                            title: 'Scanning Files',
+                            text: 'Please wait while your files are being scanned for malware.',
+                            allowOutsideClick: false,
+                            showConfirmButton: false,
+                            didOpen: () => Swal.showLoading()
                         });
-                    } else {
-                        Swal.fire({
-                            title: 'Malicious Files Detected',
-                            text: resp.msg,
-                            icon: 'error'
-                        });
-                        $('#uploadModal').modal('hide');
+                    },
+                    success: function (response) {
+                        const resp = JSON.parse(response);
+
+                        if (resp.status === 'clean') {
+                            Swal.fire({
+                                title: 'Files are Clean',
+                                text: 'Your files passed the security scan. Click Upload to proceed.',
+                                icon: 'success',
+                                showCancelButton: true,
+                                confirmButtonText: 'Upload',
+                                cancelButtonText: 'Cancel'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    // Proceed with file upload
+                                    uploadFiles(formData);
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Malicious Files Detected',
+                                text: resp.msg,
+                                icon: 'error'
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('Error', 'File scanning failed. Please try again.', 'error');
+                    },
+                    complete: function () {
+                        isScanning = false; // Reset scanning state
                     }
-                },
-                error: function () {
-                    Swal.fire('Error', 'File scanning failed. Please try again.', 'error');
-                    $('#uploadModal').modal('hide');
-                }
-            });
+                });
+            }
         });
 
         function uploadFiles(formData) {
             const startTime = new Date().getTime();
-            let xhr;
 
-            xhr = $.ajax({
+            $.ajax({
                 xhr: function () {
                     const customXHR = new XMLHttpRequest();
                     customXHR.upload.addEventListener("progress", function (e) {
                         if (e.lengthComputable) {
                             const percentComplete = ((e.loaded / e.total) * 100).toFixed(2);
 
-                            // Convert bytes to MB
-                            const mbTotal = (e.total / (1024 * 1024)).toFixed(2);
-                            const mbLoaded = (e.loaded / (1024 * 1024)).toFixed(2);
+                            // Update progress details
+                            $('.progress-bar').css('width', percentComplete + '%');
+                            $('#percent').text(`${percentComplete}%`);
 
-                            // Calculate speed in Mbps
+                            // Additional metrics
+                            const mbLoaded = (e.loaded / (1024 * 1024)).toFixed(2);
+                            const mbTotal = (e.total / (1024 * 1024)).toFixed(2);
                             const elapsedTime = (new Date().getTime() - startTime) / 1000;
                             const bps = e.loaded / elapsedTime;
                             const Mbps = (bps / (1024 * 1024)).toFixed(2);
-
-                            // Estimate remaining time
                             const remainingTime = ((e.total - e.loaded) / bps).toFixed(0);
                             const minutes = Math.floor(remainingTime / 60);
                             const seconds = remainingTime % 60;
 
-                            // Update progress details
-                            $('.progress-bar').css('width', percentComplete + '%');
-                            $('#percent').text(`${percentComplete}%`);
+                            // Update display
                             $('#dataTransferred').text(`Loaded/Total: ${mbLoaded}/${mbTotal} MB`);
                             $('#Mbps').text(`Speed: ${Mbps} Mbps`);
                             $('#timeLeft').text(`Time Left: ${minutes}:${seconds}`);
-                            $('#cancelBtn').prop('disabled', percentComplete === '100.00');
                         }
                     }, false);
 
                     return customXHR;
                 },
                 type: 'POST',
-                url: _base_url_ + 'classes/Master.php?f=save_archive',
+                url: _base_url_ + 'classes/Master.php?f=save_archive', // File upload endpoint
                 data: formData,
                 contentType: false,
                 processData: false,
+                beforeSend: function () {
+                    $('#uploadModal').modal('show'); // Show progress bar
+                },
                 success: function (response) {
                     const resp = JSON.parse(response);
                     if (resp.status === 'success') {
@@ -427,11 +437,12 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     } else {
                         Swal.fire('Error', resp.msg, 'error');
                     }
-                    $('#uploadModal').modal('hide');
                 },
                 error: function () {
                     Swal.fire('Error', 'File upload failed.', 'error');
-                    $('#uploadModal').modal('hide');
+                },
+                complete: function () {
+                    $('#uploadModal').modal('hide'); // Hide progress bar
                 }
             });
         }
