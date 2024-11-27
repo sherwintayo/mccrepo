@@ -163,19 +163,7 @@ class Users extends DBConnection
 
 		try {
 
-			// Validate email field
-			if (empty($email)) {
-				return json_encode([
-					'status' => 'failed',
-					'msg' => 'Email is required.'
-				]);
-			}
-			if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-				return json_encode([
-					'status' => 'failed',
-					'msg' => 'Invalid email format.'
-				]);
-			}
+			error_log(print_r($_POST, true));
 
 			// Validate reCAPTCHA response
 			$recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
