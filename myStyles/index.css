@@ -1,3 +1,119 @@
+#header {
+  height: 70vh;
+  width: 100%;
+  position: relative;
+  top: -1em;
+  margin-top: 100px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#header > div {
+  position: relative;
+  z-index: 2;
+  background-color: rgba(0, 0, 0, 0.5);
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  /* Light black with 50% transparency */
+}
+
+.header-content {
+  display: flex;
+  width: 100%;
+  padding: 0 2rem;
+}
+
+.site-title {
+  flex: 1;
+  font-size: 70px !important;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  margin: 50px 0 0 40px;
+  text-align: center;
+}
+
+.icon-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+}
+
+.icon-container .icon {
+  margin-bottom: 0;
+}
+
+.icon-container .icon dotlottie-player {
+  height: 350px !important;
+  width: 650px !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  text-align: left !important;
+}
+
+.icon-container a#enrollment {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.btn#enrollment {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  background-color: white;
+  border: 1px solid #ccc;
+  color: #001f3f;
+  text-decoration: none;
+  border-radius: 25px;
+  transition: background-color 0.3s ease;
+}
+
+.btn#enrollment:hover {
+  background-color: #001f3f;
+  color: white;
+}
+
+div#search-field {
+  display: none !important;
+  transition: all 3s ease-in;
+  height: 0;
+}
+
+div#search-field.show {
+  background: var(--light);
+  top: 2.7em;
+  width: 30em;
+  left: -30em;
+  height: auto;
+  padding: 0.5em 0.5em;
+  border: 1px solid #d7d7d7;
+  display: block !important;
+}
+
+div#search-field {
+  display: none !important;
+  transition: all 3s ease-in;
+  height: 0;
+}
+
+div#search-field.show {
+  background: var(--light);
+  top: 2.7em;
+  width: 30em;
+  left: -30em;
+  height: auto;
+  padding: 0.5em 0.5em;
+  border: 1px solid #d7d7d7;
+  display: block !important;
+}
+
 /* Sidebar styles */
 .sidebar {
   height: 100%;
@@ -117,4 +233,94 @@
 
 .overlay.visible {
   display: block;
+}
+
+@media (max-width: 575.98px) {
+  #header {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+  }
+
+  .header-content {
+    flex-direction: row !important;
+    text-align: left !important;
+    display: flex !important;
+  }
+
+  .site-title {
+    font-size: 35px !important;
+    display: flex !important;
+    margin: 10px 0 0 0 !important;
+    min-width: 200px !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  .icon-container {
+    margin: 0 !important;
+  }
+
+  .icon-container .icon dotlottie-player {
+    width: 170px !important;
+    height: 150px !important;
+  }
+  .icon-container a#enrollment {
+    margin-top: 0 !important;
+    text-align: center;
+  }
+
+  .btn#enrollment {
+    width: 70% !important;
+    height: 40px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+}
+
+/* Small devices (landscape phones, less than 768px) */
+/* For medium screens (tablets) */
+@media (max-width: 768px) {
+  #header {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+  }
+
+  .header-content {
+    flex-direction: row !important;
+    text-align: left !important;
+    display: flex !important;
+  }
+
+  .site-title {
+    font-size: 35px !important;
+    display: flex !important;
+    margin: 10px 0 0 0 !important;
+    min-width: 200px !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  .icon-container {
+    margin: 0 !important;
+  }
+
+  .icon-container .icon dotlottie-player {
+    width: 170px !important;
+    height: 150px !important;
+  }
+  .icon-container a#enrollment {
+    margin-top: 0 !important;
+    text-align: center;
+  }
+
+  .btn#enrollment {
+    width: 70% !important;
+    height: 40px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
 }

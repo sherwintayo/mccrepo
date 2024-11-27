@@ -1,7 +1,7 @@
 <?php require_once('./config.php'); ?>
 <!DOCTYPE html>
 <html lang="en" class="" style="height: auto;">
-<link rel="stylesheet" href="./myStyles/index.css">
+<link rel="stylesheet" href="<?php echo base_url ?>./myStyles/index.css?v=<?php echo time(); ?>">
 <style>
   /* General fix for overflow issues */
   html,
@@ -17,45 +17,29 @@
 
   #header {
     height: 70vh;
-    width: calc(100%);
+    width: 100%;
     position: relative;
     top: -1em;
-    margin-top: 20px;
+    margin-top: 100px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
   }
-
 
   #header:before {
     content: "";
     position: absolute;
-    height: calc(100%);
-    width: calc(100%);
+    height: 100%;
+    width: 100%;
     background-image: url(<?= htmlspecialchars(validate_image($_settings->info("cover")), ENT_QUOTES, 'UTF-8') ?>);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
+    z-index: 1;
   }
 
-  #header>div {
-    position: absolute;
-    height: calc(100%);
-    width: calc(100%);
-    z-index: 2;
-  }
-
-  #top-Nav a.nav-link.active {
-    color: #001f3f;
-    font-weight: 900;
-    position: relative;
-  }
-
-  #top-Nav a.nav-link.active:before {
-    content: "";
-    position: absolute;
-    border-bottom: 2px solid #001f3f;
-    width: 33.33%;
-    left: 33.33%;
-    bottom: 0;
-  }
 
   /* Add this to make sure large images or content don't cause overflow */
   img,
@@ -82,12 +66,20 @@
     <div class="content w-100 mt-5" style="margin-left: 0px;">
       <?php if ($page == "home" || $page == "about_us"): ?>
         <div id="header" class="shadow">
-          <div class="d-flex justify-content-center h-100 w-100 align-items-center flex-column">
-            <h1 class="w-100 text-center site-title">
-              <?php echo htmlspecialchars("MADRIDEJOS COMMUNITY COLLEGE REPOSITORIES") ?>
+          <div class="header-content">
+            <!-- Left column: site title -->
+            <h1 class="site-title">
+              MADRIDEJOS COMMUNITY COLLEGE REPOSITORIES
             </h1>
-            <a href="./?page=projects" class="btn btn-lg btn-light rounded-pill w-25" id="enrollment"><b>Explore
-                Projects</b></a>
+
+            <div class="icon-container">
+              <div class="icon">
+                <dotlottie-player src="https://lottie.host/87966ed2-e877-4a74-879e-c7683d4cdf3c/4kDBSGY8b4.lottie"
+                  background="transparent" speed="1" loop autoplay></dotlottie-player>
+              </div>
+              <a href="./?page=projects" class="btn btn-lg btn-light rounded-pill w-50" id="enrollment"><b>Explore
+                  Projects</b></a>
+            </div>
           </div>
         </div>
       <?php endif; ?>
@@ -204,6 +196,7 @@
     <!-- /content-wrapper -->
     <?php require_once('inc/footer.php') ?>
 </body>
+<script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
 <script>
   function openSidebar(id) {
     document.getElementById(id + 'Sidebar').style.width = "300px";
