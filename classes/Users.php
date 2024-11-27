@@ -163,7 +163,6 @@ class Users extends DBConnection
 
 		try {
 
-			error_log(print_r($_POST, true));
 
 			// Validate reCAPTCHA response
 			$recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
@@ -184,7 +183,7 @@ class Users extends DBConnection
 				]);
 			}
 
-
+			$data = '';
 
 			// Check if old password verification is needed
 			if (isset($oldpassword)) {
@@ -212,7 +211,6 @@ class Users extends DBConnection
 				]);
 			}
 
-			$data = "email = '{$email}'"; // Ensure email is saved
 			// Prepare data for SQL query
 			foreach ($_POST as $k => $v) {
 				if (!in_array($k, ['id', 'oldpassword', 'cpassword', 'password', 'g-recaptcha-response'])) {
