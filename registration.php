@@ -196,7 +196,7 @@ $stmt->fetch();
                           </li>
                           <li>
                             <i class="fa-solid fa-circle"></i>
-                            <small><span>At least 1 special symbol (!...$) Except (",<>)</span></small>
+                            <small><span>At least 1 special symbol (!...$) Except("",<>)</span></small>
                           </li>
                           <li>
                             <i class="fa-solid fa-circle"></i>
@@ -254,24 +254,6 @@ $stmt->fetch();
       $('.select2').select2({
         width: "100%"
       });
-
-
-      // Function to check for invalid characters
-      var hasInvalidChars = function (input) {
-        return /['"<script>]/.test(input); // Prevents single quotes, double quotes, and angle brackets
-      };
-
-      // Validate Email Format (Ensure @ symbol is present)
-      var validateEmail = function (email) {
-        var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-        return emailReg.test(email);
-      };
-
-      // Set custom validation message for inputs
-      var setValidationMessage = function (input, message) {
-        input.setCustomValidity(message);
-        input.reportValidity();
-      };
 
       $('#program_id').change(function () {
         var did = $(this).val();
@@ -371,7 +353,7 @@ $stmt->fetch();
               icon: 'error',
               title: 'Server Error',
               text: 'An error occurred while processing your request. Please try again later.',
-              footer: <pre>${xhr.responseText}</pre> // Show raw response
+              footer: `<pre>${xhr.responseText}</pre>` // Show raw response
             });
             grecaptcha.reset(); // Reset reCAPTCHA for another attempt
           }
@@ -379,6 +361,23 @@ $stmt->fetch();
 
       });
 
+
+      // Function to check for invalid characters
+      var hasInvalidChars = function (input) {
+        return /['"<script>]/.test(input); // Prevents single quotes, double quotes, and angle brackets
+      };
+
+      // Validate Email Format (Ensure @ symbol is present)
+      var validateEmail = function (email) {
+        var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        return emailReg.test(email);
+      };
+
+      // Set custom validation message for inputs
+      var setValidationMessage = function (input, message) {
+        input.setCustomValidity(message);
+        input.reportValidity();
+      };
     });
 
   </script>
