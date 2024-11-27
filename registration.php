@@ -194,10 +194,10 @@ $stmt->fetch();
                             <i class="fa-solid fa-circle"></i>
                             <small><span>At least 1 lowercase letter (a...z)</span></small>
                           </li>
-                          <li>
+                          <!-- <li>
                             <i class="fa-solid fa-circle"></i>
                             <small><span>At least 1 special symbol (!...$)</span></small>
-                          </li>
+                          </li> -->
                           <li>
                             <i class="fa-solid fa-circle"></i>
                             <small><span>At least 1 uppercase letter (A...Z)</span></small>
