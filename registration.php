@@ -4,7 +4,7 @@ require_once('inc/header.php');
 
 // Check if the token is provided
 if (!isset($_GET['token'])) {
-  header("Location: error.php?error=missing_token");
+  header("Location: error?error=missing_token");
   exit();
 }
 
@@ -19,13 +19,14 @@ $stmt->store_result();
 
 if ($stmt->num_rows === 0) {
   // Invalid or expired token
-  header("Location: error.php?error=invalid_token");
+  header("Location: error?error=invalid_token");
   exit();
 }
 
 // If valid, allow access
 $stmt->bind_result($user_id);
 $stmt->fetch();
+?>
 ?>
 <!DOCTYPE html>
 <html lang="en" class="" style="height: auto;">
