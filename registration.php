@@ -177,7 +177,6 @@ $stmt->fetch();
                         <p>Password must contains</p>
                       </small>
                       <ul class="requirement-list d-flex flex-wrap">
-                        <!-- Left Column -->
                         <div class="left-column">
                           <li>
                             <i class="fa-solid fa-circle"></i>
@@ -187,9 +186,6 @@ $stmt->fetch();
                             <i class="fa-solid fa-circle"></i>
                             <small><span>At least 1 number (0...9)</span></small>
                           </li>
-                        </div>
-                        <!-- Right Column -->
-                        <div class="right-column ml-3">
                           <li>
                             <i class="fa-solid fa-circle"></i>
                             <small><span>At least 1 lowercase letter (a...z)</span></small>
@@ -200,6 +196,7 @@ $stmt->fetch();
                           </li>
                         </div>
                       </ul>
+
                     </div>
 
 
