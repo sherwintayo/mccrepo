@@ -1,6 +1,32 @@
 <?php
 include('config.php');
 require_once('inc/header.php');
+
+// Check if the token is provided
+if (!isset($_GET['token'])) {
+  header("Location: error?error=missing_token");
+  exit();
+}
+
+$token = $_GET['token'];
+$token_hash = hash('sha256', $token);
+
+// Check the token in the database
+$stmt = $conn->prepare("SELECT id FROM msaccount WHERE reset_token_hash = ? AND reset_token_hash_expires_at > NOW()");
+$stmt->bind_param('s', $token_hash);
+$stmt->execute();
+$stmt->store_result();
+
+if ($stmt->num_rows === 0) {
+  // Invalid or expired token
+  header("Location: error?error=invalid_token");
+  exit();
+}
+
+// If valid, allow access
+$stmt->bind_result($user_id);
+$stmt->fetch();
+?>
 ?>
 <!DOCTYPE html>
 <html lang="en" class="" style="height: auto;">
