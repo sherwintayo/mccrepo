@@ -196,7 +196,7 @@ $stmt->fetch();
                           </li>
                           <li>
                             <i class="fa-solid fa-circle"></i>
-                            <small><span>At least 1 special symbol (!...$)</span></small>
+                            <small><span>At least 1 special symbol (!...$) Except (",<>)</span></small>
                           </li>
                           <li>
                             <i class="fa-solid fa-circle"></i>
