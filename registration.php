@@ -371,7 +371,7 @@ $stmt->fetch();
               icon: 'error',
               title: 'Server Error',
               text: 'An error occurred while processing your request. Please try again later.',
-              footer: `<pre>${xhr.responseText}</pre>` // Show raw response
+              footer: <pre>${xhr.responseText}</pre> // Show raw response
             });
             grecaptcha.reset(); // Reset reCAPTCHA for another attempt
           }
