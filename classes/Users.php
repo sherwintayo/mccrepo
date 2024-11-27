@@ -162,6 +162,21 @@ class Users extends DBConnection
 
 
 		try {
+
+			// Validate email field
+			if (empty($email)) {
+				return json_encode([
+					'status' => 'failed',
+					'msg' => 'Email is required.'
+				]);
+			}
+			if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+				return json_encode([
+					'status' => 'failed',
+					'msg' => 'Invalid email format.'
+				]);
+			}
+
 			// Validate reCAPTCHA response
 			$recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
 			$secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO'; // Replace with your reCAPTCHA secret key
@@ -170,6 +185,7 @@ class Users extends DBConnection
 			// Send request to Google's reCAPTCHA API
 			$response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
 			$responseKeys = json_decode($response, true);
+
 
 			// Check reCAPTCHA validation
 			if (!$responseKeys['success']) {
@@ -180,7 +196,7 @@ class Users extends DBConnection
 				]);
 			}
 
-			$data = '';
+
 
 			// Check if old password verification is needed
 			if (isset($oldpassword)) {
@@ -208,6 +224,7 @@ class Users extends DBConnection
 				]);
 			}
 
+			$data = "email = '{$email}'"; // Ensure email is saved
 			// Prepare data for SQL query
 			foreach ($_POST as $k => $v) {
 				if (!in_array($k, ['id', 'oldpassword', 'cpassword', 'password', 'g-recaptcha-response'])) {
