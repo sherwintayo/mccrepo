@@ -3,30 +3,48 @@ include('config.php');
 require_once('inc/header.php');
 
 // Check if the token is provided
+
 if (!isset($_GET['token'])) {
-  header("Location: error?error=missing_token");
+  echo "<script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Missing Token',
+            text: 'The registration link is invalid or missing.',
+            confirmButtonText: 'Ok'
+        }).then(() => {
+            window.location.href = '404.html';
+        });
+    </script>";
   exit();
 }
+
 
 $token = $_GET['token'];
 $token_hash = hash('sha256', $token);
 
-// Check the token in the database
-$stmt = $conn->prepare("SELECT id FROM msaccount WHERE reset_token_hash = ? AND reset_token_hash_expires_at > NOW()");
+// Validate the token and retrieve the email
+$stmt = $conn->prepare("SELECT id, username FROM msaccount WHERE reset_token_hash = ? AND reset_token_hash_expires_at > NOW()");
 $stmt->bind_param('s', $token_hash);
 $stmt->execute();
 $stmt->store_result();
 
 if ($stmt->num_rows === 0) {
-  // Invalid or expired token
-  header("Location: error?error=invalid_token");
+  // Token is invalid or expired
+  echo "<script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid or Expired Token',
+            text: 'The registration link has expired or is invalid.',
+            confirmButtonText: 'Ok'
+        }).then(() => {
+            window.location.href = '404.html';
+        });
+    </script>";
   exit();
 }
 
-// If valid, allow access
-$stmt->bind_result($user_id);
+$stmt->bind_result($user_id, $email);
 $stmt->fetch();
-?>
 ?>
 <!DOCTYPE html>
 <html lang="en" class="" style="height: auto;">
@@ -142,10 +160,11 @@ $stmt->fetch();
                     </select>
                   </div>
 
-                  <!-- Email and Password -->
+                  <!-- Email (Read-Only) -->
                   <div class="form-group">
-                    <input type="email" name="email" id="email" placeholder="Email"
-                      class="form-control form-control-border" required>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" value="<?= htmlspecialchars($email) ?>"
+                      class="form-control" readonly>
                   </div>
                   <!-- Password strength meter -->
                   <div id="password-strength-container" class="password-strength mt-2" style="display: none;">
