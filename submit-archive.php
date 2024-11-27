@@ -244,7 +244,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         })
     })
 </script>
-<!-- <script>
+<script>
     $(document).ready(function () {
         $('#archive-form').submit(function (e) {
             e.preventDefault();
@@ -324,8 +324,8 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
             });
         });
     });
-</script> -->
-<script>
+</script>
+<!-- <script>
     $(document).ready(function () {
         let isScanning = false; // Prevent duplicate scans
 
@@ -447,4 +447,4 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
             });
         }
     });
-</script>
+</script> -->
