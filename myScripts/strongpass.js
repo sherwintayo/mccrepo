@@ -37,7 +37,6 @@ document.getElementById("password").addEventListener("input", function () {
   const hasUpperCase = /[A-Z]/.test(password);
   const hasLowerCase = /[a-z]/.test(password);
   const hasNumbers = /\d/.test(password);
-  // const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
   const isLongEnough = password.length >= 8;
 
   // Calculate strength
@@ -45,7 +44,6 @@ document.getElementById("password").addEventListener("input", function () {
   if (hasUpperCase) strength++;
   if (hasLowerCase) strength++;
   if (hasNumbers) strength++;
-  // if (hasSpecialChars) strength++;
 
   // Determine strength bar class and message
   switch (strength) {
@@ -65,7 +63,6 @@ document.getElementById("password").addEventListener("input", function () {
       strengthBar.style.width = "75%";
       break;
     case 4:
-    case 5:
       strengthClass = "strong";
       strengthMessage = "Strong";
       strengthBar.style.width = "100%";

@@ -194,10 +194,6 @@ $stmt->fetch();
                             <i class="fa-solid fa-circle"></i>
                             <small><span>At least 1 lowercase letter (a...z)</span></small>
                           </li>
-                          <!-- <li>
-                            <i class="fa-solid fa-circle"></i>
-                            <small><span>At least 1 special symbol (!...$)</span></small>
-                          </li> -->
                           <li>
                             <i class="fa-solid fa-circle"></i>
                             <small><span>At least 1 uppercase letter (A...Z)</span></small>
@@ -254,6 +250,24 @@ $stmt->fetch();
       $('.select2').select2({
         width: "100%"
       });
+
+
+      // Function to check for invalid characters
+      var hasInvalidChars = function (input) {
+        return /['"<script>]/.test(input); // Prevents single quotes, double quotes, and angle brackets
+      };
+
+      // Validate Email Format (Ensure @ symbol is present)
+      var validateEmail = function (email) {
+        var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        return emailReg.test(email);
+      };
+
+      // Set custom validation message for inputs
+      var setValidationMessage = function (input, message) {
+        input.setCustomValidity(message);
+        input.reportValidity();
+      };
 
       $('#program_id').change(function () {
         var did = $(this).val();
@@ -361,23 +375,6 @@ $stmt->fetch();
 
       });
 
-
-      // Function to check for invalid characters
-      var hasInvalidChars = function (input) {
-        return /['"<script>]/.test(input); // Prevents single quotes, double quotes, and angle brackets
-      };
-
-      // Validate Email Format (Ensure @ symbol is present)
-      var validateEmail = function (email) {
-        var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-        return emailReg.test(email);
-      };
-
-      // Set custom validation message for inputs
-      var setValidationMessage = function (input, message) {
-        input.setCustomValidity(message);
-        input.reportValidity();
-      };
     });
 
   </script>
