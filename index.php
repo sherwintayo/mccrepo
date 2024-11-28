@@ -17,7 +17,7 @@
   }
 
   #header {
-    height: 70vh;
+    height: 80vh;
     width: 100%;
     position: relative;
     top: -1em;
@@ -85,7 +85,7 @@
         </div>
       <?php endif; ?>
       <!-- Main content -->
-      <section class="content" style="margin-top: 12vh;">
+      <section class="content">
         <div class="container">
           <?php
           if (!file_exists($page . ".php") && !is_dir($page)) {
@@ -114,7 +114,7 @@
         <!-- Chatbot Button -->
         <div class="floating-btn-container">
           <button class="floating-btn chatbot-btn">
-            <a href="https://mccbsitquizandexam.com" target="_blank">
+            <a href="https://mccchat.com/" target="_blank">
               <i class="fa fa-comments"></i>
             </a>
           </button>
