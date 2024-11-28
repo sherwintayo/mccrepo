@@ -217,6 +217,10 @@
 .card-content p {
   font-size: 1rem;
   color: #666;
+  margin-top: 4rem;
+}
+.card-content p.desc {
+  margin-top: 1.5rem;
 }
 
 @media (max-width: 768px) {
@@ -243,7 +247,7 @@
     margin: 0; /* Remove horizontal offsets */
   }
 
-  .content {
+  .section-body.content {
     padding: 1rem; /* Reduce padding for smaller screens */
   }
 
@@ -267,8 +271,8 @@
   .icon1,
   .icon2,
   .icon3 {
-    max-width: 150px; /* Reduce icon sizes on very small screens */
-    width: auto;
+    max-width: 70px; /* Reduce icon sizes on very small screens */
+    width: 60px;
   }
 
   .section-header {

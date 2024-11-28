@@ -66,7 +66,7 @@
                     </div>
                     <div class="card-content">
                         <h5>Engage with Peers and Faculty</h5>
-                        <p>
+                        <p class="desc">
                             Collaborate with fellow students and interact with faculty members to enhance your project.
 
                         </p>
