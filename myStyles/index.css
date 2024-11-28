@@ -18,7 +18,6 @@
   height: 100%;
   display: flex;
   flex-wrap: wrap;
-  /* Light black with 50% transparency */
 }
 
 .header-content {
@@ -29,7 +28,7 @@
 
 .site-title {
   flex: 1;
-  font-size: 70px !important;
+  font-size: clamp(30px, 10vw, 70px) !important;
   font-weight: bold;
   color: white;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
@@ -45,10 +44,14 @@
   justify-content: center;
   padding: 0;
   margin: 0;
+  top: 10%;
 }
 
 .icon-container .icon {
   margin-bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .icon-container .icon dotlottie-player {
@@ -238,21 +241,21 @@ div#search-field.show {
 @media (max-width: 575.98px) {
   #header {
     display: flex !important;
-    flex-direction: row !important;
-    justify-content: space-between !important;
+    flex-direction: column !important;
   }
 
   .header-content {
-    flex-direction: row !important;
+    flex-direction: column !important;
     text-align: left !important;
     display: flex !important;
+    flex-wrap: wrap !important;
   }
 
   .site-title {
-    font-size: 35px !important;
+    font-size: 30px !important;
     display: flex !important;
     margin: 10px 0 0 0 !important;
-    min-width: 200px !important;
+    min-width: 100px !important;
     justify-content: center !important;
     text-align: center !important;
   }
@@ -279,28 +282,27 @@ div#search-field.show {
   }
 }
 
-/* Small devices (landscape phones, less than 768px) */
-/* For medium screens (tablets) */
-@media (max-width: 768px) {
+@media only screen and (max-width: 768px) {
   #header {
     display: flex !important;
     flex-direction: row !important;
-    justify-content: space-between !important;
   }
 
   .header-content {
     flex-direction: row !important;
     text-align: left !important;
     display: flex !important;
+    flex-wrap: wrap !important;
   }
 
   .site-title {
-    font-size: 35px !important;
+    font-size: 36px !important;
     display: flex !important;
     margin: 10px 0 0 0 !important;
     min-width: 200px !important;
     justify-content: center !important;
     text-align: center !important;
+    align-items: center !important;
   }
 
   .icon-container {
@@ -308,8 +310,8 @@ div#search-field.show {
   }
 
   .icon-container .icon dotlottie-player {
-    width: 170px !important;
-    height: 150px !important;
+    width: 250px !important;
+    height: 200px !important;
   }
   .icon-container a#enrollment {
     margin-top: 0 !important;
@@ -323,4 +325,54 @@ div#search-field.show {
     justify-content: center !important;
     align-items: center !important;
   }
+  /* Adjustments for smaller phones */
 }
+
+//* Large tablets in portrait mode */
+@media only screen and (max-width: 1024px) {
+  #header {
+    display: flex !important;
+    flex-direction: row !important;
+  }
+
+  .header-content {
+    flex-direction: row !important;
+    text-align: left !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+  }
+
+  .site-title {
+    font-size: 45px !important;
+    display: flex !important;
+    margin: 10px 0 0 0 !important;
+    min-width: 200px !important;
+    justify-content: center !important;
+    text-align: center !important;
+    align-items: center !important;
+  }
+
+  .icon-container {
+    margin: 0 !important;
+  }
+
+  .icon-container .icon dotlottie-player {
+    width: 250px !important;
+    height: 200px !important;
+  }
+  .icon-container a#enrollment {
+    margin-top: 0 !important;
+    text-align: center;
+  }
+
+  .btn#enrollment {
+    width: 70% !important;
+    height: 40px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+  /* Adjustments for smaller phones */
+}
+
+/* Small devices like phones */

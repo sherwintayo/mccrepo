@@ -1,6 +1,7 @@
 <?php require_once('./config.php'); ?>
 <!DOCTYPE html>
 <html lang="en" class="" style="height: auto;">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="<?php echo base_url ?>./myStyles/index.css?v=<?php echo time(); ?>">
 <style>
   /* General fix for overflow issues */
