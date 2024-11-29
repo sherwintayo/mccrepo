@@ -4,16 +4,7 @@ require_once('inc/header.php');
 
 // Check if the token is provided
 if (!isset($_GET['token'])) {
-  echo "<script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Missing Token',
-            text: 'The registration link is invalid or missing.',
-            confirmButtonText: 'Go to Homepage'
-        }).then(() => {
-            window.location.href = '404.html';
-        });
-    </script>";
+  header("Location: error.php?error=missing_token");
   exit();
 }
 
@@ -28,17 +19,8 @@ $stmt->execute();
 $stmt->store_result();
 
 if ($stmt->num_rows === 0) {
-  // Token is invalid or expired
-  echo "<script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Invalid or Expired Token',
-            text: 'The registration link has expired or is invalid.',
-            confirmButtonText: 'Go to Homepage'
-        }).then(() => {
-            window.location.href = '404.html';
-        });
-    </script>";
+  // Invalid or expired token
+  header("Location: error.php?error=invalid_token");
   exit();
 }
 

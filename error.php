@@ -49,10 +49,10 @@
   <div class="error">
     <div class="container">
       <div class="content centered">
-        <img src="your-image-path/something-lost.png" alt="Something Lost" style="width: 500px;">
+        <img src="dist/img/something-lost.png" alt="Something Lost" style="width: 500px;">
         <h1>Oops, looks like the page is lost.</h1>
         <p class="sub-header text-block-narrow">
-          <?php echo $message; ?>
+          This is not a fault, just an accident that was not intentional.
         </p>
       </div>
     </div>
@@ -60,32 +60,3 @@
 </body>
 
 </html>
-
-<?php
-$error = $_GET['error'] ?? 'unknown';
-
-switch ($error) {
-  case 'missing_token':
-    $message = "Access denied. No token provided.";
-    break;
-  case 'invalid_token':
-    $message = "Access denied. The token is invalid or has expired.";
-    break;
-  default:
-    $message = "An unknown error occurred.";
-}
-
-?>
-<!-- <!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <title>Error</title>
-</head>
-
-<body>
-  <h1>Error</h1>
-  <p><?php echo $message; ?></p>
-</body>
-
-</html> -->

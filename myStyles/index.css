@@ -1,5 +1,5 @@
 #header {
-  height: 70vh;
+  height: 80vh;
   width: 100%;
   position: relative;
   top: -1em;
@@ -151,7 +151,7 @@ div#search-field.show {
 /* Sidebar styles */
 .sidebar {
   height: 100%;
-  width: 300px;
+  width: 500px;
   position: fixed;
   top: 0;
   right: 0;
@@ -270,14 +270,24 @@ div#search-field.show {
 @media (max-width: 575.98px) {
   #header {
     display: flex !important;
-    flex-direction: column !important;
+    flex-direction: row !important;
   }
 
   .header-content {
-    flex-direction: column !important;
+    flex-direction: row !important;
     text-align: left !important;
     display: flex !important;
     flex-wrap: wrap !important;
+  }
+
+  .site-title {
+    font-size: 36px !important;
+    display: flex !important;
+    margin: 10px 0 0 0 !important;
+    min-width: 200px !important;
+    justify-content: center !important;
+    text-align: center !important;
+    align-items: center !important;
   }
 
   .site-title {

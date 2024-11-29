@@ -42,7 +42,7 @@
                 <!-- Card 1 -->
                 <div class="card">
                     <div class="card-image">
-                        <img src="dist/img/uploading.gif" alt="Submit Your Projects">
+                        <img src="dist/img/upload.gif" alt="Submit Your Projects">
                     </div>
                     <div class="card-content">
                         <h5>Submit Your Projects</h5>
@@ -62,7 +62,7 @@
                 <!-- Card 3 -->
                 <div class="card">
                     <div class="card-image">
-                        <img src="dist/img/peers.gif" alt="Engage with Peers and Faculty">
+                        <img src="dist/img/teacher.gif" alt="Engage with Peers and Faculty">
                     </div>
                     <div class="card-content">
                         <h5>Engage with Peers and Faculty</h5>

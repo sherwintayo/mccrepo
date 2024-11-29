@@ -174,7 +174,7 @@
   flex-wrap: wrap;
   gap: 2.5rem;
   justify-content: center;
-  margin-top: 2rem;
+  margin-top: 4rem;
 }
 
 .card {
@@ -223,51 +223,11 @@
   margin-top: 1.5rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 426px) {
   .section1 {
-    height: auto; /* Allow the height to adjust automatically */
+    height: auto;
   }
 
-  .section-body {
-    flex-direction: column; /* Stack items vertically */
-    text-align: center;
-  }
-
-  .image-icons {
-    margin-bottom: 2rem; /* Add spacing below icons */
-  }
-
-  .icon-wrapper {
-    margin: 0; /* Reset margins for centered layout */
-    justify-content: center; /* Center icons */
-  }
-
-  .icon-wrapper.left,
-  .icon-wrapper.right {
-    margin: 0; /* Remove horizontal offsets */
-  }
-
-  .section-body.content {
-    padding: 1rem; /* Reduce padding for smaller screens */
-  }
-
-  /* SECTION2 */
-  .cards-container {
-    flex-direction: column; /* Stack cards vertically */
-    align-items: center; /* Center the cards */
-    gap: 2rem; /* Increase gap between cards */
-  }
-
-  .card {
-    max-width: 90%; /* Reduce card width on smaller screens */
-  }
-
-  .section2 .section-header {
-    font-size: 1.75rem; /* Adjust header font size */
-  }
-}
-
-@media (max-width: 480px) {
   .icon1,
   .icon2,
   .icon3 {
@@ -277,6 +237,10 @@
 
   .section-header {
     font-size: 2rem; /* Reduce header font size */
+  }
+
+  .section-container .content {
+    padding: 1rem;
   }
 
   .section-body .content p {
@@ -300,5 +264,144 @@
 
   .card-image img {
     height: 120px; /* Adjust image height */
+  }
+}
+
+@media screen and (max-width: 769px) {
+  .section1 {
+    height: auto;
+  }
+
+  .section-body {
+    flex-direction: column; /* Stack items vertically */
+    text-align: center;
+  }
+
+  .image-icons {
+    margin-bottom: 2rem; /* Add spacing below icons */
+  }
+  .icon-wrapper.right {
+    margin-right: 25rem !important;
+  }
+  .icon-wrapper.left {
+    margin-left: 6rem !important;
+  }
+
+  .icon-wrapper {
+    justify-content: center; /* Center icons */
+  }
+
+  .icon1 {
+    height: auto !important;
+    width: 100% !important;
+    max-width: 200px !important;
+    width: 170px !important;
+  }
+
+  .icon2 {
+    height: auto !important;
+    width: 100% !important;
+    max-width: 200px !important;
+    width: 130px !important;
+  }
+
+  .icon3 {
+    height: auto !important;
+    width: 100% !important;
+    max-width: 150px !important;
+    width: 110px !important;
+  }
+
+  .section-body.content {
+    padding: 1rem;
+  }
+  .section-body .content p {
+    font-size: 1.4rem;
+    font-weight: 500;
+    text-align: center;
+  }
+
+  /* SECTION2 */
+  .cards-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .card {
+    max-width: 90%; /* Reduce card width on smaller screens */
+  }
+  .section2 {
+    margin-top: 4rem;
+  }
+
+  .section2 .section-container {
+    margin-top: 1rem !important;
+  }
+  .section2 .section-header {
+    font-size: 2.75rem; /* Adjust header font size */
+  }
+}
+
+/* @media (max-width: 1002px) {
+  .icon-wrapper.right {
+    margin: 0;
+  }
+
+  .section2 {
+    margin-top: 5rem;
+  }
+  .section-container .content {
+    padding: 1rem;
+    margin-top: 3rem;
+  }
+} */
+
+@media (min-width: 769px) and (max-width: 1025px) {
+  .icon-wrapper.right {
+    margin-right: 0;
+  }
+  .icon-wrapper.left {
+    margin-left: 4rem;
+  }
+  .section1 .section-header {
+    margin-top: 20px;
+  }
+  .section2 {
+    margin-top: 24rem;
+  }
+
+  .section1 .section-body {
+    padding: 1rem;
+    margin-top: 5rem;
+  }
+  .section-container .content {
+    padding: 1rem;
+    margin-top: 3rem;
+  }
+  .section-body .content p {
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-align: center;
+  }
+  .icon1 {
+    height: auto !important;
+    width: 100% !important;
+    max-width: 200px !important;
+    width: 140px !important;
+  }
+
+  .icon2 {
+    height: auto !important;
+    width: 100% !important;
+    max-width: 200px !important;
+    width: 120px !important;
+  }
+
+  .icon3 {
+    height: auto !important;
+    width: 100% !important;
+    max-width: 150px !important;
+    width: 100px !important;
   }
 }
