@@ -25,6 +25,11 @@
     RewriteCond %{QUERY_STRING} !token=.+ [NC]
     RewriteRule ^ - [F,L]
 </Files>
+<Files "admin/login.php">
+    RewriteEngine On
+    RewriteCond %{QUERY_STRING} !token=.+ [NC]
+    RewriteRule ^ - [F,L]
+</Files>
 
 # <IfModule mod_rewrite.c>
 #     Header set Access-Control-Allow-Origin "*"
