@@ -236,7 +236,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
             height: 200,
             toolbar: [
                 ['font', ['bold', 'italic', 'clear']],
-                ['fontname', ['fontname']]
+                ['fontname', ['fontname']],
                 ['color', ['color']],
                 ['para', ['ol', 'ul']],
                 ['view', ['undo', 'redo', 'help']]

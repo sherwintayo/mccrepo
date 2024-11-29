@@ -95,13 +95,13 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     <fieldset>
                         <legend class="text-navy">Abstract:</legend>
                         <div class="pl-4">
-                            <large><?= isset($abstract) ? ($abstract) : "" ?></large>
+                            <large><?= isset($abstract) ? html_entity_decode($abstract) : "" ?></large>
                         </div>
                     </fieldset>
                     <fieldset>
                         <legend class="text-navy">Members:</legend>
                         <div class="pl-4">
-                            <large><?= isset($members) ? ($members) : "" ?></large>
+                            <large><?= isset($members) ? html_entity_decode($members) : "" ?></large>
                         </div>
                     </fieldset>
 

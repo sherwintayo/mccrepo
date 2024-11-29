@@ -224,10 +224,13 @@ class Master extends DBConnection
 			$_POST['curriculum_id'] = $this->settings->userdata('curriculum_id');
 		}
 
-		if (isset($_POST['abstract']))
-			$_POST['abstract'] = htmlentities($_POST['abstract']);
-		if (isset($_POST['members']))
-			$_POST['members'] = htmlentities($_POST['members']);
+		// Save raw HTML without escaping it
+		if (isset($_POST['abstract'])) {
+			$_POST['abstract'] = $this->conn->real_escape_string($_POST['abstract']);
+		}
+		if (isset($_POST['members'])) {
+			$_POST['members'] = $this->conn->real_escape_string($_POST['members']);
+		}
 
 		extract($_POST);
 		$data = "";
