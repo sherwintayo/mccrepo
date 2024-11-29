@@ -27,11 +27,11 @@ class Login extends DBConnection
     {
         echo "<h1>Access Denied</h1> <a href='" . base_url . "'>Go Back.</a>";
     }
+
     public function login()
     {
         extract($_POST);
 
-        // reCAPTCHA Verification
         $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
         $secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO';
         $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
@@ -44,7 +44,6 @@ class Login extends DBConnection
             return;
         }
 
-        // Check User Credentials
         $stmt = $this->conn->prepare("SELECT * FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
@@ -59,21 +58,21 @@ class Login extends DBConnection
                     return;
                 }
 
-                // Generate Token and Insert into Database
-                $token = bin2hex(random_bytes(32)); // Generate secure token
-                $expiresAt = date('Y-m-d H:i:s', strtotime('+1 hour')); // Token expires in 1 hour
-
-                $insertStmt = $this->conn->prepare("INSERT INTO password_resets (email, token, expires_at) VALUES (?, ?, ?)");
-                $insertStmt->bind_param("sss", $res['email'], $token, $expiresAt);
-                $insertStmt->execute();
-
-                // Send Verification Email
-                if ($insertStmt->affected_rows > 0) {
-                    $this->sendVerificationEmail($res['email'], $token, $res['id']);
-                    echo json_encode(['status' => 'success', 'message' => 'A verification link has been sent to your email.']);
-                } else {
-                    echo json_encode(['status' => 'error', 'message' => 'Failed to send verification email.']);
+                foreach ($res as $k => $v) {
+                    if (!is_numeric($k) && $k != 'password') {
+                        $this->settings->set_userdata($k, $v);
+                    }
                 }
+                $this->settings->set_userdata('login_type', 1);
+
+                if (password_needs_rehash($res['password'], PASSWORD_DEFAULT)) {
+                    $newHash = password_hash($password, PASSWORD_DEFAULT);
+                    $updateStmt = $this->conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+                    $updateStmt->bind_param('si', $newHash, $res['id']);
+                    $updateStmt->execute();
+                }
+
+                echo json_encode(['status' => 'success']);
             } else {
                 echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
             }
@@ -81,45 +80,101 @@ class Login extends DBConnection
             echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
         }
     }
+    // public function login()
+    // {
+    //     extract($_POST);
 
 
-    public function sendVerificationEmail($email, $token, $userId)
-    {
-        $verificationLink = "http://mccbsitrepositories.com/verify.php?token=$token";
 
-        $mail = new PHPMailer(true);
-        try {
-            // Server settings
-            $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com'; // Replace with your SMTP host
-            $mail->SMTPAuth = true;
-            $mail->Username = 'sherwintayo08@gmail.com'; // Your SMTP username
-            $mail->Password = 'jlbm iyke zqjv zwtr'; // Your SMTP password
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port = 587;
+    //     $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
+    //     $secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO';
+    //     $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
-            // Recipients
-            $mail->setFrom('no-reply@yourdomain.com', 'Admin Verification');
-            $mail->addAddress($email);
+    //     $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaResponse);
+    //     $responseKeys = json_decode($response, true);
 
-            // Content
-            $mail->isHTML(true);
-            $mail->Subject = 'Verify Your Login Attempt';
-            $mail->Body = "
-        <div style='font-family: Arial, sans-serif; margin: 20px; padding: 20px; border: 1px solid #ddd; border-radius: 10px;'>
-            <h2 style='text-align: center; color: #333;'>Hi,</h2>
-            <p style='color: #555;'>Verify Login Attempt</p>
-            <p style='color: #777;'>A login attempt was made. For security, login verification is required. For your security, the below link must be clicked from the same computer on which login was attempted to verify login. If you did not attempt this login, do not perform verification.</p>
-            <div style='text-align: center; margin-top: 20px;'>
-                <a href='$verificationLink' style='display: inline-block; padding: 10px 20px; color: white; background: #007bff; border-radius: 5px; text-decoration: none;'>Verify Login Attempt</a>
-            </div>
-        </div>";
+    //     if (!$responseKeys['success']) {
+    //         echo json_encode(['status' => 'captcha_failed', 'message' => 'reCAPTCHA validation failed.']);
+    //         return;
+    //     }
 
-            $mail->send();
-        } catch (Exception $e) {
-            error_log("Email could not be sent. Mailer Error: {$mail->ErrorInfo}");
-        }
-    }
+
+
+    //     $stmt = $this->conn->prepare("SELECT * FROM users WHERE username = ?");
+    //     $stmt->bind_param("s", $username);
+    //     $stmt->execute();
+    //     $qry = $stmt->get_result();
+
+    //     if ($qry->num_rows > 0) {
+    //         $res = $qry->fetch_assoc();
+
+    //         if (password_verify($password, $res['password'])) {
+    //             if ($res['status'] != 1) {
+    //                 echo json_encode(['status' => 'notverified', 'message' => 'Your account is not verified.']);
+    //                 return;
+    //             }
+
+
+    //             $token = bin2hex(random_bytes(32)); 
+    //             $expiresAt = date('Y-m-d H:i:s', strtotime('+1 hour'));
+
+    //             $insertStmt = $this->conn->prepare("INSERT INTO password_resets (email, token, expires_at) VALUES (?, ?, ?)");
+    //             $insertStmt->bind_param("sss", $res['email'], $token, $expiresAt);
+    //             $insertStmt->execute();
+
+    //             // Send Verification Email
+    //             if ($insertStmt->affected_rows > 0) {
+    //                 $this->sendVerificationEmail($res['email'], $token, $res['id']);
+    //                 echo json_encode(['status' => 'success', 'message' => 'A verification link has been sent to your email.']);
+    //             } else {
+    //                 echo json_encode(['status' => 'error', 'message' => 'Failed to send verification email.']);
+    //             }
+    //         } else {
+    //             echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
+    //         }
+    //     } else {
+    //         echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
+    //     }
+    // }
+
+
+    // public function sendVerificationEmail($email, $token, $userId)
+    // {
+    //     $verificationLink = "http://mccbsitrepositories.com/verify.php?token=$token";
+
+    //     $mail = new PHPMailer(true);
+    //     try {
+
+    //         $mail->isSMTP();
+    //         $mail->Host = 'smtp.gmail.com';
+    //         $mail->SMTPAuth = true;
+    //         $mail->Username = 'sherwintayo08@gmail.com'; 
+    //         $mail->Password = 'jlbm iyke zqjv zwtr'; 
+    //         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    //         $mail->Port = 587;
+
+
+    //         $mail->setFrom('no-reply@yourdomain.com', 'Admin Verification');
+    //         $mail->addAddress($email);
+
+
+    //         $mail->isHTML(true);
+    //         $mail->Subject = 'Verify Your Login Attempt';
+    //         $mail->Body = "
+    //     <div style='font-family: Arial, sans-serif; margin: 20px; padding: 20px; border: 1px solid #ddd; border-radius: 10px;'>
+    //         <h2 style='text-align: center; color: #333;'>Hi,</h2>
+    //         <p style='color: #555;'>Verify Login Attempt</p>
+    //         <p style='color: #777;'>A login attempt was made. For security, login verification is required. For your security, the below link must be clicked from the same computer on which login was attempted to verify login. If you did not attempt this login, do not perform verification.</p>
+    //         <div style='text-align: center; margin-top: 20px;'>
+    //             <a href='$verificationLink' style='display: inline-block; padding: 10px 20px; color: white; background: #007bff; border-radius: 5px; text-decoration: none;'>Verify Login Attempt</a>
+    //         </div>
+    //     </div>";
+
+    //         $mail->send();
+    //     } catch (Exception $e) {
+    //         error_log("Email could not be sent. Mailer Error: {$mail->ErrorInfo}");
+    //     }
+    // }
 
 
 

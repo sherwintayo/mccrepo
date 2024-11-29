@@ -167,7 +167,6 @@
         // If validation passes, submit via AJAX
         var formData = _this.serialize(); // Serialize form data
 
-
         $.ajax({
           url: _base_url_ + "classes/Login.php?f=login", // Adjust URL for the backend login script
           method: 'POST',
@@ -175,17 +174,16 @@
           dataType: 'json',
           success: function (response) {
             if (response.status === 'success') {
-              // Show SweetAlert for verification email sent
               Swal.fire({
                 icon: 'success',
-                title: 'Verification Sent',
-                text: 'We have sent a verification link to your email. Please check your inbox.',
-                showConfirmButton: true,
-                confirmButtonText: 'OK'
-              }).then(function () {
-                // Disable the login button after the alert
-                $('#login-frm button[type="submit"]').prop('disabled', true);
+                title: 'Login Successful',
+                text: 'Redirecting to dashboard...',
+                showConfirmButton: false,
+                timer: 3000
               });
+              setTimeout(() => {
+                window.location.href = '../admin/'; // Redirect to dashboard
+              }, 2000);
             } else if (response.status === 'captcha_failed') {
               Swal.fire({
                 icon: 'error',
