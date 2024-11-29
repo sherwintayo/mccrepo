@@ -31,7 +31,7 @@ class Login extends DBConnection
     {
         extract($_POST);
 
-        // Step 1: Validate reCAPTCHA
+        // reCAPTCHA Verification
         $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
         $secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO';
         $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
@@ -44,7 +44,7 @@ class Login extends DBConnection
             return;
         }
 
-        // Step 2: Check user credentials
+        // Check User Credentials
         $stmt = $this->conn->prepare("SELECT * FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
@@ -54,32 +54,25 @@ class Login extends DBConnection
             $res = $qry->fetch_assoc();
 
             if (password_verify($password, $res['password'])) {
-                // Check if account is verified
                 if ($res['status'] != 1) {
                     echo json_encode(['status' => 'notverified', 'message' => 'Your account is not verified.']);
                     return;
                 }
 
-                // Generate token and expiry
-                $token = bin2hex(random_bytes(32)); // Generate a secure token
-                $expiry = date('Y-m-d H:i:s', strtotime('+30 minutes')); // Token expires in 30 minutes
+                // Generate Token and Insert into Database
+                $token = bin2hex(random_bytes(32)); // Generate secure token
+                $expiresAt = date('Y-m-d H:i:s', strtotime('+1 hour')); // Token expires in 1 hour
 
-                // Insert token into password_resets table
-                $insertStmt = $this->conn->prepare("INSERT INTO password_resets (email, token, expires_at) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE token = VALUES(token), expires_at = VALUES(expires_at)");
-                $insertStmt->bind_param("sss", $res['username'], $token, $expiry);
+                $insertStmt = $this->conn->prepare("INSERT INTO password_resets (email, token, expires_at) VALUES (?, ?, ?)");
+                $insertStmt->bind_param("sss", $res['email'], $token, $expiresAt);
                 $insertStmt->execute();
 
+                // Send Verification Email
                 if ($insertStmt->affected_rows > 0) {
-                    // Send verification email
-                    $verificationLink = base_url . "verify_login.php?token=" . urlencode($token);
-
-                    if ($this->sendVerificationEmail($res['username'], $res['name'], $verificationLink)) {
-                        echo json_encode(['status' => 'verify_email_sent']);
-                    } else {
-                        echo json_encode(['status' => 'error', 'message' => 'Unable to send verification email.']);
-                    }
+                    $this->sendVerificationEmail($res['email'], $token, $res['id']);
+                    echo json_encode(['status' => 'verify_email', 'message' => 'A verification link has been sent to your email.']);
                 } else {
-                    echo json_encode(['status' => 'error', 'message' => 'Unable to generate verification token.']);
+                    echo json_encode(['status' => 'error', 'message' => 'Failed to send verification email.']);
                 }
             } else {
                 echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
@@ -88,7 +81,6 @@ class Login extends DBConnection
             echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
         }
     }
-
 
 
     public function sendVerificationEmail($email, $token, $userId)
