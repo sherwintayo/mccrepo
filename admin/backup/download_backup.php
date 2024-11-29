@@ -60,7 +60,7 @@ $database_name = DB_NAME;
 $sqlScript = backup_database($conn, $database_name);
 
 if (!empty($sqlScript)) {
-  $backup_file_name = $database_name . '_backup_' . time() . '.sql';
+  $backup_file_name = $database_name . '_backup_' . date('Y-m-d_H-i-s') . '.sql';
 
   // Send SQL script to the browser for download
   header('Content-Description: File Transfer');

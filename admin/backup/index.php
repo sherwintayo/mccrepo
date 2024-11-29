@@ -26,16 +26,13 @@ if ($result) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Database Tables</title>
-  <link rel="stylesheet" href="path/to/bootstrap.min.css"> <!-- Update path -->
 </head>
 
 <body>
   <div class="container mt-4">
     <h1 class="text-center">Database Tables, Columns, and Data</h1>
     <hr>
-    <form action="./download_backup.php" method="POST" class="mt-4">
-      <button type="submit" class="btn btn-primary btn-block">Backup Entire Database</button>
-    </form>
+    <a class="btn btn-primary" href="download_backup"> Backup Database</a>
     <!-- Display Each Table -->
     <?php foreach ($tables as $table): ?>
       <div class="card mt-4">
@@ -97,9 +94,6 @@ if ($result) {
     <?php endforeach; ?>
 
     <hr>
-    <form action="download_backup.php" method="POST" class="mt-4">
-      <button type="submit" class="btn btn-primary btn-block">Backup Entire Database</button>
-    </form>
   </div>
 </body>
 
