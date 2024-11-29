@@ -138,12 +138,11 @@
         var _this = $(this);
         var hasError = false;
 
-        // XSS and Validation Checks for invalid characters and email
+        // Validation checks for invalid characters and email format
         _this.find('input[type="text"], input[type="email"], input[type="password"]').each(function () {
           var input = $(this);
           var value = input.val();
 
-          // Check for invalid characters (' and ") and for angle brackets (< and >)
           if (hasInvalidChars(value)) {
             setValidationMessage(this, "Input must not contain single quotes, double quotes, or angle brackets.");
             hasError = true;
@@ -166,25 +165,24 @@
 
         // If validation passes, submit via AJAX
         var formData = _this.serialize(); // Serialize form data
+
         $.ajax({
-          url: _base_url_ + "classes/Login.php?f=login", // Backend login script
+          url: _base_url_ + "classes/Login.php?f=login", // Backend login script URL
           method: 'POST',
           data: formData,
           dataType: 'json',
-          beforeSend: function () {
-            // Disable the login button before the request is sent
-            _this.find('button[type="submit"]').attr('disabled', true);
-          },
           success: function (response) {
             if (response.status === 'verify_email_sent') {
-              // Show SweetAlert and disable the login button
+              // Show success message for sending verification email
               Swal.fire({
-                icon: 'info',
+                icon: 'success',
                 title: 'Verification Email Sent',
-                text: 'We sent a verification link to your email. Please verify your login attempt.',
-                confirmButtonText: 'OK'
-              }).then(() => {
-                _this.find('button[type="submit"]').attr('disabled', true); // Keep the button disabled
+                text: 'A verification link has been sent to your email.',
+                showConfirmButton: false,
+                timer: 3000
+              }).then(function () {
+                // Disable the login button after email is sent
+                $('button[type="submit"]').attr('disabled', true);
               });
             } else if (response.status === 'captcha_failed') {
               Swal.fire({
@@ -193,15 +191,13 @@
                 text: response.message,
                 confirmButtonText: 'Try Again'
               });
-              _this.find('button[type="submit"]').attr('disabled', false); // Enable the button
             } else if (response.status === 'notverified') {
               Swal.fire({
                 icon: 'error',
                 title: 'Account Not Verified',
-                text: 'Please contact the administrator.',
+                text: 'Please contact admin to verify your account.',
                 confirmButtonText: 'OK'
               });
-              _this.find('button[type="submit"]').attr('disabled', false); // Enable the button
             } else if (response.status === 'incorrect') {
               Swal.fire({
                 icon: 'error',
@@ -209,27 +205,28 @@
                 text: 'Incorrect username or password.',
                 confirmButtonText: 'Retry'
               });
-              _this.find('button[type="submit"]').attr('disabled', false); // Enable the button
-            } else if (response.status === 'error') {
+            } else {
               Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: response.message,
+                text: 'An unexpected error occurred. Please try again later.',
                 confirmButtonText: 'OK'
               });
-              _this.find('button[type="submit"]').attr('disabled', false); // Enable the button
             }
           },
           error: function () {
             Swal.fire({
               icon: 'error',
               title: 'Error',
-              text: 'Unable to process your request. Please try again later.',
+              text: 'Unable to process your request at this time.',
               confirmButtonText: 'OK'
             });
-            _this.find('button[type="submit"]').attr('disabled', false); // Enable the button
           }
         });
+      });
+
+      $(document).ready(function () {
+        end_loader(); // Ensure loader is ended when the document is ready
       });
     })(jQuery);
   </script>
