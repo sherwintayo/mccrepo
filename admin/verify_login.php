@@ -1,5 +1,6 @@
 <?php
 require_once('../config.php'); // Ensure this file is included for $conn initialization
+session_start(); // Start PHP session
 
 if (isset($_GET['token'])) {
   $token = $_GET['token'];
@@ -32,7 +33,7 @@ if (isset($_GET['token'])) {
       $deleteStmt->execute();
 
       // Redirect to admin dashboard
-      header("Location: ../admin/");
+      header("Location: ../admin/index.php");
       exit; // Always exit after header redirection
     } else {
       echo "User not found.";
