@@ -1,4 +1,33 @@
 <?php require_once('../config.php') ?>
+<?php
+if (isset($_GET['token'])) {
+  $token = $_GET['token'];
+
+  $stmt = $conn->prepare("SELECT * FROM users WHERE reset_token_hash = ? AND reset_token_expires_at >= NOW()");
+  $stmt->bind_param("s", $token);
+  $stmt->execute();
+  $qry = $stmt->get_result();
+
+  if ($qry->num_rows > 0) {
+    $user = $qry->fetch_assoc();
+
+    // Log the user in by setting session
+    $_SESSION['user_id'] = $user['id'];
+    $_SESSION['username'] = $user['username'];
+
+    // Clear the token
+    $clearStmt = $conn->prepare("UPDATE users SET reset_token_hash = NULL, reset_token_expires_at = NULL WHERE id = ?");
+    $clearStmt->bind_param("i", $user['id']);
+    $clearStmt->execute();
+
+    header("Location: ../admin/");
+    exit;
+  } else {
+    echo "Invalid or expired token.";
+  }
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en" class="" style="height: auto;">
 <?php require_once('inc/header.php') ?>
@@ -166,22 +195,24 @@
 
         // If validation passes, submit via AJAX
         var formData = _this.serialize(); // Serialize form data
+
         $.ajax({
           url: _base_url_ + "classes/Login.php?f=login", // Adjust URL for the backend login script
           method: 'POST',
           data: formData,
           dataType: 'json',
           success: function (response) {
-            if (response.status === 'verify_email_sent') {
+            if (response.status === 'success') {
               Swal.fire({
                 icon: 'success',
-                title: 'Verification Sent',
-                text: 'We have sent a verification link to your email. Please check your inbox.',
-                confirmButtonText: 'OK'
-              }).then(() => {
-                // Disable the login button after alert confirmation
-                $('#login-frm button[type="submit"]').attr('disabled', true);
+                title: 'Login Successful',
+                text: 'Redirecting to dashboard...',
+                showConfirmButton: false,
+                timer: 3000
               });
+              setTimeout(() => {
+                window.location.href = '../admin/'; // Redirect to dashboard
+              }, 2000);
             } else if (response.status === 'captcha_failed') {
               Swal.fire({
                 icon: 'error',
