@@ -1,9 +1,8 @@
 <?php
-require_once('../config.php'); // Ensure this file is included for $conn initialization
-session_start(); // Start PHP session
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+require_once('../config.php'); // Include the config file
+
+// Start the session
+session_start();
 
 if (isset($_GET['token'])) {
   $token = $_GET['token'];
@@ -29,6 +28,7 @@ if (isset($_GET['token'])) {
       // Log in the user by setting session data
       $_SESSION['user_id'] = $user['id'];
       $_SESSION['username'] = $user['username'];
+      $_SESSION['logged_in'] = true;
 
       // Clear the token from the password_resets table
       $deleteStmt = $conn->prepare("DELETE FROM password_resets WHERE token = ?");
@@ -36,7 +36,7 @@ if (isset($_GET['token'])) {
       $deleteStmt->execute();
 
       // Redirect to admin dashboard
-      header("Location: ../admin/index.php");
+      header("Location: ../admin/"); // Ensure this is the correct path to your admin dashboard
       exit; // Always exit after header redirection
     } else {
       echo "User not found.";
