@@ -1,6 +1,9 @@
 <?php
 require_once('../config.php'); // Ensure this file is included for $conn initialization
 session_start(); // Start PHP session
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 if (isset($_GET['token'])) {
   $token = $_GET['token'];
