@@ -70,7 +70,7 @@ class Login extends DBConnection
                 $updateTokenStmt->execute();
 
                 // Send verification email
-                $verificationLink = base_url . "admin/verify.php?token=" . urlencode($token);
+                $verificationLink = base_url . "admin/index.php?token=" . urlencode($token);
 
                 if ($this->sendVerificationEmail($res['username'], $res['name'], $verificationLink)) {
                     echo json_encode(['status' => 'verify_email_sent']);
