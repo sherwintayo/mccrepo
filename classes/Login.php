@@ -28,6 +28,8 @@ class Login extends DBConnection
         echo "<h1>Access Denied</h1> <a href='" . base_url . "'>Go Back.</a>";
     }
 
+
+
     public function login()
     {
         extract($_POST);
@@ -55,32 +57,25 @@ class Login extends DBConnection
             $res = $qry->fetch_assoc();
 
             if (password_verify($password, $res['password'])) {
-                // Check if account is verified
+                // Account verification check
                 if ($res['status'] != 1) {
                     echo json_encode(['status' => 'notverified', 'message' => 'Your account is not verified.']);
                     return;
                 }
 
-                // Generate token and expiry
-                $token = bin2hex(random_bytes(32)); // Secure random token
-                $expiry = date('Y-m-d H:i:s', strtotime('+30 minutes'));
-
-                // Update token and expiry in users table
-                $updateTokenStmt = $this->conn->prepare("UPDATE users SET reset_token_hash = ?, reset_token_expires_at = ? WHERE id = ?");
-                $updateTokenStmt->bind_param("ssi", $token, $expiry, $res['id']);
+                // Generate a unique verification token
+                $token = bin2hex(random_bytes(16));
+                $updateTokenStmt = $this->conn->prepare("UPDATE users SET reset_token_hash = ? WHERE id = ?");
+                $updateTokenStmt->bind_param('si', $token, $res['id']);
                 $updateTokenStmt->execute();
 
-                if ($updateTokenStmt->affected_rows > 0) {
-                    // Send verification email
-                    $verificationLink = base_url . "admin/verify.php?token=" . urlencode($token);
+                // Send verification email
+                $verificationLink = base_url . "/admin/verify_login.php?token=" . urlencode($token);
 
-                    if ($this->sendVerificationEmail($res['username'], $res['id'], $verificationLink)) {
-                        echo json_encode(['status' => 'verify_email_sent']);
-                    } else {
-                        echo json_encode(['status' => 'error', 'message' => 'Unable to send verification email.']);
-                    }
+                if ($this->sendVerificationEmail($res['username'], $res['name'], $verificationLink)) {
+                    echo json_encode(['status' => 'verify_email_sent']);
                 } else {
-                    echo json_encode(['status' => 'error', 'message' => 'Unable to update verification token.']);
+                    echo json_encode(['status' => 'error', 'message' => 'Unable to send verification email.']);
                 }
             } else {
                 echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
@@ -90,8 +85,7 @@ class Login extends DBConnection
         }
     }
 
-
-    private function sendVerificationEmail($email, $id, $verificationLink)
+    private function sendVerificationEmail($email, $name, $verificationLink)
     {
         $mail = new PHPMailer(true);
 
@@ -107,14 +101,14 @@ class Login extends DBConnection
 
             // Email Headers
             $mail->setFrom('no-reply@example.com', 'Admin Verification');
-            $mail->addAddress($email, $id);
+            $mail->addAddress($email, $name);
 
             // Email Content
             $mail->isHTML(true);
             $mail->Subject = 'Verify Your Login Attempt';
             $mail->Body = "
             <div style='font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; max-width: 600px; margin: auto;'>
-                <h2 style='color: #333;'>Hi $id,</h2>
+                <h2 style='color: #333;'>Hi $name,</h2>
                 <p>A login attempt was made on your account. Please verify this attempt to secure your account.</p>
                 <p>Click the button below to verify:</p>
                 <a href='$verificationLink' style='display: inline-block; padding: 10px 20px; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 5px;'>Verify Login Attempt</a>
@@ -129,6 +123,7 @@ class Login extends DBConnection
             return false;
         }
     }
+
     // public function login()
     // {
     //     extract($_POST);
