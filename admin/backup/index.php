@@ -32,7 +32,8 @@ if ($result) {
   <div class="container mt-4">
     <h1 class="text-center">Database Tables, Columns, and Data</h1>
     <hr>
-    <a class="btn btn-primary" href="download_backup"> Backup Database</a>
+    <a class="btn btn-primary" href="backup.php">Backup Database</a>
+
     <!-- Display Each Table -->
     <?php foreach ($tables as $table): ?>
       <div class="card mt-4">
