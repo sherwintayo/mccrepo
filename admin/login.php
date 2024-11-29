@@ -167,6 +167,7 @@
         // If validation passes, submit via AJAX
         var formData = _this.serialize(); // Serialize form data
 
+
         $.ajax({
           url: _base_url_ + "classes/Login.php?f=login", // Adjust URL for the backend login script
           method: 'POST',
