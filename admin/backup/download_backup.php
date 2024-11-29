@@ -8,9 +8,10 @@ if (!isset($conn)) {
 // Function to generate database backup
 function backup_database($conn, $database_name)
 {
+  // Fetch all table names
   $tables = array();
-  $sql = "SHOW TABLES";
-  $result = $conn->query($sql);
+  $query = "SHOW TABLES";
+  $result = $conn->query($query);
 
   if (!$result) {
     die("Error fetching tables: " . $conn->error);
@@ -20,6 +21,7 @@ function backup_database($conn, $database_name)
     $tables[] = $row[0];
   }
 
+  // Generate SQL script
   $sqlScript = "";
   foreach ($tables as $table) {
     $safeTable = $conn->real_escape_string($table);
@@ -53,14 +55,14 @@ function backup_database($conn, $database_name)
   return $sqlScript;
 }
 
-// Generate and download backup
+// Generate SQL script
 $database_name = DB_NAME;
 $sqlScript = backup_database($conn, $database_name);
 
 if (!empty($sqlScript)) {
-  $backup_file_name = $database_name . '_backup_' . date('Y-m-d_H-i-s') . '.sql';
+  $backup_file_name = $database_name . '_backup_' . time() . '.sql';
 
-  // Set headers for download
+  // Send SQL script to the browser for download
   header('Content-Description: File Transfer');
   header('Content-Type: application/octet-stream');
   header('Content-Disposition: attachment; filename="' . $backup_file_name . '"');

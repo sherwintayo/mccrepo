@@ -33,7 +33,9 @@ if ($result) {
   <div class="container mt-4">
     <h1 class="text-center">Database Tables, Columns, and Data</h1>
     <hr>
-
+    <form action="download_backup.php" method="POST" class="mt-4">
+      <button type="submit" class="btn btn-primary btn-block">Backup Entire Database</button>
+    </form>
     <!-- Display Each Table -->
     <?php foreach ($tables as $table): ?>
       <div class="card mt-4">
