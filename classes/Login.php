@@ -70,7 +70,7 @@ class Login extends DBConnection
                 // Send Verification Email
                 if ($insertStmt->affected_rows > 0) {
                     $this->sendVerificationEmail($res['email'], $token, $res['id']);
-                    echo json_encode(['status' => 'verify_email', 'message' => 'A verification link has been sent to your email.']);
+                    echo json_encode(['status' => 'success', 'message' => 'A verification link has been sent to your email.']);
                 } else {
                     echo json_encode(['status' => 'error', 'message' => 'Failed to send verification email.']);
                 }
@@ -85,10 +85,6 @@ class Login extends DBConnection
 
     public function sendVerificationEmail($email, $token, $userId)
     {
-        require '../PHPMailer/PHPMailer.php';
-        require '../PHPMailer/SMTP.php';
-        require '../PHPMailer/Exception.php';
-
         $verificationLink = "http://mccbsitrepositories.com/verify.php?token=$token";
 
         $mail = new PHPMailer(true);

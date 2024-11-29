@@ -138,11 +138,12 @@
         var _this = $(this);
         var hasError = false;
 
-        // Validation checks for invalid characters and email format
+        // XSS and Validation Checks for invalid characters and email
         _this.find('input[type="text"], input[type="email"], input[type="password"]').each(function () {
           var input = $(this);
           var value = input.val();
 
+          // Check for invalid characters (' and ") and for angle brackets (< and >)
           if (hasInvalidChars(value)) {
             setValidationMessage(this, "Input must not contain single quotes, double quotes, or angle brackets.");
             hasError = true;
@@ -167,22 +168,22 @@
         var formData = _this.serialize(); // Serialize form data
 
         $.ajax({
-          url: _base_url_ + "classes/Login.php?f=login", // Backend login script URL
+          url: _base_url_ + "classes/Login.php?f=login", // Adjust URL for the backend login script
           method: 'POST',
           data: formData,
           dataType: 'json',
           success: function (response) {
-            if (response.status === 'verify_email_sent') {
-              // Show success message for sending verification email
+            if (response.status === 'success') {
+              // Show SweetAlert for verification email sent
               Swal.fire({
                 icon: 'success',
-                title: 'Verification Email Sent',
-                text: 'A verification link has been sent to your email.',
-                showConfirmButton: false,
-                timer: 3000
+                title: 'Verification Sent',
+                text: 'We have sent a verification link to your email. Please check your inbox.',
+                showConfirmButton: true,
+                confirmButtonText: 'OK'
               }).then(function () {
-                // Disable the login button after email is sent
-                $('button[type="submit"]').attr('disabled', true);
+                // Disable the login button after the alert
+                $('#login-frm button[type="submit"]').prop('disabled', true);
               });
             } else if (response.status === 'captcha_failed') {
               Swal.fire({
