@@ -72,7 +72,7 @@ class Login extends DBConnection
 
                 if ($insertStmt->affected_rows > 0) {
                     // Send verification email
-                    $verificationLink = base_url . "verify.php?token=" . urlencode($token);
+                    $verificationLink = base_url . "admin/verify.php?token=" . urlencode($token);
 
                     if ($this->sendVerificationEmail($res['username'], $res['id'], $verificationLink)) {
                         echo json_encode(['status' => 'verify_email_sent']);
