@@ -226,52 +226,82 @@
 @media (max-width: 426px) {
   .section1 {
     height: auto;
-  }
-
-  .icon1,
-  .icon2,
-  .icon3 {
-    max-width: 70px; /* Reduce icon sizes on very small screens */
-    width: 60px;
+    margin-top: 5rem;
   }
 
   .section-header {
-    font-size: 2rem; /* Reduce header font size */
+    font-size: 2rem !important;
   }
 
   .section-container .content {
     padding: 1rem;
+    margin-top: 4rem;
+  }
+  .section1 .section-body {
+    flex-direction: column !important;
+    text-align: center !important;
+    margin-top: 5rem;
   }
 
-  .section-body .content p {
-    font-size: 1rem; /* Adjust text size */
+  .icon-wrapper.left {
+    margin-left: 3rem;
   }
 
-  /* SECTION2 */
+  .icon1 {
+    height: auto !important;
+    width: 100% !important;
+    max-width: 200px !important;
+    width: 120px !important;
+  }
+
+  .icon2 {
+    height: auto !important;
+    width: 100% !important;
+    max-width: 200px !important;
+    width: 110px !important;
+  }
+
+  .icon3 {
+    height: auto !important;
+    width: 100% !important;
+    max-width: 150px !important;
+    width: 95px !important;
+  }
+
+  .section1 .section-body .content p {
+    font-size: 1rem;
+  }
+  .section2 {
+    margin-top: 10rem;
+  }
 
   .card {
-    max-width: 100%; /* Full width on very small screens */
-    box-shadow: none; /* Simplify shadows for minimal design */
+    max-width: 100%;
+    box-shadow: none;
   }
 
   .card-content h5 {
-    font-size: 1.25rem; /* Reduce card title size */
+    font-size: 1.25rem;
   }
 
   .card-content p {
-    font-size: 0.9rem; /* Adjust description font size */
+    font-size: 0.9rem;
   }
 
   .card-image img {
-    height: 120px; /* Adjust image height */
+    height: 120px;
   }
 }
 
-@media screen and (max-width: 769px) {
+@media (min-width: 426px) and (max-width: 769px) {
   .section1 {
     height: auto;
+    display: flex !important;
   }
-
+  .section-container {
+    flex-direction: column !important; /* Stack items vertically */
+    text-align: center !important;
+  }
   .section-body {
     flex-direction: column; /* Stack items vertically */
     text-align: center;
@@ -329,7 +359,7 @@
   }
 
   .card {
-    max-width: 90%; /* Reduce card width on smaller screens */
+    max-width: 90%;
   }
   .section2 {
     margin-top: 4rem;
@@ -339,7 +369,7 @@
     margin-top: 1rem !important;
   }
   .section2 .section-header {
-    font-size: 2.75rem; /* Adjust header font size */
+    font-size: 2.75rem;
   }
 }
 
@@ -358,6 +388,9 @@
 } */
 
 @media (min-width: 769px) and (max-width: 1025px) {
+  .section1 {
+    height: auto;
+  }
   .icon-wrapper.right {
     margin-right: 0;
   }
@@ -365,15 +398,15 @@
     margin-left: 4rem;
   }
   .section1 .section-header {
-    margin-top: 20px;
+    margin-top: 26px;
   }
   .section2 {
-    margin-top: 24rem;
+    margin-top: 15rem;
   }
 
   .section1 .section-body {
     padding: 1rem;
-    margin-top: 5rem;
+    margin-top: 8rem;
   }
   .section-container .content {
     padding: 1rem;
