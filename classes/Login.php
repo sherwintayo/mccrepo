@@ -96,7 +96,7 @@ class Login extends DBConnection
         try {
             // SMTP Configuration
             $mail->isSMTP();
-            $mail->Host = 'smtp.example.com'; // Replace with your SMTP host
+            $mail->Host = 'smtp.gmail.com'; // Replace with your SMTP host
             $mail->SMTPAuth = true;
             $mail->Username = 'sherwintayo08@gmail.com'; // Replace with your email
             $mail->Password = 'jlbm iyke zqjv zwtr'; // Replace with your email password
