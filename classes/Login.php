@@ -1,6 +1,9 @@
 <?php
 require_once '../config.php';
+require_once '../initialize.php';
+require_once('../vendor/autoload.php'); // Composer autoloader
 
+// Use PHPMailer with namespaces
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
@@ -28,6 +31,7 @@ class Login extends DBConnection
     {
         extract($_POST);
 
+        // Step 1: Validate reCAPTCHA
         $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
         $secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO';
         $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
@@ -40,6 +44,7 @@ class Login extends DBConnection
             return;
         }
 
+        // Step 2: Check user credentials
         $stmt = $this->conn->prepare("SELECT * FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
@@ -49,31 +54,77 @@ class Login extends DBConnection
             $res = $qry->fetch_assoc();
 
             if (password_verify($password, $res['password'])) {
+                // Check if account is verified
                 if ($res['status'] != 1) {
                     echo json_encode(['status' => 'notverified', 'message' => 'Your account is not verified.']);
                     return;
                 }
 
-                foreach ($res as $k => $v) {
-                    if (!is_numeric($k) && $k != 'password') {
-                        $this->settings->set_userdata($k, $v);
+                // Generate token and expiry
+                $token = bin2hex(random_bytes(32));
+                $expiry = date('Y-m-d H:i:s', strtotime('+30 minutes'));
+
+                // Insert into password_resets table
+                $insertStmt = $this->conn->prepare("INSERT INTO password_resets (email, token, expires_at) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE token = VALUES(token), expires_at = VALUES(expires_at)");
+                $insertStmt->bind_param("sss", $res['username'], $token, $expiry);
+                $insertStmt->execute();
+
+                if ($insertStmt->affected_rows > 0) {
+                    // Send verification email
+                    $verificationLink = _base_url_ . "verify_login.php?token=" . urlencode($token);
+
+                    if ($this->sendVerificationEmail($res['username'], $res['name'], $verificationLink)) {
+                        echo json_encode(['status' => 'verify_email_sent']);
+                    } else {
+                        echo json_encode(['status' => 'error', 'message' => 'Unable to send verification email.']);
                     }
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'Unable to generate verification token.']);
                 }
-                $this->settings->set_userdata('login_type', 1);
-
-                if (password_needs_rehash($res['password'], PASSWORD_DEFAULT)) {
-                    $newHash = password_hash($password, PASSWORD_DEFAULT);
-                    $updateStmt = $this->conn->prepare("UPDATE users SET password = ? WHERE id = ?");
-                    $updateStmt->bind_param('si', $newHash, $res['id']);
-                    $updateStmt->execute();
-                }
-
-                echo json_encode(['status' => 'success']);
             } else {
                 echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
             }
         } else {
             echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
+        }
+    }
+
+    private function sendVerificationEmail($email, $name, $verificationLink)
+    {
+        $mail = new PHPMailer(true);
+
+        try {
+            // SMTP Configuration
+            $mail->isSMTP();
+            $mail->Host = 'smtp.example.com'; // Replace with your SMTP host
+            $mail->SMTPAuth = true;
+            $mail->Username = 'your_email@example.com'; // Replace with your email
+            $mail->Password = 'your_password'; // Replace with your email password
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+
+            // Email Headers
+            $mail->setFrom('no-reply@example.com', 'Admin Verification');
+            $mail->addAddress($email, $name);
+
+            // Email Content
+            $mail->isHTML(true);
+            $mail->Subject = 'Verify Your Login Attempt';
+            $mail->Body = "
+            <div style='font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; max-width: 600px; margin: auto;'>
+                <h2 style='color: #333;'>Hi $name,</h2>
+                <p>A login attempt was made on your account. Please verify this attempt to secure your account.</p>
+                <p>Click the button below to verify:</p>
+                <a href='$verificationLink' style='display: inline-block; padding: 10px 20px; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 5px;'>Verify Login Attempt</a>
+                <p>If you did not attempt to log in, please ignore this email.</p>
+            </div>
+        ";
+
+            $mail->send();
+            return true;
+        } catch (Exception $e) {
+            error_log("Mailer Error: " . $mail->ErrorInfo);
+            return false;
         }
     }
 
