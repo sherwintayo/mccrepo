@@ -1,55 +1,66 @@
 <?php
-require_once('../config.php'); // Include the config file
-
+require_once('../config.php'); // Load the config and DBConnection
 if (!isset($conn)) {
   die("Database connection failed.");
 }
 
-// Set headers to trigger file download
-header('Content-Type: application/sql');
-header('Content-Disposition: attachment; filename="database_backup.sql"');
+// CSRF validation
+session_start();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+    die("Invalid CSRF token.");
+  }
+}
 
+// Get All Table Names From the Database
 $tables = array();
-$query = "SHOW TABLES";
-$result = $conn->query($query);
+$sql = "SHOW TABLES";
+$result = $conn->query($sql);
 
-if ($result) {
-  // Fetch all table names
-  while ($row = $result->fetch_row()) {
-    $tables[] = $row[0];
-  }
+if (!$result) {
+  die("Error fetching tables: " . $conn->error);
 }
 
-// Begin the SQL dump
-$output = "-- Database Backup\n-- Generated on " . date('Y-m-d H:i:s') . "\n\n";
+while ($row = $result->fetch_row()) {
+  $tables[] = $row[0];
+}
 
+$sqlScript = "";
 foreach ($tables as $table) {
-  // Generate DROP TABLE statement
-  $output .= "DROP TABLE IF EXISTS `$table`;\n";
+  // Table structure
+  $query = "SHOW CREATE TABLE `$table`";
+  $result = $conn->query($query);
+  if (!$result) {
+    die("Error fetching table structure: " . $conn->error);
+  }
+  $row = $result->fetch_row();
+  $sqlScript .= "\n\n" . $row[1] . ";\n\n";
 
-  // Generate CREATE TABLE statement
-  $createTableResult = $conn->query("SHOW CREATE TABLE `$table`");
-  if ($createTableResult) {
-    $createTableRow = $createTableResult->fetch_row();
-    $output .= $createTableRow[1] . ";\n\n";
+  // Table data
+  $query = "SELECT * FROM `$table`";
+  $result = $conn->query($query);
+  if (!$result) {
+    die("Error fetching table data: " . $conn->error);
   }
 
-  // Generate INSERT statements for table data
-  $dataResult = $conn->query("SELECT * FROM `$table`");
-  if ($dataResult && $dataResult->num_rows > 0) {
-    while ($row = $dataResult->fetch_assoc()) {
-      $columns = array_keys($row);
-      $values = array_map(function ($value) use ($conn) {
-        return is_null($value) ? 'NULL' : "'" . $conn->real_escape_string($value) . "'";
-      }, array_values($row));
-
-      $output .= "INSERT INTO `$table` (`" . implode('`, `', $columns) . "`) VALUES (" . implode(', ', $values) . ");\n";
+  $columnCount = $result->field_count;
+  while ($row = $result->fetch_row()) {
+    $sqlScript .= "INSERT INTO `$table` VALUES(";
+    for ($j = 0; $j < $columnCount; $j++) {
+      $sqlScript .= isset($row[$j]) ? '"' . $conn->real_escape_string($row[$j]) . '"' : 'NULL';
+      $sqlScript .= $j < ($columnCount - 1) ? ',' : '';
     }
-    $output .= "\n";
+    $sqlScript .= ");\n";
   }
+  $sqlScript .= "\n";
 }
 
-// Output the SQL dump
-echo $output;
-exit;
+// Save and trigger download
+if (!empty($sqlScript)) {
+  $backupFileName = "database_backup_" . date('Y-m-d_H-i-s') . ".sql";
+  header('Content-Type: application/octet-stream');
+  header('Content-Disposition: attachment; filename="' . $backupFileName . '"');
+  echo $sqlScript;
+  exit;
+}
 ?>

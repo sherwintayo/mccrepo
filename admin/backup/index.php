@@ -32,7 +32,10 @@ if ($result) {
   <div class="container mt-4">
     <h1 class="text-center">Database Tables, Columns, and Data</h1>
     <hr>
-    <a class="btn btn-primary" href="backup.php">Backup Database</a>
+    <form method="POST" action="backup.php">
+      <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
+      <button class="btn btn-primary">Backup Database</button>
+    </form>
 
     <!-- Display Each Table -->
     <?php foreach ($tables as $table): ?>
