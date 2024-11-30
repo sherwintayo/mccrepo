@@ -17,6 +17,36 @@ if ($result) {
 } else {
   die("Error fetching tables: " . $conn->error);
 }
+
+// Handle database download request
+if (isset($_GET['download']) && $_GET['download'] === 'true') {
+  // Database credentials
+  $dbHost = DB_SERVER;
+  $dbUser = DB_USERNAME;
+  $dbPass = DB_PASSWORD;
+  $dbName = DB_NAME; // Replace with your database name
+
+  // Generate a unique file name
+  $fileName = "database_backup_" . date('Ymd_His') . ".sql";
+
+  // Use `mysqldump` to create the SQL dump
+  $command = "mysqldump --host=$dbHost --user=$dbUser --password=$dbPass $dbName > $fileName";
+  exec($command, $output, $returnVar);
+
+  // Check if the command executed successfully
+  if ($returnVar === 0 && file_exists($fileName)) {
+    // Serve the file as a download
+    header('Content-Type: application/sql');
+    header('Content-Disposition: attachment; filename="' . $fileName . '"');
+    readfile($fileName);
+
+    // Delete the file after download
+    unlink($fileName);
+    exit;
+  } else {
+    die("Error generating the database dump. Please check your permissions or configurations.");
+  }
+}
 ?>
 
 <!DOCTYPE html>
@@ -32,10 +62,11 @@ if ($result) {
   <div class="container mt-4">
     <h1 class="text-center">Database Tables, Columns, and Data</h1>
     <hr>
-    <form method="POST" action="backup.php">
-      <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
-      <button class="btn btn-primary">Backup Database</button>
-    </form>
+
+    <!-- Button to download database as .sql -->
+    <div class="text-center mb-4">
+      <a href="?download=true" class="btn btn-primary">Download Database as .sql</a>
+    </div>
 
     <!-- Display Each Table -->
     <?php foreach ($tables as $table): ?>
