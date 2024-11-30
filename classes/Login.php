@@ -86,16 +86,30 @@ class Login extends DBConnection
 
     public function email_login()
     {
+        global $conn;
         extract($_POST);
 
-        // Validate the provided email
+        // Validate reCAPTCHA
+        $secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO'; // Replace with your secret key
+        $recaptchaResponse = $_POST['recaptchaResponse'];
+        $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
+
+        $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaResponse);
+        $responseKeys = json_decode($response, true);
+
+        if (!$responseKeys['success']) {
+            echo json_encode(['status' => 'error', 'message' => 'reCAPTCHA validation failed.']);
+            return;
+        }
+
+        // Validate email format
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             echo json_encode(['status' => 'error', 'message' => 'Invalid email address.']);
             return;
         }
 
-        // Check if email exists in the users table
-        $stmt = $this->conn->prepare("SELECT * FROM users WHERE username = ?");
+        // Check if the email exists in the database
+        $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $qry = $stmt->get_result();
@@ -103,12 +117,12 @@ class Login extends DBConnection
         if ($qry->num_rows > 0) {
             $user = $qry->fetch_assoc();
 
-            // Generate a secure token
-            $token = bin2hex(random_bytes(32));
-            $expiry = date('Y-m-d H:i:s', strtotime('+1 minute 30 seconds'));
+            // Generate a secure token and expiry timestamp
+            $token = bin2hex(random_bytes(32)); // 64-character secure random token
+            $expiry = date('Y-m-d H:i:s', strtotime('+1 minute 30 seconds')); // Token valid for 1:30 minutes
 
-            // Save the token and expiry in the users table
-            $updateStmt = $this->conn->prepare("UPDATE users SET reset_token_hash = ?, reset_token_expires_at = ? WHERE id = ?");
+            // Update the token and expiry in the database
+            $updateStmt = $conn->prepare("UPDATE users SET reset_token_hash = ?, reset_token_expires_at = ? WHERE id = ?");
             $updateStmt->bind_param("ssi", $token, $expiry, $user['id']);
             $updateStmt->execute();
 
@@ -116,9 +130,9 @@ class Login extends DBConnection
                 // Generate the login link
                 $loginLink = base_url . "admin/login.php?token=" . urlencode($token);
 
-                // Send email using PHPMailer
+                // Send the login link via email
                 if ($this->sendEmailLoginLink($email, $user['firstname'], $loginLink)) {
-                    echo json_encode(['status' => 'success']);
+                    echo json_encode(['status' => 'success', 'message' => 'Login link sent successfully.']);
                 } else {
                     echo json_encode(['status' => 'error', 'message' => 'Failed to send the login email.']);
                 }
@@ -135,36 +149,40 @@ class Login extends DBConnection
         $mail = new PHPMailer(true);
 
         try {
+            // SMTP Configuration
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com'; // Replace with your SMTP host
             $mail->SMTPAuth = true;
-            $mail->Username = 'sherwintayo08@gmail.com'; // Replace with your email
-            $mail->Password = 'jlbm iyke zqjv zwtr'; // Replace with your email password
+            $mail->Username = 'sherwintayo08@gmail.com'; // Replace with your Gmail address
+            $mail->Password = 'jlbm iyke zqjv zwtr'; // Replace with your Gmail app password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
 
-            $mail->setFrom('no-reply@example.com', 'Admin Login');
+            // Email Details
+            $mail->setFrom('no-reply@example.com', 'Admin Login'); // Replace with your desired "From" address
             $mail->addAddress($email, $name);
 
+            // Email Content
             $mail->isHTML(true);
             $mail->Subject = 'Your Login Link';
             $mail->Body = "
-            <div>
-                <p>Hi $name,</p>
-                <p>Click the link below to log in:</p>
+            <div style='font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; max-width: 600px; margin: auto;'>
+                <h2 style='color: #333;'>Hi $name,</h2>
+                <p>A login request was made for your account. Click the link below to log in:</p>
                 <a href='$loginLink' style='display:inline-block; padding:10px 20px; background:#007bff; color:#fff; text-decoration:none; border-radius:5px;'>Login Now</a>
-                <p>This link will expire in 1 minute 30 seconds.</p>
+                <p style='margin-top: 20px;'>This link will expire in <strong>1 minute 30 seconds</strong>.</p>
             </div>
         ";
 
+            // Send the email
             $mail->send();
             return true;
         } catch (Exception $e) {
+            // Log the error for debugging
             error_log("PHPMailer Error: " . $mail->ErrorInfo);
             return false;
         }
     }
-
 
 
 
@@ -265,6 +283,9 @@ switch ($action) {
         break;
     case 'logout':
         echo $auth->logout();
+        break;
+    case 'email_login':
+        echo $auth->email_login();
         break;
     case 'student_login':
         echo $auth->student_login();

@@ -7,6 +7,7 @@
   <title>Email Login</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="../myStyles/loginstyle.css">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <style>
   body {
@@ -40,6 +41,10 @@
                   class="form-control form-control-border" required>
               </div>
 
+              <div class="form-group">
+                <div class="g-recaptcha" data-sitekey="6LfFJYcqAAAAAK6Djr0QOH68F4r_Aehziia0XYa9"></div>
+              </div>
+
               <!-- Submit Button -->
               <div class="row">
                 <div class="col-md-12 text-right">
@@ -60,12 +65,24 @@
     $(document).ready(function () {
       $('#email-login-frm').on('submit', function (e) {
         e.preventDefault(); // Prevent default form submission
+
         let email = $('#email').val();
+        let recaptchaResponse = grecaptcha.getResponse(); // Get reCAPTCHA response
+
+        if (!recaptchaResponse) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Captcha Required',
+            text: 'Please complete the reCAPTCHA.',
+            confirmButtonText: 'OK'
+          });
+          return;
+        }
 
         $.ajax({
           url: _base_url_ + "classes/Login.php?f=email_login", // Backend route
           method: 'POST',
-          data: { email },
+          data: { email, recaptchaResponse },
           dataType: 'json',
           success: function (response) {
             if (response.status === 'success') {
