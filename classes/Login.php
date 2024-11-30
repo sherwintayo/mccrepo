@@ -88,65 +88,68 @@ class Login extends DBConnection
     {
         extract($_POST);
 
-        // Step 1: Validate reCAPTCHA
-        $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-        $secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO';
-        $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
+        try {
+            // Step 1: Validate reCAPTCHA
+            $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
+            $secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO';
+            $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
-        $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaResponse);
-        $responseKeys = json_decode($response, true);
+            $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaResponse);
+            $responseKeys = json_decode($response, true);
 
-        if (!$responseKeys['success']) {
-            echo json_encode(['status' => 'captcha_failed', 'message' => 'reCAPTCHA validation failed.']);
-            return;
-        }
+            if (!$responseKeys['success']) {
+                echo json_encode(['status' => 'captcha_failed', 'message' => 'reCAPTCHA validation failed.']);
+                return;
+            }
 
-        // Step 2: Check user credentials
-        $stmt = $this->conn->prepare("SELECT * FROM users WHERE username = ?");
-        $stmt->bind_param("s", $username);
-        $stmt->execute();
-        $qry = $stmt->get_result();
+            // Step 2: Check user credentials
+            $stmt = $this->conn->prepare("SELECT * FROM users WHERE username = ?");
+            $stmt->bind_param("s", $username);
+            $stmt->execute();
+            $qry = $stmt->get_result();
 
-        if ($qry->num_rows > 0) {
-            $res = $qry->fetch_assoc();
+            if ($qry->num_rows > 0) {
+                $res = $qry->fetch_assoc();
 
-            if (password_verify($password, $res['password'])) {
-                // Check account status
-                if ($res['status'] != 1) {
-                    echo json_encode(['status' => 'notverified', 'message' => 'Your account is not verified.']);
-                    return;
-                }
-
-                // Generate a unique login token
-                $token = bin2hex(random_bytes(16));
-                $updateTokenStmt = $this->conn->prepare("UPDATE users SET login_token = ? WHERE id = ?");
-                $updateTokenStmt->bind_param('si', $token, $res['id']);
-                $updateTokenStmt->execute();
-
-                // Set user session data for secure email verification
-                foreach ($res as $k => $v) {
-                    if (!is_numeric($k) && $k != 'password') {
-                        $this->settings->set_userdata($k, $v);
+                if (password_verify($password, $res['password'])) {
+                    // Check account status
+                    if ($res['status'] != 1) {
+                        echo json_encode(['status' => 'notverified', 'message' => 'Your account is not verified.']);
+                        return;
                     }
-                }
-                $this->settings->set_userdata('login_type', 1); // Admin login
 
-                // Generate verification link
-                $verificationLink = base_url . "admin/verify.php?token=" . urlencode($token);
+                    // Generate token
+                    $token = bin2hex(random_bytes(16));
+                    $updateTokenStmt = $this->conn->prepare("UPDATE users SET login_token = ?, login_token_expires = DATE_ADD(NOW(), INTERVAL 30 MINUTE) WHERE id = ?");
+                    $updateTokenStmt->bind_param('si', $token, $res['id']);
+                    if (!$updateTokenStmt->execute()) {
+                        error_log("Failed to update login token for user ID " . $res['id']);
+                        echo json_encode(['status' => 'error', 'message' => 'Unable to update token.']);
+                        return;
+                    }
 
-                // Send verification email
-                if ($this->sendVerificationEmail($res['username'], $res['firstname'], $verificationLink)) {
-                    echo json_encode(['status' => 'verify_email_sent']);
+                    // Generate verification link
+                    $verificationLink = base_url . "admin/verify.php?token=" . urlencode($token);
+
+                    // Send verification email
+                    if ($this->sendVerificationEmail($res['username'], $res['firstname'], $verificationLink)) {
+                        echo json_encode(['status' => 'verify_email_sent']);
+                    } else {
+                        error_log("Email failed to send to " . $res['username']);
+                        echo json_encode(['status' => 'error', 'message' => 'Unable to send verification email.']);
+                    }
                 } else {
-                    echo json_encode(['status' => 'error', 'message' => 'Unable to send verification email.']);
+                    echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
                 }
             } else {
                 echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
             }
-        } else {
-            echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
+        } catch (Exception $e) {
+            error_log("Error in login process: " . $e->getMessage());
+            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred.']);
         }
     }
+
 
     private function sendVerificationEmail($email, $name, $verificationLink)
     {

@@ -197,7 +197,7 @@ if (isset($_GET['token'])) {
         var formData = _this.serialize(); // Serialize form data
 
         $.ajax({
-          url: _base_url_ + "classes/Login.php?f=login", // Adjust URL for the backend login script
+          url: _base_url_ + "classes/Login.php?f=login", // Backend login URL
           method: 'POST',
           data: formData,
           dataType: 'json',
@@ -209,7 +209,7 @@ if (isset($_GET['token'])) {
                 text: 'We have sent a verification link to your email. Please check your inbox.',
                 confirmButtonText: 'OK'
               }).then(() => {
-                // Disable the login button after alert confirmation
+                // Disable login button
                 $('#login-frm button[type="submit"]').attr('disabled', true);
               });
             } else if (response.status === 'captcha_failed') {
@@ -223,7 +223,7 @@ if (isset($_GET['token'])) {
               Swal.fire({
                 icon: 'error',
                 title: 'Account Not Verified',
-                text: 'Please contact admin to verify your account.',
+                text: response.message,
                 confirmButtonText: 'OK'
               });
             } else if (response.status === 'incorrect') {
@@ -237,12 +237,13 @@ if (isset($_GET['token'])) {
               Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'An unexpected error occurred. Please try again later.',
+                text: response.message || 'An unexpected error occurred.',
                 confirmButtonText: 'OK'
               });
             }
           },
-          error: function () {
+          error: function (xhr, status, error) {
+            console.error("AJAX Error:", status, error);
             Swal.fire({
               icon: 'error',
               title: 'Error',
