@@ -192,15 +192,39 @@ if (isset($_GET['token'])) {
 
 
       $('#login-frm').on('submit', function (event) {
-        event.preventDefault(); // Prevent form submission
+        event.preventDefault(); // Prevent default form submission
 
-        const _this = $(this);
-        const loginBtn = $('#login-btn');
-        const formData = _this.serialize(); // Serialize form data
+        var _this = $(this);
+        var hasError = false;
 
-        // Reset button state and feedback
-        loginBtn.attr('disabled', false);
-        loginBtn.text('Login');
+        // XSS and Validation Checks for invalid characters and email
+        _this.find('input[type="text"], input[type="email"], input[type="password"]').each(function () {
+          var input = $(this);
+          var value = input.val();
+
+          // Check for invalid characters (' and ") and for angle brackets (< and >)
+          if (hasInvalidChars(value)) {
+            setValidationMessage(this, "Input must not contain single quotes, double quotes, or angle brackets.");
+            hasError = true;
+            return false; // Exit loop
+          } else {
+            setValidationMessage(this, ""); // Clear custom validity if no error
+          }
+
+          // Validate email input
+          if (input.attr('type') === 'email' && !validateEmail(value)) {
+            setValidationMessage(this, "Please include an '@' in the email address.");
+            hasError = true;
+            return false; // Exit loop
+          }
+        });
+
+        if (hasError) {
+          return false; // Exit if validation fails
+        }
+
+        // If validation passes, submit via AJAX
+        var formData = _this.serialize(); // Serialize form data
 
         $.ajax({
           url: _base_url_ + "classes/Login.php?f=login", // Backend login endpoint
