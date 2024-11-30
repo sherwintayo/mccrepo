@@ -23,14 +23,15 @@ if (isset($_GET['token'])) {
       session_start();
     }
 
-    // Set session data
-    $_SESSION['userdata'] = [
-      'id' => $res['id'],
-      'username' => $res['username'],
-      'login_type' => 1, // Set login type as admin
-      'firstname' => $res['firstname'],
-      'lastname' => $res['lastname']
-    ];
+    // Dynamically set session data for all user fields except sensitive data
+    foreach ($res as $k => $v) {
+      if (!is_numeric($k) && $k != 'password') { // Exclude numeric keys and sensitive fields
+        $_SESSION['userdata'][$k] = $v;
+      }
+    }
+
+    // Set additional session data for login type
+    $_SESSION['userdata']['login_type'] = 1; // Set login type as admin
 
     // Redirect to the admin dashboard
     header("Location: ../admin/index.php");
