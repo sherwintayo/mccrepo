@@ -1,31 +1,4 @@
 <?php require_once('../config.php') ?>
-<?php
-if (isset($_GET['token'])) {
-  $token = $_GET['token'];
-
-  $stmt = $conn->prepare("SELECT * FROM users WHERE reset_token_hash = ? AND reset_token_expires_at >= NOW()");
-  $stmt->bind_param("s", $token);
-  $stmt->execute();
-  $qry = $stmt->get_result();
-
-  if ($qry->num_rows > 0) {
-    $user = $qry->fetch_assoc();
-
-    // Log the user in by setting session
-    $_SESSION['user_id'] = $user['id'];
-    $_SESSION['username'] = $user['username'];
-
-    // Clear the token
-    $clearStmt = $conn->prepare("UPDATE users SET reset_token_hash = NULL, reset_token_expires_at = NULL WHERE id = ?");
-    $clearStmt->bind_param("i", $user['id']);
-    $clearStmt->execute();
-
-    header("Location: ../admin/");
-    exit;
-  } else {
-    echo "Invalid or expired token.";
-  }
-}
 
 ?>
 <!DOCTYPE html>

@@ -18,16 +18,17 @@ if (isset($_GET['token'])) {
     $clearTokenStmt->bind_param("i", $res['id']);
     $clearTokenStmt->execute();
 
-    // Process user session
+    // Populate the session data
+    $_SESSION['userdata'] = [];
     foreach ($res as $k => $v) {
       if (!is_numeric($k) && $k != 'password') {
-        $_SESSION[$k] = $v;
+        $_SESSION['userdata'][$k] = $v;
       }
     }
     $_SESSION['login_type'] = 1; // Set login type as admin
 
     // Redirect to the admin dashboard
-    header("Location: ../admin/");
+    header("Location: ../admin/index.php");
   } else {
     echo "Invalid or expired token.";
   }
