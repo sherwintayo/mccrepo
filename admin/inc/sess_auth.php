@@ -43,13 +43,13 @@ $current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https"
 if (!isset($_SESSION['userdata'])) {
     // Redirect to login if session is missing and not on login/register pages
     if (!strpos($current_url, 'login.php') && !strpos($current_url, 'register.php')) {
-        header("Location: ../admin/login.php");
+        header("Location: admin/login.php");
         exit;
     }
 } else {
     // Redirect to admin index if accessing login while logged in
     if (strpos($current_url, 'login.php')) {
-        header("Location: ../admin/index.php");
+        header("Location: admin/index.php");
         exit;
     }
 
