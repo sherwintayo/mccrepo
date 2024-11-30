@@ -30,6 +30,108 @@ class Login extends DBConnection
 
 
 
+    public function login()
+    {
+        extract($_POST);
+
+        // Step 1: Validate reCAPTCHA
+        $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
+        $secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO';
+        $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
+
+        $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaResponse);
+        $responseKeys = json_decode($response, true);
+
+        if (!$responseKeys['success']) {
+            echo json_encode(['status' => 'captcha_failed', 'message' => 'reCAPTCHA validation failed.']);
+            return;
+        }
+
+        // Step 2: Check user credentials
+        $stmt = $this->conn->prepare("SELECT * FROM users WHERE username = ?");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $qry = $stmt->get_result();
+
+        if ($qry->num_rows > 0) {
+            $res = $qry->fetch_assoc();
+
+            if (password_verify($password, $res['password'])) {
+                // Account verification check
+                if ($res['status'] != 1) {
+                    echo json_encode(['status' => 'notverified', 'message' => 'Your account is not verified.']);
+                    return;
+                }
+
+                // Generate a unique verification token
+                $token = bin2hex(random_bytes(16));
+                $updateTokenStmt = $this->conn->prepare("UPDATE users SET reset_token_hash = ?, reset_token_expires_at = DATE_ADD(NOW(), INTERVAL 30 MINUTE) WHERE id = ?");
+                $updateTokenStmt->bind_param('si', $token, $res['id']);
+                $updateTokenStmt->execute();
+
+                // Send verification email
+                $verificationLink = base_url . "admin/verify.php?token=" . urlencode($token);
+
+                if ($this->sendVerificationEmail($res['username'], $res['firstname'], $verificationLink, $res)) {
+                    echo json_encode(['status' => 'verify_email_sent']);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'Unable to send verification email.']);
+                }
+            } else {
+                echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
+            }
+        } else {
+            echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
+        }
+    }
+
+    private function sendVerificationEmail($email, $name, $verificationLink, $userData)
+    {
+        $mail = new PHPMailer(true);
+
+        try {
+            // SMTP Configuration
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com'; // Replace with your SMTP host
+            $mail->SMTPAuth = true;
+            $mail->Username = 'sherwintayo08@gmail.com'; // Replace with your email
+            $mail->Password = 'jlbm iyke zqjv zwtr'; // Replace with your email password
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+
+            // Email Headers
+            $mail->setFrom('no-reply@example.com', 'Admin Verification');
+            $mail->addAddress($email, $name);
+
+            // Email Content
+            $mail->isHTML(true);
+            $mail->Subject = 'Verify Your Login Attempt';
+            $mail->Body = "
+            <div style='font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; max-width: 600px; margin: auto;'>
+                <h2 style='color: #333;'>Hi $name,</h2>
+                <p>A login attempt was made on your account. Please verify this attempt to secure your account.</p>
+                <p>Click the button below to verify:</p>
+                <a href='$verificationLink' style='display: inline-block; padding: 10px 20px; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 5px;'>Verify Login Attempt</a>
+                <p>If you did not attempt to log in, please ignore this email.</p>
+                <hr>
+                <p><strong>Your Details:</strong></p>
+                <ul>
+                    <li><strong>Name:</strong> {$userData['firstname']} {$userData['lastname']}</li>
+                    <li><strong>Username:</strong> {$userData['username']}</li>
+                    <li><strong>Status:</strong> {$userData['status']}</li>
+                </ul>
+            </div>
+        ";
+
+            $mail->send();
+            return true;
+        } catch (Exception $e) {
+            error_log("Mailer Error: " . $mail->ErrorInfo);
+            return false;
+        }
+    }
+
+
     // public function login()
     // {
     //     extract($_POST);
@@ -84,111 +186,6 @@ class Login extends DBConnection
     // }
 
 
-    public function login()
-    {
-        extract($_POST);
-
-        try {
-            // Step 1: Validate reCAPTCHA
-            $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-            $secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO';
-            $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
-
-            $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaResponse);
-            $responseKeys = json_decode($response, true);
-
-            if (!$responseKeys['success']) {
-                echo json_encode(['status' => 'captcha_failed', 'message' => 'reCAPTCHA validation failed.']);
-                return;
-            }
-
-            // Step 2: Check user credentials
-            $stmt = $this->conn->prepare("SELECT * FROM users WHERE username = ?");
-            $stmt->bind_param("s", $username);
-            $stmt->execute();
-            $qry = $stmt->get_result();
-
-            if ($qry->num_rows > 0) {
-                $res = $qry->fetch_assoc();
-
-                if (password_verify($password, $res['password'])) {
-                    // Check account status
-                    if ($res['status'] != 1) {
-                        echo json_encode(['status' => 'notverified', 'message' => 'Your account is not verified.']);
-                        return;
-                    }
-
-                    // Generate token
-                    $token = bin2hex(random_bytes(16));
-                    $updateTokenStmt = $this->conn->prepare("UPDATE users SET reset_token_hash = ?, reset_token_expires_at = DATE_ADD(NOW(), INTERVAL 30 MINUTE) WHERE id = ?");
-                    $updateTokenStmt->bind_param('si', $token, $res['id']);
-                    if (!$updateTokenStmt->execute()) {
-                        error_log("Failed to update login token for user ID " . $res['id']);
-                        echo json_encode(['status' => 'error', 'message' => 'Unable to update token.']);
-                        return;
-                    }
-
-                    // Generate verification link
-                    $verificationLink = base_url . "admin/verify.php?token=" . urlencode($token);
-
-                    // Send verification email
-                    if ($this->sendVerificationEmail($res['username'], $res['firstname'], $verificationLink)) {
-                        echo json_encode(['status' => 'verify_email_sent']);
-                    } else {
-                        error_log("Email failed to send to " . $res['username']);
-                        echo json_encode(['status' => 'error', 'message' => 'Unable to send verification email.']);
-                    }
-                } else {
-                    echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
-                }
-            } else {
-                echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
-            }
-        } catch (Exception $e) {
-            error_log("Error in login process: " . $e->getMessage());
-            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred.']);
-        }
-    }
-
-
-    private function sendVerificationEmail($email, $name, $verificationLink)
-    {
-        $mail = new PHPMailer(true);
-
-        try {
-            // SMTP Configuration
-            $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com'; // Replace with your SMTP host
-            $mail->SMTPAuth = true;
-            $mail->Username = 'sherwintayo08@gmail.com'; // Replace with your email
-            $mail->Password = 'jlbm iyke zqjv zwtr'; // Replace with your email password
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port = 587;
-
-            // Email Headers
-            $mail->setFrom('no-reply@example.com', 'Admin Verification');
-            $mail->addAddress($email, $name);
-
-            // Email Content
-            $mail->isHTML(true);
-            $mail->Subject = 'Verify Your Login Attempt';
-            $mail->Body = "
-            <div style='font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; max-width: 600px; margin: auto;'>
-                <h2 style='color: #333;'>Hi $name,</h2>
-                <p>A login attempt was made on your account. Please verify this attempt to secure your account.</p>
-                <p>Click the button below to verify:</p>
-                <a href='$verificationLink' style='display: inline-block; padding: 10px 20px; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 5px;'>Verify Login Attempt</a>
-                <p>If you did not attempt to log in, please ignore this email.</p>
-            </div>
-        ";
-
-            $mail->send();
-            return true;
-        } catch (Exception $e) {
-            error_log("Mailer Error: " . $mail->ErrorInfo);
-            return false;
-        }
-    }
 
 
 
