@@ -5,7 +5,7 @@ if (isset($_GET['token'])) {
   $token = $_GET['token'];
 
   // Validate token
-  $stmt = $conn->prepare("SELECT * FROM users WHERE reset_token_hash = ? AND login_token IS NOT NULL");
+  $stmt = $conn->prepare("SELECT * FROM users WHERE reset_token_hash = ? AND reset_token_hash IS NOT NULL");
   $stmt->bind_param("s", $token);
   $stmt->execute();
   $qry = $stmt->get_result();
@@ -14,7 +14,7 @@ if (isset($_GET['token'])) {
     $res = $qry->fetch_assoc();
 
     // Clear the token from the database
-    $clearTokenStmt = $conn->prepare("UPDATE users SET login_token = NULL WHERE id = ?");
+    $clearTokenStmt = $conn->prepare("UPDATE users SET reset_token_hash = NULL WHERE id = ?");
     $clearTokenStmt->bind_param("i", $res['id']);
     $clearTokenStmt->execute();
 
