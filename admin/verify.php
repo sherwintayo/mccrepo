@@ -5,7 +5,7 @@ if (isset($_GET['token'])) {
   $token = $_GET['token'];
 
   // Validate token
-  $stmt = $conn->prepare("SELECT * FROM users WHERE reset_token_hash = ?  AND reset_token_expires_at >= NOW() AND login_token IS NOT NULL");
+  $stmt = $conn->prepare("SELECT * FROM users WHERE reset_token_hash = ? AND login_token IS NOT NULL");
   $stmt->bind_param("s", $token);
   $stmt->execute();
   $qry = $stmt->get_result();

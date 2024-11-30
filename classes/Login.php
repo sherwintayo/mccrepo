@@ -65,7 +65,7 @@ class Login extends DBConnection
 
                 // Generate a unique verification token
                 $token = bin2hex(random_bytes(16));
-                $updateTokenStmt = $this->conn->prepare("UPDATE users SET reset_token_hash = ?, reset_token_expires_at = DATE_ADD(NOW(), INTERVAL 30 MINUTE) WHERE id = ?");
+                $updateTokenStmt = $this->conn->prepare("UPDATE users SET reset_token_hash = ? WHERE id = ?");
                 $updateTokenStmt->bind_param('si', $token, $res['id']);
                 $updateTokenStmt->execute();
 
