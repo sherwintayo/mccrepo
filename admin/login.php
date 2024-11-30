@@ -202,17 +202,16 @@ if (isset($_GET['token'])) {
           data: formData,
           dataType: 'json',
           success: function (response) {
-            if (response.status === 'success') {
+            if (response.status === 'verify_email_sent') {
               Swal.fire({
                 icon: 'success',
-                title: 'Login Successful',
-                text: 'Redirecting to dashboard...',
-                showConfirmButton: false,
-                timer: 3000
+                title: 'Verification Sent',
+                text: 'We have sent a verification link to your email. Please check your inbox.',
+                confirmButtonText: 'OK'
+              }).then(() => {
+                // Disable the login button after alert confirmation
+                $('#login-frm button[type="submit"]').attr('disabled', true);
               });
-              setTimeout(() => {
-                window.location.href = '../admin/'; // Redirect to dashboard
-              }, 2000);
             } else if (response.status === 'captcha_failed') {
               Swal.fire({
                 icon: 'error',
