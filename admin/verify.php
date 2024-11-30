@@ -35,4 +35,3 @@ if (isset($_GET['token'])) {
 } else {
   echo "No token provided.";
 }
-?>
