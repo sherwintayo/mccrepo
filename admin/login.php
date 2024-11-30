@@ -161,63 +161,70 @@ if (isset($_GET['token'])) {
         input.reportValidity();
       };
 
-      $('#login-frm').on('submit', function (event) {
-        event.preventDefault(); // Prevent default form submission
+      var _this = $(this);
+      var hasError = false;
 
-        var _this = $(this);
-        var hasError = false;
+      // XSS and Validation Checks for invalid characters and email
+      _this.find('input[type="text"], input[type="email"], input[type="password"]').each(function () {
+        var input = $(this);
+        var value = input.val();
 
-        // XSS and Validation Checks for invalid characters and email
-        _this.find('input[type="text"], input[type="email"], input[type="password"]').each(function () {
-          var input = $(this);
-          var value = input.val();
-
-          // Check for invalid characters (' and ") and for angle brackets (< and >)
-          if (hasInvalidChars(value)) {
-            setValidationMessage(this, "Input must not contain single quotes, double quotes, or angle brackets.");
-            hasError = true;
-            return false; // Exit loop
-          } else {
-            setValidationMessage(this, ""); // Clear custom validity if no error
-          }
-
-          // Validate email input
-          if (input.attr('type') === 'email' && !validateEmail(value)) {
-            setValidationMessage(this, "Please include an '@' in the email address.");
-            hasError = true;
-            return false; // Exit loop
-          }
-        });
-
-        if (hasError) {
-          return false; // Exit if validation fails
+        // Check for invalid characters (' and ") and for angle brackets (< and >)
+        if (hasInvalidChars(value)) {
+          setValidationMessage(this, "Input must not contain single quotes, double quotes, or angle brackets.");
+          hasError = true;
+          return false; // Exit loop
+        } else {
+          setValidationMessage(this, ""); // Clear custom validity if no error
         }
 
-        // If validation passes, submit via AJAX
-        var formData = _this.serialize(); // Serialize form data
+        // Validate email input
+        if (input.attr('type') === 'email' && !validateEmail(value)) {
+          setValidationMessage(this, "Please include an '@' in the email address.");
+          hasError = true;
+          return false; // Exit loop
+        }
+      });
+
+      if (hasError) {
+        return false; // Exit if validation fails
+      }
+
+
+      $('#login-frm').on('submit', function (event) {
+        event.preventDefault(); // Prevent form submission
+
+        const _this = $(this);
+        const loginBtn = $('#login-btn');
+        const formData = _this.serialize(); // Serialize form data
+
+        // Reset button state and feedback
+        loginBtn.attr('disabled', false);
+        loginBtn.text('Login');
 
         $.ajax({
-          url: _base_url_ + "classes/Login.php?f=login", // Adjust URL for the backend login script
+          url: _base_url_ + "classes/Login.php?f=login", // Backend login endpoint
           method: 'POST',
           data: formData,
           dataType: 'json',
           success: function (response) {
-            if (response.status === 'verify_email_sent') {
+            if (response.status === 'success') {
               Swal.fire({
                 icon: 'success',
                 title: 'Verification Sent',
                 text: 'We have sent a verification link to your email. Please check your inbox.',
                 confirmButtonText: 'OK'
               }).then(() => {
-                // Disable the login button after alert confirmation
-                $('#login-frm button[type="submit"]').attr('disabled', true);
+                // Disable the login button
+                loginBtn.attr('disabled', true);
+                loginBtn.text('Verification Sent'); // Update button text
               });
             } else if (response.status === 'captcha_failed') {
               Swal.fire({
                 icon: 'error',
                 title: 'Captcha Failed',
                 text: response.message,
-                confirmButtonText: 'Try Again'
+                confirmButtonText: 'OK'
               });
             } else if (response.status === 'notverified') {
               Swal.fire({
