@@ -1,6 +1,4 @@
 <?php require_once('../config.php') ?>
-
-
 <!DOCTYPE html>
 <html lang="en" class="" style="height: auto;">
 <?php require_once('inc/header.php') ?>
@@ -170,21 +168,22 @@
         var formData = _this.serialize(); // Serialize form data
 
         $.ajax({
-          url: _base_url_ + "classes/Login.php?f=login", // Backend login URL
+          url: _base_url_ + "classes/Login.php?f=login", // Adjust URL for the backend login script
           method: 'POST',
           data: formData,
           dataType: 'json',
           success: function (response) {
-            if (response.status === 'verify_email_sent') {
+            if (response.status === 'success') {
               Swal.fire({
                 icon: 'success',
-                title: 'Verification Sent',
-                text: 'We have sent a verification link to your email. Please check your inbox.',
-                confirmButtonText: 'OK'
-              }).then(() => {
-                // Disable login button
-                $('#login-frm button[type="submit"]').attr('disabled', true);
+                title: 'Login Successful',
+                text: 'Redirecting to dashboard...',
+                showConfirmButton: false,
+                timer: 3000
               });
+              setTimeout(() => {
+                window.location.href = '../admin/'; // Redirect to dashboard
+              }, 2000);
             } else if (response.status === 'captcha_failed') {
               Swal.fire({
                 icon: 'error',
@@ -196,7 +195,7 @@
               Swal.fire({
                 icon: 'error',
                 title: 'Account Not Verified',
-                text: response.message,
+                text: 'Please contact admin to verify your account.',
                 confirmButtonText: 'OK'
               });
             } else if (response.status === 'incorrect') {
@@ -210,13 +209,12 @@
               Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: response.message || 'An unexpected error occurred.',
+                text: 'An unexpected error occurred. Please try again later.',
                 confirmButtonText: 'OK'
               });
             }
           },
-          error: function (xhr, status, error) {
-            console.error("AJAX Error:", status, error);
+          error: function () {
             Swal.fire({
               icon: 'error',
               title: 'Error',
