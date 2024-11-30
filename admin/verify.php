@@ -18,14 +18,22 @@ if (isset($_GET['token'])) {
     $clearTokenStmt->bind_param("i", $res['id']);
     $clearTokenStmt->execute();
 
-    // Set user session and redirect to admin/index.php
+    // Start session and set userdata
     session_start(); // Ensure session is started
-    $_SESSION['user_id'] = $res['id'];
+    $_SESSION['userdata'] = [
+      'id' => $res['id'],
+      'username' => $res['username'], // Optional for convenience
+      'login_type' => $res['login_type'] ?? 1 // Default to admin type
+    ];
+
+    // Redirect to admin/index.php
     header("Location: ../admin/index.php");
     exit; // Ensure no further execution
   } else {
     echo "Invalid or expired token.";
+    exit;
   }
 } else {
   echo "No token provided.";
+  exit;
 }
