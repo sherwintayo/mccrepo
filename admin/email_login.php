@@ -79,12 +79,15 @@
           return;
         }
 
+        console.log("Submitting email: " + email); // Debug message
+
         $.ajax({
           url: _base_url_ + "classes/Login.php?f=email_login", // Backend route
           method: 'POST',
           data: { email, recaptchaResponse },
           dataType: 'json',
           success: function (response) {
+            console.log(response); // Debug response
             if (response.status === 'success') {
               Swal.fire({
                 icon: 'success',
@@ -101,7 +104,8 @@
               });
             }
           },
-          error: function () {
+          error: function (xhr, status, error) {
+            console.error(xhr.responseText); // Debug server error
             Swal.fire({
               icon: 'error',
               title: 'Error',
@@ -112,6 +116,7 @@
         });
       });
     });
+
   </script>
 </body>
 

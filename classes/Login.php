@@ -91,7 +91,6 @@ class Login extends DBConnection
 
         // Validate reCAPTCHA
         $secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO'; // Replace with your secret key
-        $recaptchaResponse = $_POST['recaptchaResponse'];
         $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
         $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaResponse);
@@ -144,6 +143,7 @@ class Login extends DBConnection
         }
     }
 
+
     private function sendEmailLoginLink($email, $name, $loginLink)
     {
         $mail = new PHPMailer(true);
@@ -151,30 +151,29 @@ class Login extends DBConnection
         try {
             // SMTP Configuration
             $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com'; // Replace with your SMTP host
+            $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
-            $mail->Username = 'sherwintayo08@gmail.com'; // Replace with your Gmail address
-            $mail->Password = 'jlbm iyke zqjv zwtr'; // Replace with your Gmail app password
+            $mail->Username = 'sherwintayo08@gmail.com';
+            $mail->Password = 'jlbm iyke zqjv zwtr';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
 
             // Email Details
-            $mail->setFrom('no-reply@example.com', 'Admin Login'); // Replace with your desired "From" address
+            $mail->setFrom('no-reply@example.com', 'Admin Login');
             $mail->addAddress($email, $name);
 
             // Email Content
             $mail->isHTML(true);
             $mail->Subject = 'Your Login Link';
             $mail->Body = "
-            <div style='font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; max-width: 600px; margin: auto;'>
-                <h2 style='color: #333;'>Hi $name,</h2>
-                <p>A login request was made for your account. Click the link below to log in:</p>
-                <a href='$loginLink' style='display:inline-block; padding:10px 20px; background:#007bff; color:#fff; text-decoration:none; border-radius:5px;'>Login Now</a>
-                <p style='margin-top: 20px;'>This link will expire in <strong>1 minute 30 seconds</strong>.</p>
+            <div>
+                <p>Hi $name,</p>
+                <p>Click the link below to log in:</p>
+                <a href='$loginLink'>Login Now</a>
+                <p>This link will expire in 1 minute 30 seconds.</p>
             </div>
         ";
 
-            // Send the email
             $mail->send();
             return true;
         } catch (Exception $e) {
@@ -183,6 +182,7 @@ class Login extends DBConnection
             return false;
         }
     }
+
 
 
 
