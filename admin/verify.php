@@ -27,7 +27,7 @@ if (isset($_GET['token'])) {
     ];
 
     // Redirect to admin/index.php
-    header("Location: ../admin/index.php");
+    header("Location: ../admin/");
     exit; // Ensure no further execution
   } else {
     echo "Invalid or expired token.";
