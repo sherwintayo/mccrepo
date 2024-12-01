@@ -22,15 +22,19 @@ class Users extends DBConnection
 	}
 	public function save_users()
 	{
+		if (!isset($_POST['status']) && $this->settings->userdata('login_type') == 1) {
+			$_POST['status'] = 1;
+			$_POST['type'] = 2; // Default to Staff
+		}
 		extract($_POST);
 		$oid = $id;
 		$data = '';
 
-		// Get current type if editing an existing user
-		if (isset($id) && $id > 0) {
-			$current_user = $this->conn->query("SELECT `type` FROM `users` WHERE `id` = '{$id}'");
-			if ($current_user->num_rows > 0) {
-				$current_type = $current_user->fetch_assoc()['type'];
+		// Verify old password if provided
+		if (isset($oldpassword)) {
+			$current_password = $this->settings->userdata('password');
+			if (!password_verify($oldpassword, $current_password)) {
+				return 4; // Old password doesn't match
 			}
 		}
 
@@ -40,18 +44,9 @@ class Users extends DBConnection
 			return 3; // Username already exists
 		}
 
-		// Assign the user type only if it is explicitly provided or during creation
-		if (empty($type)) {
-			// Default to Administrator if no type is provided
-			$type = 1; // Admin
-		}
-
+		// Build the data string for SQL
 		foreach ($_POST as $k => $v) {
 			if (in_array($k, ['firstname', 'middlename', 'lastname', 'username', 'type'])) {
-				// Skip updating `type` if it's the same as the current value
-				if ($k == 'type' && isset($current_type) && $current_type == $v) {
-					continue;
-				}
 				if (!empty($data)) {
 					$data .= " , ";
 				}
@@ -59,9 +54,9 @@ class Users extends DBConnection
 			}
 		}
 
+		// Hash the password if provided
 		if (!empty($password)) {
-			// Hash the password using bcrypt
-			$hashed_password = password_hash($password, PASSWORD_BCRYPT);
+			$hashed_password = password_hash($password, PASSWORD_BCRYPT); // Hash the new password
 			if (!empty($data)) {
 				$data .= " , ";
 			}
@@ -96,7 +91,7 @@ class Users extends DBConnection
 			}
 		}
 
-		// Handle file upload for avatar
+		// Handle avatar upload
 		if (isset($_FILES['img']) && $_FILES['img']['tmp_name'] != '') {
 			$fname = 'uploads/avatar-' . $id . '.png';
 			$dir_path = base_app . $fname;
