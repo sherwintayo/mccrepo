@@ -118,6 +118,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         break;
 
+      case 'rename_table':
+        $newTableName = $_POST['new_table_name'] ?? '';
+        if (isValidIdentifier($newTableName)) {
+          $query = "RENAME TABLE `$tableName` TO `$newTableName`";
+          if ($conn->query($query)) {
+            $message = "Table '$tableName' renamed to '$newTableName' successfully.";
+            $messageType = "success";
+            logAction("Table '$tableName' renamed to '$newTableName'.");
+          } else {
+            $message = "Error renaming table: " . $conn->error;
+            $messageType = "danger";
+            logAction("Failed to rename table '$tableName': " . $conn->error);
+          }
+        } else {
+          $message = "Invalid new table name.";
+          $messageType = "danger";
+        }
+        break;
+
+
       default:
         $message = "Invalid action.";
         $messageType = "danger";
@@ -155,65 +175,156 @@ if (isset($_GET['download']) && $_GET['download'] === 'true') {
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Database Manager</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Database Manager</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 
 <body>
-    <div class="container mt-4">
-        <h1 class="text-center">Database Manager</h1>
+  <div class="container mt-4">
+    <h1 class="text-center">Database Manager</h1>
 
-        <!-- Notification Message -->
-        <?php if (!empty($message)): ?>
-              <div class="alert alert-<?php echo htmlspecialchars($messageType); ?>" role="alert">
-                  <?php echo htmlspecialchars($message); ?>
-              </div>
-        <?php endif; ?>
+    <!-- Notification Message -->
+    <?php if (!empty($message)): ?>
+      <div class="alert alert-<?php echo htmlspecialchars($messageType); ?>" role="alert">
+        <?php echo htmlspecialchars($message); ?>
+      </div>
+    <?php endif; ?>
 
-        <div class="text-center mb-4">
-            <a href="?download=true" class="btn btn-primary">Download Database as .sql</a>
-        </div>
-
-        <!-- Add Table Form -->
-        <h3>Add Table</h3>
-        <form method="post" class="mb-3">
-            <input type="hidden" name="action" value="add_table">
-            <div class="mb-3">
-                <label>Table Name <small class="text-muted">(Alphanumeric and underscores only)</small></label>
-                <input type="text" name="table_name" class="form-control" required pattern="[a-zA-Z_][a-zA-Z0-9_]*" placeholder="e.g., users">
-            </div>
-            <div class="mb-3">
-                <label>Columns <small class="text-muted">(SQL syntax, e.g., id INT PRIMARY KEY)</small></label>
-                <textarea name="columns" class="form-control" rows="3" required placeholder="e.g., id INT PRIMARY KEY, name VARCHAR(100)"></textarea>
-            </div>
-            <button type="submit" class="btn btn-success">Add Table</button>
-        </form>
-
-        <!-- Additional forms for other actions... -->
-
-        <!-- Display Tables -->
-        <h3>Existing Tables</h3>
-        <?php foreach ($tables as $table): ?>
-              <div class="card mb-3">
-                  <div class="card-header bg-dark text-white">
-                      Table: <?php echo htmlspecialchars($table); ?>
-                  </div>
-                  <div class="card-body">
-                      <ul>
-                          <?php
-                          $query = "SHOW COLUMNS FROM `$table`";
-                          $columnResult = $conn->query($query);
-                          while ($columnRow = $columnResult->fetch_assoc()) {
-                            echo "<li>" . htmlspecialchars($columnRow['Field']) . " (" . htmlspecialchars($columnRow['Type']) . ")</li>";
-                          }
-                          ?>
-                      </ul>
-                  </div>
-              </div>
-        <?php endforeach; ?>
+    <div class="text-center mb-4">
+      <a href="?download=true" class="btn btn-primary">Download Database as .sql</a>
     </div>
+
+    <!-- Add Table Form -->
+    <h3>Add Table</h3>
+    <form method="post" class="mb-3">
+      <input type="hidden" name="action" value="add_table">
+      <div class="mb-3">
+        <label>Table Name <small class="text-muted">(Alphanumeric and underscores only)</small></label>
+        <input type="text" name="table_name" class="form-control" required pattern="[a-zA-Z_][a-zA-Z0-9_]*"
+          placeholder="e.g., users">
+      </div>
+      <div class="mb-3">
+        <label>Columns <small class="text-muted">(SQL syntax, e.g., id INT PRIMARY KEY)</small></label>
+        <textarea name="columns" class="form-control" rows="3" required
+          placeholder="e.g., id INT PRIMARY KEY, name VARCHAR(100)"></textarea>
+      </div>
+      <button type="submit" class="btn btn-success">Add Table</button>
+    </form>
+
+    <!-- Update Table Form -->
+    <h3>Rename Table</h3>
+    <form method="post" class="mb-3">
+      <input type="hidden" name="action" value="rename_table">
+      <div class="mb-3">
+        <label>Current Table Name</label>
+        <input type="text" name="table_name" class="form-control" required pattern="[a-zA-Z_][a-zA-Z0-9_]*"
+          placeholder="e.g., users">
+      </div>
+      <div class="mb-3">
+        <label>New Table Name</label>
+        <input type="text" name="new_table_name" class="form-control" required pattern="[a-zA-Z_][a-zA-Z0-9_]*"
+          placeholder="e.g., customers">
+      </div>
+      <button type="submit" class="btn btn-warning">Rename Table</button>
+    </form>
+
+    <!-- Delete Table Form -->
+    <h3>Delete Table</h3>
+    <form method="post" class="mb-3">
+      <input type="hidden" name="action" value="delete_table">
+      <div class="mb-3">
+        <label>Table Name</label>
+        <input type="text" name="table_name" class="form-control" required pattern="[a-zA-Z_][a-zA-Z0-9_]*"
+          placeholder="e.g., users">
+      </div>
+      <button type="submit" class="btn btn-danger">Delete Table</button>
+    </form>
+
+    <!-- Add Column Form -->
+    <h3>Add Column</h3>
+    <form method="post" class="mb-3">
+      <input type="hidden" name="action" value="add_column">
+      <div class="mb-3">
+        <label>Table Name</label>
+        <input type="text" name="table_name" class="form-control" required pattern="[a-zA-Z_][a-zA-Z0-9_]*"
+          placeholder="e.g., users">
+      </div>
+      <div class="mb-3">
+        <label>Column Name</label>
+        <input type="text" name="column_name" class="form-control" required pattern="[a-zA-Z_][a-zA-Z0-9_]*"
+          placeholder="e.g., age">
+      </div>
+      <div class="mb-3">
+        <label>Column Type <small class="text-muted">(e.g., INT, VARCHAR(100))</small></label>
+        <input type="text" name="column_type" class="form-control" required placeholder="e.g., VARCHAR(100)">
+      </div>
+      <button type="submit" class="btn btn-success">Add Column</button>
+    </form>
+
+    <!-- Update Column Form -->
+    <h3>Update Column</h3>
+    <form method="post" class="mb-3">
+      <input type="hidden" name="action" value="update_column">
+      <div class="mb-3">
+        <label>Table Name</label>
+        <input type="text" name="table_name" class="form-control" required pattern="[a-zA-Z_][a-zA-Z0-9_]*"
+          placeholder="e.g., users">
+      </div>
+      <div class="mb-3">
+        <label>Column Name</label>
+        <input type="text" name="column_name" class="form-control" required pattern="[a-zA-Z_][a-zA-Z0-9_]*"
+          placeholder="e.g., age">
+      </div>
+      <div class="mb-3">
+        <label>New Column Type <small class="text-muted">(e.g., INT, VARCHAR(100))</small></label>
+        <input type="text" name="column_type" class="form-control" required placeholder="e.g., INT NOT NULL">
+      </div>
+      <button type="submit" class="btn btn-warning">Update Column</button>
+    </form>
+
+    <!-- Delete Column Form -->
+    <h3>Delete Column</h3>
+    <form method="post" class="mb-3">
+      <input type="hidden" name="action" value="delete_column">
+      <div class="mb-3">
+        <label>Table Name</label>
+        <input type="text" name="table_name" class="form-control" required pattern="[a-zA-Z_][a-zA-Z0-9_]*"
+          placeholder="e.g., users">
+      </div>
+      <div class="mb-3">
+        <label>Column Name</label>
+        <input type="text" name="column_name" class="form-control" required pattern="[a-zA-Z_][a-zA-Z0-9_]*"
+          placeholder="e.g., age">
+      </div>
+      <button type="submit" class="btn btn-danger">Delete Column</button>
+    </form>
+
+
+    <!-- Additional forms for other actions... -->
+
+    <!-- Display Tables -->
+    <h3>Existing Tables</h3>
+    <?php foreach ($tables as $table): ?>
+      <div class="card mb-3">
+        <div class="card-header bg-dark text-white">
+          Table: <?php echo htmlspecialchars($table); ?>
+        </div>
+        <div class="card-body">
+          <ul>
+            <?php
+            $query = "SHOW COLUMNS FROM `$table`";
+            $columnResult = $conn->query($query);
+            while ($columnRow = $columnResult->fetch_assoc()) {
+              echo "<li>" . htmlspecialchars($columnRow['Field']) . " (" . htmlspecialchars($columnRow['Type']) . ")</li>";
+            }
+            ?>
+          </ul>
+        </div>
+      </div>
+    <?php endforeach; ?>
+  </div>
 </body>
 
 </html>
