@@ -103,6 +103,14 @@
                   </a>
                 </li>
                 <li class="nav-item dropdown">
+                  <a href="<?php echo base_url ?>admin/?page=login_activity" class="nav-link nav-activity">
+                    <i class="nav-icon fas fa-book"></i>
+                    <p>
+                      Login Activity
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item dropdown">
                   <a href="<?php echo base_url ?>admin/?page=backup" class="nav-link nav-backup">
                     <i class="nav-icon fas fa-database"></i>
                     <p>

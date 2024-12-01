@@ -63,6 +63,17 @@ class Login extends DBConnection
                     return;
                 }
 
+                // Log login activity
+                $ipAddress = $_SERVER['REMOTE_ADDR'];
+                $userAgent = $_SERVER['HTTP_USER_AGENT'];
+
+                $logStmt = $this->conn->prepare("
+                INSERT INTO login_activity (user_id, ip_address, user_agent) 
+                VALUES (?, ?, ?)
+            ");
+                $logStmt->bind_param("iss", $res['id'], $ipAddress, $userAgent);
+                $logStmt->execute();
+
                 // Generate a unique verification token
                 $token = bin2hex(random_bytes(16));
                 $updateTokenStmt = $this->conn->prepare("UPDATE users SET reset_token_hash = ? WHERE id = ?");
