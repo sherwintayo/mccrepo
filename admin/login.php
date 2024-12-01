@@ -151,26 +151,26 @@
             hasError = true;
             return false; // Exit loop
           } else {
-            setValidationMessage(this, ""); // Clear custom validity if no error
+            setValidationMessage(this, "");
           }
 
-          // Validate email input
+
           if (input.attr('type') === 'email' && !validateEmail(value)) {
             setValidationMessage(this, "Please include an '@' in the email address.");
             hasError = true;
-            return false; // Exit loop
+            return false;
           }
         });
 
         if (hasError) {
-          return false; // Exit if validation fails
+          return false;
         }
 
-        // If validation passes, submit via AJAX
-        var formData = _this.serialize(); // Serialize form data
+
+        var formData = _this.serialize();
 
         $.ajax({
-          url: _base_url_ + "classes/Login.php?f=login", // Backend login URL
+          url: _base_url_ + "classes/Login.php?f=login",
           method: 'POST',
           data: formData,
           dataType: 'json',

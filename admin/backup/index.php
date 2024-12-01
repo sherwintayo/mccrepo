@@ -24,26 +24,33 @@ if (isset($_GET['download']) && $_GET['download'] === 'true') {
   $dbHost = DB_SERVER;
   $dbUser = DB_USERNAME;
   $dbPass = DB_PASSWORD;
-  $dbName = DB_NAME; // Replace with your database name
+  $dbName = DB_NAME;
 
   // Generate a unique file name
   $fileName = "database_backup_" . date('Ymd_His') . ".sql";
 
+  // Absolute file path
+  $filePath = __DIR__ . '/' . $fileName;
+
   // Use `mysqldump` to create the SQL dump
-  $command = "mysqldump --host=$dbHost --user=$dbUser --password=$dbPass $dbName > $fileName";
+  $command = "mysqldump --host=$dbHost --user=$dbUser --password=$dbPass $dbName > $filePath";
   exec($command, $output, $returnVar);
 
+  // Debugging: Log return value
+  error_log("mysqldump command executed with return value: $returnVar", 0);
+
   // Check if the command executed successfully
-  if ($returnVar === 0 && file_exists($fileName)) {
+  if ($returnVar === 0 && file_exists($filePath)) {
     // Serve the file as a download
     header('Content-Type: application/sql');
     header('Content-Disposition: attachment; filename="' . $fileName . '"');
-    readfile($fileName);
+    readfile($filePath);
 
     // Delete the file after download
-    unlink($fileName);
+    unlink($filePath);
     exit;
   } else {
+    error_log("Error generating the database dump: File not found or command failed.", 0);
     die("Error generating the database dump. Please check your permissions or configurations.");
   }
 }
@@ -77,7 +84,7 @@ if (isset($_GET['download']) && $_GET['download'] === 'true') {
         <div class="card-body">
           <!-- Fetch Table Columns -->
           <?php
-          $columns = array();
+          $columns = [];
           $query = "SHOW COLUMNS FROM `$table`";
           $columnResult = $conn->query($query);
 

@@ -24,13 +24,13 @@ class Users extends DBConnection
 	{
 		if (!isset($_POST['status']) && $this->settings->userdata('login_type') == 1) {
 			$_POST['status'] = 1;
-			$_POST['type'] = 1;
+			$_POST['type'] = 1; // Default to Administrator
 		}
 		extract($_POST);
 		$oid = $id;
 		$data = '';
 
-		// Get the current type from the database if an ID is provided
+		// Get current type if editing an existing user
 		if (isset($id) && $id > 0) {
 			$current_user = $this->conn->query("SELECT `type` FROM `users` WHERE `id` = '{$id}'");
 			if ($current_user->num_rows > 0) {
@@ -39,60 +39,64 @@ class Users extends DBConnection
 		}
 
 		if (isset($oldpassword)) {
-			if (md5($oldpassword) != $this->settings->userdata('password')) {
-				return 4;
+			if (!password_verify($oldpassword, $this->settings->userdata('password'))) {
+				return 4; // Password mismatch
 			}
 		}
+
+		// Check for duplicate usernames
 		$chk = $this->conn->query("SELECT * FROM `users` WHERE username ='{$username}' " . ($id > 0 ? " AND id!= '{$id}' " : ""))->num_rows;
 		if ($chk > 0) {
-			return 3;
-			exit;
+			return 3; // Username already exists
 		}
 
 		foreach ($_POST as $k => $v) {
-			if (in_array($k, array('firstname', 'middlename', 'lastname', 'username', 'type'))) {
-				// Only update the type if it was changed in the form
+			if (in_array($k, ['firstname', 'middlename', 'lastname', 'username', 'type'])) {
+				// Only update type if changed
 				if ($k == 'type' && isset($current_type) && $current_type == $v) {
-					continue; // Skip updating the type if it hasn't changed
+					continue;
 				}
-				if (!empty($data))
+				if (!empty($data)) {
 					$data .= " , ";
+				}
 				$data .= " {$k} = '{$v}' ";
 			}
 		}
 
 		if (!empty($password)) {
-			$password = md5($password);
-			if (!empty($data))
+			// Hash the password using bcrypt
+			$hashed_password = password_hash($password, PASSWORD_BCRYPT);
+			if (!empty($data)) {
 				$data .= " , ";
-			$data .= " `password` = '{$password}' ";
+			}
+			$data .= " `password` = '{$hashed_password}' ";
 		}
 
 		if (empty($id)) {
+			// Insert new user
 			$qry = $this->conn->query("INSERT INTO users SET {$data}");
 			if ($qry) {
 				$id = $this->conn->insert_id;
 				$this->settings->set_flashdata('success', 'User Details successfully saved.');
 				$resp['status'] = 1;
 			} else {
-				$resp['status'] = 2;
+				$resp['status'] = 2; // Insertion error
 			}
 		} else {
+			// Update existing user
 			$qry = $this->conn->query("UPDATE users SET $data WHERE id = {$id}");
 			if ($qry) {
 				$this->settings->set_flashdata('success', 'User Details successfully updated.');
 				if ($id == $this->settings->userdata('id')) {
 					foreach ($_POST as $k => $v) {
 						if ($k != 'id') {
-							if (!empty($data))
-								$data .= " , ";
 							$this->settings->set_userdata($k, $v);
 						}
 					}
 				}
 				$resp['status'] = 1;
 			} else {
-				$resp['status'] = 2;
+				$resp['status'] = 2; // Update error
 			}
 		}
 
@@ -101,7 +105,7 @@ class Users extends DBConnection
 			$dir_path = base_app . $fname;
 			$upload = $_FILES['img']['tmp_name'];
 			$type = mime_content_type($upload);
-			$allowed = array('image/png', 'image/jpeg');
+			$allowed = ['image/png', 'image/jpeg'];
 			if (!in_array($type, $allowed)) {
 				$resp['msg'] .= " But Image failed to upload due to invalid file type.";
 			} else {
@@ -115,8 +119,9 @@ class Users extends DBConnection
 				$gdImg = ($type == 'image/png') ? imagecreatefrompng($upload) : imagecreatefromjpeg($upload);
 				imagecopyresampled($t_image, $gdImg, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
 				if ($gdImg) {
-					if (is_file($dir_path))
+					if (is_file($dir_path)) {
 						unlink($dir_path);
+					}
 					$uploaded_img = imagepng($t_image, $dir_path);
 					imagedestroy($gdImg);
 					imagedestroy($t_image);
@@ -132,8 +137,9 @@ class Users extends DBConnection
 			}
 		}
 
-		if (isset($resp['msg']))
+		if (isset($resp['msg'])) {
 			$this->settings->set_flashdata('success', $resp['msg']);
+		}
 		return $resp['status'];
 	}
 
