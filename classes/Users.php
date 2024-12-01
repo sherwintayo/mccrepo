@@ -22,10 +22,6 @@ class Users extends DBConnection
 	}
 	public function save_users()
 	{
-		if (!isset($_POST['status']) && $this->settings->userdata('login_type') == 1) {
-			$_POST['status'] = 1;
-			$_POST['type'] = 1; // Default to Administrator
-		}
 		extract($_POST);
 		$oid = $id;
 		$data = '';
@@ -38,21 +34,21 @@ class Users extends DBConnection
 			}
 		}
 
-		if (isset($oldpassword)) {
-			if (!password_verify($oldpassword, $this->settings->userdata('password'))) {
-				return 4; // Password mismatch
-			}
-		}
-
 		// Check for duplicate usernames
 		$chk = $this->conn->query("SELECT * FROM `users` WHERE username ='{$username}' " . ($id > 0 ? " AND id!= '{$id}' " : ""))->num_rows;
 		if ($chk > 0) {
 			return 3; // Username already exists
 		}
 
+		// Assign the user type only if it is explicitly provided or during creation
+		if (empty($type)) {
+			// Default to Administrator if no type is provided
+			$type = 1; // Admin
+		}
+
 		foreach ($_POST as $k => $v) {
 			if (in_array($k, ['firstname', 'middlename', 'lastname', 'username', 'type'])) {
-				// Only update type if changed
+				// Skip updating `type` if it's the same as the current value
 				if ($k == 'type' && isset($current_type) && $current_type == $v) {
 					continue;
 				}
@@ -100,6 +96,7 @@ class Users extends DBConnection
 			}
 		}
 
+		// Handle file upload for avatar
 		if (isset($_FILES['img']) && $_FILES['img']['tmp_name'] != '') {
 			$fname = 'uploads/avatar-' . $id . '.png';
 			$dir_path = base_app . $fname;
