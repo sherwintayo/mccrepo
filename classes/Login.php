@@ -34,6 +34,9 @@ class Login extends DBConnection
     {
         extract($_POST);
 
+        $ipAddress = $_SERVER['REMOTE_ADDR'];
+        $currentTime = time();
+
         // Step 1: Validate reCAPTCHA
         $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
         $secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO';
@@ -47,7 +50,25 @@ class Login extends DBConnection
             return;
         }
 
-        // Step 2: Check user credentials
+        // Step 2: Check IP block status
+        $checkAttemptStmt = $this->conn->prepare("SELECT attempts, blocked_until FROM login_attempts WHERE ip_address = ?");
+        $checkAttemptStmt->bind_param("s", $ipAddress);
+        $checkAttemptStmt->execute();
+        $attemptResult = $checkAttemptStmt->get_result();
+        $attemptData = $attemptResult->fetch_assoc();
+
+        if ($attemptData && $attemptData['blocked_until'] > $currentTime) {
+            $remainingTime = $attemptData['blocked_until'] - $currentTime;
+            echo json_encode([
+                'status' => 'blocked',
+                'message' => 'Too many failed attempts. Please try again later.',
+                'remaining_time' => $remainingTime
+            ]);
+            return;
+        }
+
+
+        // Step 3: Check user credentials
         $stmt = $this->conn->prepare("SELECT * FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
@@ -62,6 +83,20 @@ class Login extends DBConnection
                     echo json_encode(['status' => 'notverified', 'message' => 'Your account is not verified.']);
                     return;
                 }
+
+                // Reset login attempts on successful login
+                $resetAttemptStmt = $this->conn->prepare("DELETE FROM login_attempts WHERE ip_address = ?");
+                $resetAttemptStmt->bind_param("s", $ipAddress);
+                $resetAttemptStmt->execute();
+
+                // Log login activity
+                $userAgent = $_SERVER['HTTP_USER_AGENT'];
+                $logStmt = $this->conn->prepare("
+                INSERT INTO login_activity (user_id, ip_address, user_agent) 
+                VALUES (?, ?, ?)
+            ");
+                $logStmt->bind_param("iss", $res['id'], $ipAddress, $userAgent);
+                $logStmt->execute();
 
                 // Log login activity
                 $ipAddress = $_SERVER['REMOTE_ADDR'];
@@ -94,6 +129,33 @@ class Login extends DBConnection
             }
         } else {
             echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
+        }
+        // Step 4: Handle failed login attempt
+        if ($attemptData) {
+            $attempts = $attemptData['attempts'] + 1;
+            if ($attempts >= 3) {
+                $blockedUntil = $currentTime + 180; // Block for 3 minutes
+                $updateAttemptStmt = $this->conn->prepare("UPDATE login_attempts SET attempts = ?, blocked_until = ? WHERE ip_address = ?");
+                $updateAttemptStmt->bind_param("iis", $attempts, $blockedUntil, $ipAddress);
+                $updateAttemptStmt->execute();
+                echo json_encode([
+                    'status' => 'blocked',
+                    'message' => 'Too many failed attempts. Please try again later.',
+                    'remaining_time' => 180
+                ]);
+            } else {
+                $updateAttemptStmt = $this->conn->prepare("UPDATE login_attempts SET attempts = ? WHERE ip_address = ?");
+                $updateAttemptStmt->bind_param("is", $attempts, $ipAddress);
+                $updateAttemptStmt->execute();
+                echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.', 'attempts' => $attempts]);
+            }
+        } else {
+            $insertAttemptStmt = $this->conn->prepare("INSERT INTO login_attempts (ip_address, attempts, blocked_until) VALUES (?, ?, ?)");
+            $attempts = 1;
+            $blockedUntil = 0;
+            $insertAttemptStmt->bind_param("sii", $ipAddress, $attempts, $blockedUntil);
+            $insertAttemptStmt->execute();
+            echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.', 'attempts' => $attempts]);
         }
     }
 

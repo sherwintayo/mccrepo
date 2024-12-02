@@ -105,6 +105,21 @@
     </div>
   </div>
 
+  <!-- Modal for Blocking -->
+  <div class="modal fade" id="blockModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Too Many Attempts</h5>
+        </div>
+        <div class="modal-body">
+          You are temporarily blocked due to multiple failed login attempts. Please wait <span id="countdown"></span>
+          seconds.
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -133,6 +148,25 @@
         input.setCustomValidity(message);
         input.reportValidity();
       };
+
+      let blockCountdown;
+
+      function startCountdown(seconds) {
+        clearInterval(blockCountdown);
+        const countdownEl = document.getElementById('countdown');
+        $('#blockModal').modal('show');
+
+        blockCountdown = setInterval(() => {
+          if (seconds <= 0) {
+            clearInterval(blockCountdown);
+            $('#blockModal').modal('hide');
+            return;
+          }
+          countdownEl.textContent = seconds;
+          seconds--;
+        }, 1000);
+      }
+
 
       $('#login-frm').on('submit', function (event) {
         event.preventDefault(); // Prevent default form submission
@@ -185,6 +219,8 @@
                 // Disable login button
                 $('#login-frm button[type="submit"]').attr('disabled', true);
               });
+            } else if (response.status === 'blocked') {
+              startCountdown(response.remaining_time);
             } else if (response.status === 'captcha_failed') {
               Swal.fire({
                 icon: 'error',
