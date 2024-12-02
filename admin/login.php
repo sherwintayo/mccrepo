@@ -17,6 +17,11 @@
     width: calc(100%) !important;
   } */
 
+  #countdown {
+    color: red;
+    font-size: 15px;
+  }
+
   body {
     background-image: url("../dist/img/background.png");
     background-size: cover;
