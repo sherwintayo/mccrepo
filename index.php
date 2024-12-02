@@ -87,7 +87,7 @@
       <?php endif; ?>
       <!-- Main content -->
       <section class="content-wrapper" style=" width: 100% !important; flex-grow: 1;">
-        <div class="container" style="display: flex;">
+        <div class="container">
           <?php
           if (!file_exists($page . ".php") && !is_dir($page)) {
             include '404.html';
