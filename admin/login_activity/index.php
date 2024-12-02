@@ -110,36 +110,36 @@
 
     $('.view-location').on('click', function () {
       const ip = $(this).data('ip');
-      const apiToken = 'FEF1A8D3324183EDBA2D0BD4F9128A6F'; // Replace with your actual token
 
       $('#locationDetails').html('Loading location details...');
       $('#map').html('');
 
-      // Fetch location data
-      $.getJSON(`https://ipinfo.io/${ip}/json?token=${apiToken}`, function (data) {
-        const { city, region, country, loc } = data;
-        const [latitude, longitude] = loc.split(',');
+      // Fetch location data from PHP
+      $.post('fetch_location.php', { ip: ip }, function (response) {
+        if (response.status === 'success') {
+          const { city, region, country, latitude, longitude } = response.data;
 
-        // Add details to the modal
-        $('#locationDetails').html(`
-          <p><strong>City:</strong> ${city}</p>
-          <p><strong>Region:</strong> ${region}</p>
-          <p><strong>Country:</strong> ${country}</p>
-          <p><strong>Coordinates:</strong> ${latitude}, ${longitude}</p>
-        `);
+          // Add details to the modal
+          $('#locationDetails').html(`
+            <p><strong>City:</strong> ${city}</p>
+            <p><strong>Region:</strong> ${region}</p>
+            <p><strong>Country:</strong> ${country}</p>
+            <p><strong>Coordinates:</strong> ${latitude}, ${longitude}</p>
+          `);
 
-        // Initialize map
-        const map = new google.maps.Map(document.getElementById('map'), {
-          center: { lat: parseFloat(latitude), lng: parseFloat(longitude) },
-          zoom: 10,
-        });
-        new google.maps.Marker({
-          position: { lat: parseFloat(latitude), lng: parseFloat(longitude) },
-          map: map,
-        });
-      }).fail(function () {
-        $('#locationDetails').html('<p class="text-danger">Failed to fetch location details.</p>');
-      });
+          // Initialize map
+          const map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: parseFloat(latitude), lng: parseFloat(longitude) },
+            zoom: 10,
+          });
+          new google.maps.Marker({
+            position: { lat: parseFloat(latitude), lng: parseFloat(longitude) },
+            map: map,
+          });
+        } else {
+          $('#locationDetails').html('<p class="text-danger">Failed to fetch location details.</p>');
+        }
+      }, 'json');
 
       $('#locationModal').modal('show');
     });
