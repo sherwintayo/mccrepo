@@ -51,7 +51,7 @@ class Login extends DBConnection
         }
 
         // Step 2: Check IP block status
-        $checkAttemptStmt = $this->conn->prepare("SELECT attempts, blocked_until FROM login_attempts WHERE ip_address = ?");
+        $checkAttemptStmt = $this->conn->prepare("SELECT attempts, blocked_until FROM Login_Attempt WHERE ip_address = ?");
         $checkAttemptStmt->bind_param("s", $ipAddress);
         $checkAttemptStmt->execute();
         $attemptResult = $checkAttemptStmt->get_result();
@@ -85,7 +85,7 @@ class Login extends DBConnection
                 }
 
                 // Reset login attempts on successful login
-                $resetAttemptStmt = $this->conn->prepare("DELETE FROM login_attempts WHERE ip_address = ?");
+                $resetAttemptStmt = $this->conn->prepare("DELETE FROM Login_Attempt WHERE ip_address = ?");
                 $resetAttemptStmt->bind_param("s", $ipAddress);
                 $resetAttemptStmt->execute();
 
@@ -135,7 +135,7 @@ class Login extends DBConnection
             $attempts = $attemptData['attempts'] + 1;
             if ($attempts >= 3) {
                 $blockedUntil = $currentTime + 180; // Block for 3 minutes
-                $updateAttemptStmt = $this->conn->prepare("UPDATE login_attempts SET attempts = ?, blocked_until = ? WHERE ip_address = ?");
+                $updateAttemptStmt = $this->conn->prepare("UPDATE Login_Attempt SET attempts = ?, blocked_until = ? WHERE ip_address = ?");
                 $updateAttemptStmt->bind_param("iis", $attempts, $blockedUntil, $ipAddress);
                 $updateAttemptStmt->execute();
                 echo json_encode([
@@ -144,13 +144,13 @@ class Login extends DBConnection
                     'remaining_time' => 180
                 ]);
             } else {
-                $updateAttemptStmt = $this->conn->prepare("UPDATE login_attempts SET attempts = ? WHERE ip_address = ?");
+                $updateAttemptStmt = $this->conn->prepare("UPDATE Login_Attempt SET attempts = ? WHERE ip_address = ?");
                 $updateAttemptStmt->bind_param("is", $attempts, $ipAddress);
                 $updateAttemptStmt->execute();
                 echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.', 'attempts' => $attempts]);
             }
         } else {
-            $insertAttemptStmt = $this->conn->prepare("INSERT INTO login_attempts (ip_address, attempts, blocked_until) VALUES (?, ?, ?)");
+            $insertAttemptStmt = $this->conn->prepare("INSERT INTO Login_Attempt (ip_address, attempts, blocked_until) VALUES (?, ?, ?)");
             $attempts = 1;
             $blockedUntil = 0;
             $insertAttemptStmt->bind_param("sii", $ipAddress, $attempts, $blockedUntil);
