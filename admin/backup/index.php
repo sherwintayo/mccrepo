@@ -176,7 +176,7 @@ if (isset($_GET['download']) && $_GET['download'] === 'true') {
     $dbPass = DB_PASSWORD;
     $dbName = DB_NAME;
     $fileName = "database_backup_" . date('Ymd_His') . ".sql";
-    $filePath = __DIR__ . '/' . $fileName;
+    $filePath = base_url . '/admin/backup/sql/' . $fileName;
 
     // Secure mysqldump command execution
     $command = sprintf(
