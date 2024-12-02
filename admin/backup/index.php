@@ -305,25 +305,67 @@ if (isset($_GET['download']) && $_GET['download'] === 'true') {
     <!-- Additional forms for other actions... -->
 
     <!-- Display Tables -->
-    <h3>Existing Tables</h3>
+    <!-- Display Each Table -->
     <?php foreach ($tables as $table): ?>
-      <div class="card mb-3">
+      <div class="card mt-4">
         <div class="card-header bg-dark text-white">
-          Table: <?php echo htmlspecialchars($table); ?>
+          <h4>Table: <?php echo htmlspecialchars($table); ?></h4>
         </div>
         <div class="card-body">
-          <ul>
-            <?php
-            $query = "SHOW COLUMNS FROM `$table`";
-            $columnResult = $conn->query($query);
+          <!-- Fetch Table Columns -->
+          <?php
+          $columns = [];
+          $query = "SHOW COLUMNS FROM $table";
+          $columnResult = $conn->query($query);
+
+          if ($columnResult) {
+            echo "<h5>Columns:</h5>";
+            echo "<ul>";
             while ($columnRow = $columnResult->fetch_assoc()) {
+              $columns[] = $columnRow['Field'];
               echo "<li>" . htmlspecialchars($columnRow['Field']) . " (" . htmlspecialchars($columnRow['Type']) . ")</li>";
             }
-            ?>
-          </ul>
+            echo "</ul>";
+          } else {
+            echo "<p class='text-danger'>Error fetching columns: " . $conn->error . "</p>";
+          }
+          ?>
+
+          <!-- Fetch Table Data -->
+          <?php
+          $query = "SELECT * FROM $table";
+          $dataResult = $conn->query($query);
+
+          if ($dataResult && $dataResult->num_rows > 0): ?>
+            <h5>Data:</h5>
+            <div class="table-responsive">
+              <table class="table table-bordered table-striped">
+                <thead class="thead-dark">
+                  <tr>
+                    <?php foreach ($columns as $column): ?>
+                      <th><?php echo htmlspecialchars($column); ?></th>
+                    <?php endforeach; ?>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php while ($dataRow = $dataResult->fetch_assoc()): ?>
+                    <tr>
+                      <?php foreach ($columns as $column): ?>
+                        <td><?php echo htmlspecialchars($dataRow[$column] ?? 'NULL'); ?></td>
+                      <?php endforeach; ?>
+                    </tr>
+                  <?php endwhile; ?>
+                </tbody>
+              </table>
+            </div>
+          <?php else: ?>
+            <p class="text-warning">No data available in this table.</p>
+          <?php endif; ?>
         </div>
       </div>
     <?php endforeach; ?>
+
+    <hr>
   </div>
 </body>
 
