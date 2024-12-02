@@ -2,22 +2,14 @@
 ob_start();
 ini_set('date.timezone', 'Asia/Manila');
 date_default_timezone_set('Asia/Manila');
-// Start the session
+
+// Enforce secure cookie settings globally
+ini_set('session.cookie_secure', '1'); // Use HTTPS
+ini_set('session.cookie_httponly', '1'); // HttpOnly
+ini_set('session.cookie_samesite', 'Strict'); // SameSite policy
 session_start();
 
 require_once('initialize.php');
-
-if (session_status() === PHP_SESSION_ACTIVE) {
-    setcookie(session_name(), session_id(), [
-        'expires' => 0,
-        'path' => '/',
-        'domain' => parse_url(base_url, PHP_URL_HOST),
-        'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
-        'httponly' => true,
-        'samesite' => 'Strict',
-    ]);
-}
-
 require_once('classes/DBConnection.php');
 require_once('classes/SystemSettings.php');
 
