@@ -14,10 +14,11 @@
     width: 100%;
     /* Ensure no element exceeds 100% width */
     box-sizing: border-box;
+    height: auto;
   }
 
   #header {
-    height: 80vh;
+    height: 90vh;
     width: 100%;
     position: relative;
     top: -1em;
@@ -54,7 +55,7 @@
 </style>
 <?php require_once('inc/header.php') ?>
 
-<body class="layout-top-nav layout-fixed layout-navbar-fixed" style="height: auto;">
+<body class="layout-top-nav layout-fixed layout-navbar-fixed">
   <div class="wrapper" style="background-color: #fafcfd;">
     <?php $page = isset($_GET['page']) ? $_GET['page'] : 'home'; ?>
     <?php require_once('inc/topBarNav.php') ?>
@@ -85,8 +86,8 @@
         </div>
       <?php endif; ?>
       <!-- Main content -->
-      <section class="content">
-        <div class="container">
+      <section class="content-wrapper" style=" width: 100% !important; flex-grow: 1;">
+        <div class="container" style="display: flex;">
           <?php
           if (!file_exists($page . ".php") && !is_dir($page)) {
             include '404.html';

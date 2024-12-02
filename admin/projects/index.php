@@ -1,21 +1,45 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <link href="../../bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href=".././bootstrap/css/styles.css" rel="stylesheet">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js" integrity="sha512-6PM0qYu5KExuNcKt5bURAoT6KCThUmHRewN3zUFNaoI6Di7XJPTMoT6K0nsagZKk2OB4L7E3q1uQKHNHd4stIQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js" integrity="sha512-6PM0qYu5KExuNcKt5bURAoT6KCThUmHRewN3zUFNaoI6Di7XJPTMoT6K0nsagZKk2OB4L7E3q1uQKHNHd4stIQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script type="text/javascript" src="../../bootstrap/js/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript" src="../../bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- <script type="text/javascript" src="../../bootstrap/js/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="../../bootstrap/js/bootstrap.bundle.min.js"></script> -->
 	<style>
 .img-top {
   border: 1px solid #ddd;
   border-radius: 4px;
   padding: 5px;
   width: 150px;
+}
+.book-item .img-holder {
+    width: 100%;
+    height: 25em;
+}
+
+.book-item .img-holder>img.img-top {
+    width: 100%;
+    height: 40%;
+    object-fit: cover;
+    object-position: center center;
+    transition: all .2s ease-in-out;
+}
+
+.book-item:hover .img-holder>img.img-top {
+    transform: scale(1.2);
+}
+
+.truncate-5 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
 }
 </style>
 <?php 
@@ -52,9 +76,9 @@ $count = 0;
 			  <p><?=$row['abstract']?></p>
             </div>
 			
-			 <!--<div class="card-body">
+			 <div class="card-body">
               <div class="card-title fw-bolder h5 text-center"><?= $row['title'] ?></div>
-            </div>-->
+            </div>
 		</a>
 	</div>
 	 <?php

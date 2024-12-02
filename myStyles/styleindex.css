@@ -252,6 +252,14 @@
 .myFooter .myText {
   color: rgba(255, 255, 255, 0.6) !important;
 }
+footer.main-footer {
+  position: relative;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+  text-align: center; /* Optional */
+}
 
 /* Extra small devices (portrait phones, less than 576px) */
 @media (max-width: 575.98px) {

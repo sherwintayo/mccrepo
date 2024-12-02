@@ -4,9 +4,10 @@
   --fontfamily: "Poppins", sans-serif;
 }
 
-.container {
+.container-home {
   display: flex;
   flex-wrap: wrap;
+  margin-top: 7vh;
 }
 .section1 {
   height: 70vh;

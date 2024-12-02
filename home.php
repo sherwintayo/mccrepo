@@ -1,7 +1,7 @@
 <head>
     <link rel="stylesheet" href="<?php echo base_url ?>./myStyles/home.css?v=<?php echo time(); ?>">
 </head>
-<div class="container w-100 py-5">
+<div class="container-home w-100 py-5">
     <!-- Section 1 -->
     <section class="section1">
         <div class="section-container">

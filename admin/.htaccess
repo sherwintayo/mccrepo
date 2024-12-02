@@ -1,20 +1,8 @@
-<IfModule mod_rewrite.c>
-    Header set Access-Control-Allow-Origin "*"
-    RewriteEngine on
+RewriteEngine On
 
-    # Rewrite requests without .php extension to .php files if they exist
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_FILENAME}\.php -f
-    RewriteRule ^([a-zA-Z0-9_-]+)$ $1.php [L,QSA]
+# Rewrite root URL to home.php
+RewriteRule ^$ /admin/index.php [L]
 
-    # Default behavior for undefined paths to index.php
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)$ /index.php/$2/?page=$1 [L]
-</IfModule>
-<Files "./admin/login.php">
-    RewriteEngine On
-    RewriteCond %{QUERY_STRING} !token=.+ [NC]
-    RewriteRule ^ - [F,L]
-</Files>
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ $1.php [L]
