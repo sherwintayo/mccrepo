@@ -70,7 +70,8 @@ class Login extends DBConnection
                 $logStmt = $this->conn->prepare("
                 INSERT INTO login_activity (user_id, ip_address, user_agent) 
                 VALUES (?, ?, ?)
-            ");
+            
+                ");
                 $logStmt->bind_param("iss", $res['id'], $ipAddress, $userAgent);
                 $logStmt->execute();
 
