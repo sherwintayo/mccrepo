@@ -19,23 +19,6 @@ function logAction($message)
 }
 
 
-// CSRF token generation and validation
-function validateCsrfToken($token)
-{
-  if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-  }
-  return hash_equals($_SESSION['csrf_token'] ?? '', $token);
-}
-
-// Generate CSRF token if not already set
-if (session_status() === PHP_SESSION_NONE) {
-  session_start();
-}
-if (empty($_SESSION['csrf_token'])) {
-  $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-
 // Fetch all table names
 $tables = array();
 $query = "SHOW TABLES";
@@ -166,40 +149,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Handle database download
 if (isset($_GET['download']) && $_GET['download'] === 'true') {
-  $csrfToken = $_GET['csrf_token'] ?? '';
-  if (!validateCsrfToken($csrfToken)) {
-    $message = "Invalid CSRF token.";
-    $messageType = "danger";
+  $dbHost = DB_SERVER;
+  $dbUser = DB_USERNAME;
+  $dbPass = DB_PASSWORD;
+  $dbName = DB_NAME;
+  $fileName = "database_backup_" . date('Ymd_His') . ".sql";
+  $filePath = base_url . '/' . $fileName;
+
+  // Secure mysqldump command execution
+  $command = sprintf(
+    "mysqldump --host=%s --user=%s --password=%s %s > %s",
+    escapeshellarg($dbHost),
+    escapeshellarg($dbUser),
+    escapeshellarg($dbPass),
+    escapeshellarg($dbName),
+    escapeshellarg($filePath)
+  );
+  exec($command, $output, $returnVar);
+
+  if ($returnVar === 0 && file_exists($filePath)) {
+    header('Content-Type: application/sql');
+    header('Content-Disposition: attachment; filename="' . $fileName . '"');
+    readfile($filePath);
+    unlink($filePath);
+    exit;
   } else {
-    $dbHost = DB_SERVER;
-    $dbUser = DB_USERNAME;
-    $dbPass = DB_PASSWORD;
-    $dbName = DB_NAME;
-    $fileName = "database_backup_" . date('Ymd_His') . ".sql";
-    $filePath = base_url . '/admin/backup/sql/' . $fileName;
-
-    // Secure mysqldump command execution
-    $command = sprintf(
-      "mysqldump --host=%s --user=%s --password=%s %s > %s",
-      escapeshellarg($dbHost),
-      escapeshellarg($dbUser),
-      escapeshellarg($dbPass),
-      escapeshellarg($dbName),
-      escapeshellarg($filePath)
-    );
-    exec($command, $output, $returnVar);
-
-    if ($returnVar === 0 && file_exists($filePath)) {
-      header('Content-Type: application/sql');
-      header('Content-Disposition: attachment; filename="' . $fileName . '"');
-      readfile($filePath);
-      unlink($filePath);
-      exit;
-    } else {
-      $message = "Error generating database dump.";
-      $messageType = "danger";
-      logAction("Failed to generate database dump.");
-    }
+    $message = "Error generating database dump.";
+    $messageType = "danger";
+    logAction("Failed to generate database dump.");
   }
 }
 ?>
@@ -226,11 +203,11 @@ if (isset($_GET['download']) && $_GET['download'] === 'true') {
     <?php endif; ?>
 
     <div class="text-center mb-4">
-      <!-- Add CSRF token to download link -->
-      <a href="?download=true&csrf_token=<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>"
-        class="btn btn-primary"
-        onclick="return confirm('Are you sure you want to download the database backup?')">Download Database as .sql</a>
+      <!-- Download Button -->
+      <a href="?download=true" class="btn btn-primary"
+        onclick="return confirm('Are you sure you want to download the database backup?')">Download Database</a>
     </div>
+
 
     <!-- Add Table Form -->
     <h3>Add Table</h3>
