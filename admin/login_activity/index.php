@@ -115,7 +115,7 @@
       $('#map').html('');
 
       // Fetch location data from PHP
-      $.post('location_fetcher.php', { ip: ip }, function (response) {
+      $.post('./admin/login_activity/location_fetcher.php', { ip: ip }, function (response) {
         if (response.status === 'success') {
           const { city, region, country, latitude, longitude } = response.data;
 
