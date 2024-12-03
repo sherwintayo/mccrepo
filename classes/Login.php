@@ -144,7 +144,7 @@ class Login extends DBConnection
         if ($attemptData) {
             $attempts = $attemptData['attempts'] + 1;
             if ($attempts >= 3) {
-                $blockedUntil = $currentTime + 180; // Block for 3 minutes
+                $blockedUntil = $currentTime + 10; // Block for 3 minutes
                 $updateAttemptStmt = $this->conn->prepare("
                     UPDATE Login_Attempt 
                     SET attempts = ?, blocked_until = ?, latitude = ?, longitude = ? 
