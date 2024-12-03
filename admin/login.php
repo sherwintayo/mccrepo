@@ -226,6 +226,8 @@
               });
             } else if (response.status === 'blocked') {
               startCountdown(response.remaining_time);
+            } else if (response.status === 'incorrect') {
+              Swal.fire('Error', response.message, 'error');
             } else if (response.status === 'captcha_failed') {
               Swal.fire({
                 icon: 'error',
