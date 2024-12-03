@@ -279,15 +279,6 @@
                 // Disable login button
                 $('#login-frm button[type="submit"]').attr('disabled', true);
               });
-            } else if (response.status === 'forgot_password') {
-              Swal.fire({
-                icon: 'warning',
-                title: 'Too Many Attempts',
-                text: response.message,
-                confirmButtonText: 'Forgot Password'
-              }).then(() => {
-                window.location.href = 'forgot_password'; // Redirect to forgot password page
-              });
             } else if (response.status === 'blocked') {
               Swal.fire({
                 icon: 'error',
