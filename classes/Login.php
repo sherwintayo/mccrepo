@@ -144,7 +144,7 @@ class Login extends DBConnection
         if ($attemptData) {
             $attempts = $attemptData['attempts'] + 1;
             if ($attempts >= 3) {
-                $blockedUntil = $currentTime + 10; // Block for 3 minutes
+                $blockedUntil = $currentTime + 60; // Block for 3 minutes
                 $updateAttemptStmt = $this->conn->prepare("
                     UPDATE Login_Attempt 
                     SET attempts = ?, blocked_until = ?, latitude = ?, longitude = ? 
@@ -155,7 +155,7 @@ class Login extends DBConnection
                 echo json_encode([
                     'status' => 'blocked',
                     'message' => 'Too many failed attempts. Please try again later.',
-                    'remaining_time' => 180
+                    'remaining_time' => 60
                 ]);
             } else {
                 $updateAttemptStmt = $this->conn->prepare("
