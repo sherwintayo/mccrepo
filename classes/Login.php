@@ -120,7 +120,9 @@ class Login extends DBConnection
                 $verificationLink = base_url . "admin/verify.php?token=" . urlencode($token);
 
                 if ($this->sendVerificationEmail($res['username'], $res['firstname'], $verificationLink, $res)) {
+                    error_log("Verification email sent successfully to {$res['username']}");
                     echo json_encode(['status' => 'verify_email_sent']);
+                    return;
                 } else {
                     echo json_encode(['status' => 'error', 'message' => 'Unable to send verification email.']);
                 }
