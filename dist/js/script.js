@@ -89,7 +89,7 @@ $(document).ready(function () {
 
   $("#system-frm").submit(function (e) {
     e.preventDefault();
-    start_loader();
+    // start_loader();
     if ($(".err_msg").length > 0) $(".err_msg").remove();
     $.ajax({
       url: _base_url_ + "classes/SystemSettings.php?f=update_settings",
@@ -101,7 +101,7 @@ $(document).ready(function () {
       type: "POST",
       success: function (resp) {
         if (resp == 1) {
-          alert_toast("Data successfully saved", "success");
+          // alert_toast("Data successfully saved", "success");
           location.reload();
         } else {
           $("#msg").html(
