@@ -224,8 +224,23 @@
                 // Disable login button
                 $('#login-frm button[type="submit"]').attr('disabled', true);
               });
+            } else if (response.status === 'forgot_password') {
+              Swal.fire({
+                icon: 'warning',
+                title: 'Too Many Attempts',
+                text: response.message,
+                confirmButtonText: 'Forgot Password'
+              }).then(() => {
+                window.location.href = 'forgot_password'; // Redirect to forgot password page
+              });
             } else if (response.status === 'blocked') {
-              startCountdown(response.remaining_time);
+              Swal.fire({
+                icon: 'error',
+                title: 'Blocked',
+                text: response.message,
+                confirmButtonText: 'OK'
+              });
+              startCountdown(response.remaining_time); // Show countdown modal if blocked
             } else if (response.status === 'incorrect') {
               Swal.fire('Error', response.message, 'error');
             } else if (response.status === 'captcha_failed') {
