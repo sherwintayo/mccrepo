@@ -241,8 +241,6 @@
                 confirmButtonText: 'OK'
               });
               startCountdown(response.remaining_time); // Show countdown modal if blocked
-            } else if (response.status === 'incorrect') {
-              Swal.fire('Error', response.message, 'error');
             } else if (response.status === 'captcha_failed') {
               Swal.fire({
                 icon: 'error',
