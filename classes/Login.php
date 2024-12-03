@@ -141,42 +141,75 @@ class Login extends DBConnection
             echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
         }
         // Step 4: Handle failed login attempt
-        if ($attemptData) {
-            $attempts = $attemptData['attempts'] + 1;
-            if ($attempts >= 3) {
-                $blockedUntil = $currentTime + 180; // Block for 3 minutes
+        // Handle failed login attempt
+        $attempts = ($attemptData['attempts'] ?? 0) + 1;
+
+        if ($attempts >= 3) {
+            // Block for 3 minutes
+            $blockedUntil = $currentTime + 180;
+            if ($attemptData) {
                 $updateAttemptStmt = $this->conn->prepare("
-                    UPDATE Login_Attempt 
-                    SET attempts = ?, blocked_until = ?, latitude = ?, longitude = ? 
-                    WHERE ip_address = ?
-                ");
+                UPDATE Login_Attempt 
+                SET attempts = ?, blocked_until = ?, latitude = ?, longitude = ? 
+                WHERE ip_address = ?
+            ");
                 $updateAttemptStmt->bind_param("iidds", $attempts, $blockedUntil, $latitude, $longitude, $ipAddress);
                 $updateAttemptStmt->execute();
-                echo json_encode([
-                    'status' => 'blocked',
-                    'message' => 'Too many failed attempts. Please try again later.',
-                    'remaining_time' => 180
-                ]);
             } else {
+                $insertAttemptStmt = $this->conn->prepare("
+                INSERT INTO Login_Attempt (ip_address, attempts, blocked_until, latitude, longitude) 
+                VALUES (?, ?, ?, ?, ?)
+            ");
+                $insertAttemptStmt->bind_param("siidd", $ipAddress, $attempts, $blockedUntil, $latitude, $longitude);
+                $insertAttemptStmt->execute();
+            }
+
+            // Log this block in login_attempt_history
+            $historyStmt = $this->conn->prepare("
+            INSERT INTO login_attempt_history (ip_address, block_count) 
+            VALUES (?, 1)
+            ON DUPLICATE KEY UPDATE block_count = block_count + 1
+        ");
+            $historyStmt->bind_param("s", $ipAddress);
+            $historyStmt->execute();
+
+            echo json_encode([
+                'status' => 'blocked',
+                'message' => 'Too many failed attempts. Please try again later.',
+                'remaining_time' => 180
+            ]);
+        } else {
+            // Update or insert the attempt data
+            if ($attemptData) {
                 $updateAttemptStmt = $this->conn->prepare("
-                        UPDATE Login_Attempt 
-                        SET attempts = ?, latitude = ?, longitude = ? 
-                        WHERE ip_address = ?
-                    ");
+                UPDATE Login_Attempt 
+                SET attempts = ?, latitude = ?, longitude = ? 
+                WHERE ip_address = ?
+            ");
                 $updateAttemptStmt->bind_param("idds", $attempts, $latitude, $longitude, $ipAddress);
                 $updateAttemptStmt->execute();
-                echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.', 'attempts' => $attempts]);
+            } else {
+                $insertAttemptStmt = $this->conn->prepare("
+                INSERT INTO Login_Attempt (ip_address, attempts, blocked_until, latitude, longitude) 
+                VALUES (?, ?, ?, ?, ?)
+            ");
+                $blockedUntil = 0;
+                $insertAttemptStmt->bind_param("siidd", $ipAddress, $attempts, $blockedUntil, $latitude, $longitude);
+                $insertAttemptStmt->execute();
             }
-        } else {
-            $insertAttemptStmt = $this->conn->prepare("
-                        INSERT INTO Login_Attempt (ip_address, attempts, blocked_until, latitude, longitude) 
-                        VALUES (?, ?, ?, ?, ?)
-                    ");
-            $attempts = 1;
-            $blockedUntil = 0;
-            $insertAttemptStmt->bind_param("siidd", $ipAddress, $attempts, $blockedUntil, $latitude, $longitude);
-            $insertAttemptStmt->execute();
+
             echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.', 'attempts' => $attempts]);
+        }
+
+        // Reset attempts and block status after countdown
+        if ($attemptData && $attemptData['blocked_until'] <= $currentTime) {
+            $resetStmt = $this->conn->prepare("
+            UPDATE Login_Attempt 
+            SET attempts = 0, blocked_until = 0 
+            WHERE ip_address = ?
+        ");
+            $resetStmt->bind_param("s", $ipAddress);
+            $resetStmt->execute();
         }
     }
 
