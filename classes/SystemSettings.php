@@ -37,6 +37,8 @@ class SystemSettings extends DBConnection
 	function update_settings_info()
 	{
 		$data = "";
+		$resp = ['status' => 'error', 'msg' => ''];
+
 		foreach ($_POST as $key => $value) {
 			if (!in_array($key, array("content")))
 				if (isset($_SESSION['system_info'][$key])) {
@@ -46,11 +48,14 @@ class SystemSettings extends DBConnection
 					$qry = $this->conn->query("INSERT into system_info set meta_value = '{$value}', meta_field = '{$key}' ");
 				}
 		}
-		if (isset($_POST['content']))
+		if (isset($_POST['content'])) {
 			foreach ($_POST['content'] as $k => $v) {
-				file_put_contents("../{$k}.html", $v);
-
+				$file_path = "../{$k}.html";
+				if (!file_put_contents($file_path, $v)) {
+					$resp['msg'] .= "Failed to update file: {$file_path}. ";
+				}
 			}
+		}
 
 		if (isset($_FILES['img']) && $_FILES['img']['tmp_name'] != '') {
 			$fname = 'uploads/logo-' . (time()) . '.png';
