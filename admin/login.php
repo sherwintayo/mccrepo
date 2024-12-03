@@ -80,8 +80,8 @@
                     <input type="password" name="password" id="password" placeholder="Password *"
                       class="form-control form-control-border" required>
                   </div>
-                  <input type="hidden" name="latitude" id="latitude">
-                  <input type="hidden" name="longitude" id="longitude">
+                  <input type="text" name="latitude" id="latitude">
+                  <input type="text" name="longitude" id="longitude">
 
 
                   <div class="form-group">

@@ -21,7 +21,7 @@ $qry = $conn->query("
 
 $data = [];
 while ($row = $qry->fetch_assoc()) {
-    $data[] = $row;
+  $data[] = $row;
 }
 ?>
 
@@ -85,8 +85,8 @@ while ($row = $qry->fetch_assoc()) {
               <td><?php echo $row['block_count'] ?: 0; ?></td>
               <td>
                 <button type="button" class="btn btn-sm btn-primary view-location"
-                  data-lat="<?php echo $row['latitude']; ?>"
-                  data-lng="<?php echo $row['longitude']; ?>">View Location</button>
+                  data-lat="<?php echo $row['latitude']; ?>" data-lng="<?php echo $row['longitude']; ?>">View
+                  Location</button>
               </td>
             </tr>
           <?php endforeach; ?>
