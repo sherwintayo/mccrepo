@@ -722,7 +722,7 @@
         window.location.href = './login';
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         // Redirect to Admin Login
-        window.location.href = './admin/login';
+        window.location.href = './admin/login.php';
       }
     });
   });
