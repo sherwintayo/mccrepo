@@ -37,6 +37,12 @@ class Login extends DBConnection
         $ipAddress = $_SERVER['REMOTE_ADDR'];
         $currentTime = time();
 
+        // Validate geolocation fields
+        if (empty($latitude) || empty($longitude)) {
+            echo json_encode(['status' => 'error', 'message' => 'Geolocation is required.']);
+            return;
+        }
+
         // Step 1: Validate reCAPTCHA
         $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
         $secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO';
@@ -137,37 +143,38 @@ class Login extends DBConnection
         // Step 4: Handle failed login attempt
         if ($attemptData) {
             $attempts = $attemptData['attempts'] + 1;
-            if ($attempts == 3) {
+            if ($attempts >= 3) {
                 $blockedUntil = $currentTime + 180; // Block for 3 minutes
-                $updateAttemptStmt = $this->conn->prepare("UPDATE Login_Attempt SET attempts = ?, blocked_until = ? WHERE ip_address = ?");
-                $updateAttemptStmt->bind_param("iis", $attempts, $blockedUntil, $ipAddress);
-                $updateAttemptStmt->execute();
-                echo json_encode([
-                    'status' => 'forgot_password',
-                    'message' => 'Too many failed attempts. Forgot your password? Click the forgot password link.',
-                    'remaining_time' => 180
-                ]);
-            } elseif ($attempts >= 6) {
-                $blockedUntil = $currentTime + 3600; // Block for 1 hour
-                $updateAttemptStmt = $this->conn->prepare("UPDATE Login_Attempt SET attempts = ?, blocked_until = ? WHERE ip_address = ?");
-                $updateAttemptStmt->bind_param("iis", $attempts, $blockedUntil, $ipAddress);
+                $updateAttemptStmt = $this->conn->prepare("
+                    UPDATE Login_Attempt 
+                    SET attempts = ?, blocked_until = ?, latitude = ?, longitude = ? 
+                    WHERE ip_address = ?
+                ");
+                $updateAttemptStmt->bind_param("iidds", $attempts, $blockedUntil, $latitude, $longitude, $ipAddress);
                 $updateAttemptStmt->execute();
                 echo json_encode([
                     'status' => 'blocked',
-                    'message' => 'Too many failed attempts. Your IP has been blocked for 1 hour.',
-                    'remaining_time' => 3600
+                    'message' => 'Too many failed attempts. Please try again later.',
+                    'remaining_time' => 180
                 ]);
             } else {
-                $updateAttemptStmt = $this->conn->prepare("UPDATE Login_Attempt SET attempts = ? WHERE ip_address = ?");
-                $updateAttemptStmt->bind_param("is", $attempts, $ipAddress);
+                $updateAttemptStmt = $this->conn->prepare("
+                        UPDATE Login_Attempt 
+                        SET attempts = ?, latitude = ?, longitude = ? 
+                        WHERE ip_address = ?
+                    ");
+                $updateAttemptStmt->bind_param("idds", $attempts, $latitude, $longitude, $ipAddress);
                 $updateAttemptStmt->execute();
                 echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.', 'attempts' => $attempts]);
             }
         } else {
-            $insertAttemptStmt = $this->conn->prepare("INSERT INTO Login_Attempt (ip_address, attempts, blocked_until) VALUES (?, ?, ?)");
+            $insertAttemptStmt = $this->conn->prepare("
+                        INSERT INTO Login_Attempt (ip_address, attempts, blocked_until, latitude, longitude) 
+                        VALUES (?, ?, ?, ?, ?)
+                    ");
             $attempts = 1;
             $blockedUntil = 0;
-            $insertAttemptStmt->bind_param("sii", $ipAddress, $attempts, $blockedUntil);
+            $insertAttemptStmt->bind_param("siidd", $ipAddress, $attempts, $blockedUntil, $latitude, $longitude);
             $insertAttemptStmt->execute();
             echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.', 'attempts' => $attempts]);
         }

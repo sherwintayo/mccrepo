@@ -80,6 +80,9 @@
                     <input type="password" name="password" id="password" placeholder="Password *"
                       class="form-control form-control-border" required>
                   </div>
+                  <input type="hidden" name="latitude" id="latitude">
+                  <input type="hidden" name="longitude" id="longitude">
+
 
                   <div class="form-group">
                     <div class="g-recaptcha" data-sitekey="6LfFJYcqAAAAAK6Djr0QOH68F4r_Aehziia0XYa9"></div>
@@ -125,6 +128,24 @@
     </div>
   </div>
 
+  <!-- Geolocation Modal -->
+  <div class="modal fade" id="geolocationModal" tabindex="-1" aria-labelledby="geolocationModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Enable Location</h5>
+        </div>
+        <div class="modal-body">
+          Please enable your location to proceed with the login.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="getLocation()">Enable Location</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -133,6 +154,40 @@
   <script src="../dist/js/adminlte.min.js"></script>
 
   <!-- Validation Script -->
+
+  <script>
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+      } else {
+        Swal.fire("Geolocation is not supported by your browser.");
+      }
+    }
+
+    function showPosition(position) {
+      document.getElementById('latitude').value = position.coords.latitude;
+      document.getElementById('longitude').value = position.coords.longitude;
+      $('#geolocationModal').modal('hide');
+    }
+
+    function showError(error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Location Access Denied',
+        text: 'Please enable location to proceed.',
+        confirmButtonText: 'Retry'
+      }).then(() => {
+        $('#geolocationModal').modal('show');
+      });
+    }
+
+    // Show modal on page load if location fields are empty
+    window.onload = function () {
+      $('#geolocationModal').modal({ backdrop: 'static', keyboard: false });
+      $('#geolocationModal').modal('show');
+      getLocation();
+    };
+  </script>
   <script>
     (function ($) {
       'use strict';
