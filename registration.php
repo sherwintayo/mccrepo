@@ -326,7 +326,7 @@ $stmt->fetch();
                   text: 'Your account has been successfully created.',
                   confirmButtonText: 'Go to Login'
                 }).then(() => {
-                  window.location.href = "./login"; // Redirect on success
+                  window.location.href = "./login."; // Redirect on success
                 });
               } else {
                 Swal.fire({
@@ -354,25 +354,25 @@ $stmt->fetch();
           });
 
         });
-
-
-        // Function to check for invalid characters
-        var hasInvalidChars = function (input) {
-          return /['"<script>]/.test(input); // Prevents single quotes, double quotes, and angle brackets
-        };
-
-        // Validate Email Format (Ensure @ symbol is present)
-        var validateEmail = function (email) {
-          var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-          return emailReg.test(email);
-        };
-
-        // Set custom validation message for inputs
-        var setValidationMessage = function (input, message) {
-          input.setCustomValidity(message);
-          input.reportValidity();
-        };
       });
+
+      // Function to check for invalid characters
+      var hasInvalidChars = function (input) {
+        return /['"<script>]/.test(input); // Prevents single quotes, double quotes, and angle brackets
+      };
+
+      // Validate Email Format (Ensure @ symbol is present)
+      var validateEmail = function (email) {
+        var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        return emailReg.test(email);
+      };
+
+      // Set custom validation message for inputs
+      var setValidationMessage = function (input, message) {
+        input.setCustomValidity(message);
+        input.reportValidity();
+      };
+    });
 
   </script>
 </body>
