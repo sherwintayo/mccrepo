@@ -397,6 +397,13 @@ class Login extends DBConnection
         try {
             // Verify reCAPTCHA v3
             $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
+            if (empty($recaptchaResponse)) {
+                return json_encode([
+                    'status' => 'captcha_failed',
+                    'msg' => 'reCAPTCHA response missing. Please try again.'
+                ]);
+            }
+
             $secretKey = '6LfFJYcqAAAAAERzz2_imzASHXTELXAjpOEGSoQT'; // Replace with your secret key
             $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
@@ -404,11 +411,11 @@ class Login extends DBConnection
             $response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
             $responseKeys = json_decode($response, true);
 
-            if (!$responseKeys['success'] || $responseKeys['score'] < 0.5) { // Check reCAPTCHA score threshold
+            if (!$responseKeys['success'] || $responseKeys['score'] < 0.5) { // Check score threshold
                 error_log("reCAPTCHA failed: " . json_encode($responseKeys)); // Log failure
                 return json_encode([
                     'status' => 'captcha_failed',
-                    'msg' => 'reCAPTCHA validation failed. Please try again.'
+                    'msg' => 'reCAPTCHA validation failed or suspicious activity detected. Please try again.'
                 ]);
             }
 
@@ -421,7 +428,7 @@ class Login extends DBConnection
             if ($this->conn->error) {
                 return json_encode([
                     'status' => 'failed',
-                    'msg' => "An error occurred while fetching data. Error: " . $this->conn->error
+                    'msg' => "An error occurred while fetching data. Please try again later."
                 ]);
             }
 
@@ -431,7 +438,6 @@ class Login extends DBConnection
                 // Verify the password using bcrypt
                 if (password_verify($password, $res['password'])) {
                     if ($res['status'] == 1) {
-                        // Set session variables for logged-in user
                         $_SESSION['user_logged_in'] = true;
                         $_SESSION['user_id'] = $res['id'];
                         foreach ($res as $k => $v) {
@@ -463,7 +469,6 @@ class Login extends DBConnection
             return json_encode([
                 'status' => 'failed',
                 'msg' => 'An unexpected error occurred. Please try again later.',
-                'debug' => $e->getMessage() // Optional: Include for debugging in dev mode
             ]);
         }
     }

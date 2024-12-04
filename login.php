@@ -138,80 +138,72 @@
     $(document).ready(function () {
       end_loader();
 
-      // Validation functions from the admin login
+      // Email validation function
       var validateEmail = function (email) {
         var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
         return emailReg.test(email);
       };
 
+      // Validate if input contains invalid characters
       var hasInvalidChars = function (input) {
         return input.includes("'");
       };
 
+      // Set validation messages for inputs
       var setValidationMessage = function (input, message) {
         input.setCustomValidity(message);
         input.reportValidity();
       };
 
-      el.addClass("alert pop-msg my-2").hide();
-
-      // Fetching input values for validation
-      var emailInput = $('#email')[0];
-      var passwordInput = $('#password')[0];
-      var email = emailInput.value;
-      var password = passwordInput.value;
-
-      // Reset custom validation messages
-      emailInput.setCustomValidity("");
-      passwordInput.setCustomValidity("");
-
-      // Validate email format
-      if (!validateEmail(email)) {
-        setValidationMessage(emailInput, "Invalid email format: put an @ in '" + email + "'");
-        return; // Stop submission if validation fails
-      }
-
-      // Check for invalid characters in email and password
-      if (hasInvalidChars(email)) {
-        setValidationMessage(emailInput, "Email must not contain single quotes: '" + email + "'");
-        return; // Stop submission if validation fails
-      }
-
-      if (hasInvalidChars(password)) {
-        setValidationMessage(passwordInput, "Password must not contain single quotes.");
-        return; // Stop submission if validation fails
-      }
-
-
+      // Handle form submission
       $('#slogin-form').submit(function (e) {
-        e.preventDefault();
+        e.preventDefault(); // Prevent default form submission
         var _this = $(this);
-        var el = $("<div>");
 
+        // Input validation
+        var emailInput = $('#email')[0];
+        var passwordInput = $('#password')[0];
+        var email = emailInput.value.trim();
+        var password = passwordInput.value.trim();
+
+        emailInput.setCustomValidity(""); // Reset validation messages
+        passwordInput.setCustomValidity("");
+
+        if (!validateEmail(email)) {
+          setValidationMessage(emailInput, "Invalid email format. Please include '@' in your email.");
+          return;
+        }
+        if (hasInvalidChars(email)) {
+          setValidationMessage(emailInput, "Email must not contain invalid characters like single quotes.");
+          return;
+        }
+        if (hasInvalidChars(password)) {
+          setValidationMessage(passwordInput, "Password must not contain invalid characters.");
+          return;
+        }
+
+        // Fetch reCAPTCHA v3 token
         grecaptcha.execute('6LfFJYcqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'login' }).then(function (token) {
-          var formData = _this.serialize() + '&g-recaptcha-response=' + token;
-          // Existing AJAX request logic
-          start_loader();
+          var formData = _this.serialize() + '&g-recaptcha-response=' + token; // Append token to form data
 
+          // Send AJAX request
+          start_loader();
           $.ajax({
-            url: _base_url_ + "classes/Login.php?f=student_login",
+            url: "<?php echo base_url ?>classes/Login.php?f=student_login", // Backend endpoint
             method: 'POST',
-            data: _this.serialize(),
+            data: formData,
             dataType: 'json',
-            error: err => {
-              console.log(err);
-              Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'An error occurred. Please try again later.',
-              });
-              end_loader();
-            },
             success: function (resp) {
               end_loader();
-              if (resp.status == 'success') {
-                <?php $_SESSION['user_logged_in'] = true; ?>
-                window.location.href = "./";
+              if (resp.status === 'success') {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Login Successful',
+                  text: 'Welcome back!',
+                  confirmButtonText: 'Proceed'
+                }).then(() => {
+                  window.location.href = "./"; // Redirect on success
+                });
               } else {
                 Swal.fire({
                   icon: 'error',
@@ -219,13 +211,22 @@
                   text: resp.msg || 'Invalid credentials. Please try again.',
                 });
               }
+            },
+            error: function (err) {
+              end_loader();
+              console.error(err.responseText); // Log errors for debugging
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An unexpected error occurred. Please try again later.',
+              });
             }
           });
         });
       });
     });
-  </script>
-  <script>
+
+    // Toggle password visibility
     function toggleVisibility(inputId) {
       const inputField = document.getElementById(inputId);
       const icon = document.getElementById(`eye-${inputId}`);
@@ -240,6 +241,7 @@
       }
     }
   </script>
+
 
 </body>
 
