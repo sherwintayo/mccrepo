@@ -40,7 +40,7 @@
     color: #000;
   }
 </style>
-<script src="https://www.google.com/recaptcha/api.js?render=6LfFJYcqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW"></script>
+<script src="https://www.google.com/recaptcha/api.js?render=6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
@@ -96,7 +96,7 @@
                     </span>
                   </div>
 
-
+                  <input type="hidden" id="recaptcha-token" name="recaptcha_token" value="">
 
                   <!-- Buttons -->
                   <div class="row">
@@ -138,10 +138,16 @@
     $(document).ready(function () {
       end_loader();
 
+      // Validation functions from the admin login
       var validateEmail = function (email) {
         var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
         return emailReg.test(email);
       };
+
+      // var validatePassword = function(password) {
+      //   var passwordReg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+      //   return passwordReg.test(password);
+      // };
 
       var hasInvalidChars = function (input) {
         return input.includes("'");
@@ -152,77 +158,77 @@
         input.reportValidity();
       };
 
-      // Handle form submission
       $('#slogin-form').submit(function (e) {
         e.preventDefault();
         var _this = $(this);
+        var el = $("<div>");
+        el.addClass("alert pop-msg my-2").hide();
 
-        // Input validation
+        // Fetching input values for validation
         var emailInput = $('#email')[0];
         var passwordInput = $('#password')[0];
         var email = emailInput.value;
         var password = passwordInput.value;
 
+        // Reset custom validation messages
         emailInput.setCustomValidity("");
         passwordInput.setCustomValidity("");
 
+        // Validate email format
         if (!validateEmail(email)) {
           setValidationMessage(emailInput, "Invalid email format: put an @ in '" + email + "'");
-          return;
+          return; // Stop submission if validation fails
         }
+
+        // Check for invalid characters in email and password
         if (hasInvalidChars(email)) {
-          setValidationMessage(emailInput, "Email must not contain single quotes.");
-          return;
+          setValidationMessage(emailInput, "Email must not contain single quotes: '" + email + "'");
+          return; // Stop submission if validation fails
         }
+
         if (hasInvalidChars(password)) {
           setValidationMessage(passwordInput, "Password must not contain single quotes.");
-          return;
+          return; // Stop submission if validation fails
         }
 
-        // Fetch reCAPTCHA v3 token
         grecaptcha.execute('6LfFJYcqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'login' }).then(function (token) {
           var formData = _this.serialize() + '&g-recaptcha-response=' + token;
-
-          // AJAX request to backend
+          // Existing AJAX request logic
           start_loader();
+
           $.ajax({
-            url: "<?php echo base_url ?>classes/Login.php?f=student_login",
+            url: _base_url_ + "classes/Login.php?f=student_login",
             method: 'POST',
-            data: formData,
+            data: _this.serialize(),
             dataType: 'json',
+            error: err => {
+              console.log(err);
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred. Please try again later.',
+              });
+              end_loader();
+            },
             success: function (resp) {
               end_loader();
-              if (resp.status === 'success') {
-                Swal.fire({
-                  icon: 'success',
-                  title: 'Login Successful',
-                  text: 'Welcome back!',
-                  confirmButtonText: 'Proceed'
-                }).then(() => {
-                  window.location.href = "./";
-                });
+              if (resp.status == 'success') {
+                <?php $_SESSION['user_logged_in'] = true; ?>
+                window.location.href = "./";
               } else {
                 Swal.fire({
                   icon: 'error',
                   title: 'Login Failed',
-                  text: resp.msg || 'Invalid credentials. Please try again.'
+                  text: resp.msg || 'Invalid credentials. Please try again.',
                 });
               }
-            },
-            error: function () {
-              end_loader();
-              Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'An error occurred. Please try again later.'
-              });
             }
           });
         });
       });
     });
-
-    // Toggle password visibility
+  </script>
+  <script>
     function toggleVisibility(inputId) {
       const inputField = document.getElementById(inputId);
       const icon = document.getElementById(`eye-${inputId}`);
@@ -237,7 +243,6 @@
       }
     }
   </script>
-
 
 </body>
 
