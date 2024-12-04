@@ -69,6 +69,7 @@ $stmt->fetch();
         <h3>Welcome</h3>
         <p>Register and start your journey!</p>
 
+
       </div>
       <div class="col-md-9 register-right">
         <div class="tab-content" id="myTabContent">
@@ -143,6 +144,7 @@ $stmt->fetch();
                     </select>
                   </div>
 
+
                   <!-- Email (Read-Only) -->
                   <div class="form-group">
                     <label for="email">Email</label>
@@ -208,11 +210,6 @@ $stmt->fetch();
                       </ul>
                     </div>
 
-
-
-                    <div class="form-group">
-                      <div class="g-recaptcha" data-sitekey="6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW"></div>
-                    </div>
 
                     <!-- Buttons -->
                     <div class="row">
