@@ -126,7 +126,7 @@
     var _base_url_ = '<?php echo base_url ?>';
   </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="<?php echo base_url ?>dist/js/script.js"></script> -->
+  <script src="<?php echo base_url ?>dist/js/script.js"></script>
   <!-- <script src="<?php echo base_url ?>plugins/myScript.js"></script> -->
   <style>
     #main-header {
