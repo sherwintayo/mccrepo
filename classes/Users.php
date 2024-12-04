@@ -162,23 +162,20 @@ class Users extends DBConnection
 		try {
 			// Validate reCAPTCHA response
 			$recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-			$secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO'; // Replace with your reCAPTCHA secret key
+			$secretKey = '6LcvKpIqAAAAAERzz2_imzASHXTELXAjpOEGSoQT'; // Replace with your secret key
 			$verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
-			// Send request to Google's reCAPTCHA API
+			// Send request to reCAPTCHA API
 			$response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
 			$responseKeys = json_decode($response, true);
 
-
-			// Check reCAPTCHA validation
-			if (!$responseKeys['success']) {
+			// Validate reCAPTCHA score
+			if (!$responseKeys['success'] || $responseKeys['score'] < 0.5) { // Check score threshold
 				return json_encode([
 					'status' => 'failed',
-					'msg' => 'reCAPTCHA validation failed. Please try again.',
-					'debug' => $responseKeys // For debugging reCAPTCHA issues
+					'msg' => 'reCAPTCHA validation failed or low score. Please try again.'
 				]);
 			}
-
 			$data = '';
 
 			// Check if old password verification is needed

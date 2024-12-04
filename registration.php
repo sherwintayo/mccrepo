@@ -54,7 +54,7 @@ $stmt->fetch();
   }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="https://www.google.com/recaptcha/api.js?render=6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW"></script>
 
 
 <body class="hold-transition ">
@@ -276,112 +276,103 @@ $stmt->fetch();
       $('#registration-form').submit(function (e) {
         e.preventDefault();
 
+        let formData = $(this).serialize();
+        // Request reCAPTCHA v3 token
+        grecaptcha.execute('6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'register' }).then(function (token) {
+          formData += "&g-recaptcha-response=" + token;
 
-        // Get reCAPTCHA response token
-        let recaptchaResponse = grecaptcha.getResponse();
+          let formData = $(this).serialize();
 
-        if (!recaptchaResponse) {
-          Swal.fire({
-            icon: 'error',
-            title: 'reCAPTCHA Error',
-            text: 'Please complete the reCAPTCHA challenge.'
-          });
-          return false;
-        }
+          var _this = $(this);
+          $(".pop-msg").remove();
+          $('#password, #cpassword').removeClass("is-invalid");
 
-        // Add reCAPTCHA response to form data
-        let formData = $(this).serialize() + "&g-recaptcha-response=" + recaptchaResponse;
+          // Password match validation
+          if ($("#password").val() !== $("#cpassword").val()) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Password Mismatch',
+              text: 'Password and Confirm Password do not match.'
+            });
+            $('#password, #cpassword').addClass("is-invalid");
+            return false;
+          }
 
-        var _this = $(this);
-        $(".pop-msg").remove();
-        $('#password, #cpassword').removeClass("is-invalid");
+          // Check if all password rules are met
+          if (!isPasswordValid()) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Weak Password',
+              text: 'Please ensure your password meets all the requirements.'
+            });
+            $('#password').addClass("is-invalid");
+            return false;
+          }
 
-        // Password match validation
-        if ($("#password").val() !== $("#cpassword").val()) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Password Mismatch',
-            text: 'Password and Confirm Password do not match.'
-          });
-          $('#password, #cpassword').addClass("is-invalid");
-          return false;
-        }
+          start_loader();
+          // AJAX submission
+          $.ajax({
+            url: _base_url_ + "classes/Users.php?f=save_student",
+            method: 'POST',
+            data: formData,
+            dataType: 'json',
+            success: function (resp) {
+              end_loader(); // Hide loader
 
-        // Check if all password rules are met
-        if (!isPasswordValid()) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Weak Password',
-            text: 'Please ensure your password meets all the requirements.'
-          });
-          $('#password').addClass("is-invalid");
-          return false;
-        }
+              if (resp.status === 'success') {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Registration Successful',
+                  text: 'Your account has been successfully created.',
+                  confirmButtonText: 'Go to Login'
+                }).then(() => {
+                  window.location.href = "./login"; // Redirect on success
+                });
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Registration Failed',
+                  text: resp.msg || 'An unknown error occurred. Please try again later.'
+                });
+                grecaptcha.reset(); // Reset reCAPTCHA for another attempt
+              }
+            },
+            error: function (xhr, status, error) {
+              end_loader(); // Hide loader
 
-        start_loader();
-        // AJAX submission
-        $.ajax({
-          url: _base_url_ + "classes/Users.php?f=save_student",
-          method: 'POST',
-          data: formData,
-          dataType: 'json',
-          success: function (resp) {
-            end_loader(); // Hide loader
+              // Log the response for debugging
+              console.error(xhr.responseText);
 
-            if (resp.status === 'success') {
-              Swal.fire({
-                icon: 'success',
-                title: 'Registration Successful',
-                text: 'Your account has been successfully created.',
-                confirmButtonText: 'Go to Login'
-              }).then(() => {
-                window.location.href = "./login.php"; // Redirect on success
-              });
-            } else {
               Swal.fire({
                 icon: 'error',
-                title: 'Registration Failed',
-                text: resp.msg || 'An unknown error occurred. Please try again later.'
+                title: 'Server Error',
+                text: 'An error occurred while processing your request. Please try again later.',
+                footer: `<pre>${xhr.responseText}</pre>` // Show raw response
               });
               grecaptcha.reset(); // Reset reCAPTCHA for another attempt
             }
-          },
-          error: function (xhr, status, error) {
-            end_loader(); // Hide loader
+          });
 
-            // Log the response for debugging
-            console.error(xhr.responseText);
-
-            Swal.fire({
-              icon: 'error',
-              title: 'Server Error',
-              text: 'An error occurred while processing your request. Please try again later.',
-              footer: `<pre>${xhr.responseText}</pre>` // Show raw response
-            });
-            grecaptcha.reset(); // Reset reCAPTCHA for another attempt
-          }
         });
 
+
+        // Function to check for invalid characters
+        var hasInvalidChars = function (input) {
+          return /['"<script>]/.test(input); // Prevents single quotes, double quotes, and angle brackets
+        };
+
+        // Validate Email Format (Ensure @ symbol is present)
+        var validateEmail = function (email) {
+          var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+          return emailReg.test(email);
+        };
+
+        // Set custom validation message for inputs
+        var setValidationMessage = function (input, message) {
+          input.setCustomValidity(message);
+          input.reportValidity();
+        };
       });
-
-
-      // Function to check for invalid characters
-      var hasInvalidChars = function (input) {
-        return /['"<script>]/.test(input); // Prevents single quotes, double quotes, and angle brackets
-      };
-
-      // Validate Email Format (Ensure @ symbol is present)
-      var validateEmail = function (email) {
-        var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-        return emailReg.test(email);
-      };
-
-      // Set custom validation message for inputs
-      var setValidationMessage = function (input, message) {
-        input.setCustomValidity(message);
-        input.reportValidity();
-      };
-    });
 
   </script>
 </body>
