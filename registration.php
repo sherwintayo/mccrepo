@@ -307,6 +307,17 @@ $stmt->fetch();
       $('#registration-form').submit(function (e) {
         e.preventDefault();
 
+        if (!$('#terms').is(':checked')) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Terms and Conditions',
+            text: 'You must agree to the Terms and Conditions to register.',
+          });
+          e.preventDefault(); // Prevent form submission
+          return false;
+        }
+
+
         let formData = $(this).serialize();
         // Request reCAPTCHA v3 token
         grecaptcha.execute('6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'register' }).then(function (token) {
@@ -358,15 +369,7 @@ $stmt->fetch();
                 }).then(() => {
                   window.location.href = "./login."; // Redirect on success
                 });
-              } else if (!$('#terms').is(':checked')) {
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Terms and Conditions',
-                  text: 'You must agree to the Terms and Conditions to register.',
-                });
-                e.preventDefault(); // Prevent form submission
-                return false;
-              } else else {
+              } else {
                 Swal.fire({
                   icon: 'error',
                   title: 'Registration Failed',
@@ -374,7 +377,7 @@ $stmt->fetch();
                 });
                 grecaptcha.reset(); // Reset reCAPTCHA for another attempt
               }
-          },
+            },
             error: function (xhr, status, error) {
               end_loader(); // Hide loader
 
@@ -391,25 +394,25 @@ $stmt->fetch();
             }
           });
 
+        });
       });
-    });
 
-    // Function to check for invalid characters
-    var hasInvalidChars = function (input) {
-      return /['"<script>]/.test(input); // Prevents single quotes, double quotes, and angle brackets
-    };
+      // Function to check for invalid characters
+      var hasInvalidChars = function (input) {
+        return /['"<script>]/.test(input); // Prevents single quotes, double quotes, and angle brackets
+      };
 
-    // Validate Email Format (Ensure @ symbol is present)
-    var validateEmail = function (email) {
-      var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-      return emailReg.test(email);
-    };
+      // Validate Email Format (Ensure @ symbol is present)
+      var validateEmail = function (email) {
+        var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        return emailReg.test(email);
+      };
 
-    // Set custom validation message for inputs
-    var setValidationMessage = function (input, message) {
-      input.setCustomValidity(message);
-      input.reportValidity();
-    };
+      // Set custom validation message for inputs
+      var setValidationMessage = function (input, message) {
+        input.setCustomValidity(message);
+        input.reportValidity();
+      };
     });
 
   </script>
