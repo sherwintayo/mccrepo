@@ -20,23 +20,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
 
     // reCAPTCHA Secret Key
-    $secretKey = '6LcvKpIqAAAAAERzz2_imzASHXTELXAjpOEGSoQT'; // Replace with your secret key
+    $secretKey = '6LcvKpIqAAAAAERzz2_imzASHXTELXAjpOEGSoQT';
     $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
     // Validate reCAPTCHA response
     $response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
     $responseKeys = json_decode($response, true);
 
-    // Debugging reCAPTCHA response
-    if (!$responseKeys['success']) {
-        echo json_encode([
-            'status' => 'error',
-            'message' => 'reCAPTCHA validation failed.',
-            'debug' => $responseKeys // Include this for debugging
-        ]);
+    if (!$responseKeys['success'] || $responseKeys['score'] < 0.5) {
+        echo json_encode(['status' => 'error', 'message' => 'reCAPTCHA validation failed.']);
         exit();
     }
-
 
     // Server-side validation
     $domain = "@mcclawis.edu.ph";

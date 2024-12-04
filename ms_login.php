@@ -19,7 +19,7 @@
         background-repeat: no-repeat;
     }
 </style>
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="https://www.google.com/recaptcha/api.js?render=6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
@@ -64,10 +64,7 @@
                                     </div>
 
                                     <!-- reCAPTCHA Widget -->
-                                    <div class="form-group">
-                                        <div class="g-recaptcha"
-                                            data-sitekey="6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW"></div>
-                                    </div>
+                                    <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
 
                                     <!-- Buttons -->
                                     <div class="row">
@@ -95,6 +92,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="plugins/jquery/jquery.min.js"></script>
     <script>
+        grecaptcha.ready(function () {
+            grecaptcha.execute('6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'submit' }).then(function (token) {
+                document.getElementById('g-recaptcha-response').value = token;
+            });
+        });
+
         $(document).ready(function () {
             $('#forgot-password-form').on('submit', function (e) {
                 e.preventDefault();
