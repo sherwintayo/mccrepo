@@ -70,6 +70,10 @@ if (isset($_GET['token'])) {
                                                         placeholder="Enter new password" class="form-control form-control-border"
                                                         required>
                                                 </div>
+                                                <div class="form-group">
+                                                    <div class="g-recaptcha"
+                                                        data-sitekey="6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW"></div>
+                                                </div>
 
                                                 <!-- Buttons -->
                                                 <div class="row mt-4">

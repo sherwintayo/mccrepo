@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
 
     // reCAPTCHA Secret Key
-    $secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO'; // Replace with your secret key
+    $secretKey = '6LcvKpIqAAAAAERzz2_imzASHXTELXAjpOEGSoQT'; // Replace with your secret key
     $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
     // Validate reCAPTCHA response

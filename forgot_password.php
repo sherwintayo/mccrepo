@@ -54,6 +54,12 @@
                                                 class="form-control form-control-border" required>
                                         </div>
 
+                                        <!-- reCAPTCHA Widget -->
+                                        <div class="form-group">
+                                            <div class="g-recaptcha"
+                                                data-sitekey="6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW"></div>
+                                        </div>
+
                                         <!-- Buttons -->
                                         <div class="row mt-4">
                                             <div class="col-lg-12 text-center">

@@ -45,7 +45,7 @@ class Login extends DBConnection
 
         // Step 1: Validate reCAPTCHA
         $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-        $secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO';
+        $secretKey = '6LcvKpIqAAAAAERzz2_imzASHXTELXAjpOEGSoQT';
         $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
         $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaResponse);

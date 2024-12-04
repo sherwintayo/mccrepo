@@ -22,6 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->store_result();
 
     if ($stmt->num_rows > 0) {
+
+
         // Generate reset token and expiration
         $token = bin2hex(random_bytes(32));
         $expires_at = date('Y-m-d H:i:s', strtotime('+1 hour'));
