@@ -28,7 +28,7 @@ if ($stmt->num_rows === 0) {
 $stmt->bind_result($user_id, $email);
 $stmt->fetch();
 ?>
-?>
+
 <!DOCTYPE html>
 <html lang="en" class="" style="height: auto;">
 
