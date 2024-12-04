@@ -34,10 +34,10 @@ class SystemSettings extends DBConnection
 		}
 		return true;
 	}
-	function update_settings()
+	function update_settings_info()
 	{
 		$data = "";
-		// $resp = ['status' => 'error', 'msg' => ''];
+		$resp = ['status' => 'error', 'msg' => ''];
 
 		foreach ($_POST as $key => $value) {
 			if (!in_array($key, array("content")))
@@ -226,8 +226,8 @@ $_settings->load_system_info();
 $action = !isset($_GET['f']) ? 'none' : strtolower($_GET['f']);
 $sysset = new SystemSettings();
 switch ($action) {
-	case 'update_settings':
-		echo $sysset->update_settings();
+	case 'update_settings_info':
+		echo $sysset->update_settings_info();
 		break;
 	default:
 		// echo $sysset->index();
