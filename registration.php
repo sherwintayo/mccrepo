@@ -239,7 +239,7 @@ $stmt->fetch();
   </div>
 
   <!-- Terms and Conditions Modal -->
-  <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+  <div class="modal fade" id="termsModal" tabindex="-5" aria-labelledby="termsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
@@ -249,14 +249,25 @@ $stmt->fetch();
           </button>
         </div>
         <div class="modal-body">
-          <!-- Add your Terms and Conditions here -->
-          <p>Welcome to our platform. By registering, you agree to the following terms...</p>
+          <p>Welcome to our platform. By registering, you agree to the following terms:</p>
           <ul>
             <li>Do not upload prohibited content.</li>
             <li>Respect intellectual property rights.</li>
             <li>Your data will be handled responsibly.</li>
-            <!-- Add more terms as needed -->
+            <li>Ensure that the information you provide is accurate and up to date.</li>
+            <li>You are solely responsible for maintaining the confidentiality of your account credentials.</li>
+            <li>Any misuse of the platform may lead to account suspension or termination.</li>
+            <li>You agree not to engage in any activity that disrupts or interferes with the platform's functionality.
+            </li>
+            <li>We reserve the right to update these terms at any time without prior notice.</li>
+            <li>All disputes arising from the use of the platform will be governed by the applicable laws of [your
+              country/region].</li>
+            <li>Failure to comply with these terms may result in permanent loss of account access.</li>
+            <li>You consent to receive notifications and updates related to your account via email.</li>
+            <li>You agree not to share your account with others or allow unauthorized access.</li>
           </ul>
+          <p>Please read and understand these terms carefully. By proceeding with registration, you accept and agree to
+            these conditions.</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -264,6 +275,8 @@ $stmt->fetch();
       </div>
     </div>
   </div>
+
+
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
