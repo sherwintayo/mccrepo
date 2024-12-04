@@ -394,69 +394,80 @@ class Login extends DBConnection
         session_start();
         extract($_POST);
 
-        // Verify reCAPTCHA v3
-        $recaptchaToken = $_POST['recaptcha_token'] ?? '';
-        $secretKey = '6LcvKpIqAAAAAERzz2_imzASHXTELXAjpOEGSoQT';
-        $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
-        $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaToken);
-        $responseKeys = json_decode($response, true);
+        try {
+            // Verify reCAPTCHA v3
+            $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
+            $secretKey = '6LfFJYcqAAAAAERzz2_imzASHXTELXAjpOEGSoQT'; // Replace with your secret key
+            $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
-        if (!$responseKeys['success'] || $responseKeys['score'] < 0.5) {
-            return json_encode([
-                'status' => 'captcha_failed',
-                'msg' => 'reCAPTCHA validation failed or suspicious activity detected. Please try again.'
-            ]);
-        }
+            // Send request to Google's reCAPTCHA API
+            $response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
+            $responseKeys = json_decode($response, true);
 
-        // Fetch user details by email
-        $qry = $this->conn->prepare("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS fullname FROM student_list WHERE email = ?");
-        $qry->bind_param("s", $email);
-        $qry->execute();
-        $result = $qry->get_result();
+            if (!$responseKeys['success'] || $responseKeys['score'] < 0.5) { // Check reCAPTCHA score threshold
+                error_log("reCAPTCHA failed: " . json_encode($responseKeys)); // Log failure
+                return json_encode([
+                    'status' => 'captcha_failed',
+                    'msg' => 'reCAPTCHA validation failed. Please try again.'
+                ]);
+            }
 
-        if ($this->conn->error) {
-            return json_encode([
-                'status' => 'failed',
-                'msg' => "An error occurred while fetching data. Error: " . $this->conn->error
-            ]);
-        }
+            // Fetch user details by email
+            $qry = $this->conn->prepare("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS fullname FROM student_list WHERE email = ?");
+            $qry->bind_param("s", $email);
+            $qry->execute();
+            $result = $qry->get_result();
 
-        if ($result->num_rows > 0) {
-            $res = $result->fetch_assoc();
+            if ($this->conn->error) {
+                return json_encode([
+                    'status' => 'failed',
+                    'msg' => "An error occurred while fetching data. Error: " . $this->conn->error
+                ]);
+            }
 
-            // Verify the password using bcrypt
-            if (password_verify($password, $res['password'])) {
-                if ($res['status'] == 1) {
-                    // Set session variables for logged-in user
-                    $_SESSION['user_logged_in'] = true;
-                    $_SESSION['user_id'] = $res['id'];
-                    foreach ($res as $k => $v) {
-                        $this->settings->set_userdata($k, $v);
+            if ($result->num_rows > 0) {
+                $res = $result->fetch_assoc();
+
+                // Verify the password using bcrypt
+                if (password_verify($password, $res['password'])) {
+                    if ($res['status'] == 1) {
+                        // Set session variables for logged-in user
+                        $_SESSION['user_logged_in'] = true;
+                        $_SESSION['user_id'] = $res['id'];
+                        foreach ($res as $k => $v) {
+                            $this->settings->set_userdata($k, $v);
+                        }
+                        $this->settings->set_userdata('login_type', 2);
+
+                        return json_encode(['status' => 'success']);
+                    } else {
+                        return json_encode([
+                            'status' => 'failed',
+                            'msg' => 'Your account is not verified yet.'
+                        ]);
                     }
-                    $this->settings->set_userdata('login_type', 2);
-
-                    return json_encode(['status' => 'success']);
                 } else {
                     return json_encode([
                         'status' => 'failed',
-                        'msg' => 'Your account is not verified yet.'
+                        'msg' => 'Invalid email or password.'
                     ]);
                 }
             } else {
-                // Invalid password
                 return json_encode([
                     'status' => 'failed',
                     'msg' => 'Invalid email or password.'
                 ]);
             }
-        } else {
-            // No user found with the given email
+        } catch (Exception $e) {
+            error_log("Error during login: " . $e->getMessage()); // Log unexpected errors
             return json_encode([
                 'status' => 'failed',
-                'msg' => 'Invalid email or password.'
+                'msg' => 'An unexpected error occurred. Please try again later.',
+                'debug' => $e->getMessage() // Optional: Include for debugging in dev mode
             ]);
         }
     }
+
 
 
 
