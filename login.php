@@ -40,7 +40,7 @@
     color: #000;
   }
 </style>
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="https://www.google.com/recaptcha/api.js?render=6LfFJYcqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
@@ -96,9 +96,7 @@
                     </span>
                   </div>
 
-                  <div class="form-group">
-                    <div class="g-recaptcha" data-sitekey="6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW"></div>
-                  </div>
+
 
                   <!-- Buttons -->
                   <div class="row">
@@ -195,34 +193,37 @@
 
         // Existing AJAX request logic
         start_loader();
-
-        $.ajax({
-          url: _base_url_ + "classes/Login.php?f=student_login",
-          method: 'POST',
-          data: _this.serialize(),
-          dataType: 'json',
-          error: err => {
-            console.log(err);
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'An error occurred. Please try again later.',
-            });
-            end_loader();
-          },
-          success: function (resp) {
-            end_loader();
-            if (resp.status == 'success') {
-              <?php $_SESSION['user_logged_in'] = true; ?>
-              window.location.href = "./";
-            } else {
+        // Request reCAPTCHA v3 token
+        grecaptcha.execute('6LfFJYcqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'login' }).then(function (token) {
+          const formData = form.serialize() + '&g-recaptcha-response=' + token;
+          $.ajax({
+            url: _base_url_ + "classes/Login.php?f=student_login",
+            method: 'POST',
+            data: _this.serialize(),
+            dataType: 'json',
+            error: err => {
+              console.log(err);
               Swal.fire({
                 icon: 'error',
-                title: 'Login Failed',
-                text: resp.msg || 'Invalid credentials. Please try again.',
+                title: 'Error',
+                text: 'An error occurred. Please try again later.',
               });
+              end_loader();
+            },
+            success: function (resp) {
+              end_loader();
+              if (resp.status == 'success') {
+                <?php $_SESSION['user_logged_in'] = true; ?>
+                window.location.href = "./";
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Login Failed',
+                  text: resp.msg || 'Invalid credentials. Please try again.',
+                });
+              }
             }
-          }
+          });
         });
       });
     });
