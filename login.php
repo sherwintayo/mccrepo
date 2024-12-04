@@ -194,6 +194,7 @@
         // Existing AJAX request logic
         start_loader();
         // Request reCAPTCHA v3 token
+        const form = $(this);
         grecaptcha.execute('6LfFJYcqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'login' }).then(function (token) {
           const formData = form.serialize() + '&g-recaptcha-response=' + token;
           $.ajax({
