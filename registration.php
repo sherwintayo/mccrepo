@@ -317,6 +317,32 @@ $stmt->fetch();
           return false;
         }
 
+        var _this = $(this);
+        $(".pop-msg").remove();
+        $('#password, #cpassword').removeClass("is-invalid");
+
+        // Password match validation
+        if ($("#password").val() !== $("#cpassword").val()) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Password Mismatch',
+            text: 'Password and Confirm Password do not match.'
+          });
+          $('#password, #cpassword').addClass("is-invalid");
+          return false;
+        }
+
+        // Check if all password rules are met
+        if (!isPasswordValid()) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Weak Password',
+            text: 'Please ensure your password meets all the requirements.'
+          });
+          $('#password').addClass("is-invalid");
+          return false;
+        }
+
 
         let formData = $(this).serialize();
         // Request reCAPTCHA v3 token
@@ -325,31 +351,7 @@ $stmt->fetch();
 
           let formData = $(this).serialize();
 
-          var _this = $(this);
-          $(".pop-msg").remove();
-          $('#password, #cpassword').removeClass("is-invalid");
 
-          // Password match validation
-          if ($("#password").val() !== $("#cpassword").val()) {
-            Swal.fire({
-              icon: 'error',
-              title: 'Password Mismatch',
-              text: 'Password and Confirm Password do not match.'
-            });
-            $('#password, #cpassword').addClass("is-invalid");
-            return false;
-          }
-
-          // Check if all password rules are met
-          if (!isPasswordValid()) {
-            Swal.fire({
-              icon: 'error',
-              title: 'Weak Password',
-              text: 'Please ensure your password meets all the requirements.'
-            });
-            $('#password').addClass("is-invalid");
-            return false;
-          }
 
           start_loader();
           // AJAX submission
