@@ -243,13 +243,13 @@ $stmt->fetch();
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="termsModalLabel">Terms and Conditions</h5>
+          <h4 class="modal-title" id="termsModalLabel">Terms and Conditions</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-          <p>Welcome to our platform. By registering, you agree to the following terms:</p>
+          <h5>Welcome to our platform. By registering, you agree to the following terms:</h5>
           <ul>
             <li>Do not upload prohibited content.</li>
             <li>Respect intellectual property rights.</li>
