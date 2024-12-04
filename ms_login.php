@@ -93,12 +93,6 @@
     <script src="plugins/jquery/jquery.min.js"></script>
     <script>
         grecaptcha.ready(function () {
-            grecaptcha.execute('6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'submit' }).then(function (token) {
-                document.getElementById('g-recaptcha-response').value = token;
-            });
-        });
-
-        $(document).ready(function () {
             $('#forgot-password-form').on('submit', function (e) {
                 e.preventDefault();
 
@@ -116,49 +110,41 @@
 
                 start_loader();
 
-                let recaptchaResponse = grecaptcha.getResponse();
-                if (!recaptchaResponse) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Incomplete reCAPTCHA',
-                        text: 'Please complete the reCAPTCHA challenge.'
-                    });
-                    end_loader();
-                    return false;
-                }
-
-                $.ajax({
-                    url: 'ms_login_process.php',
-                    method: 'POST',
-                    data: { email: email, 'g-recaptcha-response': recaptchaResponse },
-                    dataType: 'json',
-                    beforeSend: function () {
-                        $('#response-message').hide().removeClass('alert-success alert-danger');
-                    },
-                    success: function (response) {
-                        end_loader();
-                        if (response.status === 'success') {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success',
-                                text: response.message
-                            });
-                        } else {
+                // Request reCAPTCHA v3 token
+                grecaptcha.execute('6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'submit' }).then(function (token) {
+                    $.ajax({
+                        url: 'ms_login_process.php',
+                        method: 'POST',
+                        data: { email: email, 'g-recaptcha-response': token },
+                        dataType: 'json',
+                        beforeSend: function () {
+                            $('#response-message').hide().removeClass('alert-success alert-danger');
+                        },
+                        success: function (response) {
+                            end_loader();
+                            if (response.status === 'success') {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: response.message
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: response.message
+                                });
+                            }
+                        },
+                        error: function () {
+                            end_loader();
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Error',
-                                text: response.message
+                                title: 'Server Error',
+                                text: 'An error occurred. Please try again later.'
                             });
                         }
-                    },
-                    error: function () {
-                        end_loader();
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Server Error',
-                            text: 'An error occurred. Please try again later.'
-                        });
-                    }
+                    });
                 });
             });
         });
