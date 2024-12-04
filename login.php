@@ -144,11 +144,6 @@
         return emailReg.test(email);
       };
 
-      // var validatePassword = function(password) {
-      //   var passwordReg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-      //   return passwordReg.test(password);
-      // };
-
       var hasInvalidChars = function (input) {
         return input.includes("'");
       };
@@ -191,18 +186,21 @@
           return; // Stop submission if validation fails
         }
 
-        // Existing AJAX request logic
+        // Start loader before making the request
         start_loader();
+
         // Request reCAPTCHA v3 token
-        const form = $(this);
         grecaptcha.execute('6LfFJYcqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'login' }).then(function (token) {
-          const formData = form.serialize() + '&g-recaptcha-response=' + token;
+          // Append reCAPTCHA token to the form data
+          var formData = _this.serialize() + '&g-recaptcha-response=' + token;
+
+          // AJAX request for login
           $.ajax({
             url: _base_url_ + "classes/Login.php?f=student_login",
             method: 'POST',
-            data: _this.serialize(),
+            data: formData,
             dataType: 'json',
-            error: err => {
+            error: function (err) {
               console.log(err);
               Swal.fire({
                 icon: 'error',
@@ -229,6 +227,7 @@
       });
     });
   </script>
+
   <script>
     function toggleVisibility(inputId) {
       const inputField = document.getElementById(inputId);
