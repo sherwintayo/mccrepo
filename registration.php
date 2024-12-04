@@ -175,6 +175,14 @@ $stmt->fetch();
                       </span>
                     </div>
                   </div>
+                  <!-- Terms and Conditions -->
+                  <div class="form-group">
+                    <input type="checkbox" id="terms" name="terms">
+                    <label for="terms">
+                      I have read and agree to the <a href="#" data-toggle="modal" data-target="#termsModal">Terms and
+                        Conditions</a>.
+                    </label>
+                  </div>
                   <div class="row">
                     <div class="content hidden">
                       <small>
@@ -230,6 +238,32 @@ $stmt->fetch();
     </div>
   </div>
 
+  <!-- Terms and Conditions Modal -->
+  <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="termsModalLabel">Terms and Conditions</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Add your Terms and Conditions here -->
+          <p>Welcome to our platform. By registering, you agree to the following terms...</p>
+          <ul>
+            <li>Do not upload prohibited content.</li>
+            <li>Respect intellectual property rights.</li>
+            <li>Your data will be handled responsibly.</li>
+            <!-- Add more terms as needed -->
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -315,8 +349,15 @@ $stmt->fetch();
             dataType: 'json',
             success: function (resp) {
               end_loader(); // Hide loader
-
-              if (resp.status === 'success') {
+              if (!$('#terms').is(':checked')) {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Terms and Conditions',
+                  text: 'You must agree to the Terms and Conditions to register.',
+                });
+                e.preventDefault(); // Prevent form submission
+                return false;
+              } else if (resp.status === 'success') {
                 Swal.fire({
                   icon: 'success',
                   title: 'Registration Successful',
