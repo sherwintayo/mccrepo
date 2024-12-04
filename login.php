@@ -144,11 +144,6 @@
         return emailReg.test(email);
       };
 
-      // var validatePassword = function(password) {
-      //   var passwordReg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-      //   return passwordReg.test(password);
-      // };
-
       var hasInvalidChars = function (input) {
         return input.includes("'");
       };
@@ -158,38 +153,40 @@
         input.reportValidity();
       };
 
+      el.addClass("alert pop-msg my-2").hide();
+
+      // Fetching input values for validation
+      var emailInput = $('#email')[0];
+      var passwordInput = $('#password')[0];
+      var email = emailInput.value;
+      var password = passwordInput.value;
+
+      // Reset custom validation messages
+      emailInput.setCustomValidity("");
+      passwordInput.setCustomValidity("");
+
+      // Validate email format
+      if (!validateEmail(email)) {
+        setValidationMessage(emailInput, "Invalid email format: put an @ in '" + email + "'");
+        return; // Stop submission if validation fails
+      }
+
+      // Check for invalid characters in email and password
+      if (hasInvalidChars(email)) {
+        setValidationMessage(emailInput, "Email must not contain single quotes: '" + email + "'");
+        return; // Stop submission if validation fails
+      }
+
+      if (hasInvalidChars(password)) {
+        setValidationMessage(passwordInput, "Password must not contain single quotes.");
+        return; // Stop submission if validation fails
+      }
+
+
       $('#slogin-form').submit(function (e) {
         e.preventDefault();
         var _this = $(this);
         var el = $("<div>");
-        el.addClass("alert pop-msg my-2").hide();
-
-        // Fetching input values for validation
-        var emailInput = $('#email')[0];
-        var passwordInput = $('#password')[0];
-        var email = emailInput.value;
-        var password = passwordInput.value;
-
-        // Reset custom validation messages
-        emailInput.setCustomValidity("");
-        passwordInput.setCustomValidity("");
-
-        // Validate email format
-        if (!validateEmail(email)) {
-          setValidationMessage(emailInput, "Invalid email format: put an @ in '" + email + "'");
-          return; // Stop submission if validation fails
-        }
-
-        // Check for invalid characters in email and password
-        if (hasInvalidChars(email)) {
-          setValidationMessage(emailInput, "Email must not contain single quotes: '" + email + "'");
-          return; // Stop submission if validation fails
-        }
-
-        if (hasInvalidChars(password)) {
-          setValidationMessage(passwordInput, "Password must not contain single quotes.");
-          return; // Stop submission if validation fails
-        }
 
         grecaptcha.execute('6LfFJYcqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'login' }).then(function (token) {
           var formData = _this.serialize() + '&g-recaptcha-response=' + token;
