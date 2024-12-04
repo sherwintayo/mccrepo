@@ -395,30 +395,19 @@ class Login extends DBConnection
         extract($_POST);
 
         try {
-            // Verify reCAPTCHA v3
-            $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-            if (empty($recaptchaResponse)) {
-                return json_encode([
-                    'status' => 'captcha_failed',
-                    'msg' => 'reCAPTCHA response missing. Please try again.'
-                ]);
-            }
 
-            $secretKey = '6LfFJYcqAAAAAERzz2_imzASHXTELXAjpOEGSoQT'; // Replace with your secret key
+            $recaptchaToken = $_POST['recaptcha_token'] ?? '';
+            $secretKey = '6LfFJYcqAAAAAERzz2_imzASHXTELXAjpOEGSoQT';
             $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
-
-            // Send request to Google's reCAPTCHA API
-            $response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
+            $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaToken);
             $responseKeys = json_decode($response, true);
 
-            if (!$responseKeys['success'] || $responseKeys['score'] < 0.5) { // Check score threshold
-                error_log("reCAPTCHA failed: " . json_encode($responseKeys)); // Log failure
+            if (!$responseKeys['success'] || $responseKeys['score'] < 0.5) {
                 return json_encode([
                     'status' => 'captcha_failed',
                     'msg' => 'reCAPTCHA validation failed or suspicious activity detected. Please try again.'
                 ]);
             }
-
             // Fetch user details by email
             $qry = $this->conn->prepare("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS fullname FROM student_list WHERE email = ?");
             $qry->bind_param("s", $email);
