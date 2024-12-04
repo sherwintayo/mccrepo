@@ -96,9 +96,8 @@
                     </span>
                   </div>
 
-                  <div class="form-group">
-                    <div class="g-recaptcha" data-sitekey="6LfFJYcqAAAAAK6Djr0QOH68F4r_Aehziia0XYa9"></div>
-                  </div>
+                  <!-- reCAPTCHA Widget -->
+                  <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
 
                   <!-- Buttons -->
                   <div class="row">
