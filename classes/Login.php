@@ -398,16 +398,19 @@ class Login extends DBConnection
             $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
             $secretKey = '6LcvKpIqAAAAAERzz2_imzASHXTELXAjpOEGSoQT';
             $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
+
+            // Send verification request
             $response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
             $responseKeys = json_decode($response, true);
+
+            // Log response for debugging
             error_log("reCAPTCHA Response: " . json_encode($responseKeys));
 
-            if (!$responseKeys['success'] || $responseKeys['score'] < 0.4) {
-                error_log("reCAPTCHA failed: " . json_encode($responseKeys));
+            // Check reCAPTCHA validation
+            if (!$responseKeys['success'] || $responseKeys['score'] < 0.5) {
                 return json_encode([
                     'status' => 'captcha_failed',
-                    'msg' => 'reCAPTCHA validation failed. Please try again.',
-                    'debug' => $responseKeys // Include for debugging
+                    'msg' => 'reCAPTCHA validation failed. Please try again.'
                 ]);
             }
 
