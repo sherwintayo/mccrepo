@@ -193,7 +193,7 @@
         grecaptcha.ready(function () {
           grecaptcha.execute('6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'submit' }).then(function (token) {
             $('#g-recaptcha-response').val(token);
-            // Existing AJAX request logic
+            console.log("Generated Token: ", token); // Debugging
             start_loader();
 
             $.ajax({

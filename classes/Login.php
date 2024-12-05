@@ -400,13 +400,14 @@ class Login extends DBConnection
             $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
             $response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
             $responseKeys = json_decode($response, true);
+            error_log("reCAPTCHA Response: " . json_encode($responseKeys));
 
-            if (!$responseKeys['success'] || $responseKeys['score'] < 0.5) {
-                error_log("reCAPTCHA failed: " . json_encode($responseKeys)); // Log details for debugging
+            if (!$responseKeys['success'] || $responseKeys['score'] < 0.4) {
+                error_log("reCAPTCHA failed: " . json_encode($responseKeys));
                 return json_encode([
                     'status' => 'captcha_failed',
                     'msg' => 'reCAPTCHA validation failed. Please try again.',
-                    'debug' => $responseKeys // Optional: include for debugging in development
+                    'debug' => $responseKeys // Include for debugging
                 ]);
             }
 
