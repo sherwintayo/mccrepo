@@ -191,7 +191,7 @@
           return; // Stop submission if validation fails
         }
         grecaptcha.ready(function () {
-          grecaptcha.execute('6LfFJYcqAAAAAK6Djr0QOH68F4r_Aehziia0XYa9', { action: 'submit' }).then(function (token) {
+          grecaptcha.execute('6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'submit' }).then(function (token) {
             $('#g-recaptcha-response').val(token);
             // Existing AJAX request logic
             start_loader();
