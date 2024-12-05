@@ -188,13 +188,12 @@
         }
 
         // Start loader before making the request
-        start_loader();
+
 
         // Request reCAPTCHA v3 token
         grecaptcha.execute('6LfFJYcqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'submit' }).then(function (token) {
-          // Append reCAPTCHA token to the form data
-          var formData = _this.serialize() + '&g-recaptcha-response=' + token;
-
+          var formData = _this.serialize() + '&g-recaptcha-response=' + token; // Append token to form data
+          start_loader();
           // AJAX request for login
           $.ajax({
             url: _base_url_ + "classes/Login.php?f=student_login",
