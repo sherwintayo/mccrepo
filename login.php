@@ -191,8 +191,7 @@
 
         // Request reCAPTCHA v3 token
         grecaptcha.execute('6LfFJYcqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'submit' }).then(function (token) {
-          // Append reCAPTCHA token to the form data
-          var formData = _this.serialize() + '&g-recaptcha-response=' + token;
+          const formData = $(e.target).serialize() + '&g-recaptcha-response=' + token;
           start_loader();
 
           // AJAX request for login
