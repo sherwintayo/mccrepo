@@ -145,8 +145,6 @@
         return emailReg.test(email);
       };
 
-
-
       var hasInvalidChars = function (input) {
         return input.includes("'");
       };
@@ -156,19 +154,17 @@
         input.reportValidity();
       };
 
-
       $('#slogin-form').submit(function (e) {
         e.preventDefault();
-        const form = $(this);
-
-        const el = $("<div>");
+        var _this = $(this);
+        var el = $("<div>");
         el.addClass("alert pop-msg my-2").hide();
 
         // Fetching input values for validation
-        const emailInput = $('#email')[0];
-        const passwordInput = $('#password')[0];
-        const email = emailInput.value;
-        const password = passwordInput.value;
+        var emailInput = $('#email')[0];
+        var passwordInput = $('#password')[0];
+        var email = emailInput.value;
+        var password = passwordInput.value;
 
         // Reset custom validation messages
         emailInput.setCustomValidity("");
@@ -191,18 +187,21 @@
           return; // Stop submission if validation fails
         }
 
+        // Start loader before making the request
+        start_loader();
+
+        // Request reCAPTCHA v3 token
         grecaptcha.execute('6LfFJYcqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'submit' }).then(function (token) {
-          const formData = form.serialize() + '&g-recaptcha-response=' + token;
+          // Append reCAPTCHA token to the form data
+          var formData = _this.serialize() + '&g-recaptcha-response=' + token;
 
-          // Existing AJAX request logic
-          start_loader();
-
+          // AJAX request for login
           $.ajax({
             url: _base_url_ + "classes/Login.php?f=student_login",
             method: 'POST',
             data: formData,
             dataType: 'json',
-            error: err => {
+            error: function (err) {
               console.log(err);
               Swal.fire({
                 icon: 'error',
