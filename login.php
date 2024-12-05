@@ -189,11 +189,12 @@
 
         // Start loader before making the request
 
-
         // Request reCAPTCHA v3 token
         grecaptcha.execute('6LfFJYcqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'submit' }).then(function (token) {
-          var formData = _this.serialize() + '&g-recaptcha-response=' + token; // Append token to form data
+          // Append reCAPTCHA token to the form data
+          var formData = _this.serialize() + '&g-recaptcha-response=' + token;
           start_loader();
+
           // AJAX request for login
           $.ajax({
             url: _base_url_ + "classes/Login.php?f=student_login",
