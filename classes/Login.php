@@ -45,7 +45,7 @@ class Login extends DBConnection
 
         // Step 1: Validate reCAPTCHA
         $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-        $secretKey = '6LcvKpIqAAAAAERzz2_imzASHXTELXAjpOEGSoQT';
+        $secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO';
         $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
         $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaResponse);
@@ -395,44 +395,33 @@ class Login extends DBConnection
         extract($_POST);
 
         try {
-
-            // Validate reCAPTCHA response
             $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-            $secretKey = '6LcvKpIqAAAAAERzz2_imzASHXTELXAjpOEGSoQT'; // Replace with secret key
+            $secretKey = '6LfFJYcqAAAAAERzz2_imzASHXTELXAjpOEGSoQT';
             $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
+
             $response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
             $responseKeys = json_decode($response, true);
 
             if (!$responseKeys['success'] || $responseKeys['score'] < 0.5) {
-                error_log("reCAPTCHA validation failed. Response: " . json_encode($responseKeys));
                 return json_encode([
                     'status' => 'captcha_failed',
                     'msg' => 'reCAPTCHA validation failed. Please try again.'
                 ]);
             }
 
-            // Fetch user details by email
-            $qry = $this->conn->prepare("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS fullname FROM student_list WHERE email = ?");
-            $qry->bind_param("s", $email);
-            $qry->execute();
-            $result = $qry->get_result();
-
-            if ($this->conn->error) {
-                return json_encode([
-                    'status' => 'failed',
-                    'msg' => "An error occurred while fetching data. Error: " . $this->conn->error
-                ]);
-            }
+            $stmt = $this->conn->prepare("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS fullname FROM student_list WHERE email = ?");
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
             if ($result->num_rows > 0) {
-                $res = $result->fetch_assoc();
-
-                if (password_verify($password, $res['password'])) {
-                    if ($res['status'] == 1) {
+                $user = $result->fetch_assoc();
+                if (password_verify($password, $user['password'])) {
+                    if ($user['status'] == 1) {
                         $_SESSION['user_logged_in'] = true;
-                        $_SESSION['user_id'] = $res['id'];
-                        foreach ($res as $k => $v) {
-                            $this->settings->set_userdata($k, $v);
+                        $_SESSION['user_id'] = $user['id'];
+                        foreach ($user as $key => $value) {
+                            $this->settings->set_userdata($key, $value);
                         }
                         $this->settings->set_userdata('login_type', 2);
 
@@ -440,31 +429,23 @@ class Login extends DBConnection
                     } else {
                         return json_encode([
                             'status' => 'failed',
-                            'msg' => 'Your account is not verified yet.'
+                            'msg' => 'Your account is not yet verified.'
                         ]);
                     }
                 } else {
-                    return json_encode([
-                        'status' => 'failed',
-                        'msg' => 'Invalid email or password.'
-                    ]);
+                    return json_encode(['status' => 'failed', 'msg' => 'Invalid email or password.']);
                 }
             } else {
-                return json_encode([
-                    'status' => 'failed',
-                    'msg' => 'Invalid email or password.'
-                ]);
+                return json_encode(['status' => 'failed', 'msg' => 'Invalid email or password.']);
             }
         } catch (Exception $e) {
+            error_log("Error during login: " . $e->getMessage());
             return json_encode([
                 'status' => 'failed',
-                'msg' => 'An unexpected error occurred.',
-                'debug' => $e->getMessage()
+                'msg' => 'An unexpected error occurred. Please try again later.'
             ]);
         }
     }
-
-
 
 
 

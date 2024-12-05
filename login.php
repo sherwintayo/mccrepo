@@ -40,7 +40,7 @@
     color: #000;
   }
 </style>
-<script src="https://www.google.com/recaptcha/api.js?render=6LfFJYcqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW"></script>
+<script src="https://www.google.com/recaptcha/api.js?render=6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
@@ -96,8 +96,7 @@
                     </span>
                   </div>
 
-                  <!-- reCAPTCHA Widget -->
-                  <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+                  <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
 
                   <!-- Buttons -->
                   <div class="row">
@@ -105,7 +104,7 @@
                       <a href="ms_login" class="btn btn-light">Sign Up</a>
                     </div>
                     <div class="col-md-6 text-right">
-                      <button type="submit" class="btn btn-primary btn-flat">Login</button>
+                      <button class="btn btn-primary btn-flat">Login</button>
                     </div>
                   </div>
 
@@ -144,6 +143,11 @@
         var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
         return emailReg.test(email);
       };
+
+      // var validatePassword = function(password) {
+      //   var passwordReg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+      //   return passwordReg.test(password);
+      // };
 
       var hasInvalidChars = function (input) {
         return input.includes("'");
@@ -186,42 +190,40 @@
           setValidationMessage(passwordInput, "Password must not contain single quotes.");
           return; // Stop submission if validation fails
         }
+        grecaptcha.ready(function () {
+          grecaptcha.execute('6LfFJYcqAAAAAK6Djr0QOH68F4r_Aehziia0XYa9', { action: 'submit' }).then(function (token) {
+            $('#g-recaptcha-response').val(token);
+            // Existing AJAX request logic
+            start_loader();
 
-        // Start loader before making the request
-
-        // Request reCAPTCHA v3 token
-        grecaptcha.execute('6LfFJYcqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'submit' }).then(function (token) {
-          const formData = $(e.target).serialize() + '&g-recaptcha-response=' + token;
-          start_loader();
-
-          // AJAX request for login
-          $.ajax({
-            url: _base_url_ + "classes/Login.php?f=student_login",
-            method: 'POST',
-            data: formData,
-            dataType: 'json',
-            error: function (err) {
-              console.log(err);
-              Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'An error occurred. Please try again later.',
-              });
-              end_loader();
-            },
-            success: function (resp) {
-              end_loader();
-              if (resp.status == 'success') {
-                <?php $_SESSION['user_logged_in'] = true; ?>
-                window.location.href = "./";
-              } else {
+            $.ajax({
+              url: _base_url_ + "classes/Login.php?f=student_login",
+              method: 'POST',
+              data: $('#login-form').serialize(),
+              dataType: 'json',
+              error: err => {
+                console.log(err);
                 Swal.fire({
                   icon: 'error',
-                  title: 'Login Failed',
-                  text: resp.msg || 'Invalid credentials. Please try again.',
+                  title: 'Error',
+                  text: 'An error occurred. Please try again later.',
                 });
+                end_loader();
+              },
+              success: function (resp) {
+                end_loader();
+                if (resp.status == 'success') {
+                  <?php $_SESSION['user_logged_in'] = true; ?>
+                  window.location.href = "./";
+                } else {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Login Failed',
+                    text: resp.msg || 'Invalid credentials. Please try again.',
+                  });
+                }
               }
-            }
+            });
           });
         });
       });
