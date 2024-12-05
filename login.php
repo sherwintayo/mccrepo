@@ -156,39 +156,40 @@
         input.reportValidity();
       };
 
-      var el = $("<div>");
-      el.addClass("alert pop-msg my-2").hide();
-
-      // Fetching input values for validation
-      var emailInput = $('#email')[0];
-      var passwordInput = $('#password')[0];
-      var email = emailInput.value;
-      var password = passwordInput.value;
-
-      // Reset custom validation messages
-      emailInput.setCustomValidity("");
-      passwordInput.setCustomValidity("");
-
-      // Validate email format
-      if (!validateEmail(email)) {
-        setValidationMessage(emailInput, "Invalid email format: put an @ in '" + email + "'");
-        return; // Stop submission if validation fails
-      }
-
-      // Check for invalid characters in email and password
-      if (hasInvalidChars(email)) {
-        setValidationMessage(emailInput, "Email must not contain single quotes: '" + email + "'");
-        return; // Stop submission if validation fails
-      }
-
-      if (hasInvalidChars(password)) {
-        setValidationMessage(passwordInput, "Password must not contain single quotes.");
-        return; // Stop submission if validation fails
-      }
 
       $('#slogin-form').submit(function (e) {
         e.preventDefault();
         const form = $(this);
+
+        const el = $("<div>");
+        el.addClass("alert pop-msg my-2").hide();
+
+        // Fetching input values for validation
+        const emailInput = $('#email')[0];
+        const passwordInput = $('#password')[0];
+        const email = emailInput.value;
+        const password = passwordInput.value;
+
+        // Reset custom validation messages
+        emailInput.setCustomValidity("");
+        passwordInput.setCustomValidity("");
+
+        // Validate email format
+        if (!validateEmail(email)) {
+          setValidationMessage(emailInput, "Invalid email format: put an @ in '" + email + "'");
+          return; // Stop submission if validation fails
+        }
+
+        // Check for invalid characters in email and password
+        if (hasInvalidChars(email)) {
+          setValidationMessage(emailInput, "Email must not contain single quotes: '" + email + "'");
+          return; // Stop submission if validation fails
+        }
+
+        if (hasInvalidChars(password)) {
+          setValidationMessage(passwordInput, "Password must not contain single quotes.");
+          return; // Stop submission if validation fails
+        }
 
         grecaptcha.execute('6LfFJYcqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'submit' }).then(function (token) {
           const formData = form.serialize() + '&g-recaptcha-response=' + token;
