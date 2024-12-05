@@ -224,6 +224,13 @@
                 }
               }
             });
+          }).catch(function (err) {
+            console.error('reCAPTCHA execution error:', err);
+            Swal.fire({
+              icon: 'error',
+              title: 'reCAPTCHA Failed',
+              text: 'Please refresh the page and try again.',
+            });
           });
         });
       });
