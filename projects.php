@@ -38,8 +38,8 @@
                         <div class="img-holder banner overflow-hidden">
                             <img class="img-top" src="<?= validate_image($row['banner_path']) ?>" alt="Banner Image">
                         </div>
-                        <div class="card-body">
-                            <div class="card-title fw-bolder h5 text-center"><?= $row['title'] ?></div><br>
+                        <div class="cards-body">
+                            <div class="cards-title fw-bolder h5 text-center"><?= $row['title'] ?></div><br>
                             <div class="student"> <small>By:
                                     <b><?= isset($student_arr[$row['student_id']]) ? $student_arr[$row['student_id']] : "N/A" ?></b></small>
                             </div>
