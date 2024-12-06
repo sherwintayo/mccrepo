@@ -222,34 +222,7 @@
         }, 1000);
       }
 
-      // var _this = $(this);
-      // var hasError = false;
 
-      // // XSS and Validation Checks for invalid characters and email
-      // _this.find('input[type="text"], input[type="email"], input[type="password"]').each(function () {
-      //   var input = $(this);
-      //   var value = input.val();
-
-      //   // Check for invalid characters (' and ") and for angle brackets (< and >)
-      //   if (hasInvalidChars(value)) {
-      //     setValidationMessage(this, "Input must not contain single quotes, double quotes, or angle brackets.");
-      //     hasError = true;
-      //     return false; // Exit loop
-      //   } else {
-      //     setValidationMessage(this, "");
-      //   }
-
-
-      //   if (input.attr('type') === 'email' && !validateEmail(value)) {
-      //     setValidationMessage(this, "Please include an '@' in the email address.");
-      //     hasError = true;
-      //     return false;
-      //   }
-      // });
-
-      // if (hasError) {
-      //   return false;
-      // }
 
 
 
