@@ -46,6 +46,13 @@ p {
   margin-top: 1.9rem;
 }
 
+.student {
+  color: #1b1919;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 4vh;
+}
+
 .card-body .abstract {
   margin-top: 4vh;
   color: #777474;
@@ -79,11 +86,4 @@ p {
 
 .see-more:hover {
   text-decoration: underline;
-}
-
-.student {
-  color: #1b1919;
-  font-weight: 600;
-  text-align: center;
-  margin-top: 4vh;
 }
