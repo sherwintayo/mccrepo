@@ -1,14 +1,11 @@
-<style>
-    .project-contenr {
-        height: 100vh;
+<link rel="stylesheet" href="<?php echo base_url ?>myStyles/projects.css?v=<?php echo time(); ?>">
 
-    }
-</style>
 
-<div class="content project-contenr py-2 h-100">
+<div class="content project-container py-2 h-100">
     <div class="col-12">
-        <h2 class="text-center">Published Projects</h2>
-        <hr class="bg-navy">
+        <div class="head">
+            <h2 class="text-center">Published Projects</h2>
+        </div>
         <?php
         $limit = 10;
         $page = isset($_GET['p']) ? $_GET['p'] : 1;
@@ -43,7 +40,7 @@
                         </div>
                         <div class="card-body">
                             <div class="card-title fw-bolder h5 text-center"><?= $row['title'] ?></div>
-                            <p class="truncate-5"><?= $row['abstract'] ?></p>
+                            <p class="abstract truncate-5"><?= $row['abstract'] ?></p>
                             <small class="text-muted">By <b
                                     class="text-info"><?= isset($student_arr[$row['student_id']]) ? $student_arr[$row['student_id']] : "N/A" ?></b></small>
                         </div>
