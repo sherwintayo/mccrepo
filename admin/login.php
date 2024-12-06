@@ -28,7 +28,7 @@
     background-repeat: no-repeat;
   }
 </style>
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="https://www.google.com/recaptcha/api.js?render=6LfFJYcqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <body class="hold-transition ">
@@ -82,6 +82,7 @@
                   </div>
                   <input type="hidden" name="latitude" id="latitude">
                   <input type="hidden" name="longitude" id="longitude">
+                  <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
 
 
                   <div class="form-group">
@@ -227,105 +228,109 @@
         }, 1000);
       }
 
+      var _this = $(this);
+      var hasError = false;
+
+      // XSS and Validation Checks for invalid characters and email
+      _this.find('input[type="text"], input[type="email"], input[type="password"]').each(function () {
+        var input = $(this);
+        var value = input.val();
+
+        // Check for invalid characters (' and ") and for angle brackets (< and >)
+        if (hasInvalidChars(value)) {
+          setValidationMessage(this, "Input must not contain single quotes, double quotes, or angle brackets.");
+          hasError = true;
+          return false; // Exit loop
+        } else {
+          setValidationMessage(this, "");
+        }
+
+
+        if (input.attr('type') === 'email' && !validateEmail(value)) {
+          setValidationMessage(this, "Please include an '@' in the email address.");
+          hasError = true;
+          return false;
+        }
+      });
+
+      if (hasError) {
+        return false;
+      }
+
+
 
       $('#login-frm').on('submit', function (event) {
         event.preventDefault(); // Prevent default form submission
 
-        var _this = $(this);
-        var hasError = false;
+        const form = $(this);
 
-        // XSS and Validation Checks for invalid characters and email
-        _this.find('input[type="text"], input[type="email"], input[type="password"]').each(function () {
-          var input = $(this);
-          var value = input.val();
+        grecaptcha.execute('6LfFJYcqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'login' }).then((token) => {
+          $('#g-recaptcha-response').val(token); // Append reCAPTCHA token
 
-          // Check for invalid characters (' and ") and for angle brackets (< and >)
-          if (hasInvalidChars(value)) {
-            setValidationMessage(this, "Input must not contain single quotes, double quotes, or angle brackets.");
-            hasError = true;
-            return false; // Exit loop
-          } else {
-            setValidationMessage(this, "");
-          }
-
-
-          if (input.attr('type') === 'email' && !validateEmail(value)) {
-            setValidationMessage(this, "Please include an '@' in the email address.");
-            hasError = true;
-            return false;
-          }
-        });
-
-        if (hasError) {
-          return false;
-        }
-
-
-        var formData = _this.serialize();
-
-        $.ajax({
-          url: _base_url_ + "classes/Login.php?f=login",
-          method: 'POST',
-          data: formData,
-          dataType: 'json',
-          success: function (response) {
-            if (response.status === 'verify_email_sent') {
-              Swal.fire({
-                icon: 'success',
-                title: 'Verification Sent',
-                text: 'We have sent a verification link to your email. Please check your inbox.',
-                confirmButtonText: 'OK'
-              }).then(() => {
-                // Disable login button
-                $('#login-frm button[type="submit"]').attr('disabled', true);
-              });
-            } else if (response.status === 'blocked') {
-              Swal.fire({
-                icon: 'error',
-                title: 'Blocked',
-                text: response.message,
-                confirmButtonText: 'OK'
-              });
-              startCountdown(response.remaining_time); // Show countdown modal if blocked
-            } else if (response.status === 'captcha_failed') {
-              Swal.fire({
-                icon: 'error',
-                title: 'Captcha Failed',
-                text: response.message,
-                confirmButtonText: 'Try Again'
-              });
-            } else if (response.status === 'notverified') {
-              Swal.fire({
-                icon: 'error',
-                title: 'Account Not Verified',
-                text: response.message,
-                confirmButtonText: 'OK'
-              });
-            } else if (response.status === 'incorrect') {
-              Swal.fire({
-                icon: 'error',
-                title: 'Login Failed',
-                text: 'Incorrect username or password.',
-                confirmButtonText: 'Retry'
-              });
-            } else {
+          $.ajax({
+            url: _base_url_ + "classes/Login.php?f=login",
+            method: 'POST',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (response) {
+              if (response.status === 'verify_email_sent') {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Verification Sent',
+                  text: 'We have sent a verification link to your email. Please check your inbox.',
+                  confirmButtonText: 'OK'
+                }).then(() => {
+                  // Disable login button
+                  $('#login-frm button[type="submit"]').attr('disabled', true);
+                });
+              } else if (response.status === 'blocked') {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Blocked',
+                  text: response.message,
+                  confirmButtonText: 'OK'
+                });
+                startCountdown(response.remaining_time); // Show countdown modal if blocked
+              } else if (response.status === 'captcha_failed') {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Captcha Failed',
+                  text: response.message,
+                  confirmButtonText: 'Try Again'
+                });
+              } else if (response.status === 'notverified') {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Account Not Verified',
+                  text: response.message,
+                  confirmButtonText: 'OK'
+                });
+              } else if (response.status === 'incorrect') {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Login Failed',
+                  text: 'Incorrect username or password.',
+                  confirmButtonText: 'Retry'
+                });
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: response.message || 'An unexpected error occurred.',
+                  confirmButtonText: 'OK'
+                });
+              }
+            },
+            error: function (xhr, status, error) {
+              console.error("AJAX Error:", status, error);
               Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: response.message || 'An unexpected error occurred.',
+                text: 'Unable to process your request at this time.',
                 confirmButtonText: 'OK'
               });
             }
-          },
-          error: function (xhr, status, error) {
-            console.error("AJAX Error:", status, error);
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'Unable to process your request at this time.',
-              confirmButtonText: 'OK'
-            });
-          }
+          });
         });
       });
 
