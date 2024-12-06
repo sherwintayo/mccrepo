@@ -47,16 +47,14 @@
               <h3 class="register-heading">Reset Your Password</h3>
               <div class="row register-form">
                 <div class="col-md-12">
-                  <form action="forgot_password_process.php" method="POST">
+                  <form id="forgotPasswordForm">
                     <!-- Email Field -->
                     <div class="form-group">
                       <input type="email" name="email" id="email" placeholder="Enter your email address"
                         class="form-control form-control-border" required>
                     </div>
 
-                    <div class="form-group">
-                      <div class="g-recaptcha" data-sitekey="6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW"></div>
-                    </div>
+
 
                     <!-- Buttons -->
                     <div class="row mt-4">
@@ -83,6 +81,64 @@
     <script>
       $(document).ready(function () {
         end_loader();
+
+        $('#submitBtn').on('click', function (e) {
+          e.preventDefault(); // Prevent the default form submission behavior
+          let email = $('#email').val();
+          let recaptchaResponse = grecaptcha.getResponse();
+
+          if (!email || !recaptchaResponse) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Missing Information',
+              text: 'Please provide your email and verify the captcha.'
+            });
+            return;
+          }
+
+          // Perform AJAX request
+          $.ajax({
+            url: 'forgot_password_process.php',
+            type: 'POST',
+            data: {
+              email: email,
+              'g-recaptcha-response': recaptchaResponse
+            },
+            beforeSend: function () {
+              Swal.fire({
+                title: 'Processing...',
+                text: 'Please wait while we process your request.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                  Swal.showLoading()
+                }
+              });
+            },
+            success: function (response) {
+              Swal.close(); // Close the processing dialog
+              if (response.trim() === "Reset link sent to your email.") {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Success!',
+                  text: response
+                });
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: response
+                });
+              }
+            },
+            error: function () {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An unexpected error occurred. Please try again later.'
+              });
+            }
+          });
+        });
       });
     </script>
   </body>
