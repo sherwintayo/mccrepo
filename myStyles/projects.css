@@ -32,11 +32,8 @@ p {
 
 .cards {
   border: lightskyblue 1px solid;
-  max-height: 350px;
-  height: 350px;
   width: 300px;
   background-color: aliceblue;
-  justify-content: space-between; /* Distribute items evenly with space */
 }
 
 .banner {
@@ -61,7 +58,7 @@ p {
   color: #3e3d3d;
   font-weight: 600;
   text-align: center;
-  margin: 5.3rem 0;
+  margin: 1.3rem 0;
   white-space: nowrap; /* Prevent text from wrapping to the next line */
   overflow: hidden; /* Hide overflowing text */
   text-overflow: ellipsis; /* Add ellipsis (…) to truncated text */
