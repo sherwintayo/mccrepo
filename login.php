@@ -99,7 +99,7 @@ this is the login.php
                     </span>
                   </div>
 
-
+                  <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
 
                   <!-- Buttons -->
                   <div class="row">
