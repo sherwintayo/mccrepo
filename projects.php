@@ -40,10 +40,10 @@
                         </div>
                         <div class="card-body">
                             <div class="card-title fw-bolder h5 text-center"><?= $row['title'] ?></div><br>
-
-                            <p class="abstract truncate-5"><?= $row['abstract'] ?><span class="see-more">See more</span></p>
                             <small class="text-muted">By <b
                                     class="student"><?= isset($student_arr[$row['student_id']]) ? $student_arr[$row['student_id']] : "N/A" ?></b></small>
+                            <p class="abstract truncate-5"><?= $row['abstract'] ?><span class="see-more">See more</span></p>
+
                         </div>
                     </a>
                 </div>

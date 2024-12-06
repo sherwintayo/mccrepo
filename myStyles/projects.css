@@ -59,8 +59,21 @@ p {
 .see-more {
   color: #b51b23;
   font-weight: bold;
-  cursor: pointer;
   text-decoration: none;
+  position: relative;
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.see-more::before {
+  content: "";
+  position: absolute;
+  left: -15px;
+  top: 0;
+  bottom: 0;
+  width: 10px;
+  background: linear-gradient(to left, rgba(255, 255, 255, 0), #fff);
+  pointer-events: none; /* Ensures the blur doesn't interfere with hover or click */
 }
 
 .see-more:hover {
