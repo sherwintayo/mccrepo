@@ -44,6 +44,9 @@ p {
 
 .banner {
   margin-top: 2vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .card-body .card-title {
@@ -60,39 +63,4 @@ p {
   text-align: center;
   margin-top: 4vh;
   display: block;
-}
-
-.card-body .abstract {
-  margin-top: 4vh;
-  color: #777474;
-  text-align: justify;
-  position: relative;
-  overflow: hidden;
-  max-height: 4.3em;
-  line-height: 1.5em;
-  display: block;
-}
-
-.see-more {
-  color: #b51b23;
-  font-weight: bold;
-  text-decoration: none;
-  position: relative;
-  display: inline-block;
-  margin-left: 10px;
-}
-
-.see-more::before {
-  content: "";
-  position: absolute;
-  left: -15px;
-  top: 0;
-  bottom: 0;
-  width: 10px;
-  background: linear-gradient(to left, rgba(255, 255, 255, 0), #fff);
-  pointer-events: none; /* Ensures the blur doesn't interfere with hover or click */
-}
-
-.see-more:hover {
-  text-decoration: underline;
 }
