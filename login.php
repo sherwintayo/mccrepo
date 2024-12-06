@@ -145,36 +145,36 @@
       end_loader();
 
       // Validation functions from the admin login
-      var validateEmail = function (email) {
-        var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+      const validateEmail = function (email) {
+        const emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
         return emailReg.test(email);
       };
 
-      // var validatePassword = function(password) {
-      //   var passwordReg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+      // const  validatePassword = function(password) {
+      //   const  passwordReg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
       //   return passwordReg.test(password);
       // };
 
-      var hasInvalidChars = function (input) {
+      const hasInvalidChars = function (input) {
         return input.includes("'");
       };
 
-      var setValidationMessage = function (input, message) {
+      const setValidationMessage = function (input, message) {
         input.setCustomValidity(message);
         input.reportValidity();
       };
 
       $('#slogin-form').submit(function (e) {
         e.preventDefault();
-        var _this = $(this);
-        var el = $("<div>");
+        const _this = $(this);
+        const el = $("<div>");
         el.addClass("alert pop-msg my-2").hide();
 
         // Fetching input values for validation
-        var emailInput = $('#email')[0];
-        var passwordInput = $('#password')[0];
-        var email = emailInput.value;
-        var password = passwordInput.value;
+        const emailInput = $('#email')[0];
+        const passwordInput = $('#password')[0];
+        const email = emailInput.value;
+        const password = passwordInput.value;
 
         // Reset custom validation messages
         emailInput.setCustomValidity("");
@@ -196,50 +196,54 @@
           setValidationMessage(passwordInput, "Password must not contain single quotes.");
           return; // Stop submission if validation fails
         }
-        grecaptcha.ready(function () {
-          grecaptcha.execute('6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'login' }).then(function (token) {
-            $('#g-recaptcha-response').val(token);
-            console.log("Generated Token: ", token); // Debugging
-            start_loader();
+        const siteKey = "bb409b50-a782-46fe-8522-6abcc90a9a76"; // Replace with your hCaptcha site key
+        hcaptcha.execute(siteKey, { action: 'submit' }).then(function (token) {
+          // Add the hCaptcha token to the form
+          const captchaInput = $("<input>")
+            .attr("type", "hidden")
+            .attr("name", "h-captcha-response")
+            .val(token);
+          $('#slogin-form').append(captchaInput);
+          start_loader();
 
-            $.ajax({
-              url: _base_url_ + "classes/Login.php?f=student_login",
-              method: 'POST',
-              data: $('#login-form').serialize(),
-              dataType: 'json',
-              error: err => {
-                console.log(err);
+          $.ajax({
+            url: _base_url_ + "classes/Login.php?f=student_login",
+            method: 'POST',
+            data: $('#login-form').serialize(),
+            dataType: 'json',
+            error: err => {
+              console.log(err);
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred. Please try again later.',
+              });
+              end_loader();
+            },
+            success: function (resp) {
+              end_loader();
+              if (resp.status == 'success') {
+                <?php $_SESSION['user_logged_in'] = true; ?>
+                window.location.href = "./";
+              } else {
                 Swal.fire({
                   icon: 'error',
-                  title: 'Error',
-                  text: 'An error occurred. Please try again later.',
+                  title: 'Login Failed',
+                  text: resp.msg || 'Invalid credentials. Please try again.',
                 });
-                end_loader();
-              },
-              success: function (resp) {
-                end_loader();
-                if (resp.status == 'success') {
-                  <?php $_SESSION['user_logged_in'] = true; ?>
-                  window.location.href = "./";
-                } else {
-                  Swal.fire({
-                    icon: 'error',
-                    title: 'Login Failed',
-                    text: resp.msg || 'Invalid credentials. Please try again.',
-                  });
-                }
               }
-            });
-          }).catch(function (err) {
-            console.error('reCAPTCHA execution error:', err);
-            Swal.fire({
-              icon: 'error',
-              title: 'reCAPTCHA Failed',
-              text: 'Please refresh the page and try again.',
-            });
+            }
+          });
+        }).catch(function (err) {
+          console.error('reCAPTCHA execution error:', err);
+          Swal.fire({
+            icon: 'error',
+            title: 'reCAPTCHA Failed',
+            text: 'Please refresh the page and try again.',
           });
         });
       });
+    });
     });
   </script>
   <script>

@@ -443,10 +443,11 @@ class Login extends DBConnection
                 return json_encode(['status' => 'failed', 'msg' => 'Invalid email or password.']);
             }
         } catch (Exception $e) {
-            error_log("Error during login: " . $e->getMessage());
+            error_log("Error during login: " . $e->getMessage()); // Log unexpected errors
             return json_encode([
                 'status' => 'failed',
-                'msg' => 'An unexpected error occurred. Please try again later.'
+                'msg' => 'An unexpected error occurred. Please try again later.',
+                'debug' => $e->getMessage() // Optional: Include for debugging in dev mode
             ]);
         }
     }
