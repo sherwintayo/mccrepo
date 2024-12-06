@@ -29,9 +29,9 @@ p {
 }
 .cards {
   border: lightskyblue 1px solid;
-  max-height: 500px;
-  height: 500px;
-  row-gap: 20px;
+  max-height: 400px;
+  height: 400px;
+  row-gap: 10px;
 }
 
 .card-body {
@@ -43,7 +43,7 @@ p {
   color: #3e3d3d;
   font-weight: 600;
   text-align: center;
-  margin-top: 3rem;
+  margin-top: 1.9rem;
 }
 
 .card-body .abstract {
