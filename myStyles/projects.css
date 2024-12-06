@@ -35,6 +35,7 @@ p {
   height: 350px;
   width: 300px;
   flex-wrap: wrap;
+  background-color: aliceblue;
 }
 
 .card-body {
