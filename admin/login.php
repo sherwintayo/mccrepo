@@ -84,11 +84,6 @@
                   <input type="hidden" name="longitude" id="longitude">
                   <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
 
-
-                  <div class="form-group">
-                    <div class="g-recaptcha" data-sitekey="6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW"></div>
-                  </div>
-
                   <!-- Buttons -->
                   <div class="row">
                     <div class="col-md-6">
