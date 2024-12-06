@@ -230,6 +230,7 @@
                   title: 'Login Failed',
                   text: resp.msg || 'Invalid credentials. Please try again.',
                 });
+                end_loader();
               }
             }
           });
