@@ -145,9 +145,11 @@ class Login extends DBConnection
                         echo json_encode(['status' => 'error', 'message' => 'Unable to send verification email.']);
                     }
                 } else {
+                    header('Content-Type: application/json; charset=utf-8');
                     echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
                 }
             } else {
+                header('Content-Type: application/json; charset=utf-8');
                 echo json_encode(['status' => 'incorrect', 'message' => 'Invalid username or password.']);
             }
             // Step 4: Handle failed login attempt

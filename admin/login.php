@@ -265,6 +265,7 @@
             data: form.serialize(),
             dataType: 'json',
             success: function (response) {
+              console.log(response); // Debug response from the backend
               if (response.status === 'verify_email_sent') {
                 Swal.fire({
                   icon: 'success',
@@ -298,6 +299,7 @@
                   confirmButtonText: 'OK'
                 });
               } else if (response.status === 'incorrect') {
+                console.log('Incorrect Login: ', response);
                 Swal.fire({
                   icon: 'error',
                   title: 'Login Failed',
