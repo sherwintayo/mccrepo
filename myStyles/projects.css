@@ -26,21 +26,23 @@ p {
 .row {
   padding: 20px !important;
   gap: 10px;
+  display: flex;
+  justify-content: center;
 }
 .cards {
   border: lightskyblue 1px solid;
   max-height: 450px;
   height: 450px;
-  max-width: 300px;
   width: 300px;
+  flex-wrap: wrap;
 }
 
 .card-body {
   margin-top: 4vh;
 }
 
-.card-body .banner {
-  margin-top: 3vh;
+.banner {
+  margin-top: 2vh;
 }
 
 .card-body .card-title {
