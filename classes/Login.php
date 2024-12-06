@@ -395,24 +395,23 @@ class Login extends DBConnection
         extract($_POST);
 
         try {
+            // Verify reCAPTCHA v3
             $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-            $secretKey = '6LcvKpIqAAAAAERzz2_imzASHXTELXAjpOEGSoQT';
+            $secretKey = '6LfFJYcqAAAAAERzz2_imzASHXTELXAjpOEGSoQT'; // Replace with your secret key
             $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
-            // Send verification request
+            // Send request to Google's reCAPTCHA API
             $response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
             $responseKeys = json_decode($response, true);
 
-            // Log response for debugging
-            error_log("reCAPTCHA Response: " . json_encode($responseKeys));
-
-            // Check reCAPTCHA validation
-            if (!$responseKeys['success'] || $responseKeys['score'] < 0.5) {
+            if (!$responseKeys['success'] || $responseKeys['action'] !== 'login' || $responseKeys['score'] < 0.5) {
+                error_log("reCAPTCHA failed: " . json_encode($responseKeys)); // Log failure
                 return json_encode([
                     'status' => 'captcha_failed',
                     'msg' => 'reCAPTCHA validation failed. Please try again.'
                 ]);
             }
+
 
             $stmt = $this->conn->prepare("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS fullname FROM student_list WHERE email = ?");
             $stmt->bind_param("s", $email);
@@ -447,7 +446,7 @@ class Login extends DBConnection
             error_log("Error during login: " . $e->getMessage());
             return json_encode([
                 'status' => 'failed',
-                'msg' => 'An unexpected error occurred. Please try again later.'
+                'msg' => 'An unexpected error occurred. Please try again later.',
             ]);
         }
     }
