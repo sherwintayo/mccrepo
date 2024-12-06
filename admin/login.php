@@ -28,7 +28,7 @@
     background-repeat: no-repeat;
   }
 </style>
-<script src="https://www.google.com/recaptcha/api.js?render=6LfFJYcqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW"></script>
+<script src="https://www.google.com/recaptcha/api.js?render=6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <body class="hold-transition ">
