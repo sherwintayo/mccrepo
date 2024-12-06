@@ -26,7 +26,7 @@ p {
 .row {
   padding: 20px !important;
 }
-.card {
+.cards {
   border: lightskyblue 1px solid;
   gap: 10px;
   max-height: 500px;
@@ -68,4 +68,6 @@ p {
 .student {
   color: #1b1919;
   font-weight: 600;
+  text-align: center;
+  margin-top: 4vh;
 }
