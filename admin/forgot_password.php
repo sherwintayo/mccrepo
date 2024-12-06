@@ -59,7 +59,7 @@
                     <!-- Buttons -->
                     <div class="row mt-4">
                       <div class="col-lg-12 text-center">
-                        <button type="submit" class="btn btn-primary btn-flat">Send Reset Link</button>
+                        <button type="submit" id="submitBtn" class="btn btn-primary btn-flat">Send Reset Link</button>
                       </div>
                     </div>
                   </form>
