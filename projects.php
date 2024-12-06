@@ -40,8 +40,8 @@
                         </div>
                         <div class="card-body">
                             <div class="card-title fw-bolder h5 text-center"><?= $row['title'] ?></div><br>
-                            <small class="text-muted">By <b
-                                    class="student"><?= isset($student_arr[$row['student_id']]) ? $student_arr[$row['student_id']] : "N/A" ?></b></small>
+                            <small class="text-muted student">By
+                                <b><?= isset($student_arr[$row['student_id']]) ? $student_arr[$row['student_id']] : "N/A" ?></b></small>
                         </div>
                     </a>
                 </div>
