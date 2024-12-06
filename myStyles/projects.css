@@ -40,6 +40,10 @@ p {
 
 .card-body {
   margin-top: 4vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .banner {
