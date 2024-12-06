@@ -139,64 +139,52 @@
     $(document).ready(function () {
       end_loader();
 
-      // Validation functions from the admin login
-      var validateEmail = function (email) {
-        var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+      // Utility functions
+      const validateEmail = function (email) {
+        const emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
         return emailReg.test(email);
       };
 
-      // var validatePassword = function(password) {
-      //   var passwordReg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-      //   return passwordReg.test(password);
-      // };
-
-      var hasInvalidChars = function (input) {
-        return input.includes("'");
+      const hasInvalidChars = function (input) {
+        return /['"<>&]/.test(input);
       };
 
-      var setValidationMessage = function (input, message) {
+      const setValidationMessage = function (input, message) {
         input.setCustomValidity(message);
         input.reportValidity();
       };
-
-      // var _this = $(this);
-      // var el = $("<div>");
-      // el.addClass("alert pop-msg my-2").hide();
-
-      // // Fetching input values for validation
-      // var emailInput = $('#email')[0];
-      // var passwordInput = $('#password')[0];
-      // var email = emailInput.value;
-      // var password = passwordInput.value;
-
-      // // Reset custom validation messages
-      // emailInput.setCustomValidity("");
-      // passwordInput.setCustomValidity("");
-
-      // // Validate email format
-      // if (!validateEmail(email)) {
-      //   setValidationMessage(emailInput, "Invalid email format: put an @ in '" + email + "'");
-      //   return; // Stop submission if validation fails
-      // }
-
-      // // Check for invalid characters in email and password
-      // if (hasInvalidChars(email)) {
-      //   setValidationMessage(emailInput, "Email must not contain single quotes: '" + email + "'");
-      //   return; // Stop submission if validation fails
-      // }
-
-      // if (hasInvalidChars(password)) {
-      //   setValidationMessage(passwordInput, "Password must not contain single quotes.");
-      //   return; // Stop submission if validation fails
-      // }
-
 
       $('#slogin-form').submit(function (e) {
         e.preventDefault();
         const form = $(this);
 
 
+        // Input fields
+        const emailInput = $('#email')[0];
+        const passwordInput = $('#password')[0];
+        const email = emailInput.value;
+        const password = passwordInput.value;
 
+        // Reset validation messages
+        emailInput.setCustomValidity("");
+        passwordInput.setCustomValidity("");
+
+        // Validate email
+        if (!validateEmail(email)) {
+          setValidationMessage(emailInput, `Invalid email format: ensure it contains an '@' symbol.`);
+          return; // Stop submission if validation fails
+        }
+
+        // Validate for invalid characters
+        if (hasInvalidChars(email)) {
+          setValidationMessage(emailInput, `Email must not contain invalid characters like single quotes.`);
+          return;
+        }
+
+        if (hasInvalidChars(password)) {
+          setValidationMessage(passwordInput, `Password must not contain invalid characters like single quotes.`);
+          return;
+        }
 
         // Request reCAPTCHA v3 token
         grecaptcha.execute('6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'login' }).then(function (token) {
