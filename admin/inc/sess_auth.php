@@ -10,7 +10,7 @@ else
 $link .= "://";
 $link .= $_SERVER['HTTP_HOST'];
 $link .= $_SERVER['REQUEST_URI'];
-if (!isset($_SESSION['userdata']) && !strpos($link, 'login.php') && !strpos($link, 'register.php')) {
+if (!isset($_SESSION['userdata']) && !strpos($link, 'login') && !strpos($link, 'register.php')) {
     redirect('admin/login');
 }
 if (isset($_SESSION['userdata']) && strpos($link, 'login.php')) {
