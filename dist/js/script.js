@@ -25,42 +25,42 @@ window.alert_toast = function ($msg = "TEST", $bg = "success", $pos = "") {
 
 $(document).ready(function () {
   Login;
-  // $("#login-frm").submit(function (e) {
-  //   e.preventDefault();
-  //   start_loader();
-  //   if ($(".err_msg").length > 0) $(".err_msg").remove();
-  //   $.ajax({
-  //     url: _base_url_ + "classes/Login.php?f=login",
-  //     method: "POST",
-  //     data: $(this).serialize(),
-  //     error: (err) => {
-  //       console.log(err);
-  //     },
-  //     success: function (resp) {
-  //       if (resp) {
-  //         resp = JSON.parse(resp);
-  //         if (resp.status == "success") {
-  //           location.replace(_base_url_ + "admin");
-  //         } else if (resp.status == "incorrect") {
-  //           var _frm = $("#login-frm");
-  //           var _msg =
-  //             "<div class='alert alert-danger text-white err_msg'><i class='fa fa-exclamation-triangle'></i> Incorrect username or password</div>";
-  //           _frm.prepend(_msg);
-  //           _frm.find("input").addClass("is-invalid");
-  //           $('[name="username"]').focus();
-  //         } else if (resp.status == "notverified") {
-  //           var _frm = $("#login-frm");
-  //           var _msg =
-  //             "<div class='alert alert-danger text-white err_msg'><i class='fa fa-exclamation-triangle'></i> Your Account is not yet verified.</div>";
-  //           _frm.prepend(_msg);
-  //           _frm.find("input").addClass("is-invalid");
-  //           $('[name="username"]').focus();
-  //         }
-  //         end_loader();
-  //       }
-  //     },
-  //   });
-  // });
+  $("#login-frm").submit(function (e) {
+    e.preventDefault();
+    start_loader();
+    if ($(".err_msg").length > 0) $(".err_msg").remove();
+    $.ajax({
+      url: _base_url_ + "classes/Login.php?f=login",
+      method: "POST",
+      data: $(this).serialize(),
+      error: (err) => {
+        console.log(err);
+      },
+      success: function (resp) {
+        if (resp) {
+          resp = JSON.parse(resp);
+          if (resp.status == "success") {
+            location.replace(_base_url_ + "admin");
+          } else if (resp.status == "incorrect") {
+            var _frm = $("#login-frm");
+            var _msg =
+              "<div class='alert alert-danger text-white err_msg'><i class='fa fa-exclamation-triangle'></i> Incorrect username or password</div>";
+            _frm.prepend(_msg);
+            _frm.find("input").addClass("is-invalid");
+            $('[name="username"]').focus();
+          } else if (resp.status == "notverified") {
+            var _frm = $("#login-frm");
+            var _msg =
+              "<div class='alert alert-danger text-white err_msg'><i class='fa fa-exclamation-triangle'></i> Your Account is not yet verified.</div>";
+            _frm.prepend(_msg);
+            _frm.find("input").addClass("is-invalid");
+            $('[name="username"]').focus();
+          }
+          end_loader();
+        }
+      },
+    });
+  });
   $("#clogin-frm").submit(function (e) {
     e.preventDefault();
     start_loader();
