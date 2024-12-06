@@ -25,7 +25,7 @@ p {
 
 .row {
   padding: 20px !important;
-  gap: 20px;
+  gap: 10px;
 }
 .cards {
   border: lightskyblue 1px solid;
