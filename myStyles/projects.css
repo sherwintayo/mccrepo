@@ -28,7 +28,7 @@ p {
 }
 .cards {
   border: lightskyblue 1px solid;
-  gap: 3rem;
+  gap: 20px;
   max-height: 500px;
   height: 500px;
 }
