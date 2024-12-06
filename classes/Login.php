@@ -395,20 +395,20 @@ class Login extends DBConnection
         extract($_POST);
 
         try {
-            // Verify reCAPTCHA v3
-            $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-            $secretKey = '6LcvKpIqAAAAAERzz2_imzASHXTELXAjpOEGSoQT'; // Replace with your secret key
-            $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
+            // Verify hCaptcha
+            $captchaResponse = $_POST['h-captcha-response'] ?? '';
+            $secretKey = 'ES_1783e8f7e4de4baa87a8f1f97f086d20'; // Replace with your hCaptcha secret key
+            $verifyUrl = 'https://hcaptcha.com/siteverify';
 
-            // Send request to Google's reCAPTCHA API
-            $response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
+            // Send request to hCaptcha API
+            $response = file_get_contents("$verifyUrl?secret=$secretKey&response=$captchaResponse");
             $responseKeys = json_decode($response, true);
 
-            if (!$responseKeys['success'] || $responseKeys['action'] !== 'login' || $responseKeys['score'] < 0.5) {
-                error_log("reCAPTCHA failed: " . json_encode($responseKeys)); // Log failure
+            if (!$responseKeys['success']) {
+                error_log("hCaptcha failed: " . json_encode($responseKeys)); // Log failure
                 return json_encode([
                     'status' => 'captcha_failed',
-                    'msg' => 'reCAPTCHA validation failed. Please try again.'
+                    'msg' => 'hCaptcha validation failed. Please try again.'
                 ]);
             }
 
@@ -446,7 +446,7 @@ class Login extends DBConnection
             error_log("Error during login: " . $e->getMessage());
             return json_encode([
                 'status' => 'failed',
-                'msg' => 'An unexpected error occurred. Please try again later.',
+                'msg' => 'An unexpected error occurred. Please try again later.'
             ]);
         }
     }
