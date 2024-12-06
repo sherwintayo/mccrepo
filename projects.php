@@ -33,8 +33,7 @@
                 $row['abstract'] = strip_tags(html_entity_decode($row['abstract']));
                 ?>
                 <div class="cards col-lg-3 col-md-4 mb-2">
-                    <a href="./?page=view_archive&id=<?= $row['id'] ?>"
-                        class="rounded-0 shadow book-item text-decoration-none">
+                    <a href="./?page=view_archive&id=<?= $row['id'] ?>" class="shadow book-item text-decoration-none">
                         <div class="img-holder banner overflow-hidden">
                             <img class="img-top" src="<?= validate_image($row['banner_path']) ?>" alt="Banner Image">
                         </div>
