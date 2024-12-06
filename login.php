@@ -112,7 +112,7 @@
                   <!-- Forgot Password Link -->
                   <div class="row mt-2">
                     <div class="col-lg-12 text-center">
-                      <a href="forgot_password.php" class="text-primary">Forgot Password?</a>
+                      <a href="forgot_password" class="text-primary">Forgot Password?</a>
                     </div>
                   </div>
                 </form>
