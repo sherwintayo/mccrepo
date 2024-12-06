@@ -333,8 +333,7 @@
               SIGN IN</a>
           </li>
           <li class="nav-item" style="list-style: none;">
-            <a href="./admin/login.php" class="navlink mx-1 text-light"
-              style="text-decoration: none; list-style: none;">ADMIN
+            <a href="./admin/login" class="navlink mx-1 text-light" style="text-decoration: none; list-style: none;">ADMIN
               SIGN
               IN</a>
           </li>
@@ -722,7 +721,7 @@
         window.location.href = './login';
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         // Redirect to Admin Login
-        window.location.href = './admin/login.php';
+        window.location.href = './admin/login';
       }
     });
   });
