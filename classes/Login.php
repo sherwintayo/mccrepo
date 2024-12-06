@@ -400,15 +400,20 @@ class Login extends DBConnection
             $secretKey = '6LcvKpIqAAAAAERzz2_imzASHXTELXAjpOEGSoQT'; // Replace with your secret key
             $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
-            // Send request to reCAPTCHA API
-            $response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $verifyUrl);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(['secret' => $secretKey, 'response' => $recaptchaResponse]));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            curl_close($ch);
+
             $responseKeys = json_decode($response, true);
 
-            // Validate reCAPTCHA score
-            if (!$responseKeys['success'] || $responseKeys['score'] < 0.5) { // Check score threshold
+            if (!$responseKeys['success'] || $responseKeys['score'] < 0.5) {
                 return json_encode([
                     'status' => 'failed',
-                    'msg' => 'reCAPTCHA validation failed or low score. Please try again.'
+                    'msg' => 'reCAPTCHA validation failed. Please try again.'
                 ]);
             }
 
@@ -442,11 +447,10 @@ class Login extends DBConnection
                 return json_encode(['status' => 'failed', 'msg' => 'Invalid email or password.']);
             }
         } catch (Exception $e) {
-            error_log("Error during login: " . $e->getMessage()); // Log unexpected errors
+            error_log("Error during login: " . $e->getMessage());
             return json_encode([
                 'status' => 'failed',
-                'msg' => 'An unexpected error occurred. Please try again later.',
-                'debug' => $e->getMessage() // Optional: Include for debugging in dev mode
+                'msg' => 'An unexpected error occurred. Please try again later.'
             ]);
         }
     }

@@ -1,5 +1,3 @@
-this is the login.php
-
 <?php require_once('./config.php') ?>
 <!-- <?php session_start(); // Start session handling ?> -->
 <!DOCTYPE html>
@@ -161,52 +159,52 @@ this is the login.php
         input.reportValidity();
       };
 
+      var _this = $(this);
+      var el = $("<div>");
+      el.addClass("alert pop-msg my-2").hide();
+
+      // Fetching input values for validation
+      var emailInput = $('#email')[0];
+      var passwordInput = $('#password')[0];
+      var email = emailInput.value;
+      var password = passwordInput.value;
+
+      // Reset custom validation messages
+      emailInput.setCustomValidity("");
+      passwordInput.setCustomValidity("");
+
+      // Validate email format
+      if (!validateEmail(email)) {
+        setValidationMessage(emailInput, "Invalid email format: put an @ in '" + email + "'");
+        return; // Stop submission if validation fails
+      }
+
+      // Check for invalid characters in email and password
+      if (hasInvalidChars(email)) {
+        setValidationMessage(emailInput, "Email must not contain single quotes: '" + email + "'");
+        return; // Stop submission if validation fails
+      }
+
+      if (hasInvalidChars(password)) {
+        setValidationMessage(passwordInput, "Password must not contain single quotes.");
+        return; // Stop submission if validation fails
+      }
+
+
       $('#slogin-form').submit(function (e) {
         e.preventDefault();
-        var _this = $(this);
-        var el = $("<div>");
-        el.addClass("alert pop-msg my-2").hide();
-
-        // Fetching input values for validation
-        var emailInput = $('#email')[0];
-        var passwordInput = $('#password')[0];
-        var email = emailInput.value;
-        var password = passwordInput.value;
-
-        // Reset custom validation messages
-        emailInput.setCustomValidity("");
-        passwordInput.setCustomValidity("");
-
-        // Validate email format
-        if (!validateEmail(email)) {
-          setValidationMessage(emailInput, "Invalid email format: put an @ in '" + email + "'");
-          return; // Stop submission if validation fails
-        }
-
-        // Check for invalid characters in email and password
-        if (hasInvalidChars(email)) {
-          setValidationMessage(emailInput, "Email must not contain single quotes: '" + email + "'");
-          return; // Stop submission if validation fails
-        }
-
-        if (hasInvalidChars(password)) {
-          setValidationMessage(passwordInput, "Password must not contain single quotes.");
-          return; // Stop submission if validation fails
-        }
-
-        let formData = $(this).serialize();
+        const form = $(this);
         // Request reCAPTCHA v3 token
         grecaptcha.execute('6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'login' }).then(function (token) {
-          formData += "&g-recaptcha-response=" + token;
-
-          let formData = $(this).serialize();
+          form.find('input[name="g-recaptcha-response"]').val(token); // Append reCAPTCHA token
+          start_loader(); // Show loading indicator
 
           start_loader();
 
           $.ajax({
             url: _base_url_ + "classes/Login.php?f=student_login",
             method: 'POST',
-            data: formData,
+            data: form.serialize(),
             dataType: 'json',
             error: err => {
               console.log(err);
@@ -234,11 +232,10 @@ this is the login.php
         });
       });
     });
-  </script>
-  <script>
+    // Toggle password visibility
     function toggleVisibility(inputId) {
       const inputField = document.getElementById(inputId);
-      const icon = document.getElementById(eye - ${ inputId });
+      const icon = document.querySelector(`#eye-${inputId}`);
       if (inputField.type === "password") {
         inputField.type = "text";
         icon.classList.remove("fa-eye");
