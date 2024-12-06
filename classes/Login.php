@@ -417,19 +417,30 @@ class Login extends DBConnection
                 ]);
             }
 
-            $stmt = $this->conn->prepare("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS fullname FROM student_list WHERE email = ?");
-            $stmt->bind_param("s", $email);
-            $stmt->execute();
-            $result = $stmt->get_result();
+            // Fetch user details by email
+            $qry = $this->conn->prepare("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS fullname FROM student_list WHERE email = ?");
+            $qry->bind_param("s", $email);
+            $qry->execute();
+            $result = $qry->get_result();
+
+            if ($this->conn->error) {
+                return json_encode([
+                    'status' => 'failed',
+                    'msg' => "An error occurred while fetching data. Error: " . $this->conn->error
+                ]);
+            }
 
             if ($result->num_rows > 0) {
-                $user = $result->fetch_assoc();
-                if (password_verify($password, $user['password'])) {
-                    if ($user['status'] == 1) {
+                $res = $result->fetch_assoc();
+
+                // Verify the password using bcrypt
+                if (password_verify($password, $res['password'])) {
+                    if ($res['status'] == 1) {
+                        // Set session variables for logged-in user
                         $_SESSION['user_logged_in'] = true;
-                        $_SESSION['user_id'] = $user['id'];
-                        foreach ($user as $key => $value) {
-                            $this->settings->set_userdata($key, $value);
+                        $_SESSION['user_id'] = $res['id'];
+                        foreach ($res as $k => $v) {
+                            $this->settings->set_userdata($k, $v);
                         }
                         $this->settings->set_userdata('login_type', 2);
 
@@ -437,14 +448,22 @@ class Login extends DBConnection
                     } else {
                         return json_encode([
                             'status' => 'failed',
-                            'msg' => 'Your account is not yet verified.'
+                            'msg' => 'Your account is not verified yet.'
                         ]);
                     }
                 } else {
-                    return json_encode(['status' => 'failed', 'msg' => 'Invalid email or password.']);
+                    // Invalid password
+                    return json_encode([
+                        'status' => 'failed',
+                        'msg' => 'Invalid email or password.'
+                    ]);
                 }
             } else {
-                return json_encode(['status' => 'failed', 'msg' => 'Invalid email or password.']);
+                // No user found with the given email
+                return json_encode([
+                    'status' => 'failed',
+                    'msg' => 'Invalid email or password.'
+                ]);
             }
         } catch (Exception $e) {
             error_log("Error during login: " . $e->getMessage());
