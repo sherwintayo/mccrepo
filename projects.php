@@ -42,7 +42,10 @@
                             <div class="card-title fw-bolder h5 text-center"><?= $row['title'] ?></div><br>
                             <small class="text-muted">By <b
                                     class="student"><?= isset($student_arr[$row['student_id']]) ? $student_arr[$row['student_id']] : "N/A" ?></b></small>
-                            <p class="abstract truncate-5"><?= $row['abstract'] ?></p>
+                            <p class="abstract truncate-5" data-abstract="<?= $row['abstract'] ?>">
+                                <?= strlen($row['abstract']) > 100 ? substr($row['abstract'], 0, 100) . '...' : $row['abstract'] ?>
+                                <a href="javascript:void(0)" class="see-more">See more</a>
+                            </p>
                         </div>
                     </a>
                 </div>
@@ -70,6 +73,32 @@
 </div>
 
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".see-more").forEach(function (link) {
+            link.addEventListener("click", function (e) {
+                const abstract = e.target.closest(".abstract");
+                const isExpanded = abstract.classList.toggle("expanded");
+                if (isExpanded) {
+                    abstract.textContent = abstract.dataset.abstract;
+                    const seeLess = document.createElement("a");
+                    seeLess.href = "javascript:void(0)";
+                    seeLess.textContent = "See less";
+                    seeLess.className = "see-less";
+                    abstract.appendChild(seeLess);
+                    seeLess.addEventListener("click", function () {
+                        abstract.classList.remove("expanded");
+                        abstract.innerHTML = abstract.dataset.abstract.substring(0, 100) + "... ";
+                        abstract.appendChild(link);
+                    });
+                } else {
+                    abstract.innerHTML = abstract.dataset.abstract.substring(0, 100) + "... ";
+                    abstract.appendChild(link);
+                }
+            });
+        });
+    });
+</script>
 
 
 

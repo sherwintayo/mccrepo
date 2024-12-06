@@ -47,7 +47,26 @@ p {
 .card-body .abstract {
   margin-top: 4vh;
   color: #777474;
-  overflow: none;
+  position: relative;
+  overflow: hidden;
+  max-height: 4.5em; /* Adjust based on the number of lines */
+  line-height: 1.5em;
+  display: block;
+}
+
+.abstract.expanded {
+  max-height: none;
+}
+
+.see-more {
+  color: #b51b23;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.see-more:hover {
+  text-decoration: underline;
 }
 
 .student {
