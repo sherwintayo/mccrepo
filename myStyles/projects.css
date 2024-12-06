@@ -47,7 +47,7 @@ p {
 .card-body .abstract {
   margin-top: 4vh;
   color: #777474;
-  overflow: hidden;
+  overflow: none;
 }
 
 .student {
