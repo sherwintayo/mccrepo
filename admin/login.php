@@ -223,34 +223,34 @@
         }, 1000);
       }
 
-      var _this = $(this);
-      var hasError = false;
+      // var _this = $(this);
+      // var hasError = false;
 
-      // XSS and Validation Checks for invalid characters and email
-      _this.find('input[type="text"], input[type="email"], input[type="password"]').each(function () {
-        var input = $(this);
-        var value = input.val();
+      // // XSS and Validation Checks for invalid characters and email
+      // _this.find('input[type="text"], input[type="email"], input[type="password"]').each(function () {
+      //   var input = $(this);
+      //   var value = input.val();
 
-        // Check for invalid characters (' and ") and for angle brackets (< and >)
-        if (hasInvalidChars(value)) {
-          setValidationMessage(this, "Input must not contain single quotes, double quotes, or angle brackets.");
-          hasError = true;
-          return false; // Exit loop
-        } else {
-          setValidationMessage(this, "");
-        }
+      //   // Check for invalid characters (' and ") and for angle brackets (< and >)
+      //   if (hasInvalidChars(value)) {
+      //     setValidationMessage(this, "Input must not contain single quotes, double quotes, or angle brackets.");
+      //     hasError = true;
+      //     return false; // Exit loop
+      //   } else {
+      //     setValidationMessage(this, "");
+      //   }
 
 
-        if (input.attr('type') === 'email' && !validateEmail(value)) {
-          setValidationMessage(this, "Please include an '@' in the email address.");
-          hasError = true;
-          return false;
-        }
-      });
+      //   if (input.attr('type') === 'email' && !validateEmail(value)) {
+      //     setValidationMessage(this, "Please include an '@' in the email address.");
+      //     hasError = true;
+      //     return false;
+      //   }
+      // });
 
-      if (hasError) {
-        return false;
-      }
+      // if (hasError) {
+      //   return false;
+      // }
 
 
 
@@ -259,8 +259,8 @@
 
         const form = $(this);
 
-        grecaptcha.execute('6LfFJYcqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'login' }).then((token) => {
-          $('#g-recaptcha-response').val(token); // Append reCAPTCHA token
+        grecaptcha.execute('6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'login' }).then(function (token) {
+          form.find('input[name="g-recaptcha-response"]').val(token); // Append reCAPTCHA token
 
           $.ajax({
             url: _base_url_ + "classes/Login.php?f=login",

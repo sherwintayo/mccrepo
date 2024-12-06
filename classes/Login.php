@@ -44,19 +44,27 @@ class Login extends DBConnection
         }
 
         try {
-            // Validate reCAPTCHA
+            // Validate reCAPTCHA response
             $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-            $secretKey = '6LfFJYcqAAAAANKGBiV1AlFMLMwj2wgAGifniAKO';
+            $secretKey = '6LcvKpIqAAAAAERzz2_imzASHXTELXAjpOEGSoQT'; // Replace with your secret key
             $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
-            $response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $verifyUrl);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(['secret' => $secretKey, 'response' => $recaptchaResponse]));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            curl_close($ch);
+
             $responseKeys = json_decode($response, true);
 
             if (!$responseKeys['success'] || $responseKeys['score'] < 0.5) {
-                echo json_encode(['status' => 'captcha_failed', 'message' => 'reCAPTCHA validation failed.']);
-                return;
+                return json_encode([
+                    'status' => 'failed',
+                    'msg' => 'reCAPTCHA validation failed. Please try again.'
+                ]);
             }
-
 
             // Step 2: Check IP block status
             $checkAttemptStmt = $this->conn->prepare("SELECT attempts, blocked_until FROM Login_Attempt WHERE ip_address = ?");
