@@ -265,7 +265,7 @@
             data: form.serialize(),
             dataType: 'json',
             success: function (response) {
-              console.log(response); // Debug response from the backend
+              console.log(response);
               if (response.status === 'verify_email_sent') {
                 Swal.fire({
                   icon: 'success',
@@ -314,7 +314,7 @@
                   confirmButtonText: 'OK'
                 });
               }
-            },
+            }
             error: function (xhr, status, error) {
               console.error("AJAX Error:", status, error);
               Swal.fire({
