@@ -29,13 +29,14 @@ p {
   display: flex;
   justify-content: center;
 }
+
 .cards {
   border: lightskyblue 1px solid;
   max-height: 350px;
   height: 350px;
   width: 300px;
-  flex-wrap: wrap;
   background-color: aliceblue;
+  justify-content: space-between; /* Distribute items evenly with space */
 }
 
 .card-body {
@@ -44,6 +45,8 @@ p {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  flex-grow: 1; /* Let card-body take up the remaining space */
+  padding: 1rem; /* Add padding for better spacing */
 }
 
 .banner {
@@ -58,7 +61,10 @@ p {
   color: #3e3d3d;
   font-weight: 600;
   text-align: center;
-  margin: 1.1rem 0;
+  margin: 1.3rem 0;
+  white-space: nowrap; /* Prevent text from wrapping to the next line */
+  overflow: hidden; /* Hide overflowing text */
+  text-overflow: ellipsis; /* Add ellipsis (…) to truncated text */
 }
 
 .student {
@@ -66,5 +72,11 @@ p {
   font-weight: 600;
   text-align: center;
   margin-top: 4vh;
+  margin-top: auto; /* Push it to the bottom of the card body */
+}
+
+.student small {
   display: block;
+  font-size: 0.875rem; /* Adjust size if necessary */
+  color: #777;
 }
