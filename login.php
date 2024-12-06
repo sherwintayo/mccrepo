@@ -41,7 +41,7 @@
   }
 </style>
 <!-- Load reCAPTCHA v3 Script -->
-<script src="https://www.google.com/recaptcha/api.js?render=6LfFJYcqAAAAAK6Djr0QOH68F4r_Aehziia0XYa9"></script>
+<script src="https://www.google.com/recaptcha/api.js?render=6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
@@ -163,7 +163,7 @@
       };
       document.addEventListener('DOMContentLoaded', function () {
         grecaptcha.ready(function () {
-          grecaptcha.execute('6LfFJYcqAAAAAK6Djr0QOH68F4r_Aehziia0XYa9', { action: 'login' }) // Replace with your site key
+          grecaptcha.execute('6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'login' }) // Replace with your site key
             .then(function (token) {
               document.getElementById('g-recaptcha-response').value = token;
             });
@@ -246,21 +246,22 @@
           });
         });
       });
+    });
   </script>
   <script>
-      function toggleVisibility(inputId) {
-        const inputField = document.getElementById(inputId);
-        const icon = document.getElementById(`eye-${inputId}`);
-        if (inputField.type === "password") {
-          inputField.type = "text";
-          icon.classList.remove("fa-eye");
-          icon.classList.add("fa-eye-slash");
-        } else {
-          inputField.type = "password";
-          icon.classList.remove("fa-eye-slash");
-          icon.classList.add("fa-eye");
-        }
+    function toggleVisibility(inputId) {
+      const inputField = document.getElementById(inputId);
+      const icon = document.getElementById(`eye-${inputId}`);
+      if (inputField.type === "password") {
+        inputField.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+      } else {
+        inputField.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
       }
+    }
   </script>
 
 </body>
