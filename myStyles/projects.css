@@ -31,7 +31,8 @@ p {
   border: lightskyblue 1px solid;
   max-height: 450px;
   height: 450px;
-  row-gap: 10px;
+  max-width: 300px;
+  width: 300px;
 }
 
 .card-body {
