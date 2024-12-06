@@ -1,3 +1,5 @@
+this is the login.php
+
 <?php require_once('./config.php') ?>
 <!-- <?php session_start(); // Start session handling ?> -->
 <!DOCTYPE html>
@@ -40,11 +42,8 @@
     color: #000;
   }
 </style>
-<!-- Replace this script -->
 <!-- <script src="https://www.google.com/recaptcha/api.js" async defer></script> -->
-
-<!-- Add the hCaptcha script -->
-<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+<script src="https://www.google.com/recaptcha/api.js?render=6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
@@ -100,9 +99,7 @@
                     </span>
                   </div>
 
-                  <div class="form-group">
-                    <div class="h-captcha" data-sitekey="bb409b50-a782-46fe-8522-6abcc90a9a76"></div>
-                  </div>
+
 
                   <!-- Buttons -->
                   <div class="row">
@@ -145,36 +142,36 @@
       end_loader();
 
       // Validation functions from the admin login
-      const validateEmail = function (email) {
-        const emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+      var validateEmail = function (email) {
+        var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
         return emailReg.test(email);
       };
 
-      // const  validatePassword = function(password) {
-      //   const  passwordReg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+      // var validatePassword = function(password) {
+      //   var passwordReg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
       //   return passwordReg.test(password);
       // };
 
-      const hasInvalidChars = function (input) {
+      var hasInvalidChars = function (input) {
         return input.includes("'");
       };
 
-      const setValidationMessage = function (input, message) {
+      var setValidationMessage = function (input, message) {
         input.setCustomValidity(message);
         input.reportValidity();
       };
 
       $('#slogin-form').submit(function (e) {
         e.preventDefault();
-        const _this = $(this);
-        const el = $("<div>");
+        var _this = $(this);
+        var el = $("<div>");
         el.addClass("alert pop-msg my-2").hide();
 
         // Fetching input values for validation
-        const emailInput = $('#email')[0];
-        const passwordInput = $('#password')[0];
-        const email = emailInput.value;
-        const password = passwordInput.value;
+        var emailInput = $('#email')[0];
+        var passwordInput = $('#password')[0];
+        var email = emailInput.value;
+        var password = passwordInput.value;
 
         // Reset custom validation messages
         emailInput.setCustomValidity("");
@@ -196,20 +193,20 @@
           setValidationMessage(passwordInput, "Password must not contain single quotes.");
           return; // Stop submission if validation fails
         }
-        const siteKey = "bb409b50-a782-46fe-8522-6abcc90a9a76"; // Replace with your hCaptcha site key
-        hcaptcha.execute(siteKey, { action: 'submit' }).then(function (token) {
-          // Add the hCaptcha token to the form
-          const captchaInput = $("<input>")
-            .attr("type", "hidden")
-            .attr("name", "h-captcha-response")
-            .val(token);
-          $('#slogin-form').append(captchaInput);
+
+        let formData = $(this).serialize();
+        // Request reCAPTCHA v3 token
+        grecaptcha.execute('6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'login' }).then(function (token) {
+          formData += "&g-recaptcha-response=" + token;
+
+          let formData = $(this).serialize();
+
           start_loader();
 
           $.ajax({
             url: _base_url_ + "classes/Login.php?f=student_login",
             method: 'POST',
-            data: $('#login-form').serialize(),
+            data: formData,
             dataType: 'json',
             error: err => {
               console.log(err);
@@ -234,22 +231,14 @@
               }
             }
           });
-        }).catch(function (err) {
-          console.error('reCAPTCHA execution error:', err);
-          Swal.fire({
-            icon: 'error',
-            title: 'reCAPTCHA Failed',
-            text: 'Please refresh the page and try again.',
-          });
         });
       });
-    });
     });
   </script>
   <script>
     function toggleVisibility(inputId) {
       const inputField = document.getElementById(inputId);
-      const icon = document.getElementById(`eye-${inputId}`);
+      const icon = document.getElementById(eye - ${ inputId });
       if (inputField.type === "password") {
         inputField.type = "text";
         icon.classList.remove("fa-eye");

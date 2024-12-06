@@ -395,23 +395,22 @@ class Login extends DBConnection
         extract($_POST);
 
         try {
-            // Verify hCaptcha
-            $captchaResponse = $_POST['h-captcha-response'] ?? '';
-            $secretKey = 'ES_1783e8f7e4de4baa87a8f1f97f086d20'; // Replace with your hCaptcha secret key
-            $verifyUrl = 'https://hcaptcha.com/siteverify';
+            // Validate reCAPTCHA response
+            $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
+            $secretKey = '6LcvKpIqAAAAAERzz2_imzASHXTELXAjpOEGSoQT'; // Replace with your secret key
+            $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
-            // Send request to hCaptcha API
-            $response = file_get_contents("$verifyUrl?secret=$secretKey&response=$captchaResponse");
+            // Send request to reCAPTCHA API
+            $response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
             $responseKeys = json_decode($response, true);
 
-            if (!$responseKeys['success']) {
-                error_log("hCaptcha failed: " . json_encode($responseKeys)); // Log failure
+            // Validate reCAPTCHA score
+            if (!$responseKeys['success'] || $responseKeys['score'] < 0.5) { // Check score threshold
                 return json_encode([
-                    'status' => 'captcha_failed',
-                    'msg' => 'hCaptcha validation failed. Please try again.'
+                    'status' => 'failed',
+                    'msg' => 'reCAPTCHA validation failed or low score. Please try again.'
                 ]);
             }
-
 
             $stmt = $this->conn->prepare("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS fullname FROM student_list WHERE email = ?");
             $stmt->bind_param("s", $email);
