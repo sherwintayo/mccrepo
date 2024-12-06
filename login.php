@@ -203,8 +203,6 @@
           form.find('input[name="g-recaptcha-response"]').val(token); // Append reCAPTCHA token
           start_loader(); // Show loading indicator
 
-          start_loader();
-
           $.ajax({
             url: _base_url_ + "classes/Login.php?f=student_login",
             method: 'POST',
