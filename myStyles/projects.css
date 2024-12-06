@@ -48,6 +48,7 @@ p {
 .card-body .abstract {
   margin-top: 4vh;
   color: #777474;
+  text-align: justify;
   position: relative;
   overflow: hidden;
   max-height: 4.5em;
