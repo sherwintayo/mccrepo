@@ -49,13 +49,9 @@ p {
   color: #777474;
   position: relative;
   overflow: hidden;
-  max-height: 4.5em; /* Adjust based on the number of lines */
+  max-height: 4.5em;
   line-height: 1.5em;
   display: block;
-}
-
-.abstract.expanded {
-  max-height: none;
 }
 
 .see-more {
