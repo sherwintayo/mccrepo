@@ -301,7 +301,7 @@
                 Swal.fire({
                   icon: 'error',
                   title: 'Login Failed',
-                  text: 'Incorrect username or password.',
+                  text: response.message,
                   confirmButtonText: 'Retry'
                 });
               } else {

@@ -108,9 +108,9 @@ class Login extends DBConnection
                     // Log login activity
                     $userAgent = $_SERVER['HTTP_USER_AGENT'];
                     $logStmt = $this->conn->prepare("
-                INSERT INTO login_activity (user_id, ip_address, user_agent) 
-                VALUES (?, ?, ?)
-            ");
+                        INSERT INTO login_activity (user_id, ip_address, user_agent) 
+                        VALUES (?, ?, ?)
+                    ");
                     $logStmt->bind_param("iss", $res['id'], $ipAddress, $userAgent);
                     $logStmt->execute();
 
@@ -121,10 +121,10 @@ class Login extends DBConnection
                     $userAgent = $_SERVER['HTTP_USER_AGENT'];
 
                     $logStmt = $this->conn->prepare("
-                INSERT INTO login_activity (user_id, ip_address, user_agent) 
-                VALUES (?, ?, ?)
-            
-                ");
+                            INSERT INTO login_activity (user_id, ip_address, user_agent) 
+                            VALUES (?, ?, ?)
+                        
+                            ");
                     $logStmt->bind_param("iss", $res['id'], $ipAddress, $userAgent);
                     $logStmt->execute();
 
@@ -156,19 +156,19 @@ class Login extends DBConnection
             if ($attemptData) {
                 // Update existing attempt record
                 $updateAttemptStmt = $this->conn->prepare("
-            UPDATE Login_Attempt 
-            SET attempts = ?, blocked_until = ?, latitude = ?, longitude = ? 
-            WHERE ip_address = ?
-        ");
+                            UPDATE Login_Attempt 
+                            SET attempts = ?, blocked_until = ?, latitude = ?, longitude = ? 
+                            WHERE ip_address = ?
+                        ");
                 $blockedUntil = $attempts >= 3 ? $currentTime + 60 : $attemptData['blocked_until'];
                 $updateAttemptStmt->bind_param("issss", $attempts, $blockedUntil, $latitude, $longitude, $ipAddress);
                 $updateAttemptStmt->execute();
             } else {
                 // Insert new attempt record
                 $insertAttemptStmt = $this->conn->prepare("
-            INSERT INTO Login_Attempt (ip_address, attempts, blocked_until, latitude, longitude) 
-            VALUES (?, ?, ?, ?, ?)
-        ");
+                            INSERT INTO Login_Attempt (ip_address, attempts, blocked_until, latitude, longitude) 
+                            VALUES (?, ?, ?, ?, ?)
+                        ");
                 $blockedUntil = $attempts >= 3 ? $currentTime + 60 : 0;
                 $insertAttemptStmt->bind_param("sisss", $ipAddress, $attempts, $blockedUntil, $latitude, $longitude);
                 $insertAttemptStmt->execute();
@@ -177,10 +177,10 @@ class Login extends DBConnection
             // Update block_count in login_attempt_history every 3 attempts
             if ($attempts % 3 === 0) {
                 $historyStmt = $this->conn->prepare("
-            INSERT INTO login_attempt_history (ip_address, block_count) 
-            VALUES (?, 1)
-            ON DUPLICATE KEY UPDATE block_count = block_count + 1
-        ");
+                            INSERT INTO login_attempt_history (ip_address, block_count) 
+                            VALUES (?, 1)
+                            ON DUPLICATE KEY UPDATE block_count = block_count + 1
+                        ");
                 $historyStmt->bind_param("s", $ipAddress);
                 $historyStmt->execute();
             }
