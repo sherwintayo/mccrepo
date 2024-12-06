@@ -98,7 +98,7 @@
 
           // Perform AJAX request
           $.ajax({
-            url: 'forgot_password_process.php',
+            url: _base_url_ + 'admin/forgot_password_process.php',
             type: 'POST',
             data: {
               email: email,
