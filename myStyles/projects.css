@@ -26,6 +26,9 @@ p {
 .row {
   padding: 20px !important;
 }
+.card {
+  border: lightskyblue 1px solid;
+}
 
 .card-body {
   margin-top: 4vh;
@@ -40,4 +43,10 @@ p {
 
 .card-body .abstract {
   margin-top: 4vh;
+  color: #777474;
+}
+
+.student {
+  color: #1b1919;
+  font-weight: 600;
 }

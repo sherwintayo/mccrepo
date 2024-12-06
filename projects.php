@@ -32,17 +32,17 @@
             while ($row = $archives->fetch_assoc()) {
                 $row['abstract'] = strip_tags(html_entity_decode($row['abstract']));
                 ?>
-                <div class="col-lg-3 col-md-4 mb-2">
+                <div class="card col-lg-3 col-md-4 mb-2">
                     <a href="./?page=view_archive&id=<?= $row['id'] ?>"
                         class="rounded-0 shadow book-item text-decoration-none">
                         <div class="img-holder overflow-hidden">
                             <img class="img-top" src="<?= validate_image($row['banner_path']) ?>" alt="Banner Image">
                         </div>
                         <div class="card-body">
-                            <div class="card-title fw-bolder h5 text-center"><?= $row['title'] ?></div>
-                            <p class="abstract truncate-5"><?= $row['abstract'] ?></p>
+                            <div class="card-title fw-bolder h5 text-center"><?= $row['title'] ?></div><br>
                             <small class="text-muted">By <b
-                                    class="text-info"><?= isset($student_arr[$row['student_id']]) ? $student_arr[$row['student_id']] : "N/A" ?></b></small>
+                                    class="student"><?= isset($student_arr[$row['student_id']]) ? $student_arr[$row['student_id']] : "N/A" ?></b></small>
+                            <p class="abstract truncate-5"><?= $row['abstract'] ?></p>
                         </div>
                     </a>
                 </div>
