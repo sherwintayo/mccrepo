@@ -29,8 +29,8 @@ p {
 }
 .cards {
   border: lightskyblue 1px solid;
-  max-height: 400px;
-  height: 400px;
+  max-height: 450px;
+  height: 450px;
   row-gap: 10px;
 }
 
@@ -52,7 +52,7 @@ p {
   text-align: justify;
   position: relative;
   overflow: hidden;
-  max-height: 4.5em;
+  max-height: 4em;
   line-height: 1.5em;
   display: block;
 }
