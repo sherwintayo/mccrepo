@@ -38,6 +38,10 @@ p {
   margin-top: 4vh;
 }
 
+.card-body .banner {
+  margin-top: 3vh;
+}
+
 .card-body .card-title {
   font-size: 1rem;
   color: #3e3d3d;
@@ -51,6 +55,7 @@ p {
   font-weight: 600;
   text-align: center;
   margin-top: 4vh;
+  display: inline-block;
 }
 
 .card-body .abstract {
@@ -59,7 +64,7 @@ p {
   text-align: justify;
   position: relative;
   overflow: hidden;
-  max-height: 4em;
+  max-height: 4.3em;
   line-height: 1.5em;
   display: block;
 }
