@@ -187,22 +187,20 @@
   <script>
     (function ($) {
       'use strict';
-
-      // Utility functions
-      const validateEmail = function (email) {
-        const emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-        return emailReg.test(email);
+      // Utility functions for validation
+      const hasInvalidChars = function (input) {
+        return /['"<>&]/.test(input); // Check for invalid characters
       };
 
-      const hasInvalidChars = function (input) {
-        return /['"<>&]/.test(input);
+      const validateEmail = function (email) {
+        const emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        return emailReg.test(email); // Ensure email format is valid
       };
 
       const setValidationMessage = function (input, message) {
-        input.setCustomValidity(message);
-        input.reportValidity();
+        input.setCustomValidity(message); // Display validation error
+        input.reportValidity(); // Trigger browser validation UI
       };
-
 
       let blockCountdown;
 
@@ -230,31 +228,32 @@
         event.preventDefault(); // Prevent default form submission
         const form = $(this);
 
-        // Input fields
-        const emailInput = $('#email')[0];
-        const passwordInput = $('#password')[0];
-        const email = emailInput.value;
-        const password = passwordInput.value;
+        let hasError = false;
 
-        // Reset validation messages
-        emailInput.setCustomValidity("");
-        passwordInput.setCustomValidity("");
+        // Input validation
+        form.find('input[type="text"], input[type="email"], input[type="password"]').each(function () {
+          const input = $(this);
+          const value = input.val();
 
-        // Validate email
-        if (!validateEmail(email)) {
-          setValidationMessage(emailInput, `Invalid email format: ensure it contains an '@' symbol.`);
-          return; // Stop submission if validation fails
-        }
+          // Check for invalid characters
+          if (hasInvalidChars(value)) {
+            setValidationMessage(this, "Input must not contain single quotes, double quotes, or angle brackets.");
+            hasError = true;
+            return false; // Stop further validation for this field
+          } else {
+            setValidationMessage(this, ""); // Clear validation message
+          }
 
-        // Validate for invalid characters
-        if (hasInvalidChars(email)) {
-          setValidationMessage(emailInput, `Email must not contain invalid characters like single quotes.`);
-          return;
-        }
+          // Validate email format (only for email fields)
+          if (input.attr('type') === 'email' && !validateEmail(value)) {
+            setValidationMessage(this, "Please include an '@' in the email address.");
+            hasError = true;
+            return false; // Stop further validation for this field
+          }
+        });
 
-        if (hasInvalidChars(password)) {
-          setValidationMessage(passwordInput, `Password must not contain invalid characters like single quotes.`);
-          return;
+        if (hasError) {
+          return; // Prevent submission if validation fails
         }
 
         grecaptcha.execute('6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'login' }).then(function (token) {
