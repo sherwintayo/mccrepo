@@ -314,7 +314,7 @@
                   confirmButtonText: 'OK'
                 });
               }
-            }
+            },
             error: function (xhr, status, error) {
               console.error("AJAX Error:", status, error);
               Swal.fire({
