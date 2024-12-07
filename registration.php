@@ -381,7 +381,7 @@ $stmt->fetch();
                   text: 'Your account has been successfully created.',
                   confirmButtonText: 'Go to Login'
                 }).then(() => {
-                  window.location.href = "./login."; // Redirect on success
+                  window.location.href = "./login"; // Redirect on success
                 });
               } else {
                 Swal.fire({
