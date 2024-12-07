@@ -160,22 +160,27 @@ class Users extends DBConnection
 
 
 		try {
-			// Validate reCAPTCHA response
+			// reCAPTCHA secret key
+			$secretKey = '6LcvKpIqAAAAAERzz2_imzASHXTELXAjpOEGSoQT';
 			$recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-			$secretKey = '6LcvKpIqAAAAAERzz2_imzASHXTELXAjpOEGSoQT'; // Replace with your secret key
-			$verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
-			// Send request to reCAPTCHA API
+			if (empty($recaptchaResponse)) {
+				echo json_encode(['status' => 'failed', 'msg' => 'reCAPTCHA validation failed.']);
+				exit;
+			}
+
+			// Validate reCAPTCHA token
+			$verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 			$response = file_get_contents("$verifyUrl?secret=$secretKey&response=$recaptchaResponse");
 			$responseKeys = json_decode($response, true);
 
-			// Validate reCAPTCHA score
-			if (!$responseKeys['success'] || $responseKeys['score'] < 0.5) { // Check score threshold
-				return json_encode([
-					'status' => 'failed',
-					'msg' => 'reCAPTCHA validation failed or low score. Please try again.'
-				]);
+			if (!$responseKeys['success'] || $responseKeys['score'] < 0.5) {
+				echo json_encode(['status' => 'failed', 'msg' => 'reCAPTCHA validation failed or low score.']);
+				exit;
 			}
+
+
+
 			$data = '';
 
 			// Check if old password verification is needed

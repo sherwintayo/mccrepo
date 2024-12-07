@@ -295,7 +295,7 @@ $stmt->fetch();
 
 
   <script>
-    var cur_arr = $.parseJSON('<?= json_encode($cur_arr) ?>');
+    const cur_arr = $.parseJSON('<?= json_encode($cur_arr) ?>');
     $(document).ready(function () {
       end_loader();
       $('.select2').select2({
@@ -303,11 +303,11 @@ $stmt->fetch();
       });
 
       $('#program_id').change(function () {
-        var did = $(this).val();
+        const did = $(this).val();
         $('#curriculum_id').html("");
         if (!!cur_arr[did]) {
           Object.keys(cur_arr[did]).map(k => {
-            var opt = $("<option>");
+            const opt = $("<option>");
             opt.attr('value', cur_arr[did][k].id);
             opt.text(cur_arr[did][k].name);
             $('#curriculum_id').append(opt);
@@ -330,7 +330,7 @@ $stmt->fetch();
           return false;
         }
 
-        var _this = $(this);
+        const form = $(this);
         $(".pop-msg").remove();
         $('#password, #cpassword').removeClass("is-invalid");
 
@@ -357,14 +357,10 @@ $stmt->fetch();
         }
 
 
-        let formData = $(this).serialize();
-        // Request reCAPTCHA v3 token
+        const form = $(this);
         grecaptcha.execute('6LcvKpIqAAAAADbEzoBwvwKZ9r-loWJLfGIuPgKW', { action: 'register' }).then(function (token) {
-          formData += "&g-recaptcha-response=" + token;
-
-          let formData = $(this).serialize();
-
-
+          $('#g-recaptcha-response').val(token);
+          form.off('submit').submit();
 
           start_loader();
           // AJAX submission
@@ -413,18 +409,18 @@ $stmt->fetch();
       });
 
       // Function to check for invalid characters
-      var hasInvalidChars = function (input) {
+      const hasInvalidChars = function (input) {
         return /['"<script>]/.test(input); // Prevents single quotes, double quotes, and angle brackets
       };
 
       // Validate Email Format (Ensure @ symbol is present)
-      var validateEmail = function (email) {
-        var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+      const validateEmail = function (email) {
+        const emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
         return emailReg.test(email);
       };
 
       // Set custom validation message for inputs
-      var setValidationMessage = function (input, message) {
+      const setValidationMessage = function (input, message) {
         input.setCustomValidity(message);
         input.reportValidity();
       };
