@@ -222,7 +222,7 @@ class Users extends DBConnection
 
 			// Prepare data for SQL query
 			foreach ($_POST as $k => $v) {
-				if (!in_array($k, ['id', 'oldpassword', 'cpassword', 'password', 'g-recaptcha-response'])) {
+				if (!in_array($k, ['id', 'oldpassword', 'cpassword', 'password', 'g-recaptcha-response', 'terms'])) {
 					$v = $this->conn->real_escape_string($v);
 					if (!empty($data)) {
 						$data .= ", ";
