@@ -185,6 +185,7 @@ $stmt->fetch();
                         Conditions</a>.
                     </label>
                   </div>
+
                   <div class="row">
                     <div class="content hidden">
                       <small>
