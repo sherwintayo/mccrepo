@@ -160,6 +160,15 @@ class Users extends DBConnection
 
 
 		try {
+
+			// Validate the terms and conditions checkbox
+			if (!isset($_POST['terms']) || $_POST['terms'] !== 'on') {
+				return json_encode([
+					'status' => 'failed',
+					'msg' => 'You must agree to the Terms and Conditions to register.'
+				]);
+			}
+
 			$recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
 			$secretKey = '6LcvKpIqAAAAAERzz2_imzASHXTELXAjpOEGSoQT'; // Replace with your secret key
 			$verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
