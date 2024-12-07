@@ -175,6 +175,8 @@ $stmt->fetch();
                       </span>
                     </div>
                   </div>
+
+                  <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
                   <!-- Terms and Conditions -->
                   <div class="form-group">
                     <input type="checkbox" id="terms" name="terms">
