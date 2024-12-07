@@ -367,7 +367,7 @@ $stmt->fetch();
           $.ajax({
             url: _base_url_ + "classes/Users.php?f=save_student",
             method: 'POST',
-            data: formData,
+            data: form.serialize(),
             dataType: 'json',
             success: function (resp) {
               end_loader(); // Hide loader
@@ -386,22 +386,17 @@ $stmt->fetch();
                   title: 'Registration Failed',
                   text: resp.msg || 'An unknown error occurred. Please try again later.'
                 });
-                grecaptcha.reset(); // Reset reCAPTCHA for another attempt
               }
             },
             error: function (xhr, status, error) {
-              end_loader(); // Hide loader
-
-              // Log the response for debugging
+              end_loader();
               console.error(xhr.responseText);
-
               Swal.fire({
                 icon: 'error',
                 title: 'Server Error',
                 text: 'An error occurred while processing your request. Please try again later.',
                 footer: `<pre>${xhr.responseText}</pre>` // Show raw response
               });
-              grecaptcha.reset(); // Reset reCAPTCHA for another attempt
             }
           });
 
