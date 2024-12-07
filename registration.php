@@ -295,7 +295,7 @@ $stmt->fetch();
 
 
   <script>
-    const cur_arr = $.parseJSON('<?= json_encode($cur_arr) ?>');
+    var cur_arr = $.parseJSON('<?= json_encode($cur_arr) ?>');
     $(document).ready(function () {
       end_loader();
       $('.select2').select2({
@@ -303,11 +303,11 @@ $stmt->fetch();
       });
 
       $('#program_id').change(function () {
-        const did = $(this).val();
+        var did = $(this).val();
         $('#curriculum_id').html("");
         if (!!cur_arr[did]) {
           Object.keys(cur_arr[did]).map(k => {
-            const opt = $("<option>");
+            var opt = $("<option>");
             opt.attr('value', cur_arr[did][k].id);
             opt.text(cur_arr[did][k].name);
             $('#curriculum_id').append(opt);
@@ -330,7 +330,7 @@ $stmt->fetch();
           return false;
         }
 
-        const form = $(this);
+        var _this = $(this);
         $(".pop-msg").remove();
         $('#password, #cpassword').removeClass("is-invalid");
 
@@ -409,18 +409,18 @@ $stmt->fetch();
       });
 
       // Function to check for invalid characters
-      const hasInvalidChars = function (input) {
+      var hasInvalidChars = function (input) {
         return /['"<script>]/.test(input); // Prevents single quotes, double quotes, and angle brackets
       };
 
       // Validate Email Format (Ensure @ symbol is present)
-      const validateEmail = function (email) {
-        const emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+      var validateEmail = function (email) {
+        var emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
         return emailReg.test(email);
       };
 
       // Set custom validation message for inputs
-      const setValidationMessage = function (input, message) {
+      var setValidationMessage = function (input, message) {
         input.setCustomValidity(message);
         input.reportValidity();
       };
