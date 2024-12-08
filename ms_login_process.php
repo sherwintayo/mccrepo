@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->Body = "Hi $username,<br><br>Please click the link below to Register:<br><a href='$register_link'>$register_link</a><br><br>If you did not request this, please ignore this email.<br><br>Thanks,<br>Your Company";
             $mail->AltBody = "Hi $username,\n\nPlease click the link below to Register:\n$register_link\n\nIf you did not request this, please ignore this email.\n\nThanks,\nYour Company";
             $mail->send();
-            echo json_encode(['status' => 'success', 'message' => 'Register link sent to your email.']);
+            echo json_encode(['status' => 'success', 'message' => 'Register link sent to your email. Check your Outlook']);
         } catch (Exception $e) {
             echo json_encode(['status' => 'error', 'message' => "Mailer Error: {$mail->ErrorInfo}"]);
         }
