@@ -221,6 +221,12 @@ a {
   object-fit: cover;
 }
 
+/* FOOTER */
+
+.main-footer {
+  margin-left: 0 !important;
+}
+
 /* Mobile view adjustments */
 @media (max-width: 768px) {
   #my_archives .card {
