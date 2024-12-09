@@ -263,8 +263,8 @@ $stmt->fetch();
             <li>You agree not to engage in any activity that disrupts or interferes with the platform's functionality.
             </li>
             <li>We reserve the right to update these terms at any time without prior notice.</li>
-            <li>All disputes arising from the use of the platform will be governed by the applicable laws of [your
-              country/region].</li>
+            <li>All disputes arising from the use of the platform will be governed by the applicable laws of
+              Philippines.</li>
             <li>Failure to comply with these terms may result in permanent loss of account access.</li>
             <li>You consent to receive notifications and updates related to your account via email.</li>
             <li>You agree not to share your account with others or allow unauthorized access.</li>

@@ -80,14 +80,20 @@
           method: 'POST',
           data: $(this).serialize(),
           success: function (response) {
-            let res = JSON.parse(response);
-            if (res.status === 'success') {
-              Swal.fire('Success', res.message, 'success');
-            } else {
-              Swal.fire('Error', res.message, 'error');
+            try {
+              let res = JSON.parse(response);
+              if (res.status === 'success') {
+                Swal.fire('Success', res.message, 'success');
+              } else {
+                Swal.fire('Error', res.message, 'error');
+              }
+            } catch (error) {
+              console.error('Error parsing JSON:', error);
+              Swal.fire('Error', 'Invalid response from server.', 'error');
             }
           },
-          error: function () {
+          error: function (xhr, status, error) {
+            console.error('AJAX Error:', status, error);
             Swal.fire('Error', 'An unexpected error occurred.', 'error');
           }
         });
