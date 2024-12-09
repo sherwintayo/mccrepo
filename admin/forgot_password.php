@@ -78,7 +78,7 @@
       end_loader();
 
       $('#submitBtn').on('click', function (e) {
-        e.preventDefault(); // Prevent the default form submission behavior
+        e.preventDefault();
         let email = $('#email').val();
         let recaptchaResponse = grecaptcha.getResponse();
 
@@ -91,7 +91,16 @@
           return;
         }
 
-        // Perform AJAX request
+        // Validate _base_url_
+        if (typeof _base_url_ === "undefined" || _base_url_ === null) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Configuration Error',
+            text: 'Base URL is not defined. Contact support.'
+          });
+          return;
+        }
+
         $.ajax({
           url: _base_url_ + "admin/forgot_password_process.php",
           type: 'POST',
@@ -105,12 +114,12 @@
               text: 'Please wait while we process your request.',
               allowOutsideClick: false,
               didOpen: () => {
-                Swal.showLoading()
+                Swal.showLoading();
               }
             });
           },
           success: function (response) {
-            Swal.close(); // Close the processing dialog
+            Swal.close();
             if (response.trim() === "Reset link sent to your email.") {
               Swal.fire({
                 icon: 'success',
@@ -136,6 +145,7 @@
       });
     });
   </script>
+
 </body>
 
 </html>
