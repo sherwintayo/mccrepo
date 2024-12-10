@@ -126,8 +126,8 @@
           <div class="d-flex justify-content-around mt-3">
             <button class="btn btn-primary" onclick="location.href = _base_url_ + 'admin/forgot_password_otp.php';">Send
               OTP</button>
-            <button class="btn btn-secondary"
-              onclick="location.href =  _base_url_ + 'admin/forgot_password_process.php';">Send Link</button>
+            <button class="btn btn-secondary" onclick="location.href =  _base_url_ + 'admin/forgot_password.php';">Send
+              Link</button>
           </div>
         </div>
       </div>
