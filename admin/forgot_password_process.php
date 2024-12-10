@@ -5,13 +5,13 @@ require_once('../vendor/autoload.php');
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// Set the header for JSON response
+// Start output buffering
+ob_start();
 header('Content-Type: application/json');
 
-// Catch any warnings or errors
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $email = $_POST['email'];
+        $email = trim($_POST['email']);
 
         // Validate email
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -70,4 +70,7 @@ try {
 } catch (Throwable $e) {
     echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred.']);
 }
+
+// Clean (erase) the output buffer
+ob_end_clean();
 ?>

@@ -80,16 +80,10 @@
           method: 'POST',
           data: $(this).serialize(),
           success: function (response) {
-            try {
-              let res = JSON.parse(response);
-              if (res.status === 'success') {
-                Swal.fire('Success', res.message, 'success');
-              } else {
-                Swal.fire('Error', res.message, 'error');
-              }
-            } catch (error) {
-              console.error('Error parsing JSON:', error);
-              Swal.fire('Error', 'Invalid response from server.', 'error');
+            if (response.status === 'success') {
+              Swal.fire('Success', response.message, 'success');
+            } else {
+              Swal.fire('Error', response.message, 'error');
             }
           },
           error: function (xhr, status, error) {
