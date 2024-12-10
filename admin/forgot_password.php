@@ -7,7 +7,7 @@
   <title>MS Login</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="../myStyles/loginstyle.css">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert2 -->
 </head>
 
 <style>
@@ -68,40 +68,47 @@
 
   <!-- Scripts -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- jQuery -->
-  <script src="plugins/jquery/jquery.min.js"></script>
-  <!-- Bootstrap 4 -->
-  <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <!-- AdminLTE App -->
-  <script src="dist/js/adminlte.min.js"></script>
-  <!-- Select2 -->
-  <script src="<?php echo base_url ?>plugins/select2/js/select2.full.min.js"></script>
-  <!-- My Script -->
-  <script src="<?php echo base_url ?>plugins/myScript.js"></script>
+  <script src="../plugins/jquery/jquery.min.js"></script>
+  <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../dist/js/adminlte.min.js"></script>
+
   <script>
     $(document).ready(function () {
       end_loader();
 
-      $('#forgotPasswordForm').submit(function (e) {
-        e.preventDefault(); // Prevent form from submitting traditionally
+      $('#forgotPasswordForm').on('submit', function (e) {
+        e.preventDefault(); // Prevent form default submission
 
+        const email = $('#email').val();
+
+        // Perform AJAX request
         $.ajax({
           url: _base_url_ + 'admin/forgot_password_process.php',
           method: 'POST',
-          data: $(this).serialize(),
-          dataType: 'json', // Ensure the response is parsed as JSON
+          data: { email },
+          dataType: 'json',
           success: function (response) {
-            if (response.status === 'success') {
-              Swal.fire('Success', response.message, 'success');
+            if (response.success) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: response.message
+              });
             } else {
-              Swal.fire('Error', response.message, 'error');
+              Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: response.message
+              });
             }
           },
-          error: function (xhr, status, error) {
-            console.error('AJAX Error:', status, error);
-            Swal.fire('Error', 'An unexpected error occurred.', 'error');
+          error: function () {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error!',
+              text: 'An unexpected error occurred. Please try again.'
+            });
           }
         });
       });
