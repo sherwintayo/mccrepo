@@ -25,6 +25,12 @@
     RewriteCond %{QUERY_STRING} !token=.+ [NC]
     RewriteRule ^ - [F,L]
 </Files>
+<Files "reset_password.php">
+    RewriteEngine On
+    RewriteCond %{QUERY_STRING} !token=.+ [NC]
+    RewriteRule ^ - [F,L]
+</Files>
+
 
 # <IfModule mod_rewrite.c>
 #     Header set Access-Control-Allow-Origin "*"

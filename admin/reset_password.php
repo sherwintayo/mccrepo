@@ -99,7 +99,44 @@ if (isset($_GET['token'])) {
                 <script src="../dist/js/adminlte.min.js"></script>
                 <script>
                     $(document).ready(function () {
-                        end_loader();
+                        // Handle form submission
+                        $('#resetPasswordForm').on('submit', function (e) {
+                            e.preventDefault(); // Prevent default form submission
+
+                            const formData = $(this).serialize(); // Serialize form data
+
+                            // Send AJAX request
+                            $.ajax({
+                                url: _base_url_ + 'admin/reset_password_process.php',
+                                method: 'POST',
+                                data: formData,
+                                dataType: 'json',
+                                success: function (response) {
+                                    if (response.success) {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Success!',
+                                            text: response.message
+                                        }).then(() => {
+                                            window.location.href = _base_url_ + 'admin/login.php'; // Redirect to login page
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error!',
+                                            text: response.message
+                                        });
+                                    }
+                                },
+                                error: function () {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error!',
+                                        text: 'An unexpected error occurred. Please try again.'
+                                    });
+                                }
+                            });
+                        });
                     });
                 </script>
             </body>
@@ -107,12 +144,36 @@ if (isset($_GET['token'])) {
             </html>
             <?php
         } else {
-            echo "Token has expired.";
+            echo "<script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Token has expired. Please request a new reset link.'
+                }).then(() => {
+                    window.location.href =  _base_url_ + 'admin/forgot_password_process.php'; // Redirect to forgot password
+                });
+            </script>";
         }
     } else {
-        echo "Invalid token.";
+        echo "<script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Invalid token. Please request a new reset link.'
+            }).then(() => {
+                window.location.href =  _base_url_ + 'admin/forgot_password_process.php'; // Redirect to forgot password
+            });
+        </script>";
     }
 } else {
-    echo "No token provided.";
+    echo "<script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'No token provided. Please request a new reset link.'
+        }).then(() => {
+            window.location.href =  _base_url_ + 'admin/forgot_password_process.php'; // Redirect to forgot password
+        });
+    </script>";
 }
 ?>
