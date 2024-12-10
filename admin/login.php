@@ -97,12 +97,37 @@
                   <!-- Forgot Password Link -->
                   <div class="row mt-2">
                     <div class="col-lg-12 text-center">
-                      <a href="forgot_password" class="text-primary">Forgot Password?</a>
+                      <a href="#" class="text-primary" data-toggle="modal" data-target="#forgotPasswordModal">Forgot
+                        Password?</a>
                     </div>
                   </div>
                 </form>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Selecting Forgot Password Method -->
+  <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="forgotPasswordModalLabel">Forgot Password</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Please select how you want to reset your password:</p>
+          <div class="d-flex justify-content-around mt-3">
+            <button class="btn btn-primary" onclick="location.href = _base_url_ + 'admin/forgot_password_otp.php';">Send
+              OTP</button>
+            <button class="btn btn-secondary"
+              onclick="location.href =  _base_url_ + 'admin/forgot_password_process.php';">Send Link</button>
           </div>
         </div>
       </div>
