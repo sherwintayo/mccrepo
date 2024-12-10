@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $update->execute();
 
         // Send the reset link via PHPMailer
-        $reset_link = base_url . "admin/reset_password.php?token=$token";
+        $reset_link = base_url . "admin/reset_password?token=$token";
         $mail = new PHPMailer(true);
 
         try {

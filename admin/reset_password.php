@@ -118,7 +118,7 @@ if (isset($_GET['token'])) {
                                             title: 'Success!',
                                             text: response.message
                                         }).then(() => {
-                                            window.location.href = _base_url_ + 'admin/login.php'; // Redirect to login page
+                                            window.location.href = _base_url_ + 'admin/login'; // Redirect to login page
                                         });
                                     } else {
                                         Swal.fire({
@@ -150,7 +150,7 @@ if (isset($_GET['token'])) {
                     title: 'Error!',
                     text: 'Token has expired. Please request a new reset link.'
                 }).then(() => {
-                    window.location.href =  _base_url_ + 'admin/forgot_password_process.php'; // Redirect to forgot password
+                    window.location.href =  _base_url_ + 'admin/forgot_password_process'; // Redirect to forgot password
                 });
             </script>";
         }
@@ -161,7 +161,7 @@ if (isset($_GET['token'])) {
                 title: 'Error!',
                 text: 'Invalid token. Please request a new reset link.'
             }).then(() => {
-                window.location.href =  _base_url_ + 'admin/forgot_password_process.php'; // Redirect to forgot password
+                window.location.href =  _base_url_ + 'admin/forgot_password_process'; // Redirect to forgot password
             });
         </script>";
     }
@@ -172,7 +172,7 @@ if (isset($_GET['token'])) {
             title: 'Error!',
             text: 'No token provided. Please request a new reset link.'
         }).then(() => {
-            window.location.href =  _base_url_ + 'admin/forgot_password_process.php'; // Redirect to forgot password
+            window.location.href =  _base_url_ + 'admin/forgot_password_process'; // Redirect to forgot password
         });
     </script>";
 }
