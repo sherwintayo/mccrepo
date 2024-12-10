@@ -124,9 +124,9 @@
         <div class="modal-body">
           <p>Please select how you want to reset your password:</p>
           <div class="d-flex justify-content-around mt-3">
-            <button class="btn btn-primary" onclick="location.href = _base_url_ + 'admin/forgot_password_otp.php';">Send
+            <button class="btn btn-primary" onclick="location.href = _base_url_ + 'admin/forgot_password_otp';">Send
               OTP</button>
-            <button class="btn btn-secondary" onclick="location.href =  _base_url_ + 'admin/forgot_password.php';">Send
+            <button class="btn btn-secondary" onclick="location.href =  _base_url_ + 'admin/forgot_password';">Send
               Link</button>
           </div>
         </div>
