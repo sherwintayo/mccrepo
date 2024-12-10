@@ -5,7 +5,7 @@ require_once('../vendor/autoload.php');
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// Start output buffering
+// Start output buffering to prevent unintended output
 ob_start();
 header('Content-Type: application/json');
 
@@ -69,8 +69,8 @@ try {
     }
 } catch (Throwable $e) {
     echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred.']);
+} finally {
+    // Clear output buffer to avoid stray output
+    ob_end_clean();
 }
-
-// Clean (erase) the output buffer
-ob_end_clean();
 ?>

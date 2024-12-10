@@ -67,7 +67,19 @@
   </div>
 
   <!-- Scripts -->
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- jQuery -->
+  <script src="plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap 4 -->
+  <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="dist/js/adminlte.min.js"></script>
+  <!-- Select2 -->
+  <script src="<?php echo base_url ?>plugins/select2/js/select2.full.min.js"></script>
+  <!-- My Script -->
+  <script src="<?php echo base_url ?>plugins/myScript.js"></script>
   <script>
     $(document).ready(function () {
       end_loader();
@@ -79,6 +91,7 @@
           url: _base_url_ + 'admin/forgot_password_process.php',
           method: 'POST',
           data: $(this).serialize(),
+          dataType: 'json', // Ensure the response is parsed as JSON
           success: function (response) {
             if (response.status === 'success') {
               Swal.fire('Success', response.message, 'success');
