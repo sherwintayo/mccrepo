@@ -94,6 +94,9 @@
                 icon: 'success',
                 title: 'Success!',
                 text: response.message
+              }).then(() => {
+                // Redirect to the login page after clicking "OK"
+                window.location.href = _base_url_ + 'admin/login';
               });
             } else {
               Swal.fire({
