@@ -63,7 +63,7 @@
       const email = $('#email').val();
 
       $.ajax({
-        url: _base_url_ + 'admin/send_otp_process', // Backend script to handle OTP generation
+        url: _base_url_ + 'admin/send_otp_process.php', // Backend script to handle OTP generation
         method: 'POST',
         data: { email },
         dataType: 'json',
