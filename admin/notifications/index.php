@@ -7,6 +7,10 @@
     border-radius: 100%;
   }
 
+  .buttons {
+    margin-bottom: 6px;
+  }
+
   /* Button Styling */
   .btn-nav {
     margin-right: 10px;
@@ -43,7 +47,7 @@
   </div>
 
   <div class="card-body">
-    <div>
+    <div class="buttons">
       <button class="btn-nav" id="downloadRequestsBtn">Download Requests</button>
       <button class="btn-nav" id="newUsersBtn">New Users</button>
       <button class="btn-nav" id="newProjectsBtn">New Projects</button>
