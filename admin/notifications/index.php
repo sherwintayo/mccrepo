@@ -13,7 +13,7 @@
 
   /* Button Styling */
   .btn-nav {
-    margin-right: 10px;
+    margin-right: 5px;
     padding: 10px 20px;
     cursor: pointer;
     border-radius: 5px;
@@ -147,19 +147,18 @@
 
         // Fetch new student notifications
         $stmt = $conn->prepare("
-    SELECT 
-        s.id AS student_id, 
-        s.firstname, 
-        s.lastname, 
-        s.date_created AS student_created_at
-    FROM 
-        student_list s
-    WHERE 
-        s.date_created > (SELECT IFNULL(MAX(requested_at), '1970-01-01') FROM download_requests)
-    ORDER BY s.date_created DESC
-    LIMIT 10
-");
-
+      SELECT 
+          s.id AS student_id, 
+          s.firstname, 
+          s.lastname, 
+          s.date_created AS student_created_at
+      FROM 
+          student_list s
+      WHERE 
+          s.date_created > (SELECT IFNULL(MAX(requested_at), '1970-01-01') FROM download_requests)
+      ORDER BY s.date_created DESC
+      LIMIT 10
+    ");
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -195,6 +194,7 @@
           </table>
         </div>
       </div>
+
       <div id="newProjectsTable" class="table-container">
         <!-- New Projects Table (similar structure) -->
       </div>
