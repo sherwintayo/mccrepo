@@ -144,7 +144,7 @@
         // Assume $conn is already available in this file through the config or session
         $newUsers = [];
 
-        // Fetch new student notifications
+        // Fetch all students from the student_list table
         $stmt = $conn->prepare("
     SELECT 
         s.id AS student_id, 
@@ -154,8 +154,6 @@
         s.status AS student_status
     FROM 
         student_list s
-    WHERE 
-        s.date_created > (SELECT IFNULL(MAX(requested_at), '1970-01-01') FROM student_list)
     ORDER BY s.date_created DESC
     LIMIT 10
   ");
