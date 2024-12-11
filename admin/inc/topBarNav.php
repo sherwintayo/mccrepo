@@ -137,13 +137,16 @@ while ($row = $result->fetch_assoc()) {
               data-reason="<?php echo htmlspecialchars($notification['reason']); ?>"
               data-title="<?php echo htmlspecialchars($notification['title']); ?>" onclick="showRequestModal(this)">
               <i class="fas fa-envelope text-info"></i>
-              <strong><?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname']); ?></strong>
-              <span class="notification-reason">
-                <?php echo htmlspecialchars($notification['reason']); ?>
-              </span>
-              <span class="notification-title">
-                <em><?php echo htmlspecialchars($notification['title']); ?></em>
-              </span>
+              <strong>Download Request</strong><br>
+              <p><b><?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname']); ?></b>
+                wants to download the
+                <span class="notification-title">
+                  <em><?php echo htmlspecialchars($notification['title']); ?></em>
+                </span><br>
+                <span class="notification-reason">
+                  <?php echo htmlspecialchars($notification['reason']); ?>
+                </span>
+              </p>
               <span class="notification-time text-muted float-right text-sm">
                 <?php echo date('M d, H:i', strtotime($notification['requested_at'])); ?>
               </span>
