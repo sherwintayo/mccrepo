@@ -130,24 +130,20 @@ while ($row = $result->fetch_assoc()) {
 
         <?php if ($count > 0): ?>
           <?php foreach ($notifications as $notification): ?>
-            <a href="javascript:void(0);" class="dropdown-item notification-link text-truncate"
-              style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+            <a href="javascript:void(0);" class="dropdown-item notification-link"
               data-id="<?php echo $notification['id']; ?>"
               data-firstname="<?php echo htmlspecialchars($notification['firstname']); ?>"
               data-lastname="<?php echo htmlspecialchars($notification['lastname']); ?>"
               data-reason="<?php echo htmlspecialchars($notification['reason']); ?>"
               data-title="<?php echo htmlspecialchars($notification['title']); ?>" onclick="showRequestModal(this)">
               <i class="fas fa-envelope text-info"></i>
-              <strong>Download Request</strong>
-              <p><b><?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname']); ?></b></p>
-              <span class="notification-title">
-                <em><?php echo htmlspecialchars($notification['title']); ?></em>
-              </span>
-              <span class="notification-reason">
-                <?php echo htmlspecialchars($notification['reason']); ?>
-              </span>
-
-              <span class="notification-time text-muted float-right text-sm">
+              <strong><?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname']); ?></strong>
+              wants to download the
+              <strong>"<?php echo htmlspecialchars($notification['title']); ?>"</strong>
+              for the reason
+              <em>"<?php echo htmlspecialchars($notification['reason']); ?>"</em>.
+              <br>
+              <span class="notification-time text-muted float-left">
                 <?php echo date('M d, H:i', strtotime($notification['requested_at'])); ?>
               </span>
             </a>
