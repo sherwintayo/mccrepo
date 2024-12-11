@@ -9,6 +9,7 @@
 
   .buttons {
     margin-bottom: 6px;
+    margin-left: 30px;
   }
 
   /* Button Styling */
@@ -43,16 +44,16 @@
   <div class="card-header">
     <h3 class="card-title">List of Notifications</h3>
     <!-- Navigation buttons -->
-
-  </div>
-
-  <div class="card-body">
     <div class="buttons">
       <button class="btn-nav" id="downloadRequestsBtn">Download Requests</button>
       <button class="btn-nav" id="newUsersBtn">New Users</button>
       <button class="btn-nav" id="newProjectsBtn">New Projects</button>
       <button class="btn-nav" id="suspiciousLoginsBtn">Suspicious Logins</button>
     </div>
+  </div>
+
+  <div class="card-body">
+
     <div class="container-fluid">
 
       <!-- Download Requests Table -->
