@@ -59,6 +59,7 @@ while ($row = $result->fetch_assoc()) {
   .myDropdown {
     width: 300px;
     /* Limit the height of the dropdown */
+    max-height: fit-content;
     overflow-y: auto;
     /* Add scrolling for overflow */
   }
