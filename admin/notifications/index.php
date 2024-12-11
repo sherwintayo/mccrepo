@@ -178,6 +178,7 @@
         s.id AS student_id,
         s.firstname AS student_firstname,
         s.lastname AS student_lastname,
+        s.status AS student_status,
         s.date_created AS student_created_at
     FROM 
         student_list s
