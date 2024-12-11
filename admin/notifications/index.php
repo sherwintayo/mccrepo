@@ -43,6 +43,10 @@
 <div class="card card-outline card-primary">
   <div class="card-header">
     <h3 class="card-title">List of Notifications</h3>
+
+  </div>
+
+  <div class="card-body">
     <!-- Navigation buttons -->
     <div class="buttons">
       <button class="btn-nav" id="downloadRequestsBtn">Download Requests</button>
@@ -50,10 +54,6 @@
       <button class="btn-nav" id="newProjectsBtn">New Projects</button>
       <button class="btn-nav" id="suspiciousLoginsBtn">Suspicious Logins</button>
     </div>
-  </div>
-
-  <div class="card-body">
-
     <div class="container-fluid">
 
       <!-- Download Requests Table -->
