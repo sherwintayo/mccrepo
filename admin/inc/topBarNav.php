@@ -148,7 +148,7 @@ while ($row = $result->fetch_assoc()) {
               <i class="fas fa-envelope text-info"></i>
               <strong><?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname']); ?></strong>
               wants to download the
-              <strong>"<?php echo htmlspecialchars($notification['title']); ?>"</strong>
+              <strong>"<?php echo $truncatedTitle; ?>"</strong>
               for the reason
               <em>"<?php echo htmlspecialchars($notification['reason']); ?>"</em>.
               <br>
