@@ -121,8 +121,7 @@ while ($row = $result->fetch_assoc()) {
         <?php endif; ?>
       </a>
       <!-- Dropdown Menu -->
-      <div class="dropdown-menu myDropdown dropdown-menu-right"
-        style="width: 300px; max-height: 500px; overflow-y: auto;">
+      <div class="dropdown-menu myDropdown dropdown-menu-right" style="width: 300px; overflow-y: auto;">
         <span class="dropdown-item dropdown-header">
           <?php if ($count > 0): ?>
             You have <?= $count ?> New Request<?= $count > 1 ? 's' : '' ?>
@@ -155,7 +154,7 @@ while ($row = $result->fetch_assoc()) {
               <span class="notification-time text-muted float-left">
                 <?php echo date('M d, H:i', strtotime($notification['requested_at'])); ?>
               </span>
-            </a>
+            </a><br>
             <div class="dropdown-divider"></div>
           <?php endforeach; ?>
         <?php else: ?>
