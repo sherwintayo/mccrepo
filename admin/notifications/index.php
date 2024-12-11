@@ -147,16 +147,45 @@
         // Fetch all students from the student_list table
         $stmt = $conn->prepare("
     SELECT 
-        s.id AS student_id, 
+        dr.id AS request_id, 
         s.firstname, 
         s.lastname, 
-        s.date_created AS student_created_at,
-        s.status AS student_status
+        dr.reason, 
+        dr.requested_at, 
+        al.title,
+        NULL AS student_id, 
+        NULL AS student_firstname, 
+        NULL AS student_lastname,
+        NULL AS student_created_at
+    FROM 
+        download_requests dr
+    JOIN 
+        student_list s ON dr.user_id = s.id
+    JOIN 
+        archive_list al ON dr.file_id = al.id
+    WHERE 
+        dr.status = 'pending' 
+
+    UNION ALL
+
+    SELECT 
+        NULL AS request_id, 
+        s.firstname, 
+        s.lastname, 
+        'New student added' AS reason, 
+        s.date_created AS requested_at,
+        NULL AS title,
+        s.id AS student_id,
+        s.firstname AS student_firstname,
+        s.lastname AS student_lastname,
+        s.date_created AS student_created_at
     FROM 
         student_list s
-    ORDER BY s.date_created DESC
+    WHERE 
+        s.date_created > (SELECT IFNULL(MAX(requested_at), '1970-01-01') FROM download_requests)
+    ORDER BY requested_at DESC
     LIMIT 10
-  ");
+");
         $stmt->execute();
         $result = $stmt->get_result();
 
