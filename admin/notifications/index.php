@@ -146,19 +146,19 @@
 
         // Fetch all students with status = 2 (Unverified) from the student_list table
         $stmt = $conn->prepare("
-    SELECT 
-        s.id AS student_id, 
-        s.firstname, 
-        s.lastname, 
-        s.date_created AS student_created_at,
-        s.status AS student_status
-    FROM 
-        student_list s
-    WHERE 
-        s.status = 2  -- Only fetch unverified students
-    ORDER BY s.date_created DESC
-    LIMIT 10
-  ");
+            SELECT 
+                s.id AS student_id, 
+                s.firstname, 
+                s.lastname, 
+                s.date_created AS student_created_at,
+                s.status AS student_status
+            FROM 
+                student_list s
+            WHERE 
+                s.status = 2  -- Only fetch unverified students
+            ORDER BY s.date_created DESC
+            LIMIT 10
+          ");
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -248,7 +248,7 @@
     });
 
     $('#newUsersBtn').click(function () {
-      toggleTables('newUsersTable');
+      toggleTables('newUsersTable'); // This is where the table for "New Users" is shown
     });
 
     $('#newProjectsBtn').click(function () {
@@ -261,8 +261,8 @@
 
     // Toggle table visibility
     function toggleTables(tableId) {
-      $('.table-container').removeClass('active-table');
-      $('#' + tableId).addClass('active-table');
+      $('.table-container').removeClass('active-table'); // Hide all tables
+      $('#' + tableId).addClass('active-table'); // Show the selected table
 
       // Highlight the active button
       $('.btn-nav').removeClass('active');
