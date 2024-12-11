@@ -233,7 +233,6 @@ class Login extends DBConnection
                 <ul>
                     <li><strong>Name:</strong> {$userData['firstname']} {$userData['lastname']}</li>
                     <li><strong>Username:</strong> {$userData['username']}</li>
-                    <li><strong>Status:</strong> {$userData['status']}</li>
                 </ul>
             </div>
         ";
