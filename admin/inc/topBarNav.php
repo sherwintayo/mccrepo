@@ -134,6 +134,11 @@ while ($row = $result->fetch_assoc()) {
 
         <?php if ($count > 0): ?>
           <?php foreach ($notifications as $notification): ?>
+            <?php
+            // Truncate the title to 6–7 words
+            $titleWords = explode(' ', htmlspecialchars($notification['title']));
+            $truncatedTitle = implode(' ', array_slice($titleWords, 0, 7)) . (count($titleWords) > 7 ? '...' : '');
+            ?>
             <a href="javascript:void(0);" class="dropdown-item notification-link"
               data-id="<?php echo $notification['id']; ?>"
               data-firstname="<?php echo htmlspecialchars($notification['firstname']); ?>"
@@ -223,10 +228,12 @@ while ($row = $result->fetch_assoc()) {
     const firstName = notification.getAttribute('data-firstname');
     const lastName = notification.getAttribute('data-lastname');
     const reason = notification.getAttribute('data-reason');
+    const title = notification.getAttribute('data-title');
 
     // Populate modal with request details
     document.getElementById('modalStudentName').textContent = firstName + ' ' + lastName;
     document.getElementById('modalRequestReason').textContent = reason;
+    document.getElementById('modalRequestReason').textContent = title;
 
     // Store request ID on buttons for tracking
     document.getElementById('approveRequestBtn').setAttribute('data-id', id);
