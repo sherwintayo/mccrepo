@@ -127,7 +127,7 @@ while ($row = $result->fetch_assoc()) {
         <?php endif; ?>
       </a>
       <!-- Dropdown Menu -->
-      <div class="dropdown-menu dropdown-menu-right" style="width: 300px; max-height: 400px; overflow-y: auto;">
+      <div class="dropdown-menu dropdown-menu-right" style="width: 300px; height: auto; overflow-y: auto;">
         <span class="dropdown-item dropdown-header">
           <?php if ($count > 0): ?>
             You have <?= $count ?> New Request<?= $count > 1 ? 's' : '' ?>
