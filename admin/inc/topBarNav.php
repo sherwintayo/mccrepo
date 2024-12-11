@@ -79,6 +79,11 @@ while ($row = $result->fetch_assoc()) {
   .notification-time {
     font-size: 0.8rem;
   }
+
+  .fix-footer {
+    display: absolute;
+    bottom: 0;
+  }
 </style>
 
 <!-- Navbar -->
@@ -126,7 +131,7 @@ while ($row = $result->fetch_assoc()) {
               data-lastname="<?php echo htmlspecialchars($notification['lastname']); ?>"
               data-reason="<?php echo htmlspecialchars($notification['reason']); ?>" onclick="showRequestModal(this)">
               <i class="fas fa-envelope text-info"></i>
-              <strong><?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname']); ?></strong>
+              <strong><?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname']); ?></strong><br>
               <span class="notification-reason">
                 <?php echo htmlspecialchars($notification['reason']); ?>
               </span>
@@ -142,10 +147,11 @@ while ($row = $result->fetch_assoc()) {
         <?php else: ?>
           <span class="dropdown-item text-light-50">No new requests</span>
         <?php endif; ?>
-
-        <a href="<?php echo base_url ?>admin/?page=notifications" class="dropdown-item dropdown-footer">
-          See All Requests
-        </a>
+        <div class="fix-footer">
+          <a href="<?php echo base_url ?>admin/?page=notifications" class="dropdown-item dropdown-footer">
+            See All Requests
+          </a>
+        </div>
       </div>
 
 
