@@ -66,12 +66,27 @@ while ($row = $result->fetch_assoc()) {
 
   .notification-link {
     white-space: nowrap;
-    /* Prevent wrapping */
+    /* Prevent line wrapping */
     overflow: hidden;
-    /* Hide overflow text */
+    /* Hide overflow */
     text-overflow: ellipsis;
-    /* Add ellipsis for truncated text */
+    /* Show ellipsis for truncated text */
+    max-width: 250px;
+    /* Adjust to fit within the dropdown */
+    display: inline-block;
+    /* Ensure ellipsis works properly */
   }
+
+  .notification-reason,
+  .notification-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 230px;
+    /* Adjust to match your layout */
+    display: inline-block;
+  }
+
 
   .unread-indicator {
     display: inline-block;
@@ -131,7 +146,7 @@ while ($row = $result->fetch_assoc()) {
         <?php if ($count > 0): ?>
           <?php foreach ($notifications as $notification): ?>
             <a href="javascript:void(0);" class="dropdown-item notification-link text-truncate"
-              style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+              title="<?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname'] . ' - ' . $notification['title'] . ': ' . $notification['reason']); ?>"
               data-id="<?php echo $notification['id']; ?>"
               data-firstname="<?php echo htmlspecialchars($notification['firstname']); ?>"
               data-lastname="<?php echo htmlspecialchars($notification['lastname']); ?>"
@@ -139,8 +154,10 @@ while ($row = $result->fetch_assoc()) {
               data-title="<?php echo htmlspecialchars($notification['title']); ?>" onclick="showRequestModal(this)">
               <i class="fas fa-envelope text-info"></i>
               <strong>Download Request</strong><br>
-              <p><b><?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname']); ?></b>
-                wants to download the
+              <p>
+                <b><?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname']); ?></b> wants
+                to
+                download the
                 <span class="notification-title">
                   <em><?php echo htmlspecialchars($notification['title']); ?></em>
                 </span><br>
