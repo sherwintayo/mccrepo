@@ -22,10 +22,11 @@ class Users extends DBConnection
 	}
 	public function save_users()
 	{
-		if (!isset($_POST['status']) && $this->settings->userdata('login_type') == 1) {
-			$_POST['status'] = 1;
-			$_POST['type'] = 2; // Default to Staff
+		// Ensure 'type' is set in the POST request
+		if (!isset($_POST['type'])) {
+			return 5; // Error: User type not provided
 		}
+
 		extract($_POST);
 		$oid = $id;
 		$data = '';
@@ -39,7 +40,7 @@ class Users extends DBConnection
 		}
 
 		// Check for duplicate usernames
-		$chk = $this->conn->query("SELECT * FROM `users` WHERE username ='{$username}' " . ($id > 0 ? " AND id!= '{$id}' " : ""))->num_rows;
+		$chk = $this->conn->query("SELECT * FROM users WHERE username ='{$username}' " . ($id > 0 ? " AND id!= '{$id}' " : ""))->num_rows;
 		if ($chk > 0) {
 			return 3; // Username already exists
 		}
@@ -60,7 +61,7 @@ class Users extends DBConnection
 			if (!empty($data)) {
 				$data .= " , ";
 			}
-			$data .= " `password` = '{$hashed_password}' ";
+			$data .= " password = '{$hashed_password}' ";
 		}
 
 		if (empty($id)) {
@@ -122,7 +123,7 @@ class Users extends DBConnection
 				}
 			}
 			if (isset($uploaded_img)) {
-				$this->conn->query("UPDATE users SET `avatar` = CONCAT('{$fname}','?v=',unix_timestamp(CURRENT_TIMESTAMP)) WHERE id = '{$id}' ");
+				$this->conn->query("UPDATE users SET avatar = CONCAT('{$fname}','?v=',unix_timestamp(CURRENT_TIMESTAMP)) WHERE id = '{$id}' ");
 				if ($id == $this->settings->userdata('id')) {
 					$this->settings->set_userdata('avatar', $fname);
 				}
@@ -134,6 +135,7 @@ class Users extends DBConnection
 		}
 		return $resp['status'];
 	}
+
 
 
 	public function delete_users()

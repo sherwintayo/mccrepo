@@ -46,6 +46,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 						</option>
 						<option value="2" <?php echo isset($meta['type']) && $meta['type'] == 2 ? 'selected' : '' ?>>Staff</option>
 					</select>
+
 				</div>
 				<div class="form-group col-6">
 					<label for="" class="control-label">Avatar</label>
