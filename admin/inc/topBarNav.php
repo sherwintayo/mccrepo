@@ -73,31 +73,45 @@ while ($row = $result->fetch_assoc()) {
         <?php endif; ?>
       </a>
       <div class="dropdown-menu dropdown-menu-right" style="width: 300px;">
-        <span class="dropdown-item dropdown-header"><?php echo $count; ?> New Requests</span>
+        <span class="dropdown-item dropdown-header">
+          <?php if ($count > 0): ?>
+            You have <?= $count ?> New Request<?= $count > 1 ? 's' : '' ?>
+          <?php else: ?>
+            You have no new requests
+          <?php endif; ?>
+        </span>
         <div class="dropdown-divider"></div>
 
         <?php if ($count > 0): ?>
           <?php foreach ($notifications as $notification): ?>
-            <div class="notification-item" data-id="<?php echo $notification['id']; ?>"
+            <a href="javascript:void(0);" class="dropdown-item notification-link"
+              data-id="<?php echo $notification['id']; ?>"
               data-firstname="<?php echo htmlspecialchars($notification['firstname']); ?>"
               data-lastname="<?php echo htmlspecialchars($notification['lastname']); ?>"
               data-reason="<?php echo htmlspecialchars($notification['reason']); ?>" onclick="showRequestModal(this)">
-              <div>
-                <strong><?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname']); ?></strong>
-                <span
-                  class="text-muted float-right text-sm"><?php echo date('M d, H:i', strtotime($notification['requested_at'])); ?></span>
-                <div class="notification-reason"><?php echo htmlspecialchars($notification['reason']); ?></div>
-              </div>
-            </div>
+              <i class="fas fa-envelope text-info"></i>
+              <strong><?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname']); ?></strong>
+              <span class="notification-reason">
+                <?php echo htmlspecialchars($notification['reason']); ?>
+              </span>
+              <span class="notification-time text-muted float-right text-sm">
+                <?php echo date('M d, H:i', strtotime($notification['requested_at'])); ?>
+              </span>
+              <?php if ($notification['status'] === 'unread'): ?>
+                <span class="unread-indicator"></span> <!-- Blue circle for unread -->
+              <?php endif; ?>
+            </a>
             <div class="dropdown-divider"></div>
           <?php endforeach; ?>
         <?php else: ?>
-          <div class="dropdown-item text-center">No new requests</div>
+          <span class="dropdown-item text-light-50">No new requests</span>
         <?php endif; ?>
 
-        <a href="<?php echo base_url ?>admin/?page=notifications" class="dropdown-item dropdown-footer">See All
-          Requests</a>
+        <a href="<?php echo base_url ?>admin/?page=notifications" class="dropdown-item dropdown-footer">
+          See All Requests
+        </a>
       </div>
+
     </li>
 
 
