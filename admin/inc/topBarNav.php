@@ -3,25 +3,49 @@
 $notifications = [];
 $count = 0;
 
-// Fetch pending download requests with archive titles
-$stmt = $conn->prepare("SELECT 
-                            dr.id, 
-                            s.firstname, 
-                            s.lastname, 
-                            dr.reason, 
-                            dr.requested_at, 
-                            al.title 
-                        FROM 
-                            download_requests dr
-                        JOIN 
-                            student_list s ON dr.user_id = s.id
-                        JOIN 
-                            archive_list al ON dr.file_id = al.id
-                        WHERE 
-                            dr.status = 'pending' 
-                        ORDER BY 
-                            dr.requested_at DESC 
-                        LIMIT 10");
+// Fetch pending download requests and new student notifications
+$stmt = $conn->prepare("
+    SELECT 
+        dr.id AS request_id, 
+        s.firstname, 
+        s.lastname, 
+        dr.reason, 
+        dr.requested_at, 
+        al.title,
+        NULL AS student_id, 
+        NULL AS student_firstname, 
+        NULL AS student_lastname,
+        NULL AS student_created_at
+    FROM 
+        download_requests dr
+    JOIN 
+        student_list s ON dr.user_id = s.id
+    JOIN 
+        archive_list al ON dr.file_id = al.id
+    WHERE 
+        dr.status = 'pending' 
+
+    UNION ALL
+
+    SELECT 
+        NULL AS request_id, 
+        s.firstname, 
+        s.lastname, 
+        'New student added' AS reason, 
+        s.date_created AS requested_at,
+        NULL AS title,
+        s.id AS student_id,
+        s.firstname AS student_firstname,
+        s.lastname AS student_lastname,
+        s.date_created AS student_created_at
+    FROM 
+        student_list s
+    WHERE 
+        s.date_created > (SELECT IFNULL(MAX(requested_at), '1970-01-01') FROM download_requests)
+    ORDER BY requested_at DESC
+    LIMIT 10
+");
+
 $stmt->execute();
 $result = $stmt->get_result();
 $count = $result->num_rows;
@@ -30,7 +54,6 @@ while ($row = $result->fetch_assoc()) {
   $notifications[] = $row;
 }
 ?>
-
 <style>
   .user-img {
     position: absolute;
@@ -74,9 +97,11 @@ while ($row = $result->fetch_assoc()) {
 
   .notification-time {
     font-size: 0.85rem;
-    /* Smaller font for the timestamp */
-    color: gray;
-    /* Muted color for timestamps */
+  }
+
+  .myIcon,
+  .notification-time {
+    color: #6BAEFC;
   }
 
 
@@ -125,72 +150,64 @@ while ($row = $result->fetch_assoc()) {
         style="width: 300px; max-height: 600px; overflow-y: auto;">
         <span class="dropdown-item dropdown-header">
           <?php if ($count > 0): ?>
-            You have <?= $count ?> New Request<?= $count > 1 ? 's' : '' ?>
+            You have <?= $count ?> New Notification<?= $count > 1 ? 's' : '' ?>
           <?php else: ?>
-            You have no new requests
+            You have no new notifications
           <?php endif; ?>
         </span>
         <div class="dropdown-divider"></div>
 
         <?php if ($count > 0): ?>
           <?php foreach ($notifications as $notification): ?>
-            <?php
-            // Truncate the title to 6–7 words
-            $titleWords = explode(' ', htmlspecialchars($notification['title']));
-            $truncatedTitle = implode(' ', array_slice($titleWords, 0, 7)) . (count($titleWords) > 7 ? '...' : '');
-            ?>
-            <a href="javascript:void(0);" class="dropdown-item notification-link"
-              data-id="<?php echo $notification['id']; ?>"
-              data-firstname="<?php echo htmlspecialchars($notification['firstname']); ?>"
-              data-lastname="<?php echo htmlspecialchars($notification['lastname']); ?>"
-              data-reason="<?php echo htmlspecialchars($notification['reason']); ?>"
-              data-title="<?php echo htmlspecialchars($notification['title']); ?>" onclick="showRequestModal(this)">
-              <i class="fas fa-envelope text-info"></i>
-              <strong><?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname']); ?></strong>
-              wants to download the
-              <strong>"<?php echo $truncatedTitle; ?>"</strong>
-              for the reason
-              <em>"<?php echo htmlspecialchars($notification['reason']); ?>"</em>.
-              <br>
-              <span class="notification-time text-muted float-left">
-                <?php echo date('M d, H:i', strtotime($notification['requested_at'])); ?>
-              </span>
-            </a><br>
-            <div class="dropdown-divider"></div>
+            <?php if ($notification['request_id']): ?>
+              <!-- Download request notification -->
+              <?php
+              $titleWords = explode(' ', htmlspecialchars($notification['title']));
+              $truncatedTitle = implode(' ', array_slice($titleWords, 0, 7)) . (count($titleWords) > 7 ? '...' : '');
+              ?>
+              <a href="javascript:void(0);" class="dropdown-item notification-link"
+                data-id="<?php echo $notification['request_id']; ?>"
+                data-firstname="<?php echo htmlspecialchars($notification['firstname']); ?>"
+                data-lastname="<?php echo htmlspecialchars($notification['lastname']); ?>"
+                data-reason="<?php echo htmlspecialchars($notification['reason']); ?>"
+                data-title="<?php echo htmlspecialchars($notification['title']); ?>" onclick="showRequestModal(this)">
+                <i class="fas fa-envelope myIcon"></i>
+                <strong><?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname']); ?></strong>
+                wants to download the
+                <strong>"<?php echo $truncatedTitle; ?>"</strong>
+                for the reason
+                <em>"<?php echo htmlspecialchars($notification['reason']); ?>"</em>.
+                <br>
+                <span class="notification-time text-muted float-left">
+                  <?php echo date('M d, H:i', strtotime($notification['requested_at'])); ?>
+                </span>
+              </a><br>
+              <div class="dropdown-divider"></div>
+            <?php elseif ($notification['student_id']): ?>
+              <!-- New student added notification -->
+              <a href="javascript:void(0);" class="dropdown-item notification-link"
+                data-id="<?php echo $notification['student_id']; ?>"
+                data-firstname="<?php echo htmlspecialchars($notification['student_firstname']); ?>"
+                data-lastname="<?php echo htmlspecialchars($notification['student_lastname']); ?>"
+                data-reason="New student added" onclick="showStudentModal(this)">
+                <i class="fas fa-user myIcon"></i>
+                <strong><?php echo htmlspecialchars($notification['student_firstname'] . ' ' . $notification['student_lastname']); ?></strong>
+                has been added to the system.
+                <br>
+                <span class="notification-time text-muted float-left">
+                  <?php echo date('M d, H:i', strtotime($notification['student_created_at'])); ?>
+                </span>
+              </a><br>
+              <div class="dropdown-divider"></div>
+            <?php endif; ?>
           <?php endforeach; ?>
         <?php else: ?>
-          <span class="dropdown-item text-light-50">No new requests</span>
+          <span class="dropdown-item text-light-50">No new notifications</span>
         <?php endif; ?>
 
         <a href="<?php echo base_url ?>admin/?page=notifications" class="dropdown-item dropdown-footer text-center">
-          See All Requests
+          See All Notifications
         </a>
-      </div>
-
-
-    </li>
-
-
-
-    <!-- User Dropdown Menu -->
-    <li class="nav-item">
-      <div class="btn-group nav-link">
-        <button type="button" class="btn btn-rounded badge badge-light dropdown-toggle dropdown-icon"
-          data-toggle="dropdown">
-          <span><img src="<?php echo validate_image($_settings->userdata('avatar')) ?>"
-              class="img-circle elevation-2 user-img" alt="User Image"></span>
-          <span
-            class="ml-3"><?php echo ucwords($_settings->userdata('firstname') . ' ' . $_settings->userdata('lastname')) ?></span>
-          <span class="sr-only">Toggle Dropdown</span>
-        </button>
-        <div class="dropdown-menu" role="menu">
-          <a class="dropdown-item" href="<?php echo base_url . 'admin/?page=user' ?>"><span class="fa fa-user"></span>
-            My
-            Account</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="<?php echo base_url . '/classes/Login.php?f=logout' ?>"><span
-              class="fas fa-sign-out-alt"></span> Logout</a>
-        </div>
       </div>
     </li>
   </ul>
@@ -210,6 +227,7 @@ while ($row = $result->fetch_assoc()) {
       </div>
       <div class="modal-body">
         <p><strong>Student:</strong> <span id="modalStudentName"></span></p>
+        <p><strong>Title:</strong> <span id="modalRequestTitle"></span></p>
         <p><strong>Reason:</strong> <span id="modalRequestReason"></span></p>
       </div>
       <div class="modal-footer">
@@ -233,7 +251,7 @@ while ($row = $result->fetch_assoc()) {
     // Populate modal with request details
     document.getElementById('modalStudentName').textContent = firstName + ' ' + lastName;
     document.getElementById('modalRequestReason').textContent = reason;
-    document.getElementById('modalRequestReason').textContent = title;
+    document.getElementById('modalRequestTitle').textContent = title;
 
     // Store request ID on buttons for tracking
     document.getElementById('approveRequestBtn').setAttribute('data-id', id);
