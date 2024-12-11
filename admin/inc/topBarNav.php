@@ -43,8 +43,41 @@ while ($row = $result->fetch_assoc()) {
     background-color: #f1f1f1;
   }
 
+  /* Ensure the dropdown content wraps properly and fits within the menu */
+  .myDropdown {
+    width: 300px;
+    max-height: 400px;
+    /* Limit the height of the dropdown */
+    overflow-y: auto;
+    /* Add scrolling for overflow */
+  }
+
+  .notification-link {
+    white-space: nowrap;
+    /* Prevent wrapping */
+    overflow: hidden;
+    /* Hide overflow text */
+    text-overflow: ellipsis;
+    /* Add ellipsis for truncated text */
+  }
+
+  .unread-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: blue;
+    border-radius: 50%;
+    margin-left: 5px;
+  }
+
+  /* Adjust the text size for readability */
   .notification-reason {
-    font-size: 0.9em;
+    font-size: 0.9rem;
+    color: gray;
+  }
+
+  .notification-time {
+    font-size: 0.8rem;
   }
 </style>
 
@@ -72,7 +105,9 @@ while ($row = $result->fetch_assoc()) {
           <span class="badge badge-danger navbar-badge"><?php echo $count; ?></span>
         <?php endif; ?>
       </a>
-      <div class="dropdown-menu dropdown-menu-right" style="width: 300px;">
+      <!-- Dropdown Menu -->
+      <div class="dropdown-menu myDropdown dropdown-menu-right"
+        style="width: 300px; max-height: 400px; overflow-y: auto;">
         <span class="dropdown-item dropdown-header">
           <?php if ($count > 0): ?>
             You have <?= $count ?> New Request<?= $count > 1 ? 's' : '' ?>
@@ -84,7 +119,8 @@ while ($row = $result->fetch_assoc()) {
 
         <?php if ($count > 0): ?>
           <?php foreach ($notifications as $notification): ?>
-            <a href="javascript:void(0);" class="dropdown-item notification-link"
+            <a href="javascript:void(0);" class="dropdown-item notification-link text-truncate"
+              style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
               data-id="<?php echo $notification['id']; ?>"
               data-firstname="<?php echo htmlspecialchars($notification['firstname']); ?>"
               data-lastname="<?php echo htmlspecialchars($notification['lastname']); ?>"
@@ -98,7 +134,7 @@ while ($row = $result->fetch_assoc()) {
                 <?php echo date('M d, H:i', strtotime($notification['requested_at'])); ?>
               </span>
               <?php if ($notification['status'] === 'unread'): ?>
-                <span class="unread-indicator"></span> <!-- Blue circle for unread -->
+                <span class="unread-indicator"></span>
               <?php endif; ?>
             </a>
             <div class="dropdown-divider"></div>
@@ -111,6 +147,7 @@ while ($row = $result->fetch_assoc()) {
           See All Requests
         </a>
       </div>
+
 
     </li>
 
