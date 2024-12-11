@@ -184,7 +184,7 @@
                     <td><?php echo htmlspecialchars($user['lastname']); ?></td>
                     <td><?php echo date('M d, Y', strtotime($user['student_created_at'])); ?></td>
                     <td>
-                      <?php switch ($row['status']) {
+                      <?php switch ($row['student_status']) {
                         case '1':
                           echo "<span class='badge badge-success'>Verified</span>";
                           break;
