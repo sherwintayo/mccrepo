@@ -194,31 +194,43 @@ include 'timezone.php';
                             </thead>
                             <tbody>
                                 <?php
-                                // Check if the table exists
-                                if ($conn->query("SHOW TABLES LIKE 'keyword_search_counter'")->num_rows > 0) {
-                                    $keywordCollection = $conn->query("SELECT keyword, COUNT(keyword) as kcount FROM `keyword_search_counter` GROUP BY keyword ORDER BY kcount DESC LIMIT 10");
-                                    if ($keywordCollection->num_rows > 0):
-                                        $cc = 0;
+                                // Ensure the table exists
+                                $tableExists = $conn->query("SHOW TABLES LIKE 'keyword_search_counter'")->num_rows > 0;
+
+                                if ($tableExists) {
+                                    // Fetch keywords and their counts
+                                    $keywordCollection = $conn->query("
+                                SELECT keyword, COUNT(keyword) as kcount 
+                                FROM `keyword_search_counter` 
+                                GROUP BY keyword 
+                                ORDER BY kcount DESC 
+                                LIMIT 10
+                            ");
+
+                                    if ($keywordCollection && $keywordCollection->num_rows > 0):
+                                        $cc = 0; // Counter for table rows
                                         foreach ($keywordCollection as $_keywordCollection):
                                             $cc += 1;
                                             ?>
                                             <tr>
                                                 <td><?php echo $cc; ?>.</td>
-                                                <td><?php echo $_keywordCollection["keyword"]; ?></td>
+                                                <td><?php echo htmlspecialchars($_keywordCollection["keyword"]); ?></td>
                                                 <td><span class="badge bg-grey"><?php echo $_keywordCollection["kcount"]; ?></span>
                                                 </td>
                                             </tr>
                                             <?php
                                         endforeach;
                                     else:
+                                        // Handle case when no keywords are found
                                         ?>
                                         <tr>
-                                            <td colpsan="3">No Data Available!</td>
+                                            <td colspan="3" class="text-center">No Data Available!</td>
                                         </tr>
                                         <?php
                                     endif;
                                 } else {
-                                    echo "<tr><td colspan='3'>Table 'keyword_search_counter' does not exist!</td></tr>";
+                                    // Handle case when table does not exist
+                                    echo "<tr><td colspan='3' class='text-center'>Table 'keyword_search_counter' does not exist!</td></tr>";
                                 }
                                 ?>
                             </tbody>
@@ -319,8 +331,19 @@ include 'timezone.php';
                 // Fetch the top picks data from PHP
                 var topPicks = <?php echo $top_picks_json; ?>;
 
+                // Function to truncate text to 4-5 words and append "..." if too long
+                function truncateText(text, maxWords) {
+                    const words = text.split(' ');
+                    if (words.length > maxWords) {
+                        return words.slice(0, maxWords).join(' ') + '...';
+                    }
+                    return text;
+                }
+
                 // Extract labels (titles) and data (download counts) for the chart
-                var labels = topPicks.map(function (item) { return item.title; });
+                var labels = topPicks.map(function (item) {
+                    return truncateText(item.title, 5); // Limit to 5 words
+                });
                 var data = topPicks.map(function (item) { return item.download_count; });
 
                 // Configure the line chart
@@ -354,7 +377,8 @@ include 'timezone.php';
                 if (topPicks.length > 0) {
                     var listHtml = '<ul>';
                     topPicks.forEach(function (item) {
-                        listHtml += '<li>' + item.title + ' - ' + item.download_count + ' downloads</li>';
+                        const truncatedTitle = truncateText(item.title, 5);
+                        listHtml += `<li>${truncatedTitle} - ${item.download_count} downloads</li>`;
                     });
                     listHtml += '</ul>';
                     topPicksContainer.innerHTML = listHtml;
@@ -363,6 +387,7 @@ include 'timezone.php';
                 }
             });
         </script>
+
 
 
         <?php
@@ -455,42 +480,7 @@ include 'timezone.php';
                     options: barChartOptions
                 });
 
-                // Pie Chart
-                // var pieChartCanvas = $('#pieChart').get(0).getContext('2d');
-                // var titles = <?php echo $titles; ?>;
-                // var labels = titles.map(function (title) { return title.title; });
-                // var data = titles.map(function (title) { return title.count; });
-                // var pieData = {
-                //     labels: labels,  
-                //     datasets: [{
-                //         data: data,
-                //         backgroundColor: poolColors(data.length)
-                //     }]
-                // };
-                // var pieOptions = {
-                //     maintainAspectRatio: false,
-                //     responsive: true
-                // };
-                // new Chart(pieChartCanvas, {
-                //     type: 'pie',
-                //     data: pieData,
-                //     options: pieOptions
-                // });
 
-                // function dynamicColors() {
-                //     var r = Math.floor(Math.random() * 255);
-                //     var g = Math.floor(Math.random() * 255);
-                //     var b = Math.floor(Math.random() * 255);
-                //     return "rgba(" + r + "," + g + "," + b + ", 0.5)";
-                // }
-
-                // function poolColors(a) {
-                //     var pool = [];
-                //     for (var i = 0; i < a; i++) {
-                //         pool.push(dynamicColors());
-                //     }
-                //     return pool;
-                //}
             });
         </script>
         <script>
