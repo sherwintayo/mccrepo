@@ -142,60 +142,32 @@
       <div id="newUsersTable" class="table-container">
         <?php
         // Assume $conn is already available in this file through the config or session
-        $newUsers = [];
+        $unverifiedUsers = [];
 
-        // Fetch all students from the student_list table
+        // Fetch all students with status = 2 (Unverified) from the student_list table
         $stmt = $conn->prepare("
     SELECT 
-        dr.id AS request_id, 
+        s.id AS student_id, 
         s.firstname, 
         s.lastname, 
-        dr.reason, 
-        dr.requested_at, 
-        al.title,
-        NULL AS student_id, 
-        NULL AS student_firstname, 
-        NULL AS student_lastname,
-        NULL AS student_created_at
-    FROM 
-        download_requests dr
-    JOIN 
-        student_list s ON dr.user_id = s.id
-    JOIN 
-        archive_list al ON dr.file_id = al.id
-    WHERE 
-        dr.status = 'pending' 
-
-    UNION ALL
-
-    SELECT 
-        NULL AS request_id, 
-        s.firstname, 
-        s.lastname, 
-        'New student added' AS reason, 
-        s.date_created AS requested_at,
-        NULL AS title,
-        s.id AS student_id,
-        s.firstname AS student_firstname,
-        s.lastname AS student_lastname,
-        s.status AS student_status,
-        s.date_created AS student_created_at
+        s.date_created AS student_created_at,
+        s.status AS student_status
     FROM 
         student_list s
     WHERE 
-        s.date_created > (SELECT IFNULL(MAX(requested_at), '1970-01-01') FROM download_requests)
-    ORDER BY requested_at DESC
+        s.status = 2  -- Only fetch unverified students
+    ORDER BY s.date_created DESC
     LIMIT 10
-");
+  ");
         $stmt->execute();
         $result = $stmt->get_result();
 
         while ($row = $result->fetch_assoc()) {
-          $newUsers[] = $row;
+          $unverifiedUsers[] = $row;
         }
         ?>
         <div class="table-container">
-          <h3>New Users Added</h3>
+          <h3>Unverified Users</h3>
           <table class="table table-striped">
             <thead>
               <tr>
@@ -207,22 +179,15 @@
               </tr>
             </thead>
             <tbody>
-              <?php if (count($newUsers) > 0): ?>
-                <?php foreach ($newUsers as $user): ?>
+              <?php if (count($unverifiedUsers) > 0): ?>
+                <?php foreach ($unverifiedUsers as $user): ?>
                   <tr>
                     <td><?php echo htmlspecialchars($user['firstname']); ?></td>
                     <td><?php echo htmlspecialchars($user['lastname']); ?></td>
                     <td><?php echo date('M d, Y', strtotime($user['student_created_at'])); ?></td>
                     <td>
-                      <?php switch ($row['student_status']) {
-                        case '1':
-                          echo "<span class='badge badge-success'>Verified</span>";
-                          break;
-                        case '2':
-                          echo "<span class='badge badge-danger'>Unverified</span>";
-                          break;
-                      }
-                      ?>
+                      <!-- Display status as Unverified -->
+                      <span class="badge badge-danger">Unverified</span>
                     </td>
                     <td>
                       <a href="view_student.php?id=<?php echo $user['student_id']; ?>" class="btn btn-info btn-sm">View</a>
@@ -233,13 +198,14 @@
                 <?php endforeach; ?>
               <?php else: ?>
                 <tr>
-                  <td colspan="5">No new users found</td>
+                  <td colspan="5">No unverified users found</td>
                 </tr>
               <?php endif; ?>
             </tbody>
           </table>
         </div>
       </div>
+
 
 
       <div id="newProjectsTable" class="table-container">
