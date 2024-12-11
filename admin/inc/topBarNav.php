@@ -88,10 +88,6 @@ while ($row = $result->fetch_assoc()) {
     color: gray;
   }
 
-  .myP {
-    font-size: 0.9rem;
-  }
-
   .notification-time {
     font-size: 0.8rem;
   }
@@ -127,7 +123,7 @@ while ($row = $result->fetch_assoc()) {
         <?php endif; ?>
       </a>
       <!-- Dropdown Menu -->
-      <div class="dropdown-menu dropdown-menu-right" style="width: 300px; height: auto; overflow-y: auto;">
+      <div class="dropdown-menu dropdown-menu-right" style="width: 300px; max-height: 400px; overflow-y: auto;">
         <span class="dropdown-item dropdown-header">
           <?php if ($count > 0): ?>
             You have <?= $count ?> New Request<?= $count > 1 ? 's' : '' ?>
@@ -147,18 +143,13 @@ while ($row = $result->fetch_assoc()) {
               data-reason="<?php echo htmlspecialchars($notification['reason']); ?>"
               data-title="<?php echo htmlspecialchars($notification['title']); ?>" onclick="showRequestModal(this)">
               <i class="fas fa-envelope text-info"></i>
-              <strong>Download Request</strong><br>
-              <p class="myP"><?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname']); ?>
-                wants to Download the
-                <span class="notification-title">
-                  <em><?php echo htmlspecialchars($notification['title']); ?></em>
-                </span>
-              </p><br>
-
+              <strong><?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname']); ?></strong>
               <span class="notification-reason">
                 <?php echo htmlspecialchars($notification['reason']); ?>
               </span>
-
+              <span class="notification-title">
+                <em><?php echo htmlspecialchars($notification['title']); ?></em>
+              </span>
               <span class="notification-time text-muted float-right text-sm">
                 <?php echo date('M d, H:i', strtotime($notification['requested_at'])); ?>
               </span>
