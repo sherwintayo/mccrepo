@@ -159,70 +159,75 @@ include 'timezone.php';
                 <!-- /.card -->
             </div>
         </div>
-
-        <div class="col-md-6">
-            <div class="card card-info">
-                <div class="card-header">
-                    <h3 class="card-title">Most Keyword searched</h3>
-                    <div class="card-tools"></div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <h3 class="card-title">Top Picks</h3>
+                        <div class="card-tools"></div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart">
+                            <canvas id="lineChart"
+                                style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                        <div id="topPicksList" class="mt-3"></div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <table class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th style="width: 10px">#</th>
-                                <th>Keyword</th>
-                                <th style="width: 40px">Count</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            // Check if the table exists
-                            if ($conn->query("SHOW TABLES LIKE 'keyword_search_counter'")->num_rows > 0) {
-                                $keywordCollection = $conn->query("SELECT keyword, COUNT(keyword) as kcount FROM `keyword_search_counter` GROUP BY keyword ORDER BY kcount DESC LIMIT 10");
-                                if ($keywordCollection->num_rows > 0):
-                                    $cc = 0;
-                                    foreach ($keywordCollection as $_keywordCollection):
-                                        $cc += 1;
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <h3 class="card-title">Most Keyword searched</h3>
+                        <div class="card-tools"></div>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10px">#</th>
+                                    <th>Keyword</th>
+                                    <th style="width: 40px">Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                // Check if the table exists
+                                if ($conn->query("SHOW TABLES LIKE 'keyword_search_counter'")->num_rows > 0) {
+                                    $keywordCollection = $conn->query("SELECT keyword, COUNT(keyword) as kcount FROM `keyword_search_counter` GROUP BY keyword ORDER BY kcount DESC LIMIT 10");
+                                    if ($keywordCollection->num_rows > 0):
+                                        $cc = 0;
+                                        foreach ($keywordCollection as $_keywordCollection):
+                                            $cc += 1;
+                                            ?>
+                                            <tr>
+                                                <td><?php echo $cc; ?>.</td>
+                                                <td><?php echo $_keywordCollection["keyword"]; ?></td>
+                                                <td><span class="badge bg-grey"><?php echo $_keywordCollection["kcount"]; ?></span>
+                                                </td>
+                                            </tr>
+                                            <?php
+                                        endforeach;
+                                    else:
                                         ?>
                                         <tr>
-                                            <td><?php echo $cc; ?>.</td>
-                                            <td><?php echo $_keywordCollection["keyword"]; ?></td>
-                                            <td><span class="badge bg-grey"><?php echo $_keywordCollection["kcount"]; ?></span></td>
+                                            <td colpsan="3">No Data Available!</td>
                                         </tr>
                                         <?php
-                                    endforeach;
-                                else:
-                                    ?>
-                                    <tr>
-                                        <td colpsan="3">No Data Available!</td>
-                                    </tr>
-                                    <?php
-                                endif;
-                            } else {
-                                echo "<tr><td colspan='3'>Table 'keyword_search_counter' does not exist!</td></tr>";
-                            }
-                            ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card card-info">
-                <div class="card-header">
-                    <h3 class="card-title">Top Picks</h3>
-                    <div class="card-tools"></div>
-                </div>
-                <div class="card-body">
-                    <div class="chart">
-                        <canvas id="lineChart"
-                            style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                    endif;
+                                } else {
+                                    echo "<tr><td colspan='3'>Table 'keyword_search_counter' does not exist!</td></tr>";
+                                }
+                                ?>
+                            </tbody>
+                        </table>
                     </div>
-                    <div id="topPicksList" class="mt-3"></div>
                 </div>
             </div>
         </div>
+
 
         <!-- jQuery -->
         <script src="plugins/jquery/jquery.min.js"></script>
