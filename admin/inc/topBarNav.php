@@ -59,34 +59,18 @@ while ($row = $result->fetch_assoc()) {
   .myDropdown {
     width: 300px;
     /* Limit the height of the dropdown */
-    max-height: fit-content;
     overflow-y: auto;
     /* Add scrolling for overflow */
   }
 
   .notification-link {
     white-space: nowrap;
-    /* Prevent line wrapping */
+    /* Prevent wrapping */
     overflow: hidden;
-    /* Hide overflow */
+    /* Hide overflow text */
     text-overflow: ellipsis;
-    /* Show ellipsis for truncated text */
-    max-width: 250px;
-    /* Adjust to fit within the dropdown */
-    display: inline-block;
-    /* Ensure ellipsis works properly */
+    /* Add ellipsis for truncated text */
   }
-
-  .notification-reason,
-  .notification-title {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 230px;
-    /* Adjust to match your layout */
-    display: inline-block;
-  }
-
 
   .unread-indicator {
     display: inline-block;
@@ -133,7 +117,8 @@ while ($row = $result->fetch_assoc()) {
         <?php endif; ?>
       </a>
       <!-- Dropdown Menu -->
-      <div class="dropdown-menu myDropdown dropdown-menu-right" style="width: 300px; overflow-y: auto;">
+      <div class="dropdown-menu myDropdown dropdown-menu-right"
+        style="width: 300px; max-height: 500px; overflow-y: auto;">
         <span class="dropdown-item dropdown-header">
           <?php if ($count > 0): ?>
             You have <?= $count ?> New Request<?= $count > 1 ? 's' : '' ?>
@@ -146,25 +131,22 @@ while ($row = $result->fetch_assoc()) {
         <?php if ($count > 0): ?>
           <?php foreach ($notifications as $notification): ?>
             <a href="javascript:void(0);" class="dropdown-item notification-link text-truncate"
-              title="<?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname'] . ' - ' . $notification['title'] . ': ' . $notification['reason']); ?>"
+              style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
               data-id="<?php echo $notification['id']; ?>"
               data-firstname="<?php echo htmlspecialchars($notification['firstname']); ?>"
               data-lastname="<?php echo htmlspecialchars($notification['lastname']); ?>"
               data-reason="<?php echo htmlspecialchars($notification['reason']); ?>"
               data-title="<?php echo htmlspecialchars($notification['title']); ?>" onclick="showRequestModal(this)">
               <i class="fas fa-envelope text-info"></i>
-              <strong>Download Request</strong><br>
-              <p>
-                <b><?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname']); ?></b> wants
-                to
-                download the
-                <span class="notification-title">
-                  <em><?php echo htmlspecialchars($notification['title']); ?></em>
-                </span><br>
-                <span class="notification-reason">
-                  <?php echo htmlspecialchars($notification['reason']); ?>
-                </span>
-              </p>
+              <strong>Download Request</strong>
+              <p><b><?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname']); ?></b></p>
+              <span class="notification-title">
+                <em><?php echo htmlspecialchars($notification['title']); ?></em>
+              </span>
+              <span class="notification-reason">
+                <?php echo htmlspecialchars($notification['reason']); ?>
+              </span>
+
               <span class="notification-time text-muted float-right text-sm">
                 <?php echo date('M d, H:i', strtotime($notification['requested_at'])); ?>
               </span>
