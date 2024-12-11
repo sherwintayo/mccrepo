@@ -139,7 +139,6 @@
         </table>
       </div>
 
-      <!-- Repeat for other tables (New Users, New Projects, Suspicious Logins) -->
       <div id="newUsersTable" class="table-container">
         <?php
         // Assume $conn is already available in this file through the config or session
@@ -147,18 +146,19 @@
 
         // Fetch new student notifications
         $stmt = $conn->prepare("
-      SELECT 
-          s.id AS student_id, 
-          s.firstname, 
-          s.lastname, 
-          s.date_created AS student_created_at
-      FROM 
-          student_list s
-      WHERE 
-          s.date_created > (SELECT IFNULL(MAX(requested_at), '1970-01-01') FROM download_requests)
-      ORDER BY s.date_created DESC
-      LIMIT 10
-    ");
+    SELECT 
+        s.id AS student_id, 
+        s.firstname, 
+        s.lastname, 
+        s.date_created AS student_created_at,
+        s.status AS student_status
+    FROM 
+        student_list s
+    WHERE 
+        s.date_created > (SELECT IFNULL(MAX(requested_at), '1970-01-01') FROM download_requests)
+    ORDER BY s.date_created DESC
+    LIMIT 10
+  ");
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -174,6 +174,8 @@
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Date Added</th>
+                <th>Status</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -183,17 +185,34 @@
                     <td><?php echo htmlspecialchars($user['firstname']); ?></td>
                     <td><?php echo htmlspecialchars($user['lastname']); ?></td>
                     <td><?php echo date('M d, Y', strtotime($user['student_created_at'])); ?></td>
+                    <td>
+                      <?php switch ($row['status']) {
+                        case '1':
+                          echo "<span class='badge badge-success'>Verified</span>";
+                          break;
+                        case '2':
+                          echo "<span class='badge badge-danger'>Unverified</span>";
+                          break;
+                      }
+                      ?>
+                    </td>
+                    <td>
+                      <a href="view_student.php?id=<?php echo $user['student_id']; ?>" class="btn btn-info btn-sm">View</a>
+                      <a href="delete_student.php?id=<?php echo $user['student_id']; ?>"
+                        class="btn btn-danger btn-sm">Delete</a>
+                    </td>
                   </tr>
                 <?php endforeach; ?>
               <?php else: ?>
                 <tr>
-                  <td colspan="3">No new users found</td>
+                  <td colspan="5">No new users found</td>
                 </tr>
               <?php endif; ?>
             </tbody>
           </table>
         </div>
       </div>
+
 
       <div id="newProjectsTable" class="table-container">
         <!-- New Projects Table (similar structure) -->
