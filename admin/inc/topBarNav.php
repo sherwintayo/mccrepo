@@ -46,7 +46,6 @@ while ($row = $result->fetch_assoc()) {
   /* Ensure the dropdown content wraps properly and fits within the menu */
   .myDropdown {
     width: 300px;
-    max-height: 400px;
     /* Limit the height of the dropdown */
     overflow-y: auto;
     /* Add scrolling for overflow */
@@ -106,8 +105,7 @@ while ($row = $result->fetch_assoc()) {
         <?php endif; ?>
       </a>
       <!-- Dropdown Menu -->
-      <div class="dropdown-menu myDropdown dropdown-menu-right"
-        style="width: 300px; max-height: 400px; overflow-y: auto;">
+      <div class="dropdown-menu myDropdown dropdown-menu-right" style="width: 300px; overflow-y: auto;">
         <span class="dropdown-item dropdown-header">
           <?php if ($count > 0): ?>
             You have <?= $count ?> New Request<?= $count > 1 ? 's' : '' ?>

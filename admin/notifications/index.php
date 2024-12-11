@@ -41,7 +41,7 @@
           $qry = $conn->query("SELECT dr.id, s.firstname, s.lastname, dr.reason, dr.status, dr.requested_at, al.title  
                                FROM download_requests dr 
                                JOIN student_list s ON dr.user_id = s.id 
-                                JOIN archive_list al ON dr.archive_id = al.id
+                                JOIN archive_list al ON dr.file_id = al.id
                                ORDER BY dr.requested_at DESC");
 
           while ($row = $qry->fetch_assoc()):
