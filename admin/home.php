@@ -160,7 +160,7 @@ include 'timezone.php';
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="card card-info">
                     <div class="card-header">
                         <h3 class="card-title">Most Keyword searched</h3>
@@ -211,7 +211,7 @@ include 'timezone.php';
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="card card-info">
                     <div class="card-header">
                         <h3 class="card-title">Top Picks</h3>
