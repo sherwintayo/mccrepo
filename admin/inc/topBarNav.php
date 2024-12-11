@@ -64,13 +64,21 @@ while ($row = $result->fetch_assoc()) {
   }
 
   .notification-link {
-    white-space: nowrap;
-    /* Prevent wrapping */
-    overflow: hidden;
-    /* Hide overflow text */
-    text-overflow: ellipsis;
-    /* Add ellipsis for truncated text */
+    display: block;
+    /* Ensure proper block structure */
+    white-space: normal;
+    /* Allow wrapping of long text */
+    margin-bottom: 5px;
+    /* Add space between items */
   }
+
+  .notification-time {
+    font-size: 0.85rem;
+    /* Smaller font for the timestamp */
+    color: gray;
+    /* Muted color for timestamps */
+  }
+
 
   .unread-indicator {
     display: inline-block;
@@ -85,10 +93,6 @@ while ($row = $result->fetch_assoc()) {
   .notification-reason {
     font-size: 0.9rem;
     color: gray;
-  }
-
-  .notification-time {
-    font-size: 0.8rem;
   }
 </style>
 
