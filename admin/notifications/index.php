@@ -20,6 +20,7 @@
           <col width="15%">
           <col width="25%">
           <col width="25%">
+          <col width="25%">
           <col width="10%">
           <col width="20%">
         </colgroup>
@@ -27,6 +28,7 @@
           <tr>
             <th>#</th>
             <th>Requested By</th>
+            <th>Title</th>
             <th>Reason</th>
             <th>Requested At</th>
             <th>Status</th>
@@ -36,9 +38,10 @@
         <tbody>
           <?php
           $i = 1;
-          $qry = $conn->query("SELECT dr.id, s.firstname, s.lastname, dr.reason, dr.status, dr.requested_at 
+          $qry = $conn->query("SELECT dr.id, s.firstname, s.lastname, dr.reason, dr.status, dr.requested_at, al.title  
                                FROM download_requests dr 
                                JOIN student_list s ON dr.user_id = s.id 
+                                JOIN archive_list al ON dr.archive_id = al.id
                                ORDER BY dr.requested_at DESC");
 
           while ($row = $qry->fetch_assoc()):
@@ -46,6 +49,7 @@
             <tr>
               <td class="text-center"><?php echo $i++; ?></td>
               <td><?php echo htmlspecialchars($row['firstname'] . ' ' . $row['lastname']); ?></td>
+              <td><?php echo htmlspecialchars($row['title']); ?></td>
               <td><?php echo htmlspecialchars($row['reason']); ?></td>
               <td><?php echo date("Y-m-d H:i", strtotime($row['requested_at'])); ?></td>
               <td class="text-center">
