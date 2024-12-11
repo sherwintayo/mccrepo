@@ -6,93 +6,194 @@
     object-position: center;
     border-radius: 100%;
   }
+
+  /* Button Styling */
+  .btn-nav {
+    margin-right: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+  /* Table Visibility */
+  .table-container {
+    display: none;
+  }
+
+  .active-table {
+    display: block;
+  }
+
+  /* Optional: Active button styling */
+  .btn-nav.active {
+    background-color: #007bff;
+    color: white;
+  }
 </style>
+
 
 <div class="card card-outline card-primary">
   <div class="card-header">
-    <h3 class="card-title">List of Download Requests</h3>
+    <h3 class="card-title">List of Notifications</h3>
+    <!-- Navigation buttons -->
+    <div>
+      <button class="btn-nav" id="downloadRequestsBtn">Download Requests</button>
+      <button class="btn-nav" id="newUsersBtn">New Users</button>
+      <button class="btn-nav" id="newProjectsBtn">New Projects</button>
+      <button class="btn-nav" id="suspiciousLoginsBtn">Suspicious Logins</button>
+    </div>
   </div>
+
   <div class="card-body">
     <div class="container-fluid">
-      <table class="table table-hover table-striped">
-        <colgroup>
-          <col width="5%">
-          <col width="15%">
-          <col width="25%">
-          <col width="25%">
-          <col width="25%">
-          <col width="10%">
-          <col width="20%">
-        </colgroup>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Requested By</th>
-            <th>Title</th>
-            <th>Reason</th>
-            <th>Requested At</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php
-          $i = 1;
-          $qry = $conn->query("SELECT dr.id, s.firstname, s.lastname, dr.reason, dr.status, dr.requested_at, al.title  
-                               FROM download_requests dr 
-                               JOIN student_list s ON dr.user_id = s.id 
-                                JOIN archive_list al ON dr.file_id = al.id
-                               ORDER BY dr.requested_at DESC");
 
-          while ($row = $qry->fetch_assoc()):
-            ?>
+      <!-- Download Requests Table -->
+      <div id="downloadRequestsTable" class="table-container active-table">
+        <table class="table table-hover table-striped">
+          <colgroup>
+            <col width="5%">
+            <col width="15%">
+            <col width="25%">
+            <col width="25%">
+            <col width="25%">
+            <col width="10%">
+            <col width="20%">
+          </colgroup>
+          <thead>
             <tr>
-              <td class="text-center"><?php echo $i++; ?></td>
-              <td><?php echo htmlspecialchars($row['firstname'] . ' ' . $row['lastname']); ?></td>
-              <td><?php echo htmlspecialchars($row['title']); ?></td>
-              <td><?php echo htmlspecialchars($row['reason']); ?></td>
-              <td><?php echo date("Y-m-d H:i", strtotime($row['requested_at'])); ?></td>
-              <td class="text-center">
-                <?php
-                switch ($row['status']) {
-                  case 'approved':
-                    echo "<span class='badge badge-success'>Approved</span>";
-                    break;
-                  case 'rejected':
-                    echo "<span class='badge badge-danger'>Rejected</span>";
-                    break;
-                  default:
-                    echo "<span class='badge badge-secondary'>Pending</span>";
-                    break;
-                }
-                ?>
-              </td>
-              <td align="center">
-                <button type="button" class="btn btn-flat btn-default btn-sm dropdown-toggle dropdown-icon"
-                  data-toggle="dropdown">
-                  Action
-                  <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <div class="dropdown-menu" role="menu">
-                  <?php if ($row['status'] == 'pending'): ?>
-                    <a class="dropdown-item approve_request" href="javascript:void(0)" data-id="<?php echo $row['id']; ?>">
-                      <span class="fa fa-check text-success"></span> Approve
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item reject_request" href="javascript:void(0)" data-id="<?php echo $row['id']; ?>">
-                      <span class="fa fa-times text-danger"></span> Reject
-                    </a>
-                    <div class="dropdown-divider"></div>
-                  <?php endif; ?>
-                  <a class="dropdown-item delete_request" href="javascript:void(0)" data-id="<?php echo $row['id']; ?>">
-                    <span class="fa fa-trash text-danger"></span> Delete
-                  </a>
-                </div>
-              </td>
+              <th>#</th>
+              <th>Requested By</th>
+              <th>Title</th>
+              <th>Reason</th>
+              <th>Requested At</th>
+              <th>Status</th>
+              <th>Action</th>
             </tr>
-          <?php endwhile; ?>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            <?php
+            $i = 1;
+            $qry = $conn->query("SELECT dr.id, s.firstname, s.lastname, dr.reason, dr.status, dr.requested_at, al.title  
+                                 FROM download_requests dr 
+                                 JOIN student_list s ON dr.user_id = s.id 
+                                 JOIN archive_list al ON dr.file_id = al.id
+                                 ORDER BY dr.requested_at DESC");
+
+            while ($row = $qry->fetch_assoc()):
+              ?>
+              <tr>
+                <td class="text-center"><?php echo $i++; ?></td>
+                <td><?php echo htmlspecialchars($row['firstname'] . ' ' . $row['lastname']); ?></td>
+                <td><?php echo htmlspecialchars($row['title']); ?></td>
+                <td><?php echo htmlspecialchars($row['reason']); ?></td>
+                <td><?php echo date("Y-m-d H:i", strtotime($row['requested_at'])); ?></td>
+                <td class="text-center">
+                  <?php
+                  switch ($row['status']) {
+                    case 'approved':
+                      echo "<span class='badge badge-success'>Approved</span>";
+                      break;
+                    case 'rejected':
+                      echo "<span class='badge badge-danger'>Rejected</span>";
+                      break;
+                    default:
+                      echo "<span class='badge badge-secondary'>Pending</span>";
+                      break;
+                  }
+                  ?>
+                </td>
+                <td align="center">
+                  <button type="button" class="btn btn-flat btn-default btn-sm dropdown-toggle dropdown-icon"
+                    data-toggle="dropdown">
+                    Action
+                    <span class="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <div class="dropdown-menu" role="menu">
+                    <?php if ($row['status'] == 'pending'): ?>
+                      <a class="dropdown-item approve_request" href="javascript:void(0)"
+                        data-id="<?php echo $row['id']; ?>">
+                        <span class="fa fa-check text-success"></span> Approve
+                      </a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item reject_request" href="javascript:void(0)" data-id="<?php echo $row['id']; ?>">
+                        <span class="fa fa-times text-danger"></span> Reject
+                      </a>
+                      <div class="dropdown-divider"></div>
+                    <?php endif; ?>
+                    <a class="dropdown-item delete_request" href="javascript:void(0)" data-id="<?php echo $row['id']; ?>">
+                      <span class="fa fa-trash text-danger"></span> Delete
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            <?php endwhile; ?>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Repeat for other tables (New Users, New Projects, Suspicious Logins) -->
+      <div id="newUsersTable" class="table-container">
+        <?php
+        // Assume $conn is already available in this file through the config or session
+        $newUsers = [];
+
+        // Fetch new student notifications
+        $stmt = $conn->prepare("
+    SELECT 
+        s.id AS student_id, 
+        s.firstname, 
+        s.lastname, 
+        s.date_created AS student_created_at
+    FROM 
+        student_list s
+    WHERE 
+        s.date_created > (SELECT IFNULL(MAX(requested_at), '1970-01-01') FROM download_requests)
+    ORDER BY s.date_created DESC
+    LIMIT 10
+");
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        while ($row = $result->fetch_assoc()) {
+          $newUsers[] = $row;
+        }
+        ?>
+        <div class="table-container">
+          <h3>New Users Added</h3>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Date Added</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php if (count($newUsers) > 0): ?>
+                <?php foreach ($newUsers as $user): ?>
+                  <tr>
+                    <td><?php echo htmlspecialchars($user['firstname']); ?></td>
+                    <td><?php echo htmlspecialchars($user['lastname']); ?></td>
+                    <td><?php echo date('M d, Y', strtotime($user['student_created_at'])); ?></td>
+                  </tr>
+                <?php endforeach; ?>
+              <?php else: ?>
+                <tr>
+                  <td colspan="3">No new users found</td>
+                </tr>
+              <?php endif; ?>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div id="newProjectsTable" class="table-container">
+        <!-- New Projects Table (similar structure) -->
+      </div>
+      <div id="suspiciousLoginsTable" class="table-container">
+        <!-- Suspicious Logins Table (similar structure) -->
+      </div>
+
     </div>
   </div>
 </div>
@@ -117,6 +218,37 @@
     </div>
   </div>
 </div>
+
+<script>
+  $(document).ready(function () {
+    // Handle button clicks to toggle table visibility
+    $('#downloadRequestsBtn').click(function () {
+      toggleTables('downloadRequestsTable');
+    });
+
+    $('#newUsersBtn').click(function () {
+      toggleTables('newUsersTable');
+    });
+
+    $('#newProjectsBtn').click(function () {
+      toggleTables('newProjectsTable');
+    });
+
+    $('#suspiciousLoginsBtn').click(function () {
+      toggleTables('suspiciousLoginsTable');
+    });
+
+    // Toggle table visibility
+    function toggleTables(tableId) {
+      $('.table-container').removeClass('active-table');
+      $('#' + tableId).addClass('active-table');
+
+      // Highlight the active button
+      $('.btn-nav').removeClass('active');
+      $('#' + tableId + 'Btn').addClass('active');
+    }
+  });
+</script>
 
 <script>
   $(document).ready(function () {
