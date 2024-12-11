@@ -155,7 +155,7 @@
     FROM 
         student_list s
     WHERE 
-        s.date_created > (SELECT IFNULL(MAX(requested_at), '1970-01-01') FROM download_requests)
+        s.date_created > (SELECT IFNULL(MAX(requested_at), '1970-01-01') FROM student_list)
     ORDER BY s.date_created DESC
     LIMIT 10
   ");
