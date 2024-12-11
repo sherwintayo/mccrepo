@@ -3,12 +3,24 @@
 $notifications = [];
 $count = 0;
 
-// Fetch pending download requests
-$stmt = $conn->prepare("SELECT dr.id, s.firstname, s.lastname, dr.reason, dr.requested_at 
-                        FROM download_requests dr 
-                        JOIN student_list s ON dr.user_id = s.id 
-                        WHERE dr.status = 'pending' 
-                        ORDER BY dr.requested_at DESC 
+// Fetch pending download requests with archive titles
+$stmt = $conn->prepare("SELECT 
+                            dr.id, 
+                            s.firstname, 
+                            s.lastname, 
+                            dr.reason, 
+                            dr.requested_at, 
+                            al.title 
+                        FROM 
+                            download_requests dr
+                        JOIN 
+                            student_list s ON dr.user_id = s.id
+                        JOIN 
+                            archive_list al ON dr.file_id = al.id
+                        WHERE 
+                            dr.status = 'pending' 
+                        ORDER BY 
+                            dr.requested_at DESC 
                         LIMIT 10");
 $stmt->execute();
 $result = $stmt->get_result();
@@ -122,18 +134,19 @@ while ($row = $result->fetch_assoc()) {
               data-id="<?php echo $notification['id']; ?>"
               data-firstname="<?php echo htmlspecialchars($notification['firstname']); ?>"
               data-lastname="<?php echo htmlspecialchars($notification['lastname']); ?>"
-              data-reason="<?php echo htmlspecialchars($notification['reason']); ?>" onclick="showRequestModal(this)">
+              data-reason="<?php echo htmlspecialchars($notification['reason']); ?>"
+              data-title="<?php echo htmlspecialchars($notification['title']); ?>" onclick="showRequestModal(this)">
               <i class="fas fa-envelope text-info"></i>
-              <strong><?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname']); ?></strong><br>
+              <strong><?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname']); ?></strong>
               <span class="notification-reason">
                 <?php echo htmlspecialchars($notification['reason']); ?>
+              </span>
+              <span class="notification-title">
+                <em><?php echo htmlspecialchars($notification['title']); ?></em>
               </span>
               <span class="notification-time text-muted float-right text-sm">
                 <?php echo date('M d, H:i', strtotime($notification['requested_at'])); ?>
               </span>
-              <?php if ($notification['status'] === 'unread'): ?>
-                <span class="unread-indicator"></span>
-              <?php endif; ?>
             </a>
             <div class="dropdown-divider"></div>
           <?php endforeach; ?>
@@ -141,7 +154,7 @@ while ($row = $result->fetch_assoc()) {
           <span class="dropdown-item text-light-50">No new requests</span>
         <?php endif; ?>
 
-        <a href="<?php echo base_url ?>admin/?page=notifications" class="dropdown-item dropdown-footer">
+        <a href="<?php echo base_url ?>admin/?page=notifications" class="dropdown-item dropdown-footer text-center">
           See All Requests
         </a>
       </div>
