@@ -10,9 +10,16 @@
   <div class="wrapper">
     <?php require_once('inc/topBarNav.php') ?>
     <?php require_once('inc/navigation.php') ?>
+    <!-- Include SweetAlert Library -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <?php if ($_settings->chk_flashdata('success')): ?>
       <script>
-        alert_toast("<?php echo $_settings->flashdata('success') ?>", 'success')
+        Swal.fire({
+          title: 'Success!',
+          text: "<?php echo $_settings->flashdata('success') ?>",
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
       </script>
     <?php endif; ?>
     <?php $page = isset($_GET['page']) ? $_GET['page'] : 'home'; ?>
