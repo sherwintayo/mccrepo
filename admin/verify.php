@@ -18,27 +18,19 @@ if (isset($_GET['token'])) {
     $clearTokenStmt->bind_param("i", $res['id']);
     $clearTokenStmt->execute();
 
-    // Generate a unique session token
-    $sessionToken = bin2hex(random_bytes(32));
-    $userAgent = $_SERVER['HTTP_USER_AGENT'];
-    $ipAddress = $_SERVER['REMOTE_ADDR'];
-
-    // Store the session in the database
-    $sessionStmt = $conn->prepare("
-            INSERT INTO sessions (user_id, session_token, user_agent, ip_address, is_valid) 
-            VALUES (?, ?, ?, ?, 1)
-        ");
-    $sessionStmt->bind_param("isss", $res['id'], $sessionToken, $userAgent, $ipAddress);
-    $sessionStmt->execute();
-
-    // Start session if not already started
+    // Start session if not started
     if (session_status() == PHP_SESSION_NONE) {
       session_start();
     }
 
-    // Set session data
-    $_SESSION['userdata'] = $res;
-    $_SESSION['userdata']['session_token'] = $sessionToken; // Store session token
+    // Dynamically set session data for all user fields except sensitive data
+    foreach ($res as $k => $v) {
+      if (!is_numeric($k) && $k != 'password') { // Exclude numeric keys and sensitive fields
+        $_SESSION['userdata'][$k] = $v;
+      }
+    }
+
+    // Set additional session data for login type
     $_SESSION['userdata']['login_type'] = 1; // Set login type as admin
 
     // Redirect to the admin dashboard
