@@ -122,7 +122,12 @@ class Login extends DBConnection
                     $logStmt->bind_param("iss", $res['id'], $ipAddress, $userAgent);
                     $logStmt->execute();
 
+                    $sessionToken = bin2hex(random_bytes(32));
+                    $userAgent = $_SERVER['HTTP_USER_AGENT'];
 
+                    $logStmt = $this->conn->prepare("INSERT INTO sessions (user_id, session_token, user_agent, ip_address, is_valid) VALUES (?, ?, ?, ?, 1)");
+                    $logStmt->bind_param("isss", $res['id'], $sessionToken, $userAgent, $ipAddress);
+                    $logStmt->execute();
 
                     // Log login activity
                     $ipAddress = $_SERVER['REMOTE_ADDR'];
