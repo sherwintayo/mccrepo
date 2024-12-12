@@ -12,7 +12,7 @@
     <?php require_once('inc/navigation.php') ?>
     <!-- Include SweetAlert Library -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <?php if ($_settings->chk_flashdata('success')): ?>
+    <!-- <?php if ($_settings->chk_flashdata('success')): ?> -->
       <script>
         Swal.fire({
           title: 'Success!',
