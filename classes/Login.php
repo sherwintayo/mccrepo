@@ -28,7 +28,14 @@ class Login extends DBConnection
         echo "<h1>Access Denied</h1> <a href='" . base_url . "'>Go Back.</a>";
     }
 
-
+    private function createSession($userId, $userAgent, $ipAddress)
+    {
+        $token = bin2hex(random_bytes(32));
+        $stmt = $this->conn->prepare("INSERT INTO sessions (user_id, session_token, user_agent, ip_address) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("isss", $userId, $token, $userAgent, $ipAddress);
+        $stmt->execute();
+        return $token;
+    }
 
     public function login()
     {
