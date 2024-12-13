@@ -3,80 +3,96 @@
 $notifications = [];
 $count = 0;
 
-// Fetch notifications including new archives
-$stmt = $conn->prepare("
+// Fetch pending download requests with archive titles
+$stmt = $conn->prepare("SELECT 
+                            dr.id, 
+                            s.firstname, 
+                            s.lastname, 
+                            dr.reason, 
+                            dr.requested_at, 
+                            al.title 
+                        FROM 
+                            download_requests dr
+                        JOIN 
+                            student_list s ON dr.user_id = s.id
+                        JOIN 
+                            archive_list al ON dr.file_id = al.id
+                        WHERE 
+                            dr.status = 'pending' 
+                        ORDER BY 
+                            dr.requested_at DESC 
+                        LIMIT 10");
+$stmt->execute();
+$result = $stmt->get_result();
+$count += $result->num_rows;
+
+while ($row = $result->fetch_assoc()) {
+  $notifications[] = [
+    "type" => "download_request",
+    "id" => $row['id'],
+    "name" => $row['firstname'] . " " . $row['lastname'],
+    "reason" => $row['reason'],
+    "title" => $row['title'],
+    "date" => $row['requested_at'],
+  ];
+}
+
+// Fetch new students added today
+$today = date("Y-m-d");
+$student_query = $conn->prepare("
     SELECT 
-        dr.id AS request_id, 
+        s.id, 
         s.firstname, 
         s.lastname, 
-        dr.reason, 
-        dr.requested_at, 
-        al.title AS archive_title,
-        NULL AS student_id, 
-        NULL AS student_firstname, 
-        NULL AS student_lastname,
-        NULL AS student_created_at,
-        NULL AS archive_id,
-        NULL AS archive_date_created
-    FROM 
-        download_requests dr
-    JOIN 
-        student_list s ON dr.user_id = s.id
-    JOIN 
-        archive_list al ON dr.file_id = al.id
-    WHERE 
-        dr.status = 'pending' 
-
-    UNION ALL
-
-    SELECT 
-        NULL AS request_id, 
-        s.firstname, 
-        s.lastname, 
-        'New student added' AS reason, 
-        s.date_created AS requested_at,
-        NULL AS archive_title,
-        s.id AS student_id,
-        s.firstname AS student_firstname,
-        s.lastname AS student_lastname,
-        s.date_created AS student_created_at,
-        NULL AS archive_id,
-        NULL AS archive_date_created
+        s.date_created 
     FROM 
         student_list s
     WHERE 
-        s.date_created > (SELECT IFNULL(MAX(requested_at), '1970-01-01') FROM download_requests)
-
-    UNION ALL
-
-    SELECT 
-        NULL AS request_id, 
-        NULL AS firstname, 
-        NULL AS lastname, 
-        'New archive added' AS reason, 
-        al.date_created AS requested_at,
-        al.title AS archive_title,
-        NULL AS student_id,
-        NULL AS student_firstname,
-        NULL AS student_lastname,
-        NULL AS student_created_at,
-        al.id AS archive_id,
-        al.date_created AS archive_date_created
-    FROM 
-        archive_list al
-    WHERE 
-        al.date_created > (SELECT IFNULL(MAX(requested_at), '1970-01-01') FROM download_requests)
-    ORDER BY requested_at DESC
-    LIMIT 10
+        DATE(s.date_created) = ?
 ");
+$student_query->bind_param("s", $today);
+$student_query->execute();
+$student_result = $student_query->get_result();
+$count += $student_result->num_rows;
 
-$stmt->execute();
-$result = $stmt->get_result();
-$count = $result->num_rows;
-
-while ($row = $result->fetch_assoc()) {
-  $notifications[] = $row;
+while ($row = $student_result->fetch_assoc()) {
+  $notifications[] = [
+    "type" => "new_student",
+    "id" => $row['id'],
+    "name" => $row['firstname'] . " " . $row['lastname'],
+    "date" => $row['date_created'],
+  ];
 }
+
+// Fetch new archives added today
+$archive_query = $conn->prepare("
+    SELECT 
+        a.id, 
+        a.title, 
+        a.date_created 
+    FROM 
+        archive_list a
+    WHERE 
+        DATE(a.date_created) = ?
+");
+$archive_query->bind_param("s", $today);
+$archive_query->execute();
+$archive_result = $archive_query->get_result();
+$count += $archive_result->num_rows;
+
+while ($row = $archive_result->fetch_assoc()) {
+  $notifications[] = [
+    "type" => "new_archive",
+    "id" => $row['id'],
+    "name" => $row['title'],
+    "date" => $row['date_created'],
+  ];
+}
+
+// Sort all notifications by date in descending order
+usort($notifications, function ($a, $b) {
+  return strtotime($b['date']) - strtotime($a['date']);
+});
 ?>
 
 
@@ -185,53 +201,49 @@ while ($row = $result->fetch_assoc()) {
 
         <?php if ($count > 0): ?>
           <?php foreach ($notifications as $notification): ?>
-            <?php if ($notification['request_id']): ?>
+            <?php if ($notification['type'] === "download_request"): ?>
               <!-- Download Request Notification -->
               <a href="javascript:void(0);" class="dropdown-item notification-link"
-                data-id="<?php echo $notification['request_id']; ?>"
-                data-firstname="<?php echo htmlspecialchars($notification['firstname']); ?>"
-                data-lastname="<?php echo htmlspecialchars($notification['lastname']); ?>"
+                data-id="<?php echo $notification['id']; ?>"
+                data-name="<?php echo htmlspecialchars($notification['name']); ?>"
                 data-reason="<?php echo htmlspecialchars($notification['reason']); ?>"
-                data-title="<?php echo htmlspecialchars($notification['archive_title']); ?>" onclick="showRequestModal(this)">
+                data-title="<?php echo htmlspecialchars($notification['title']); ?>">
                 <i class="fas fa-envelope myIcon"></i>
-                <strong><?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname']); ?></strong>
+                <strong><?php echo htmlspecialchars($notification['name']); ?></strong>
                 wants to download the archive
-                <strong>"<?php echo htmlspecialchars($notification['archive_title']); ?>"</strong>.
+                <strong>"<?php echo htmlspecialchars($notification['title']); ?>"</strong>.
                 <br>
                 <span class="notification-time text-muted float-left">
-                  <?php echo date('M d, H:i', strtotime($notification['requested_at'])); ?>
+                  <?php echo date('M d, H:i', strtotime($notification['date'])); ?>
                 </span>
               </a>
               <div class="dropdown-divider"></div>
-            <?php elseif ($notification['student_id']): ?>
-              <!-- New Student Added Notification -->
+            <?php elseif ($notification['type'] === "new_student"): ?>
+              <!-- New Student Notification -->
               <a href="javascript:void(0);" class="dropdown-item notification-link"
-                data-id="<?php echo $notification['student_id']; ?>"
-                data-firstname="<?php echo htmlspecialchars($notification['student_firstname']); ?>"
-                data-lastname="<?php echo htmlspecialchars($notification['student_lastname']); ?>"
-                data-reason="New student added" onclick="showStudentModal(this)">
+                data-id="<?php echo $notification['id']; ?>"
+                data-name="<?php echo htmlspecialchars($notification['name']); ?>">
                 <i class="fas fa-user myIcon"></i>
-                <strong><?php echo htmlspecialchars($notification['student_firstname'] . ' ' . $notification['student_lastname']); ?></strong>
-                has been added to the system.
+                <strong><?php echo htmlspecialchars($notification['name']); ?></strong>
+                has been added as a new student.
                 <br>
                 <span class="notification-time text-muted float-left">
-                  <?php echo date('M d, H:i', strtotime($notification['student_created_at'])); ?>
+                  <?php echo date('M d, H:i', strtotime($notification['date'])); ?>
                 </span>
               </a>
               <div class="dropdown-divider"></div>
-            <?php elseif ($notification['archive_id']): ?>
-              <!-- New Archive Added Notification -->
+            <?php elseif ($notification['type'] === "new_archive"): ?>
+              <!-- New Archive Notification -->
               <a href="javascript:void(0);" class="dropdown-item notification-link"
-                data-id="<?php echo $notification['archive_id']; ?>"
-                data-title="<?php echo htmlspecialchars($notification['archive_title']); ?>" data-reason="New archive added"
-                onclick="showArchiveModal(this)">
+                data-id="<?php echo $notification['id']; ?>"
+                data-name="<?php echo htmlspecialchars($notification['name']); ?>">
                 <i class="fas fa-file-alt myIcon"></i>
-                A new archive
-                <strong>"<?php echo htmlspecialchars($notification['archive_title']); ?>"</strong>
+                A new archive titled
+                <strong>"<?php echo htmlspecialchars($notification['name']); ?>"</strong>
                 has been added.
                 <br>
                 <span class="notification-time text-muted float-left">
-                  <?php echo date('M d, H:i', strtotime($notification['archive_date_created'])); ?>
+                  <?php echo date('M d, H:i', strtotime($notification['date'])); ?>
                 </span>
               </a>
               <div class="dropdown-divider"></div>
