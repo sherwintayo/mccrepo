@@ -25,7 +25,7 @@
 
     .book-item .img-holder>img.img-top {
         width: 100%;
-        height: 40%;
+        height: 20%;
         object-fit: cover;
         object-position: center center;
         transition: all .2s ease-in-out;
