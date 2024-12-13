@@ -46,16 +46,16 @@
 					<input type="text" class="form-control form-control-sm" name="short_name" id="short_name"
 						value="<?php echo $_settings->info('short_name') ?>">
 				</div>
-				<div class="form-group">
+				<!-- <div class="form-group">
 					<label for="content[about_us]" class="control-label">Welcome Content</label>
 					<textarea type="text" class="form-control form-control-sm summernote" name="content[welcome]"
 						id="welcome"><?php echo is_file(base_app . 'welcome.html') ? file_get_contents(base_app . 'welcome.html') : '' ?></textarea>
-				</div>
-				<div class="form-group">
+				</div> -->
+				<!-- <div class="form-group">
 					<label for="content[about_us]" class="control-label">About Us</label>
 					<textarea type="text" class="form-control form-control-sm summernote" name="content[about_us]"
 						id="about_us"><?php echo is_file(base_app . 'about_us.html') ? file_get_contents(base_app . 'about_us.html') : '' ?></textarea>
-				</div>
+				</div> -->
 				<div class="form-group">
 					<label for="" class="control-label">System Logo</label>
 					<div class="custom-file">
