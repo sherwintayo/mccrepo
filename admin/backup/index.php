@@ -53,7 +53,7 @@ function exportData($conn, $table = null)
 }
 
 // Handle export requests
-if (isset($_GET['export'])) {
+if (isset($_GET['export']) && $_GET['export'] === 'true' && isset($_GET['action']) && $_GET['action'] === 'export_data') {
   $table = $_GET['export_table'] ?? null;
 
   if ($table && !isValidIdentifier($table)) {
@@ -63,7 +63,6 @@ if (isset($_GET['export'])) {
   exportData($conn, $table);
   exit;
 }
-
 // Fetch all table names
 $tables = array();
 $query = "SHOW TABLES";
