@@ -93,15 +93,15 @@ function generate_csrf_token()
 }
 
 // Sanitize Global Inputs (GET, POST, COOKIE)
-foreach ($_GET as $key => $value) {
-    $_GET[$key] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-}
-foreach ($_POST as $key => $value) {
-    $_POST[$key] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-}
-foreach ($_COOKIE as $key => $value) {
-    $_COOKIE[$key] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-}
+// foreach ($_GET as $key => $value) {
+//     $_GET[$key] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+// }
+// foreach ($_POST as $key => $value) {
+//     $_POST[$key] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+// }
+// foreach ($_COOKIE as $key => $value) {
+//     $_COOKIE[$key] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+// }
 
 ob_end_flush();
 ?>
