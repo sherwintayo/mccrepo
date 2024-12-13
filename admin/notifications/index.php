@@ -141,70 +141,63 @@
       </div>
 
       <div id="newUsersTable" class="table-container">
-        <?php
-        // Assume $conn is already available in this file through the config or session
-        
-        $i = 1;
-        // Fetch all students with status = 2 (Unverified) from the student_list table
-        $qry = $conn->query("
-            SELECT 
-                s.id AS student_id, 
-                s.firstname, 
-                s.lastname, 
-                s.date_created AS student_created_at,
-                s.status AS student_status
-            FROM 
-                student_list s
-            WHERE 
-                s.status = 2
-            ORDER BY s.date_created DESC
-            LIMIT 10
-          ");
-        $stmt->execute();
-        $result = $stmt->get_result();
+        <table class="table table-hover table-striped">
+          <colgroup>
+            <col width="5%">
+            <col width="25%">
+            <col width="25%">
+            <col width="25%">
+            <col width="10%">
+            <col width="20%">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Date Added</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php
+            $i = 1;
+            $qry = $conn->query("SELECT id, firstname, lastname, date_created, status 
+                           FROM student_list 
+                           WHERE status = 2 
+                           ORDER BY date_created DESC");
 
-        while ($row = $result->fetch_assoc()) {
-          $unverifiedUsers[] = $row;
-        }
-        ?>
-        <div class="table-container">
-          <h3>Unverified Users</h3>
-          <table class="table table-striped">
-            <thead>
+            while ($row = $qry->fetch_assoc()):
+              ?>
               <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Date Added</th>
-                <th>Status</th>
-                <th>Action</th>
+                <td class="text-center"><?php echo $i++; ?></td>
+                <td><?php echo htmlspecialchars($row['firstname']); ?></td>
+                <td><?php echo htmlspecialchars($row['lastname']); ?></td>
+                <td><?php echo date("Y-m-d H:i", strtotime($row['date_created'])); ?></td>
+                <td class="text-center">
+                  <span class="badge badge-secondary">Unverified</span>
+                </td>
+                <td align="center">
+                  <button type="button" class="btn btn-flat btn-default btn-sm dropdown-toggle dropdown-icon"
+                    data-toggle="dropdown">
+                    Action
+                    <span class="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <div class="dropdown-menu" role="menu">
+                    <a class="dropdown-item view_user" href="view_user.php?id=<?php echo $row['id']; ?>">
+                      <span class="fa fa-eye text-primary"></span> View
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item delete_user" href="javascript:void(0)" data-id="<?php echo $row['id']; ?>">
+                      <span class="fa fa-trash text-danger"></span> Delete
+                    </a>
+                  </div>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              <?php if (count($unverifiedUsers) > 0): ?>
-                <?php foreach ($unverifiedUsers as $user): ?>
-                  <tr>
-                    <td><?php echo htmlspecialchars($user['firstname']); ?></td>
-                    <td><?php echo htmlspecialchars($user['lastname']); ?></td>
-                    <td><?php echo date('M d, Y', strtotime($user['student_created_at'])); ?></td>
-                    <td>
-                      <!-- Display status as Unverified -->
-                      <span class="badge badge-danger">Unverified</span>
-                    </td>
-                    <td>
-                      <a href="view_student.php?id=<?php echo $user['student_id']; ?>" class="btn btn-info btn-sm">View</a>
-                      <a href="delete_student.php?id=<?php echo $user['student_id']; ?>"
-                        class="btn btn-danger btn-sm">Delete</a>
-                    </td>
-                  </tr>
-                <?php endforeach; ?>
-              <?php else: ?>
-                <tr>
-                  <td colspan="5">No unverified users found</td>
-                </tr>
-              <?php endif; ?>
-            </tbody>
-          </table>
-        </div>
+            <?php endwhile; ?>
+          </tbody>
+        </table>
       </div>
 
 
