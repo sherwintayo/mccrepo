@@ -262,8 +262,7 @@ usort($notifications, function ($a, $b) {
               <div class="dropdown-divider"></div>
             <?php elseif ($notification['type'] === "new_archive"): ?>
               <!-- New Archive Notification -->
-              <a href="./admin/?page=archives" class="dropdown-item notification-link"
-                data-id="<?php echo $notification['id']; ?>"
+              <a href="/?page=archives" class="dropdown-item notification-link" data-id="<?php echo $notification['id']; ?>"
                 data-name="<?php echo htmlspecialchars($notification['name']); ?>">
                 <i class="fas fa-file-alt myIcon"></i>
                 A new archive titled
