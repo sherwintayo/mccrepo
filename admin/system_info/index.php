@@ -166,7 +166,7 @@
 			var formData = new FormData(this); // Create a FormData object with form data
 
 			$.ajax({
-				url: 'SystemSettings.php?f=update_settings_info', // Backend endpoint
+				url: _base_url_ + "classes/SystemSettings.php?f=update_settings_info", // Backend endpoint
 				method: 'POST',
 				data: formData,
 				contentType: false, // Required for file uploads
