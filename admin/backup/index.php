@@ -182,7 +182,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         break;
 
-
       default:
         $message = "Invalid action.";
         $messageType = "danger";
@@ -236,38 +235,26 @@ if (isset($_GET['download']) && $_GET['download'] === 'true') {
 </head>
 
 <body>
-  <div class="container mt-4">
-    <h1 class="text-center">Database Manager</h1>
+  <div class="container">
+    <h1>Database Management</h1>
 
-    <!-- Notification Message -->
-    <?php if (!empty($message)): ?>
-      <div class="alert alert-<?php echo htmlspecialchars($messageType); ?>" role="alert">
-        <?php echo htmlspecialchars($message); ?>
+    <!-- Show message if available -->
+    <?php if ($message): ?>
+      <div class="alert alert-<?php echo $messageType; ?>">
+        <?php echo $message; ?>
       </div>
     <?php endif; ?>
 
-    <div class="text-center mb-4">
-      <!-- Download Button -->
-      <a href="?download=true" class="btn btn-primary"
-        onclick="return confirm('Are you sure you want to download the database backup?')">Download Database</a>
-    </div>
-
-
-    <!-- Add Table Form -->
-    <h3>Add Table</h3>
-    <form method="post" class="mb-3">
-      <input type="hidden" name="action" value="add_table">
-      <div class="mb-3">
-        <label>Table Name <small class="text-muted">(Alphanumeric and underscores only)</small></label>
-        <input type="text" name="table_name" class="form-control" required pattern="[a-zA-Z_][a-zA-Z0-9_]*"
-          placeholder="e.g., users">
-      </div>
-      <div class="mb-3">
-        <label>Columns <small class="text-muted">(SQL syntax, e.g., id INT PRIMARY KEY)</small></label>
-        <textarea name="columns" class="form-control" rows="3" required
-          placeholder="e.g., id INT PRIMARY KEY, name VARCHAR(100)"></textarea>
-      </div>
-      <button type="submit" class="btn btn-success">Add Table</button>
+    <h2>Export Database</h2>
+    <form method="get" action="index.php">
+      <label for="export_table">Select Table (optional):</label>
+      <select name="export_table" id="export_table">
+        <option value="">All Tables</option>
+        <?php foreach ($tables as $table): ?>
+          <option value="<?php echo $table; ?>"><?php echo $table; ?></option>
+        <?php endforeach; ?>
+      </select>
+      <button type="submit" name="export" value="true">Export</button>
     </form>
 
     <!-- Update Table Form -->
