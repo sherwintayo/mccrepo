@@ -216,7 +216,7 @@
 
 
       <div id="newProjectsTable" class="table-container">
-        <table class="table table-hover table-striped">
+        <!-- <table class="table table-hover table-striped">
           <colgroup>
             <col width="5%">
             <col width="25%">
@@ -283,7 +283,7 @@
               </tr>
             <?php endif; ?>
           </tbody>
-        </table>
+        </table> -->
       </div>
       <div id="suspiciousLoginsTable" class="table-container">
         <!-- Suspicious Logins Table (similar structure) -->
