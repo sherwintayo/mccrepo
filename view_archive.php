@@ -61,7 +61,73 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 </style>
 <div class="content py-4">
     <div class="col-12">
-        <div class="card card-outline card-primary shadow rounded-0">
+        <div class="card shadow rounded-0">
+            <div class="card-header">
+                Archives - <?= isset($archive_code) ? htmlspecialchars($archive_code) : "" ?>
+            </div>
+            <div class="card-body rounded-0">
+                <img src="<?= validate_image(isset($banner_path) ? htmlspecialchars($banner_path) : '') ?>"
+                    alt="Banner Image" class="img-fluid border bg-gradient-dark mb-3">
+                <h2><?= isset($title) ? htmlspecialchars($title) : "" ?></h2>
+                <small class="text-muted">Submitted by <b><?= htmlspecialchars($submitted) ?></b> on
+                    <?= isset($date_created) ? date("F d, Y h:i A", strtotime($date_created)) : "" ?></small>
+
+                <div class="details">
+                    <h5>Project Year:</h5>
+                    <p><?= isset($year) ? htmlspecialchars($year) : "----" ?></p>
+                </div>
+
+                <div class="abstract">
+                    <h5>Abstract:</h5>
+                    <p><?= isset($abstract) ? html_entity_decode($abstract) : "" ?></p>
+                </div>
+
+                <div class="members">
+                    <h5>Members:</h5>
+                    <p><?= isset($members) ? html_entity_decode($members) : "" ?></p>
+                </div>
+
+                <!-- File Cards -->
+                <div class="download-info">
+                    <?php
+                    $files = [
+                        'Project File' => $folder_path ?? null,
+                        'SQL File' => $sql_path ?? null,
+                        'Document File' => $document_path ?? null
+                    ];
+                    foreach ($files as $file_type => $file_path): ?>
+                        <div class="card">
+                            <img src="placeholder-image.png" alt="<?= $file_type ?>" class="img-fluid">
+                            <div class="status-icon <?= $file_path ? 'available' : 'not-available' ?>">
+                                <i class="fa <?= $file_path ? 'fa-check-circle' : 'fa-exclamation-circle' ?>"></i>
+                                <span><?= $file_path ? 'Available' : 'Not Available' ?></span>
+                            </div>
+                            <p><strong><?= $file_type ?>:</strong>
+                                <?= $file_path ? basename($file_path) : "Not available" ?></p>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+
+                <!-- Download Button -->
+                <div style="display: flex; align-items: center; margin-top: 20px;">
+                    <h5 class="text-navy" style="flex: 1;">Download all Files</h5>
+                    <button class="btn btn-success btn-flat" id="downloadButton">
+                        <i class="fa fa-download"></i> Download All Files
+                    </button>
+                </div>
+
+                <!-- Download Request Form -->
+                <div id="requestForm" class="download-info">
+                    <textarea id="reasonTextarea" class="form-control"
+                        placeholder="Please provide a reason for downloading the files"></textarea>
+                    <button class="btn btn-primary btn-flat mt-2" id="submitReasonButton">Submit Request</button>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- <div class="card card-outline card-primary shadow rounded-0">
             <div class="card-header">
                 <h3 class="card-title">
                     Archives - <?= isset($archive_code) ? htmlspecialchars($archive_code) : "" ?>
@@ -105,8 +171,6 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         </div>
                     </fieldset>
 
-
-                    <!-- Download Button with Login Check -->
                     <div style="display: flex; align-items: center; margin-top: 20px;">
                         <h5 class="text-navy" style="flex: 1;">Download all Files</h5>
                         <button class="btn btn-success btn-flat" id="downloadButton">
@@ -114,7 +178,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         </button>
                     </div>
 
-                    <!-- Download Request Form (initially hidden) -->
+                  
                     <div id="requestForm" class="download-info">
                         <textarea id="reasonTextarea" class="form-control"
                             placeholder="Please provide a reason for downloading the files"></textarea>
@@ -122,7 +186,6 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     </div>
 
 
-                    <!-- File Information -->
                     <div class="download-info">
                         <p><strong>Project File:</strong>
                             <?= isset($folder_path) ? basename($folder_path) : "Not available" ?></p>
@@ -133,7 +196,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
     <script>
         $(function () {
