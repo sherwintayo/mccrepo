@@ -11,12 +11,13 @@
   color: #fff !important;
   font-weight: bold !important;
   font-size: 40px !important;
+  text-align: center !important;
 }
 
 .title {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
   padding: 0 5px;
 }
