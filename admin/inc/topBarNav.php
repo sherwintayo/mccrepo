@@ -65,31 +65,31 @@ while ($row = $student_result->fetch_assoc()) {
 }
 
 // Fetch new login activity added today
-$today = date("Y-m-d");
-$student_query = $conn->prepare("
-    SELECT 
-        la.id, 
-        la.ip_address, 
-        la.atempts, 
-        la.created_at
-    FROM 
-        student_list la
-    WHERE 
-        DATE(la.created_at) = ?
-");
-$student_query->bind_param("s", $today);
-$student_query->execute();
-$student_result = $student_query->get_result();
-$count += $student_result->num_rows;
+// $today = date("Y-m-d");
+// $student_query = $conn->prepare("
+//     SELECT 
+//         la.id, 
+//         la.ip_address, 
+//         la.atempts, 
+//         la.created_at
+//     FROM 
+//         student_list la
+//     WHERE 
+//         DATE(la.created_at) = ?
+// ");
+// $student_query->bind_param("s", $today);
+// $student_query->execute();
+// $student_result = $student_query->get_result();
+// $count += $student_result->num_rows;
 
-while ($row = $student_result->fetch_assoc()) {
-  $notifications[] = [
-    "type" => "new_student",
-    "id" => $row['id'],
-    "name" => $row['firstname'] . " " . $row['lastname'],
-    "date" => $row['date_created'],
-  ];
-}
+// while ($row = $student_result->fetch_assoc()) {
+//   $notifications[] = [
+//     "type" => "new_student",
+//     "id" => $row['id'],
+//     "name" => $row['firstname'] . " " . $row['lastname'],
+//     "date" => $row['date_created'],
+//   ];
+// }
 
 // Fetch new archives added today
 $archive_query = $conn->prepare("
@@ -262,7 +262,7 @@ usort($notifications, function ($a, $b) {
               <div class="dropdown-divider"></div>
             <?php elseif ($notification['type'] === "new_archive"): ?>
               <!-- New Archive Notification -->
-              <a href=" _base_url_ + 'admin/?page=archives'" class="dropdown-item notification-link"
+              <a href="./admin/?page=archives" class="dropdown-item notification-link"
                 data-id="<?php echo $notification['id']; ?>"
                 data-name="<?php echo htmlspecialchars($notification['name']); ?>">
                 <i class="fas fa-file-alt myIcon"></i>
