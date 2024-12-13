@@ -5,9 +5,12 @@
 .card-header {
   background-color: #b51b23 !important;
   color: #fff !important;
+  align-items: center !important;
 }
 .card-title {
   color: #fff !important;
+  font-weight: bold !important;
+  font-size: 40px !important;
 }
 
 .title {
