@@ -162,40 +162,53 @@
           </thead>
           <tbody>
             <?php
+            // Initialize counter
             $i = 1;
+
+            // Fetch unverified users from database
             $qry = $conn->query("SELECT id, firstname, lastname, date_created, status 
                            FROM student_list 
                            WHERE status = 2 
                            ORDER BY date_created DESC");
 
-            while ($row = $qry->fetch_assoc()):
+            // Check if query fetched any rows
+            if ($qry && $qry->num_rows > 0):
+              while ($row = $qry->fetch_assoc()):
+
+                ?>
+                <tr>
+                  <td class="text-center"><?php echo $i++; ?></td>
+                  <td><?php echo htmlspecialchars($row['firstname']); ?></td>
+                  <td><?php echo htmlspecialchars($row['lastname']); ?></td>
+                  <td><?php echo date("Y-m-d H:i", strtotime($row['date_created'])); ?></td>
+                  <td class="text-center">
+                    <span class="badge badge-danger">Unverified</span>
+                  </td>
+                  <td align="center">
+                    <button type="button" class="btn btn-flat btn-default btn-sm dropdown-toggle dropdown-icon"
+                      data-toggle="dropdown">
+                      Action
+                      <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu" role="menu">
+                      <a class="dropdown-item view_user" href="/admin/?page=archives?id=<?php echo $row['id']; ?>">
+                        <span class="fa fa-eye text-primary"></span> View
+                      </a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item delete_user" href="javascript:void(0)" data-id="<?php echo $row['id']; ?>">
+                        <span class="fa fa-trash text-danger"></span> Delete
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                <?php
+              endwhile;
+            else:
               ?>
               <tr>
-                <td class="text-center"><?php echo $i++; ?></td>
-                <td><?php echo htmlspecialchars($row['firstname']); ?></td>
-                <td><?php echo htmlspecialchars($row['lastname']); ?></td>
-                <td><?php echo date("Y-m-d H:i", strtotime($row['date_created'])); ?></td>
-                <td class="text-center">
-                  <span class="badge badge-secondary">Unverified</span>
-                </td>
-                <td align="center">
-                  <button type="button" class="btn btn-flat btn-default btn-sm dropdown-toggle dropdown-icon"
-                    data-toggle="dropdown">
-                    Action
-                    <span class="sr-only">Toggle Dropdown</span>
-                  </button>
-                  <div class="dropdown-menu" role="menu">
-                    <a class="dropdown-item view_user" href="view_user.php?id=<?php echo $row['id']; ?>">
-                      <span class="fa fa-eye text-primary"></span> View
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item delete_user" href="javascript:void(0)" data-id="<?php echo $row['id']; ?>">
-                      <span class="fa fa-trash text-danger"></span> Delete
-                    </a>
-                  </div>
-                </td>
+                <td colspan="6" class="text-center">No unverified users found.</td>
               </tr>
-            <?php endwhile; ?>
+            <?php endif; ?>
           </tbody>
         </table>
       </div>
@@ -238,32 +251,36 @@
   $(document).ready(function () {
     // Handle button clicks to toggle table visibility
     $('#downloadRequestsBtn').click(function () {
-      toggleTables('downloadRequestsTable');
+      toggleTables('downloadRequestsTable', this);
     });
 
     $('#newUsersBtn').click(function () {
-      toggleTables('newUsersTable'); // This is where the table for "New Users" is shown
+      toggleTables('newUsersTable', this);
     });
 
     $('#newProjectsBtn').click(function () {
-      toggleTables('newProjectsTable');
+      toggleTables('newProjectsTable', this);
     });
 
     $('#suspiciousLoginsBtn').click(function () {
-      toggleTables('suspiciousLoginsTable');
+      toggleTables('suspiciousLoginsTable', this);
     });
 
     // Toggle table visibility
-    function toggleTables(tableId) {
-      $('.table-container').removeClass('active-table'); // Hide all tables
-      $('#' + tableId).addClass('active-table'); // Show the selected table
+    function toggleTables(tableId, button) {
+      // Hide all tables
+      $('.table-container').removeClass('active-table');
+
+      // Show the selected table
+      $('#' + tableId).addClass('active-table');
 
       // Highlight the active button
       $('.btn-nav').removeClass('active');
-      $('#' + tableId + 'Btn').addClass('active');
+      $(button).addClass('active');
     }
   });
 </script>
+
 
 <script>
   $(document).ready(function () {
