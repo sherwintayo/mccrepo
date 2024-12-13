@@ -146,6 +146,12 @@
   font-size: 1.2rem;
 }
 
+.card-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .file-card .card-image img {
   width: 100px;
   height: 150px;
