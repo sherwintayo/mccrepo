@@ -215,7 +215,8 @@ include 'timezone.php';
                                             <tr>
                                                 <td><?php echo $cc; ?>.</td>
                                                 <td><?php echo htmlspecialchars($_keywordCollection["keyword"]); ?></td>
-                                                <td><span class="badge bg-grey"><?php echo $_keywordCollection["kcount"]; ?></span>
+                                                <td><span class=" count badge bg-grey"
+                                                        style="color:grey;"><?php echo $_keywordCollection["kcount"]; ?></span>
                                                 </td>
                                             </tr>
                                             <?php
