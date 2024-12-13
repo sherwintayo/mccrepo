@@ -20,7 +20,6 @@
 
     .book-item .img-holder {
         width: 100%;
-        height: 25em;
     }
 
     .book-item .img-holder>img.img-top {
@@ -33,6 +32,10 @@
 
     .book-item:hover .img-holder>img.img-top {
         transform: scale(1.2);
+    }
+
+    .cards {
+        margin: 15px 0;
     }
 
     /* .truncate-5 {
