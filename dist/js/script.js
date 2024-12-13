@@ -126,10 +126,10 @@ $(document).ready(function () {
   // System Info
   $("#system-frm").submit(function (e) {
     e.preventDefault();
-    start_loader();
+    // start_loader()
     if ($(".err_msg").length > 0) $(".err_msg").remove();
     $.ajax({
-      url: _base_url_ + "classes/SystemSettings.php?f=update_settings_info",
+      url: _base_url_ + "classes/SystemSettings.php?f=update_settings",
       data: new FormData($(this)[0]),
       cache: false,
       contentType: false,
@@ -141,11 +141,10 @@ $(document).ready(function () {
           // alert_toast("Data successfully saved",'success')
           location.reload();
         } else {
-          let errorMsg = resp.msg || "An Error occurred";
           $("#msg").html(
-            '<div class="alert alert-danger err_msg">' + errorMsg + "</div>"
+            '<div class="alert alert-danger err_msg">An Error occured</div>'
           );
-          end_loader();
+          end_load();
         }
       },
     });
