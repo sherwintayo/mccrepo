@@ -31,13 +31,13 @@
 .title p {
   color: #2d2d2d;
   margin: 0;
-  font-size: 20x;
+  font-size: 20x !important;
   font-weight: bold;
 }
 .title .year {
   color: #2d2d2d;
   margin: 0;
-  font-size: 20px;
+  font-size: 20px !important;
   font-weight: bold;
 }
 
