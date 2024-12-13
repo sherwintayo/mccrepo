@@ -216,8 +216,85 @@
 
 
       <div id="newProjectsTable" class="table-container">
-        <!-- New Projects Table (similar structure) -->
+        <table class="table table-hover table-striped">
+          <colgroup>
+            <col width="5%">
+            <col width="25%">
+            <col width="25%">
+            <col width="25%">
+            <col width="10%">
+            <col width="20%">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Project Title</th>
+              <th>Year</th>
+              <th>Date Added</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php
+            // Initialize counter
+            $i = 1;
+
+            // Fetch unverified projects from database
+            $qry = $conn->query("SELECT id, title, year, date_created, status 
+                           FROM archive_list 
+                           WHERE status = 0 
+                           ORDER BY date_created DESC");
+
+            // Check if query fetched any rows
+            if ($qry && $qry->num_rows > 0):
+              while ($row = $qry->fetch_assoc()):
+                ?>
+                <tr>
+                  <td class="text-center">
+                    <?php echo $i++; ?>
+                  </td>
+                  <td>
+                    <?php echo htmlspecialchars($row['title']); ?>
+                  </td>
+                  <td>
+                    <?php echo htmlspecialchars($row['year']); ?>
+                  </td>
+                  <td>
+                    <?php echo date("Y-m-d H:i", strtotime($row['date_created'])); ?>
+                  </td>
+                  <td class="text-center">
+                    <span class="badge badge-danger">Not Publish</span>
+                  </td>
+                  <td align="center">
+                    <button type="button" class="btn btn-flat btn-default btn-sm dropdown-toggle dropdown-icon"
+                      data-toggle="dropdown">
+                      Action
+                      <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu" role="menu">
+                      <a class="dropdown-item view_project" href="/admin/?page=project_view&id=<?php echo $row['id']; ?>">
+                        <span class="fa fa-eye text-primary"></span> View
+                      </a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item delete_project" href="javascript:void(0)" data-id="<?php echo $row['id']; ?>">
+                        <span class="fa fa-trash text-danger"></span> Delete
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                <?php
+              endwhile;
+            else:
+              ?>
+              <tr>
+                <td colspan="6" class="text-center">No unverified projects found.</td>
+              </tr>
+            <?php endif; ?>
+          </tbody>
+        </table>
       </div>
+
       <div id="suspiciousLoginsTable" class="table-container">
         <!-- Suspicious Logins Table (similar structure) -->
       </div>
