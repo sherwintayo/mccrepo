@@ -3,7 +3,7 @@
 $notifications = [];
 $count = 0;
 
-// Fetch pending download requests and new student notifications
+// Fetch all notifications: download requests, new students, new archives, and login attempts
 $stmt = $conn->prepare("
     SELECT 
         dr.id AS request_id, 
@@ -15,7 +15,10 @@ $stmt = $conn->prepare("
         NULL AS student_id, 
         NULL AS student_firstname, 
         NULL AS student_lastname,
-        NULL AS student_created_at
+        NULL AS student_created_at,
+        NULL AS archive_title,
+        NULL AS login_ip,
+        NULL AS login_blocked_until
     FROM 
         download_requests dr
     JOIN 
@@ -23,7 +26,7 @@ $stmt = $conn->prepare("
     JOIN 
         archive_list al ON dr.file_id = al.id
     WHERE 
-        dr.status = 'pending' 
+        dr.status = 'pending'
 
     UNION ALL
 
@@ -37,11 +40,54 @@ $stmt = $conn->prepare("
         s.id AS student_id,
         s.firstname AS student_firstname,
         s.lastname AS student_lastname,
-        s.date_created AS student_created_at
+        s.date_created AS student_created_at,
+        NULL AS archive_title,
+        NULL AS login_ip,
+        NULL AS login_blocked_until
     FROM 
         student_list s
+    ORDER BY requested_at DESC
+
+    UNION ALL
+
+    SELECT 
+        NULL AS request_id, 
+        NULL AS firstname,
+        NULL AS lastname,
+        'New archive uploaded' AS reason,
+        al.date_created AS requested_at,
+        NULL AS title,
+        NULL AS student_id,
+        NULL AS student_firstname,
+        NULL AS student_lastname,
+        NULL AS student_created_at,
+        al.title AS archive_title,
+        NULL AS login_ip,
+        NULL AS login_blocked_until
+    FROM 
+        archive_list al
+    ORDER BY requested_at DESC
+
+    UNION ALL
+
+    SELECT 
+        NULL AS request_id, 
+        NULL AS firstname,
+        NULL AS lastname,
+        'Suspicious login attempt detected' AS reason,
+        la.blocked_until AS requested_at,
+        NULL AS title,
+        NULL AS student_id,
+        NULL AS student_firstname,
+        NULL AS student_lastname,
+        NULL AS student_created_at,
+        NULL AS archive_title,
+        la.ip_address AS login_ip,
+        la.blocked_until AS login_blocked_until
+    FROM 
+        Login_Attempt la
     WHERE 
-        s.date_created > (SELECT IFNULL(MAX(requested_at), '1970-01-01') FROM download_requests)
+        la.blocked_until IS NOT NULL
     ORDER BY requested_at DESC
     LIMIT 10
 ");
@@ -54,6 +100,7 @@ while ($row = $result->fetch_assoc()) {
   $notifications[] = $row;
 }
 ?>
+
 <style>
   .user-img {
     position: absolute;
@@ -161,35 +208,20 @@ while ($row = $result->fetch_assoc()) {
           <?php foreach ($notifications as $notification): ?>
             <?php if ($notification['request_id']): ?>
               <!-- Download request notification -->
-              <?php
-              $titleWords = explode(' ', htmlspecialchars($notification['title']));
-              $truncatedTitle = implode(' ', array_slice($titleWords, 0, 7)) . (count($titleWords) > 7 ? '...' : '');
-              ?>
-              <a href="javascript:void(0);" class="dropdown-item notification-link"
-                data-id="<?php echo $notification['request_id']; ?>"
-                data-firstname="<?php echo htmlspecialchars($notification['firstname']); ?>"
-                data-lastname="<?php echo htmlspecialchars($notification['lastname']); ?>"
-                data-reason="<?php echo htmlspecialchars($notification['reason']); ?>"
-                data-title="<?php echo htmlspecialchars($notification['title']); ?>" onclick="showRequestModal(this)">
+              <a href="javascript:void(0);" class="dropdown-item notification-link">
                 <i class="fas fa-envelope myIcon"></i>
                 <strong><?php echo htmlspecialchars($notification['firstname'] . ' ' . $notification['lastname']); ?></strong>
                 wants to download the
-                <strong>"<?php echo $truncatedTitle; ?>"</strong>
-                for the reason
-                <em>"<?php echo htmlspecialchars($notification['reason']); ?>"</em>.
+                <strong>"<?php echo htmlspecialchars($notification['title']); ?>"</strong>.
                 <br>
                 <span class="notification-time text-muted float-left">
                   <?php echo date('M d, H:i', strtotime($notification['requested_at'])); ?>
                 </span>
-              </a><br>
+              </a>
               <div class="dropdown-divider"></div>
             <?php elseif ($notification['student_id']): ?>
               <!-- New student added notification -->
-              <a href="javascript:void(0);" class="dropdown-item notification-link"
-                data-id="<?php echo $notification['student_id']; ?>"
-                data-firstname="<?php echo htmlspecialchars($notification['student_firstname']); ?>"
-                data-lastname="<?php echo htmlspecialchars($notification['student_lastname']); ?>"
-                data-reason="New student added" onclick="showStudentModal(this)">
+              <a href="javascript:void(0);" class="dropdown-item notification-link">
                 <i class="fas fa-user myIcon"></i>
                 <strong><?php echo htmlspecialchars($notification['student_firstname'] . ' ' . $notification['student_lastname']); ?></strong>
                 has been added to the system.
@@ -197,7 +229,31 @@ while ($row = $result->fetch_assoc()) {
                 <span class="notification-time text-muted float-left">
                   <?php echo date('M d, H:i', strtotime($notification['student_created_at'])); ?>
                 </span>
-              </a><br>
+              </a>
+              <div class="dropdown-divider"></div>
+            <?php elseif ($notification['archive_title']): ?>
+              <!-- New archive notification -->
+              <a href="javascript:void(0);" class="dropdown-item notification-link">
+                <i class="fas fa-file-archive myIcon"></i>
+                A new archive "<strong><?php echo htmlspecialchars($notification['archive_title']); ?></strong>" has been
+                uploaded.
+                <br>
+                <span class="notification-time text-muted float-left">
+                  <?php echo date('M d, H:i', strtotime($notification['requested_at'])); ?>
+                </span>
+              </a>
+              <div class="dropdown-divider"></div>
+            <?php elseif ($notification['login_ip']): ?>
+              <!-- Suspicious login notification -->
+              <a href="javascript:void(0);" class="dropdown-item notification-link">
+                <i class="fas fa-exclamation-triangle myIcon text-warning"></i>
+                Suspicious login attempt detected from IP:
+                <strong><?php echo htmlspecialchars($notification['login_ip']); ?></strong>.
+                <br>
+                <span class="notification-time text-muted float-left">
+                  <?php echo date('M d, H:i', strtotime($notification['login_blocked_until'])); ?>
+                </span>
+              </a>
               <div class="dropdown-divider"></div>
             <?php endif; ?>
           <?php endforeach; ?>
@@ -210,6 +266,7 @@ while ($row = $result->fetch_assoc()) {
         </a>
       </div>
     </li>
+
 
     <!-- User Dropdown Menu -->
     <li class="nav-item">

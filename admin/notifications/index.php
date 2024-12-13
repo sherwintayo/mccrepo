@@ -143,10 +143,10 @@
       <div id="newUsersTable" class="table-container">
         <?php
         // Assume $conn is already available in this file through the config or session
-        $unverifiedUsers = [];
-
+        
+        $i = 1;
         // Fetch all students with status = 2 (Unverified) from the student_list table
-        $stmt = $conn->prepare("
+        $qry = $conn->query("
             SELECT 
                 s.id AS student_id, 
                 s.firstname, 
@@ -156,7 +156,7 @@
             FROM 
                 student_list s
             WHERE 
-                s.status = 2  -- Only fetch unverified students
+                s.status = 2
             ORDER BY s.date_created DESC
             LIMIT 10
           ");
