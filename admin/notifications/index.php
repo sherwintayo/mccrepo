@@ -216,74 +216,7 @@
 
 
       <div id="newProjectsTable" class="table-container">
-        <!-- <table class="table table-hover table-striped">
-          <colgroup>
-            <col width="5%">
-            <col width="25%">
-            <col width="25%">
-            <col width="25%">
-            <col width="10%">
-            <col width="20%">
-          </colgroup>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Title</th>
-              <th>Date Added</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php
-            // Initialize counter
-            $i = 1;
-
-            // Fetch unverified users from database
-            $qry = $conn->query("SELECT id, title, date_created, status 
-                           FROM student_list 
-                           WHERE status = 0 
-                           ORDER BY date_created DESC");
-
-            // Check if query fetched any rows
-            if ($qry && $qry->num_rows > 0):
-              while ($row = $qry->fetch_assoc()):
-
-                ?>
-                <tr>
-                  <td class="text-center"><?php echo $i++; ?></td>
-                  <td><?php echo htmlspecialchars($row['title']); ?></td>
-                  <td><?php echo date("Y-m-d H:i", strtotime($row['date_created'])); ?></td>
-                  <td class="text-center">
-                    <span class="badge badge-danger">Unverified</span>
-                  </td>
-                  <td align="center">
-                    <button type="button" class="btn btn-flat btn-default btn-sm dropdown-toggle dropdown-icon"
-                      data-toggle="dropdown">
-                      Action
-                      <span class="sr-only">Toggle Dropdown</span>
-                    </button>
-                    <div class="dropdown-menu" role="menu">
-                      <a class="dropdown-item view_user" href="/admin/?page=archives?id=<?php echo $row['id']; ?>">
-                        <span class="fa fa-eye text-primary"></span> View
-                      </a>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item delete_user" href="javascript:void(0)" data-id="<?php echo $row['id']; ?>">
-                        <span class="fa fa-trash text-danger"></span> Delete
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-                <?php
-              endwhile;
-            else:
-              ?>
-              <tr>
-                <td colspan="6" class="text-center">No not publish projects found.</td>
-              </tr>
-            <?php endif; ?>
-          </tbody>
-        </table> -->
+        <!-- New Projects Table (similar structure) -->
       </div>
       <div id="suspiciousLoginsTable" class="table-container">
         <!-- Suspicious Logins Table (similar structure) -->
@@ -313,11 +246,10 @@
     </div>
   </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
   $(document).ready(function () {
-    // Add click event listeners for the navigation buttons
+    // Handle button clicks to toggle table visibility
     $('#downloadRequestsBtn').click(function () {
       toggleTables('downloadRequestsTable', this);
     });
@@ -334,7 +266,7 @@
       toggleTables('suspiciousLoginsTable', this);
     });
 
-    // Function to toggle visibility between tables
+    // Toggle table visibility
     function toggleTables(tableId, button) {
       // Hide all tables
       $('.table-container').removeClass('active-table');
@@ -342,15 +274,12 @@
       // Show the selected table
       $('#' + tableId).addClass('active-table');
 
-      // Remove active state from all buttons
+      // Highlight the active button
       $('.btn-nav').removeClass('active');
-
-      // Add active state to the clicked button
       $(button).addClass('active');
     }
   });
 </script>
-
 
 
 <script>
