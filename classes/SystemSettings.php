@@ -3,6 +3,10 @@ if (!class_exists('DBConnection')) {
 	require_once('../config.php');
 	require_once('DBConnection.php');
 }
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 class SystemSettings extends DBConnection
 {
 	public function __construct()
@@ -34,12 +38,14 @@ class SystemSettings extends DBConnection
 		}
 		return true;
 	}
+
 	function update_settings_info()
 	{
 		$data = "";
 		$resp = ['status' => 'error', 'msg' => ''];
 
 		foreach ($_POST as $key => $value) {
+			$value = $this->conn->real_escape_string($value); // Prevent SQL injection
 			if (!in_array($key, array("content")))
 				if (isset($_SESSION['system_info'][$key])) {
 					$value = str_replace("'", "&apos;", $value);
@@ -48,6 +54,12 @@ class SystemSettings extends DBConnection
 					$qry = $this->conn->query("INSERT into system_info set meta_value = '{$value}', meta_field = '{$key}' ");
 				}
 		}
+
+		if (!$qry) {
+			return json_encode(['status' => 'error', 'msg' => $this->conn->error]);
+		}
+
+
 		if (isset($_POST['content']))
 			foreach ($_POST['content'] as $k => $v) {
 				file_put_contents("../{$k}.html", $v);
@@ -133,9 +145,11 @@ class SystemSettings extends DBConnection
 
 		$update = $this->update_system_info();
 		$flash = $this->set_flashdata('success', 'System Info Successfully Updated.');
+
 		if ($update && $flash) {
-			// var_dump($_SESSION);
-			return true;
+			return 1; // Indicating success
+		} else {
+			return json_encode(['status' => 'error', 'msg' => 'Failed to update settings.']);
 		}
 	}
 	function set_userdata($field = '', $value = '')

@@ -141,8 +141,9 @@ $(document).ready(function () {
           // alert_toast("Data successfully saved",'success')
           location.reload();
         } else {
+          let errorMsg = resp.msg || "An Error occurred";
           $("#msg").html(
-            '<div class="alert alert-danger err_msg">An Error occured</div>'
+            '<div class="alert alert-danger err_msg">' + errorMsg + "</div>"
           );
           end_loader();
         }
