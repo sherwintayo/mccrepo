@@ -63,6 +63,19 @@
   justify-content: center;
   align-items: center;
   flex-direction: row;
+  flex-wrap: wrap;
+}
+.students .right .right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+}
+.students .right .left {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
 }
 
 .download-btn {
