@@ -120,7 +120,7 @@
           <h2>Chatbot</h2>
           <div class="sidebar-content">
             <!-- Embed your mccchat.com site here -->
-            <iframe src="https://mccchat.com/" width="100%" height="500px" style="border: none;">
+            <iframe src="https://mccchat.com/search?igu=1" width="100%" height="500px" style="border: none;">
             </iframe>
           </div>
         </div>
