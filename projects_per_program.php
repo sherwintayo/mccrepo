@@ -14,6 +14,7 @@ if (isset($_GET['id'])) {
     echo "<script> alert('Program ID is required'); location.replace('./') </script>";
 }
 ?>
+<link rel="stylesheet" href="<?php echo base_url ?>myStyles/projects.css?v=<?php echo time(); ?>">
 
 <div class="content project-container py-2 h-100">
     <div class="col-12">
