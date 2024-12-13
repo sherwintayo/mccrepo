@@ -35,13 +35,13 @@
         transform: scale(1.2);
     }
 
-    .truncate-5 {
+    /* .truncate-5 {
         overflow: hidden;
         text-overflow: ellipsis;
         display: -webkit-box;
         -webkit-line-clamp: 5;
         -webkit-box-orient: vertical;
-    }
+    } */
 </style>
 <?php
 $count = 0;
