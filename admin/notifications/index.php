@@ -264,7 +264,7 @@
                     <?php echo date("Y-m-d H:i", strtotime($row['date_created'])); ?>
                   </td>
                   <td class="text-center">
-                    <span class="badge badge-danger">Not Publish</span>
+                    <span class="badge badge-secondary">Not Publish</span>
                   </td>
                   <td align="center">
                     <button type="button" class="btn btn-flat btn-default btn-sm dropdown-toggle dropdown-icon"
