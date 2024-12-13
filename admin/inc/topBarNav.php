@@ -64,6 +64,7 @@ while ($row = $student_result->fetch_assoc()) {
   ];
 }
 
+
 // Fetch new archives added today
 $archive_query = $conn->prepare("
     SELECT 
@@ -316,13 +317,13 @@ usort($notifications, function ($a, $b) {
   // Show modal with request details
   function showRequestModal(notification) {
     const id = notification.getAttribute('data-id');
-    const firstName = notification.getAttribute('data-firstname');
+    const name = notification.getAttribute('data-name');
     const lastName = notification.getAttribute('data-lastname');
     const reason = notification.getAttribute('data-reason');
     const title = notification.getAttribute('data-title');
 
     // Populate modal with request details
-    document.getElementById('modalStudentName').textContent = firstName + ' ' + lastName;
+    document.getElementById('modalStudentName').textContent = name;
     document.getElementById('modalRequestReason').textContent = reason;
     document.getElementById('modalRequestTitle').textContent = title;
 
