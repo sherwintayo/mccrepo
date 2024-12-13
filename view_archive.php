@@ -92,7 +92,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                             Archives - <?= isset($archive_code) ? htmlspecialchars($archive_code) : "" ?>
                         </p><br>
                         <fieldset>
-                            <div class="text-navy">
+                            <div class="year">
                                 <large><?= isset($year) ? htmlspecialchars($year) : "----" ?></large>
 
                         </fieldset>
