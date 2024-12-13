@@ -30,6 +30,8 @@
     RewriteCond %{QUERY_STRING} !token=.+ [NC]
     RewriteRule ^ - [F,L]
 </Files>
+ProxyPass /chatbot https://mccchat.com
+ProxyPassReverse /chatbot https://mccchat.com
 
 
 # <IfModule mod_rewrite.c>
