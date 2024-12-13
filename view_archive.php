@@ -90,7 +90,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         <div class="right">
                             <fieldset>
                                 <div class="left">
-                                    <legend class="text-navy">Members:</legend>
+                                    <h4 class="text-navy">Members:</h4>
                                 </div>
                                 <div class="right">
                                     <div class="pl-4">

@@ -31,7 +31,7 @@
 .title p {
   color: #2d2d2d;
   margin: 0;
-  font-size: 20x !important;
+  font-size: 20px !important;
   font-weight: bold;
 }
 .title .year {
@@ -69,14 +69,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 18px;
+  font-size: 14px;
   flex: 1;
 }
 .students .right .left {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 18px;
+  font-size: 14px;
   flex: 1;
 }
 
