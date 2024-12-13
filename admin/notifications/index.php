@@ -318,29 +318,32 @@
   $(document).ready(function () {
     // Handle button clicks to toggle table visibility
     $('#downloadRequestsBtn').click(function () {
-      toggleTables('downloadRequestsTable');
+      toggleTables('downloadRequestsTable', this);
     });
 
     $('#newUsersBtn').click(function () {
-      toggleTables('newUsersTable'); // This is where the table for "New Users" is shown
+      toggleTables('newUsersTable', this);
     });
 
     $('#newProjectsBtn').click(function () {
-      toggleTables('newProjectsTable');
+      toggleTables('newProjectsTable', this);
     });
 
     $('#suspiciousLoginsBtn').click(function () {
-      toggleTables('suspiciousLoginsTable');
+      toggleTables('suspiciousLoginsTable', this);
     });
 
     // Toggle table visibility
-    function toggleTables(tableId) {
-      $('.table-container').removeClass('active-table'); // Hide all tables
-      $('#' + tableId).addClass('active-table'); // Show the selected table
+    function toggleTables(tableId, button) {
+      // Hide all tables
+      $('.table-container').removeClass('active-table');
+
+      // Show the selected table
+      $('#' + tableId).addClass('active-table');
 
       // Highlight the active button
       $('.btn-nav').removeClass('active');
-      $('#' + tableId + 'Btn').addClass('active');
+      $(button).addClass('active');
     }
   });
 </script>
