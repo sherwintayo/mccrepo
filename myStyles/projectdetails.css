@@ -48,6 +48,7 @@
   align-items: center;
   flex-wrap: wrap;
   padding: 0 5px;
+  margin: 15px 0;
 }
 .students .left {
   display: flex;
@@ -60,4 +61,30 @@
   flex: 1;
   justify-content: center;
   align-items: center;
+}
+
+.download-btn {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+
+#document_field {
+  min-height: 80vh;
+}
+
+.download-info {
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 8px;
+}
+
+#reasonTextarea,
+#submitReasonButton,
+#requestForm {
+  display: none;
 }

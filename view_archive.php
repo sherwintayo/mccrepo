@@ -37,24 +37,6 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 }
 ?>
 <style>
-    #document_field {
-        min-height: 80vh;
-    }
-
-    .download-info {
-        border: 1px solid #ccc;
-        padding: 10px;
-        border-radius: 5px;
-        margin-top: 10px;
-    }
-
-
-    #reasonTextarea,
-    #submitReasonButton,
-    #requestForm {
-        display: none;
-    }
-
     /* Hide textarea and submit button initially */
 </style>
 <link rel="stylesheet" href="<?php echo base_url ?>myStyles/projectdetails.css?v=<?php echo time(); ?>">
@@ -116,7 +98,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     </div>
 
                     <fieldset>
-                        <legend class="text-navy">Abstract:</legend>
+                        <legend class=" abstract text-navy">Abstract:</legend>
                         <div class="pl-4">
                             <large><?= isset($abstract) ? html_entity_decode($abstract) : "" ?></large>
                         </div>
@@ -125,7 +107,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 
 
                     <!-- Download Button with Login Check -->
-                    <div style="display: flex; align-items: center; margin-top: 20px;">
+                    <div class="download-btn">
                         <h5 class="text-navy" style="flex: 1;">Download all Files</h5>
                         <button class="btn btn-success btn-flat" id="downloadButton">
                             <i class="fa fa-download"></i> Download All Files
@@ -142,144 +124,184 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 
                     <!-- File Information -->
                     <div class="download-info">
-                        <p><strong>Project File:</strong>
-                            <?= isset($folder_path) ? basename($folder_path) : "Not available" ?></p>
-                        <p><strong>SQL File:</strong> <?= isset($sql_path) ? basename($sql_path) : "Not available" ?>
-                        </p>
-                        <p><strong>Document File:</strong>
-                            <?= isset($document_path) ? basename($document_path) : "Not available" ?></p>
+                        <!-- File Availability Cards -->
+                        <div class="row mt-4">
+                            <!-- Project File Card -->
+                            <div class="col-md-4">
+                                <div class="file-card">
+                                    <div class="card-header text-center">
+                                        <h5 class="card-title">Project File</h5>
+                                    </div>
+                                    <div class="card-body text-center">
+                                        <?= isset($folder_path) && !empty($folder_path) ?
+                                            "<span class='text-success'><i class='fa fa-check-circle fa-3x'></i><br>Available</span>" :
+                                            "<span class='text-secondary'><i class='fa fa-exclamation-circle fa-3x'></i><br>Not Available</span>"
+                                            ?>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SQL File Card -->
+                            <div class="col-md-4">
+                                <div class="file-card">
+                                    <div class="card-header text-center">
+                                        <h5 class="card-title">SQL File</h5>
+                                    </div>
+                                    <div class="card-body text-center">
+                                        <?= isset($sql_path) && !empty($sql_path) ?
+                                            "<span class='text-success'><i class='fa fa-check-circle fa-3x'></i><br>Available</span>" :
+                                            "<span class='text-secondary'><i class='fa fa-exclamation-circle fa-3x'></i><br>Not Available</span>"
+                                            ?>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Document File Card -->
+                            <div class="col-md-4">
+                                <div class="file-card">
+                                    <div class="card-header text-center">
+                                        <h5 class="card-title">Document File</h5>
+                                    </div>
+                                    <div class="card-body text-center">
+                                        <?= isset($document_path) && !empty($document_path) ?
+                                            "<span class='text-success'><i class='fa fa-check-circle fa-3x'></i><br>Available</span>" :
+                                            "<span class='text-secondary'><i class='fa fa-exclamation-circle fa-3x'></i><br>Not Available</span>"
+                                            ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <script>
-        $(function () {
-            $('.delete-data').click(function () {
-                _conf("Are you sure to delete <b>Archive-<?= isset($archive_code) ? htmlspecialchars($archive_code) : "" ?></b>", "delete_archive")
+        <script>
+            $(function () {
+                $('.delete-data').click(function () {
+                    _conf("Are you sure to delete <b>Archive-<?= isset($archive_code) ? htmlspecialchars($archive_code) : "" ?></b>", "delete_archive")
+                });
+                $('.summernote').summernote({
+                    height: 200
+                });
+                $("#summernote").summernote("disable");
             });
-            $('.summernote').summernote({
-                height: 200
-            });
-            $("#summernote").summernote("disable");
-        });
 
-        function delete_archive() {
-            start_loader();
-            $.ajax({
-                url: _base_url_ + "classes/Master.php?f=delete_archive",
-                method: "POST",
-                data: { id: "<?= isset($id) ? htmlspecialchars($id) : "" ?>" },
-                dataType: "json",
-                error: err => {
-                    console.log(err);
-                    alert_toast("An error occurred.", 'error');
-                    end_loader();
-                },
-                success: function (resp) {
-                    if (typeof resp == 'object' && resp.status == 'success') {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Deleted Successfully',
-                            showConfirmButton: false,
-                            timer: 1000
-                        }).then(() => {
-                            location.replace("./");
-                        });
-                    } else {
+            function delete_archive() {
+                start_loader();
+                $.ajax({
+                    url: _base_url_ + "classes/Master.php?f=delete_archive",
+                    method: "POST",
+                    data: { id: "<?= isset($id) ? htmlspecialchars($id) : "" ?>" },
+                    dataType: "json",
+                    error: err => {
+                        console.log(err);
                         alert_toast("An error occurred.", 'error');
                         end_loader();
-                    }
-                }
-            });
-        }
-
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://stuk.github.io/jszip-utils/dist/jszip-utils.js"></script>
-
-    <!-- JavaScript for Handling Download Privilege -->
-    <script>
-        $(document).ready(function () {
-            const isLoggedIn = <?= json_encode($is_logged_in) ?>;
-
-            $('#downloadButton').click(function () {
-                if (isLoggedIn) {
-                    // Show request form when logged in
-                    $('#reasonTextarea').show();
-                    $('#submitReasonButton').show();
-                    $('#requestForm').show();
-                } else {
-                    // Redirect to login page when not logged in
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Login Required',
-                        text: 'You need to log in to request downloads.',
-                        confirmButtonText: 'OK'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = "login.php";
-                        }
-                    });
-                }
-            });
-
-            // Handle download request submission
-            $('#submitReasonButton').click(function () {
-                console.log('Submit button clicked'); // Debug log
-                const reason = $('#reasonTextarea').val();
-                const fileId = <?= isset($id) ? htmlspecialchars($id) : "null" ?>;
-
-                if (reason.trim() === "") {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Reason Required',
-                        text: 'Please enter a reason for your download request.'
-                    });
-                    return;
-                }
-
-                console.log('Sending AJAX request...'); // Debug log
-                $.ajax({
-                    url: 'process_download_request.php',
-                    method: 'POST',
-                    data: { file_id: fileId, reason: reason },
-                    success: function (response) {
-                        console.log('AJAX response:', response); // Debug log
-                        const resp = JSON.parse(response);
-                        if (resp.status === 'success') {
+                    },
+                    success: function (resp) {
+                        if (typeof resp == 'object' && resp.status == 'success') {
                             Swal.fire({
                                 icon: 'success',
-                                title: 'Request Submitted',
-                                text: 'Your download request has been submitted for review.'
+                                title: 'Deleted Successfully',
+                                showConfirmButton: false,
+                                timer: 1000
+                            }).then(() => {
+                                location.replace("./");
                             });
-                            $('#reasonTextarea').val('').hide();
-                            $('#submitReasonButton').hide();
-                            $('#requestForm').hide();
                         } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: 'Could not submit your request. You need to login again.',
-                                confirmButtonText: 'OK'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    window.location.href = "login.php";
-                                }
-                            });
+                            alert_toast("An error occurred.", 'error');
+                            end_loader();
                         }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('AJAX error:', status, error); // Debug log
+                    }
+                });
+            }
+
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+        <script src="https://stuk.github.io/jszip-utils/dist/jszip-utils.js"></script>
+
+        <!-- JavaScript for Handling Download Privilege -->
+        <script>
+            $(document).ready(function () {
+                const isLoggedIn = <?= json_encode($is_logged_in) ?>;
+
+                $('#downloadButton').click(function () {
+                    if (isLoggedIn) {
+                        // Show request form when logged in
+                        $('#reasonTextarea').show();
+                        $('#submitReasonButton').show();
+                        $('#requestForm').show();
+                    } else {
+                        // Redirect to login page when not logged in
                         Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'An unexpected error occurred. Please try again.'
+                            icon: 'warning',
+                            title: 'Login Required',
+                            text: 'You need to log in to request downloads.',
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = "login.php";
+                            }
                         });
                     }
                 });
-            });
 
-        });
-    </script>
+                // Handle download request submission
+                $('#submitReasonButton').click(function () {
+                    console.log('Submit button clicked'); // Debug log
+                    const reason = $('#reasonTextarea').val();
+                    const fileId = <?= isset($id) ? htmlspecialchars($id) : "null" ?>;
+
+                    if (reason.trim() === "") {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Reason Required',
+                            text: 'Please enter a reason for your download request.'
+                        });
+                        return;
+                    }
+
+                    console.log('Sending AJAX request...'); // Debug log
+                    $.ajax({
+                        url: 'process_download_request.php',
+                        method: 'POST',
+                        data: { file_id: fileId, reason: reason },
+                        success: function (response) {
+                            console.log('AJAX response:', response); // Debug log
+                            const resp = JSON.parse(response);
+                            if (resp.status === 'success') {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Request Submitted',
+                                    text: 'Your download request has been submitted for review.'
+                                });
+                                $('#reasonTextarea').val('').hide();
+                                $('#submitReasonButton').hide();
+                                $('#requestForm').hide();
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Could not submit your request. You need to login again.',
+                                    confirmButtonText: 'OK'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.location.href = "login.php";
+                                    }
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('AJAX error:', status, error); // Debug log
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'An unexpected error occurred. Please try again.'
+                            });
+                        }
+                    });
+                });
+
+            });
+        </script>
