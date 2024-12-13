@@ -55,6 +55,50 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         display: none;
     }
 
+    .card {
+        margin: 10px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        font-size: 1.25rem;
+        font-weight: bold;
+        background-color: #f7f7f7;
+        padding: 10px;
+    }
+
+    .status-icon {
+        display: flex;
+        align-items: center;
+        font-size: 1.25rem;
+        margin-bottom: 10px;
+    }
+
+    .status-icon span {
+        margin-left: 10px;
+    }
+
+    .available {
+        color: green;
+    }
+
+    .not-available {
+        color: gray;
+    }
+
+    .download-info {
+        margin-top: 20px;
+    }
+
+    .abstract,
+    .details,
+    .members {
+        margin-top: 15px;
+    }
+
     /* Hide textarea and submit button initially */
 </style>
 </head>
