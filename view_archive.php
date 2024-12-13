@@ -137,11 +137,11 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                                     <div class="card-image">
                                         <img src="dist/img/progress.gif" alt="Project File">
                                     </div>
-                                    <div class="card-header text-center">
+                                    <div class="card-header-p text-center">
 
                                         <h5 class="card-title-p">Project File</h5>
                                     </div>
-                                    <div class="card-body text-center">
+                                    <div class="card-body-p text-center">
                                         <?= isset($folder_path) && !empty($folder_path) ?
                                             "<span class='text-success'><i class='fa fa-check-circle fa-3x'></i><br>Available</span>" :
                                             "<span class='text-secondary'><i class='fa fa-exclamation-circle fa-3x'></i><br>Not Available</span>"
@@ -156,10 +156,10 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                                     <div class="card-image">
                                         <img src="dist/img/progress.gif" alt="SQL File">
                                     </div>
-                                    <div class="card-header text-center">
+                                    <div class="card-header-p text-center">
                                         <h5 class="card-title-p">SQL File</h5>
                                     </div>
-                                    <div class="card-body text-center">
+                                    <div class="card-body-p text-center">
                                         <?= isset($sql_path) && !empty($sql_path) ?
                                             "<span class='text-success'><i class='fa fa-check-circle fa-3x'></i><br>Available</span>" :
                                             "<span class='text-secondary'><i class='fa fa-exclamation-circle fa-3x'></i><br>Not Available</span>"
@@ -174,11 +174,11 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                                     <div class="card-image">
                                         <img src="dist/img/progress.gif" alt="Document File">
                                     </div>
-                                    <div class="card-header text-center">
+                                    <div class="card-header-p text-center">
 
                                         <h5 class="card-title-p">Document File</h5>
                                     </div>
-                                    <div class="card-body text-center">
+                                    <div class="card-body-p text-center">
                                         <?= isset($document_path) && !empty($document_path) ?
                                             "<span class='text-success'><i class='fa fa-check-circle fa-3x'></i><br>Available</span>" :
                                             "<span class='text-secondary'><i class='fa fa-exclamation-circle fa-3x'></i><br>Not Available</span>"

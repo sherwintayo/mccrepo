@@ -119,8 +119,19 @@
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
 }
 
-.file-card .card-header {
+.file-card .card-header-p {
   background-color: #f8f9fa;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+.file-card .card-title-p {
+  background-color: #f8f9fa;
+  color: #3a3838;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+.file-card .card-body-p {
+  background-color: #b51b23;
   font-weight: bold;
   font-size: 1.2rem;
 }
@@ -136,7 +147,7 @@
 }
 
 .file-card .card-image img {
-  width: 100%;
+  width: 100px;
   height: 150px;
   object-fit: cover;
   border-bottom: 1px solid #ddd;
