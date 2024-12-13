@@ -3,10 +3,6 @@ if (!class_exists('DBConnection')) {
 	require_once('../config.php');
 	require_once('DBConnection.php');
 }
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 class SystemSettings extends DBConnection
 {
 	public function __construct()
@@ -38,7 +34,6 @@ class SystemSettings extends DBConnection
 		}
 		return true;
 	}
-
 	function update_settings_info()
 	{
 		$data = "";
@@ -231,7 +226,7 @@ $_settings->load_system_info();
 $action = !isset($_GET['f']) ? 'none' : strtolower($_GET['f']);
 $sysset = new SystemSettings();
 switch ($action) {
-	case 'update_settings':
+	case 'update_settings_info':
 		echo $sysset->update_settings_info();
 		break;
 	default:

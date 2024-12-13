@@ -126,10 +126,10 @@ $(document).ready(function () {
   // System Info
   $("#system-frm").submit(function (e) {
     e.preventDefault();
-    // start_loader()
+    start_loader();
     if ($(".err_msg").length > 0) $(".err_msg").remove();
     $.ajax({
-      url: _base_url_ + "classes/SystemSettings.php?f=update_settings",
+      url: _base_url_ + "classes/SystemSettings.php?f=update_settings_info",
       data: new FormData($(this)[0]),
       cache: false,
       contentType: false,
@@ -144,7 +144,7 @@ $(document).ready(function () {
           $("#msg").html(
             '<div class="alert alert-danger err_msg">An Error occured</div>'
           );
-          end_load();
+          end_loader();
         }
       },
     });
