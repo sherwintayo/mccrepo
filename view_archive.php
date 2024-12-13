@@ -88,12 +88,13 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     </center>
                     <div class="title">
                         <h2><b><?= isset($title) ? htmlspecialchars($title) : "" ?></b></h2><br>
-                        Archives - <?= isset($archive_code) ? htmlspecialchars($archive_code) : "" ?><br>
+                        <p>
+                            Archives - <?= isset($archive_code) ? htmlspecialchars($archive_code) : "" ?>
+                        </p><br>
                         <fieldset>
-                            <legend class="text-navy">Project Year:</legend>
-                            <div class="pl-4">
+                            <div class="text-navy">
                                 <large><?= isset($year) ? htmlspecialchars($year) : "----" ?></large>
-                            </div>
+
                         </fieldset>
                     </div>
                     <div class="students">
