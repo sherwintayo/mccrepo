@@ -130,7 +130,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                             <div class="col-md-4">
                                 <div class="file-card">
                                     <div class="card-header text-center">
-                                        <h5 class="card-title">Project File</h5>
+                                        <h5 class="card-title-p">Project File</h5>
                                     </div>
                                     <div class="card-body text-center">
                                         <?= isset($folder_path) && !empty($folder_path) ?
@@ -145,7 +145,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                             <div class="col-md-4">
                                 <div class="file-card">
                                     <div class="card-header text-center">
-                                        <h5 class="card-title">SQL File</h5>
+                                        <h5 class="card-title-p">SQL File</h5>
                                     </div>
                                     <div class="card-body text-center">
                                         <?= isset($sql_path) && !empty($sql_path) ?
@@ -160,7 +160,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                             <div class="col-md-4">
                                 <div class="file-card">
                                     <div class="card-header text-center">
-                                        <h5 class="card-title">Document File</h5>
+                                        <h5 class="card-title-p">Document File</h5>
                                     </div>
                                     <div class="card-body text-center">
                                         <?= isset($document_path) && !empty($document_path) ?
