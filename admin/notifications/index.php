@@ -279,7 +279,7 @@
             else:
               ?>
               <tr>
-                <td colspan="6" class="text-center">No unverified users found.</td>
+                <td colspan="6" class="text-center">No not publish projects found.</td>
               </tr>
             <?php endif; ?>
           </tbody>
@@ -313,10 +313,11 @@
     </div>
   </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
   $(document).ready(function () {
-    // Handle button clicks to toggle table visibility
+    // Add click event listeners for the navigation buttons
     $('#downloadRequestsBtn').click(function () {
       toggleTables('downloadRequestsTable', this);
     });
@@ -333,7 +334,7 @@
       toggleTables('suspiciousLoginsTable', this);
     });
 
-    // Toggle table visibility
+    // Function to toggle visibility between tables
     function toggleTables(tableId, button) {
       // Hide all tables
       $('.table-container').removeClass('active-table');
@@ -341,12 +342,15 @@
       // Show the selected table
       $('#' + tableId).addClass('active-table');
 
-      // Highlight the active button
+      // Remove active state from all buttons
       $('.btn-nav').removeClass('active');
+
+      // Add active state to the clicked button
       $(button).addClass('active');
     }
   });
 </script>
+
 
 
 <script>
