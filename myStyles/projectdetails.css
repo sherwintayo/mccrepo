@@ -120,18 +120,18 @@
 }
 
 .file-card .card-header-p {
-  background-color: #f8f9fa;
+  background-color: #ddd;
   font-weight: bold;
   font-size: 1.2rem;
 }
 .file-card .card-title-p {
-  background-color: #f8f9fa;
+  background-color: #ddd;
   color: #3a3838;
   font-weight: bold;
   font-size: 1.2rem;
 }
 .file-card .card-body-p {
-  background-color: #f8f9fa;
+  background-color: #ddd;
   font-weight: bold;
   font-size: 1.2rem;
   padding: 7px 0;
