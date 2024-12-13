@@ -191,7 +191,7 @@
                       <span class="sr-only">Toggle Dropdown</span>
                     </button>
                     <div class="dropdown-menu" role="menu">
-                      <a class="dropdown-item view_user" href="/admin/?page=archives?id=<?php echo $row['id']; ?>">
+                      <a class="dropdown-item view_user" href="/admin/?page=students?id=<?php echo $row['id']; ?>">
                         <span class="fa fa-eye text-primary"></span> View
                       </a>
                       <div class="dropdown-divider"></div>
@@ -273,7 +273,7 @@
                       <span class="sr-only">Toggle Dropdown</span>
                     </button>
                     <div class="dropdown-menu" role="menu">
-                      <a class="dropdown-item view_project" href="/admin/?page=project_view&id=<?php echo $row['id']; ?>">
+                      <a class="dropdown-item view_project" href="/admin/?page=archives&id=<?php echo $row['id']; ?>">
                         <span class="fa fa-eye text-primary"></span> View
                       </a>
                       <div class="dropdown-divider"></div>
