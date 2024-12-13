@@ -18,6 +18,51 @@ function logAction($message)
   file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] " . $message . PHP_EOL, FILE_APPEND);
 }
 
+// Export database or a single table
+function exportData($conn, $table = null)
+{
+  $dbName = DB_NAME;
+  $fileName = $table ? "export_{$table}_" . date('Ymd_His') . ".sql" : "database_backup_" . date('Ymd_His') . ".sql";
+
+  header('Content-Type: application/sql');
+  header('Content-Disposition: attachment; filename="' . $fileName . '"');
+
+  if ($table) {
+    // Export a single table
+    $command = sprintf(
+      "mysqldump --host=%s --user=%s --password=%s %s %s",
+      escapeshellarg(DB_SERVER),
+      escapeshellarg(DB_USERNAME),
+      escapeshellarg(DB_PASSWORD),
+      escapeshellarg($dbName),
+      escapeshellarg($table)
+    );
+  } else {
+    // Export the entire database
+    $command = sprintf(
+      "mysqldump --host=%s --user=%s --password=%s %s",
+      escapeshellarg(DB_SERVER),
+      escapeshellarg(DB_USERNAME),
+      escapeshellarg(DB_PASSWORD),
+      escapeshellarg($dbName)
+    );
+  }
+
+  passthru($command, $returnVar);
+  exit($returnVar === 0 ? 0 : "Error exporting data.");
+}
+
+// Handle export requests
+if (isset($_GET['export'])) {
+  $table = $_GET['export_table'] ?? null;
+
+  if ($table && !isValidIdentifier($table)) {
+    die("Invalid table name.");
+  }
+
+  exportData($conn, $table);
+  exit;
+}
 
 // Fetch all table names
 $tables = array();
@@ -32,7 +77,6 @@ if ($result) {
   die("Error fetching tables: " . $conn->error);
 }
 
-// Initialize message variable for notifications
 $message = '';
 $messageType = '';
 
@@ -325,6 +369,10 @@ if (isset($_GET['download']) && $_GET['download'] === 'true') {
           <h4>Table: <?php echo htmlspecialchars($table); ?></h4>
         </div>
         <div class="card-body">
+          <a href="?export=true&export_table=<?php echo urlencode($table); ?>" class="btn btn-secondary mb-3">
+            Export This Table
+          </a>
+
           <!-- Fetch Table Columns -->
           <?php
           $columns = [];
@@ -332,8 +380,7 @@ if (isset($_GET['download']) && $_GET['download'] === 'true') {
           $columnResult = $conn->query($query);
 
           if ($columnResult) {
-            echo "<h5>Columns:</h5>";
-            echo "<ul>";
+            echo "<h5>Columns:</h5><ul>";
             while ($columnRow = $columnResult->fetch_assoc()) {
               $columns[] = $columnRow['Field'];
               echo "<li>" . htmlspecialchars($columnRow['Field']) . " (" . htmlspecialchars($columnRow['Type']) . ")</li>";
@@ -353,7 +400,7 @@ if (isset($_GET['download']) && $_GET['download'] === 'true') {
             <h5>Data:</h5>
             <div class="table-responsive">
               <table class="table table-bordered table-striped">
-                <thead class="thead-dark">
+                <thead>
                   <tr>
                     <?php foreach ($columns as $column): ?>
                       <th><?php echo htmlspecialchars($column); ?></th>
