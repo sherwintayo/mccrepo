@@ -72,7 +72,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                             <div class="col-md-4">
                                 <div class="file-card">
                                     <div class="card-image">
-                                        <img src="dist/img/projects.gif" alt="Project File">
+                                        <img src="../dist/img/projects.gif" alt="Project File">
                                     </div>
                                     <div class="card-header-p text-center">
                                         <h5 class="card-title-p">Project File</h5>
@@ -89,7 +89,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                             <div class="col-md-4">
                                 <div class="file-card">
                                     <div class="card-image">
-                                        <img src="dist/img/sql.gif" alt="SQL File">
+                                        <img src="../dist/img/sql.gif" alt="SQL File">
                                     </div>
                                     <div class="card-header-p text-center">
                                         <h5 class="card-title-p">SQL File</h5>
@@ -106,7 +106,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                             <div class="col-md-4">
                                 <div class="file-card">
                                     <div class="card-image">
-                                        <img src="dist/img/documents.gif" alt="Document File">
+                                        <img src="../dist/img/documents.gif" alt="Document File">
                                     </div>
                                     <div class="card-header-p text-center">
                                         <h5 class="card-title-p">Document File</h5>
