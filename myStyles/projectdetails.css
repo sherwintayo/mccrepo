@@ -70,12 +70,14 @@
   justify-content: center;
   align-items: center;
   font-size: 18px;
+  flex: 1;
 }
 .students .right .left {
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 18px;
+  flex: 1;
 }
 
 .download-btn {
