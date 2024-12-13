@@ -108,7 +108,7 @@
 
 .file-card {
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -131,10 +131,11 @@
   font-size: 1.2rem;
 }
 .file-card .card-body-p {
-  background-color: #b6b6b6;
+  background-color: #f8f9fa;
   font-weight: bold;
   font-size: 1.2rem;
   padding: 7px 0;
+  border-radius: 10px;
 }
 
 .file-card .text-success {

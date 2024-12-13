@@ -175,7 +175,6 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                                         <img src="dist/img/progress.gif" alt="Document File">
                                     </div>
                                     <div class="card-header-p text-center">
-
                                         <h5 class="card-title-p">Document File</h5>
                                     </div>
                                     <div class="card-body-p text-center">
