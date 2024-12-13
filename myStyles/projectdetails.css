@@ -155,7 +155,7 @@
 }
 
 .file-card .card-image img {
-  width: 100px;
+  width: 150px;
   height: 150px;
   object-fit: cover;
   border-bottom: 1px solid #ddd;
