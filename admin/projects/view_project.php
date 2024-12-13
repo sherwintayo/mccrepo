@@ -66,31 +66,61 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         </div>
                     </fieldset>
 
-                    <fieldset>
-                        <legend class="text-navy">Project Files:</legend>
-                        <div class="pl-4">
-                            <a class="btn btn-success"
-                                href="<?php echo base_url . 'uploads/files/Files-' . $id . '.zip' ?>"><i
-                                    class="fa fa-download"></i> Download Project Files</a>
-                        </div>
-                    </fieldset>
+                    <div class="download-info">
+                        <div class="row mt-4">
+                            <!-- Project File Card -->
+                            <div class="col-md-4">
+                                <div class="file-card">
+                                    <div class="card-image">
+                                        <img src="dist/img/projects.gif" alt="Project File">
+                                    </div>
+                                    <div class="card-header-p text-center">
+                                        <h5 class="card-title-p">Project File</h5>
+                                    </div>
+                                    <div class="card-body-p text-center">
+                                        <?= isset($folder_path) && !empty($folder_path) ?
+                                            "<span class='text-success'><i class='fa fa-check-circle fa-3x'></i><br>Available</span>" :
+                                            "<span class='text-secondary'><i class='fa fa-exclamation-circle fa-3x'></i><br>Not Available</span>" ?>
+                                    </div>
+                                </div>
+                            </div>
 
-                    <fieldset>
-                        <legend class="text-navy">SQL File:</legend>
-                        <div class="pl-4">
-                            <textarea id="summernote" class="form-control form-control-border summernote" readonly>
-                                <?= isset($sql_path) ? nl2br(file_get_contents(html_entity_decode(base_url . $sql_path))) : "" ?>
-                            </textarea>
-                        </div>
-                    </fieldset>
+                            <!-- SQL File Card -->
+                            <div class="col-md-4">
+                                <div class="file-card">
+                                    <div class="card-image">
+                                        <img src="dist/img/sql.gif" alt="SQL File">
+                                    </div>
+                                    <div class="card-header-p text-center">
+                                        <h5 class="card-title-p">SQL File</h5>
+                                    </div>
+                                    <div class="card-body-p text-center">
+                                        <?= isset($sql_path) && !empty($sql_path) ?
+                                            "<span class='text-success'><i class='fa fa-check-circle fa-3x'></i><br>Available</span>" :
+                                            "<span class='text-secondary'><i class='fa fa-exclamation-circle fa-3x'></i><br>Not Available</span>" ?>
+                                    </div>
+                                </div>
+                            </div>
 
-                    <fieldset>
-                        <legend class="text-navy">Project Document:</legend>
-                        <div class="pl-4">
-                            <iframe src="<?= isset($document_path) ? base_url . $document_path : "" ?>" frameborder="0"
-                                id="document_field" class="text-center w-100">Loading Document...</iframe>
+                            <!-- Document File Card -->
+                            <div class="col-md-4">
+                                <div class="file-card">
+                                    <div class="card-image">
+                                        <img src="dist/img/documents.gif" alt="Document File">
+                                    </div>
+                                    <div class="card-header-p text-center">
+                                        <h5 class="card-title-p">Document File</h5>
+                                    </div>
+                                    <div class="card-body-p text-center">
+                                        <?= isset($document_path) && !empty($document_path) ?
+                                            "<span class='text-success'><i class='fa fa-check-circle fa-3x'></i><br>Available</span>" :
+                                            "<span class='text-secondary'><i class='fa fa-exclamation-circle fa-3x'></i><br>Not Available</span>" ?>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </fieldset>
+                    </div>
+
                 </div>
             </div>
         </div>
