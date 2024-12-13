@@ -204,14 +204,15 @@ usort($notifications, function ($a, $b) {
             <?php if ($notification['type'] === "download_request"): ?>
               <!-- Download Request Notification -->
               <a href="javascript:void(0);" class="dropdown-item notification-link"
-                data-id="<?php echo $notification['id']; ?>"
+                data-id="<?php echo $notification['request_id']; ?>"
                 data-name="<?php echo htmlspecialchars($notification['name']); ?>"
                 data-reason="<?php echo htmlspecialchars($notification['reason']); ?>"
-                data-title="<?php echo htmlspecialchars($notification['title']); ?>">
+                data-title="<?php echo htmlspecialchars($notification['title']); ?>" onclick="showRequestModal(this)">
                 <i class="fas fa-envelope myIcon"></i>
                 <strong><?php echo htmlspecialchars($notification['name']); ?></strong>
                 wants to download the archive
-                <strong>"<?php echo htmlspecialchars($notification['title']); ?>"</strong>.
+                <strong>"<?php echo htmlspecialchars($notification['title']); ?>"</strong> for the reason
+                <em>"<?php echo htmlspecialchars($notification['reason']); ?>"</em>.
                 <br>
                 <span class="notification-time text-muted float-left">
                   <?php echo date('M d, H:i', strtotime($notification['date'])); ?>
