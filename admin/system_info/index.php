@@ -159,5 +159,39 @@
 				['view', ['undo', 'redo', 'fullscreen', 'codeview', 'help']]
 			]
 		})
-	})
+
+		// Handle form submission via AJAX
+		$('#system-frm').submit(function (e) {
+			e.preventDefault(); // Prevent the default form submission
+			var formData = new FormData(this); // Create a FormData object with form data
+
+			$.ajax({
+				url: 'SystemSettings.php?f=update_settings_info', // Backend endpoint
+				method: 'POST',
+				data: formData,
+				contentType: false, // Required for file uploads
+				processData: false, // Required for file uploads
+				success: function (response) {
+					if (response.trim() === "1") {
+						Swal.fire({
+							title: 'Success!',
+							text: 'System Information Successfully Updated.',
+							icon: 'success',
+							timer: 1500
+						}).then(() => {
+							location.reload(); // Reload the page to reflect changes
+						});
+					} else {
+						$('#msg').html('<div class="alert alert-danger">Update failed. Please try again.</div>');
+					}
+				},
+				error: function () {
+					$('#msg').html('<div class="alert alert-danger">An error occurred while updating. Please try again.</div>');
+				}
+			});
+		});
+	});
+
+
+
 </script>
