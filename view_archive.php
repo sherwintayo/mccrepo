@@ -134,10 +134,11 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                             <!-- Project File Card -->
                             <div class="col-md-4">
                                 <div class="file-card">
+                                    <div class="card-image">
+                                        <img src="dist/img/progress.gif" alt="Project File">
+                                    </div>
                                     <div class="card-header text-center">
-                                        <div class="card-image">
-                                            <img src="dist/img/progress.gif" alt="Project File">
-                                        </div>
+
                                         <h5 class="card-title-p">Project File</h5>
                                     </div>
                                     <div class="card-body text-center">
@@ -170,10 +171,11 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                             <!-- Document File Card -->
                             <div class="col-md-4">
                                 <div class="file-card">
+                                    <div class="card-image">
+                                        <img src="dist/img/progress.gif" alt="Document File">
+                                    </div>
                                     <div class="card-header text-center">
-                                        <div class="card-image">
-                                            <img src="dist/img/progress.gif" alt="Document File">
-                                        </div>
+
                                         <h5 class="card-title-p">Document File</h5>
                                     </div>
                                     <div class="card-body text-center">

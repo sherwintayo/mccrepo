@@ -134,3 +134,10 @@
   color: #6c757d !important;
   font-size: 1.2rem;
 }
+
+.file-card .card-image img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-bottom: 1px solid #ddd;
+}
