@@ -235,7 +235,7 @@ usort($notifications, function ($a, $b) {
                 data-name="<?php echo htmlspecialchars($notification['name']); ?>"
                 data-reason="<?php echo htmlspecialchars($notification['reason']); ?>"
                 data-title="<?php echo htmlspecialchars($notification['title']); ?>" onclick="showRequestModal(this)">
-                <i class="fas fa-envelope myIcon"></i>
+                <i class="fas fa-download myIcon"></i>
                 <strong><?php echo htmlspecialchars($notification['name']); ?></strong>
                 wants to download the archive
                 <strong>"<?php echo htmlspecialchars($notification['title']); ?>"</strong> for the reason
@@ -248,7 +248,7 @@ usort($notifications, function ($a, $b) {
               <div class="dropdown-divider"></div>
             <?php elseif ($notification['type'] === "new_student"): ?>
               <!-- New Student Notification -->
-              <a href="javascript:void(0);" class="dropdown-item notification-link"
+              <a href="/admin/?page=students" class="dropdown-item notification-link"
                 data-id="<?php echo $notification['id']; ?>"
                 data-name="<?php echo htmlspecialchars($notification['name']); ?>">
                 <i class="fas fa-user myIcon"></i>
