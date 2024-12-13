@@ -52,10 +52,12 @@
 .students .left {
   display: flex;
   justify-content: center;
+  flex: 1;
   align-items: center;
 }
 .students .right {
   display: flex;
+  flex: 1;
   justify-content: center;
   align-items: center;
 }

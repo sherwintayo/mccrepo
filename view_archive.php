@@ -99,7 +99,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     </div>
                     <div class="students">
                         <div class="left"> <small class="text-muted">Submitted by <b
-                                    class="text-info"><?= htmlspecialchars($submitted) ?></b>
+                                    class="text-info"><?= htmlspecialchars($submitted) ?></b><br>
                                 on
                                 <?= isset($date_created) ? date("F d, Y h:i A", strtotime($date_created)) : "" ?></small>
                         </div>
