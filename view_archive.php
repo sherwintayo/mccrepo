@@ -89,10 +89,15 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         </div>
                         <div class="right">
                             <fieldset>
-                                <legend class="text-navy">Members:</legend>
-                                <div class="pl-4">
-                                    <large><?= isset($members) ? html_entity_decode($members) : "" ?></large>
+                                <div class="left">
+                                    <legend class="text-navy">Members:</legend>
                                 </div>
+                                <div class="right">
+                                    <div class="pl-4">
+                                        <large><?= isset($members) ? html_entity_decode($members) : "" ?></large>
+                                    </div>
+                                </div>
+
                             </fieldset>
                         </div>
                     </div>
