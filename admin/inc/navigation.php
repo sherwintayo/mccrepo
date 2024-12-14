@@ -60,7 +60,7 @@
                   </p>
                 </a>
               </li>
-              <!-- <?php if ($_settings->userdata('type') == 1): ?> -->
+              <?php if ($_settings->userdata('type') == 1): ?>
                 <li class="nav-header">Maintenance</li>
                 <li class="nav-item dropdown">
                   <a href="<?php echo base_url ?>admin/?page=programs" class="nav-link nav-programs">
@@ -119,7 +119,7 @@
                   </a>
                 </li> -->
 
-                <!-- <?php endif; ?> -->
+              <?php endif; ?>
 
             </ul>
           </nav>

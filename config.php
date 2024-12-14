@@ -81,16 +81,16 @@ function isMobileDevice()
 }
 
 // CSRF Token Generation Function
-function generate_csrf_token()
-{
-    if (session_status() == PHP_SESSION_NONE) {
-        session_start();
-    }
-    if (empty($_SESSION['csrf_token'])) {
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-    }
-    return $_SESSION['csrf_token'];
-}
+// function generate_csrf_token()
+// {
+//     if (session_status() == PHP_SESSION_NONE) {
+//         session_start();
+//     }
+//     if (empty($_SESSION['csrf_token'])) {
+//         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+//     }
+//     return $_SESSION['csrf_token'];
+// }
 
 // Sanitize Global Inputs (GET, POST, COOKIE)
 // foreach ($_GET as $key => $value) {
