@@ -24,27 +24,22 @@ if (isset($_GET['token'])) {
     }
 
     // Dynamically set session data for all user fields except sensitive data
-    $_SESSION['userdata'] = [];
     foreach ($res as $k => $v) {
       if (!is_numeric($k) && $k != 'password') { // Exclude numeric keys and sensitive fields
         $_SESSION['userdata'][$k] = $v;
       }
     }
 
-    // Debugging log for session data
-    error_log("Session set in verify.php: " . print_r($_SESSION['userdata'], true));
-
     // Set additional session data for login type
     $_SESSION['userdata']['login_type'] = 1; // Set login type as admin
 
-    // Ensure session is saved properly before redirect
-    session_write_close();
+    // Debug: Verify session data
+    error_log("Session Data: " . print_r($_SESSION['userdata'], true));
 
     // Redirect to the admin dashboard
     header("Location: ../admin/index.php");
-    exit;
+    exit; // Ensure no further execution
   } else {
-    // Invalid or expired token message
     echo "Invalid or expired token.";
     exit;
   }
@@ -52,3 +47,4 @@ if (isset($_GET['token'])) {
   echo "No token provided.";
   exit;
 }
+?>
