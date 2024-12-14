@@ -33,9 +33,6 @@ if (isset($_GET['token'])) {
     // Set additional session data for login type
     $_SESSION['userdata']['login_type'] = 1; // Set login type as admin
 
-    // Debug: Verify session data
-    error_log("Session Data: " . print_r($_SESSION['userdata'], true));
-
     // Redirect to the admin dashboard
     header("Location: ../admin/index.php");
     exit; // Ensure no further execution

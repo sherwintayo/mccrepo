@@ -32,7 +32,7 @@ class Login extends DBConnection
 
     public function login()
     {
-        header('Content-Type: application/json; charset=utf-8');
+        // header('Content-Type: application/json; charset=utf-8');
         extract($_POST);
 
         $ipAddress = $_SERVER['REMOTE_ADDR'];

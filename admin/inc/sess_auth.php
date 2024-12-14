@@ -3,7 +3,6 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-
 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
     $link = "https";
 else
@@ -11,8 +10,6 @@ else
 $link .= "://";
 $link .= $_SERVER['HTTP_HOST'];
 $link .= $_SERVER['REQUEST_URI'];
-
-error_log("Session Debug: " . print_r($_SESSION, true));
 if (!isset($_SESSION['userdata']) && !strpos($link, 'login') && !strpos($link, 'register.php')) {
     redirect('admin/login');
 }
