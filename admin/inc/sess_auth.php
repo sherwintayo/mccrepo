@@ -1,7 +1,11 @@
 <?php
 
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+    session_start([
+        'cookie_secure' => true,
+        'cookie_httponly' => true,
+        'cookie_samesite' => 'Strict',
+    ]);
 }
 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
     $link = "https";
@@ -11,7 +15,7 @@ $link .= "://";
 $link .= $_SERVER['HTTP_HOST'];
 $link .= $_SERVER['REQUEST_URI'];
 if (!isset($_SESSION['userdata']) && !strpos($link, 'login') && !strpos($link, 'register.php')) {
-    redirect('admin/index');
+    redirect('admin/login');
 }
 if (isset($_SESSION['userdata']) && strpos($link, 'login.php')) {
     redirect('admin/index.php');

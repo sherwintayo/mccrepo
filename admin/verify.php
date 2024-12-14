@@ -34,7 +34,7 @@ if (isset($_GET['token'])) {
     $_SESSION['userdata']['login_type'] = 1; // Set login type as admin
 
     // Redirect to the admin dashboard
-    header("Location: ../admin/index");
+    header("Location: ../admin/index.php");
     exit; // Ensure no further execution
   } else {
     echo "Invalid or expired token.";
