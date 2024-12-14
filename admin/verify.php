@@ -31,6 +31,9 @@ if (isset($_GET['token'])) {
       }
     }
 
+    // Debugging log for session data
+    error_log("Session set in verify.php: " . print_r($_SESSION['userdata'], true));
+
     // Set additional session data for login type
     $_SESSION['userdata']['login_type'] = 1; // Set login type as admin
 

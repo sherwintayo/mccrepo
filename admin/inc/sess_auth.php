@@ -3,9 +3,15 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+// Debugging logs
+error_log("Session userdata: " . print_r($_SESSION['userdata'], true));
+
 // Get the current URL
 $link = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
 $link .= "://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+
+// Debugging log for current URL
+error_log("Current URL: " . $link);
 
 // Redirect unauthenticated users to login page
 if (!isset($_SESSION['userdata']) && !strpos($link, 'login') && !strpos($link, 'register.php')) {
