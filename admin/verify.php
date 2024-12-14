@@ -1,6 +1,4 @@
 <?php
-require_once('../config.php');
-
 if (isset($_GET['token'])) {
   $token = $_GET['token'];
 
@@ -23,19 +21,20 @@ if (isset($_GET['token'])) {
       session_start();
     }
 
-    // Dynamically set session data for all user fields except sensitive data
+    // Set session data for the user
     foreach ($res as $k => $v) {
-      if (!is_numeric($k) && $k != 'password') { // Exclude numeric keys and sensitive fields
+      if (!is_numeric($k) && $k != 'password') {
         $_SESSION['userdata'][$k] = $v;
       }
     }
 
-    // Set additional session data for login type
-    $_SESSION['userdata']['login_type'] = 1; // Set login type as admin
-
-    // Redirect to the admin dashboard
-    header("Location: ../admin/index.php");
-    exit; // Ensure no further execution
+    // Check login type and redirect
+    if ($_SESSION['userdata']['login_type'] == 1) { // Admin
+      header("Location: ../admin/index.php");
+      // } else {
+      //   header("Location: ../user/dashboard.php"); // Non-admin dashboard
+    }
+    exit;
   } else {
     echo "Invalid or expired token.";
     exit;
@@ -44,4 +43,5 @@ if (isset($_GET['token'])) {
   echo "No token provided.";
   exit;
 }
+
 ?>
