@@ -1,24 +1,30 @@
 <?php
-
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
-    $link = "https";
-else
-    $link = "http";
-$link .= "://";
-$link .= $_SERVER['HTTP_HOST'];
-$link .= $_SERVER['REQUEST_URI'];
+
+// Get the current URL
+$link = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+$link .= "://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+
+// Redirect unauthenticated users to login page
 if (!isset($_SESSION['userdata']) && !strpos($link, 'login') && !strpos($link, 'register.php')) {
-    redirect('admin/login');
-}
-if (isset($_SESSION['userdata']) && strpos($link, 'login.php')) {
-    redirect('admin/index.php');
-}
-$module = array('', 'admin', 'faculty', 'student');
-if (isset($_SESSION['userdata']) && (strpos($link, 'index.php') || strpos($link, 'admin/')) && $_SESSION['userdata']['login_type'] != 1) {
-    echo "<script>alert('Access Denied!');location.replace('" . base_url . $module[$_SESSION['userdata']['login_type']] . "');</script>";
+    header("Location: " . base_url . "admin/login.php");
     exit;
 }
-?>
+
+// Prevent authenticated users from accessing the login page
+if (isset($_SESSION['userdata']) && strpos($link, 'login.php')) {
+    header("Location: " . base_url . "admin/index.php");
+    exit;
+}
+
+// Restrict access to admin area based on user type
+$module = array('', 'admin', 'faculty', 'student');
+if (isset($_SESSION['userdata']) && strpos($link, 'admin/') && $_SESSION['userdata']['login_type'] != 1) {
+    echo "<script>
+            alert('Access Denied!');
+            location.replace('" . base_url . $module[$_SESSION['userdata']['login_type']] . "');
+          </script>";
+    exit;
+}
