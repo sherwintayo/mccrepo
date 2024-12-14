@@ -4,6 +4,7 @@ require_once('../config.php');
 if (isset($_GET['token'])) {
   $token = $_GET['token'];
 
+  // Validate token
   $stmt = $conn->prepare("SELECT * FROM users WHERE reset_token_hash = ?");
   $stmt->bind_param("s", $token);
   $stmt->execute();
@@ -12,30 +13,29 @@ if (isset($_GET['token'])) {
   if ($qry->num_rows > 0) {
     $res = $qry->fetch_assoc();
 
+    // Clear the token from the database
     $clearTokenStmt = $conn->prepare("UPDATE users SET reset_token_hash = NULL WHERE id = ?");
     $clearTokenStmt->bind_param("i", $res['id']);
     $clearTokenStmt->execute();
 
+    // Start session if not started
     if (session_status() == PHP_SESSION_NONE) {
       session_start();
     }
 
-    $sessionStmt = $conn->prepare("SELECT session_token FROM sessions WHERE user_id = ? AND is_valid = 1");
-    $sessionStmt->bind_param("i", $res['id']);
-    $sessionStmt->execute();
-    $session = $sessionStmt->get_result()->fetch_assoc();
-
-    if ($session) {
-      $_SESSION['userdata'] = $res;
-      $_SESSION['userdata']['session_token'] = $session['session_token'];
-      $_SESSION['userdata']['login_type'] = 1;
-
-      header("Location: ../admin/index.php");
-      exit;
-    } else {
-      echo "Invalid session token.";
-      exit;
+    // Dynamically set session data for all user fields except sensitive data
+    foreach ($res as $k => $v) {
+      if (!is_numeric($k) && $k != 'password') { // Exclude numeric keys and sensitive fields
+        $_SESSION['userdata'][$k] = $v;
+      }
     }
+
+    // Set additional session data for login type
+    $_SESSION['userdata']['login_type'] = 1; // Set login type as admin
+
+    // Redirect to the admin dashboard
+    header("Location: ../admin/index.php");
+    exit; // Ensure no further execution
   } else {
     echo "Invalid or expired token.";
     exit;
