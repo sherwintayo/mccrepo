@@ -23,7 +23,7 @@ if (isset($_GET['token'])) {
       session_start();
     }
 
-    // Dynamically set session data for all user fields except sensitive data
+    // Populate session data with user information
     foreach ($res as $k => $v) {
       if (!is_numeric($k) && $k != 'password') { // Exclude numeric keys and sensitive fields
         $_SESSION['userdata'][$k] = $v;
@@ -32,6 +32,9 @@ if (isset($_GET['token'])) {
 
     // Set additional session data for login type
     $_SESSION['userdata']['login_type'] = 1; // Set login type as admin
+
+    // Debugging: Log session data
+    error_log("Session Data after verification: " . print_r($_SESSION, true));
 
     // Redirect to the admin dashboard
     header("Location: ../admin/index.php");
