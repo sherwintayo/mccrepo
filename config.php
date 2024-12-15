@@ -3,33 +3,33 @@ ob_start();
 ini_set('date.timezone', 'Asia/Manila');
 date_default_timezone_set('Asia/Manila');
 
-header("Strict-Transport-Security: max-age=31536000; includeSubDomains; preload");
+// header("Strict-Transport-Security: max-age=31536000; includeSubDomains; preload");
 
-header("X-Content-Type-Options: nosniff");
+// header("X-Content-Type-Options: nosniff");
 
-header("X-Frame-Options: DENY");
+// header("X-Frame-Options: DENY");
 
-header("X-XSS-Protection: 1; mode=block");
+// header("X-XSS-Protection: 1; mode=block");
 
-header("Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:;");
+// header("Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:;");
 
-header("Referrer-Policy: no-referrer");
+// header("Referrer-Policy: no-referrer");
 
-header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+// header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 
-header('Pragma: no-cache');
+// header('Pragma: no-cache');
 
-header('Expires: 0');
+// header('Expires: 0');
 
-header("Permissions-Policy: geolocation=(self), microphone=()");
+// header("Permissions-Policy: geolocation=(self), microphone=()");
 
-header("X-Permitted-Cross-Domain-Policies: none");
+// header("X-Permitted-Cross-Domain-Policies: none");
 
-header('Content-Type: text/html; charset=utf-8');
+// header('Content-Type: text/html; charset=utf-8');
 
-ini_set('session.cookie_secure', '1'); // Use HTTPS
-ini_set('session.cookie_httponly', '1'); // HttpOnly
-ini_set('session.cookie_samesite', 'Strict'); // SameSite policy
+// ini_set('session.cookie_secure', '1'); // Use HTTPS
+// ini_set('session.cookie_httponly', '1'); // HttpOnly
+// ini_set('session.cookie_samesite', 'Strict'); // SameSite policy
 session_start();
 
 require_once('initialize.php');
