@@ -100,22 +100,31 @@ class Login extends DBConnection
                         echo json_encode(['status' => 'notverified', 'message' => 'Your account is not verified.']);
                         return;
                     }
-                    // Generate a unique verification token
-                    $token = bin2hex(random_bytes(16));
-                    $updateTokenStmt = $this->conn->prepare("UPDATE users SET reset_token_hash = ? WHERE id = ?");
-                    $updateTokenStmt->bind_param('si', $token, $res['id']);
-                    $updateTokenStmt->execute();
 
-                    // Send verification email
-                    $verificationLink = base_url . "admin/verify.php?token=" . urlencode($token);
-
-                    if ($this->sendVerificationEmail($res['username'], $res['firstname'], $verificationLink, $res)) {
-                        error_log("Verification email sent successfully to {$res['username']}");
-                        echo json_encode(['status' => 'verify_email_sent']);
-                        return;
-                    } else {
-                        echo json_encode(['status' => 'error', 'message' => 'Unable to send verification email.']);
+                    foreach ($res as $k => $v) {
+                        if (!is_numeric($k) && $k != 'password') {
+                            $this->settings->set_userdata($k, $v);
+                        }
                     }
+                    $this->settings->set_userdata('login_type', 1);
+
+
+                    // // Generate a unique verification token
+                    // $token = bin2hex(random_bytes(16));
+                    // $updateTokenStmt = $this->conn->prepare("UPDATE users SET reset_token_hash = ? WHERE id = ?");
+                    // $updateTokenStmt->bind_param('si', $token, $res['id']);
+                    // $updateTokenStmt->execute();
+
+                    // // Send verification email
+                    // $verificationLink = base_url . "admin/verify.php?token=" . urlencode($token);
+
+                    // if ($this->sendVerificationEmail($res['username'], $res['firstname'], $verificationLink, $res)) {
+                    //     error_log("Verification email sent successfully to {$res['username']}");
+                    //     echo json_encode(['status' => 'verify_email_sent']);
+                    //     return;
+                    // } else {
+                    //     echo json_encode(['status' => 'error', 'message' => 'Unable to send verification email.']);
+                    // }
 
                     // Reset login attempts on successful login
                     $resetAttemptStmt = $this->conn->prepare("DELETE FROM Login_Attempt WHERE ip_address = ?");
