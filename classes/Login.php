@@ -102,7 +102,7 @@ class Login extends DBConnection
                     }
 
                     foreach ($res as $k => $v) {
-                        if (!is_numeric($k) && $k != 'password') {
+                        if (($k) && $k != 'password') {
                             $this->settings->set_userdata($k, $v);
                         }
                     }
