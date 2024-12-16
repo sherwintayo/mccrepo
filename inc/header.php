@@ -22,6 +22,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?php echo htmlspecialchars($_settings->info('title') ? $_settings->info('title') . ' | ' : '', ENT_QUOTES, 'UTF-8')
     . htmlspecialchars($_settings->info('name'), ENT_QUOTES, 'UTF-8'); ?></title>
+  <link rel="icon" href="<?php echo validate_image($_settings->info('logo')) ?>" />
   <!-- Google Font: Source Sans Pro -->
   <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&amp;display=fallback"> -->
   <!-- Font Awesome -->
