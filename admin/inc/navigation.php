@@ -110,14 +110,14 @@
                     </p>
                   </a>
                 </li>
-                <!-- <li class="nav-item dropdown">
+                <li class="nav-item dropdown">
                   <a href="<?php echo base_url ?>admin/?page=backup" class="nav-link nav-backup">
                     <i class="nav-icon fas fa-database"></i>
                     <p>
                       Backup Database
                     </p>
                   </a>
-                </li> -->
+                </li>
 
               <?php endif; ?>
 
