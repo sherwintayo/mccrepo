@@ -81,11 +81,13 @@ p {
   color: #777;
 }
 
-@keyframes slideIn {
-  0% {
-    transform: translateX(-100%);
+@keyframes appear {
+  from {
+    opacity: 0;
+    scale: 0.5;
   }
-  100% {
-    transform: translateX(0);
+  to {
+    opacity: 1;
+    scale: 1;
   }
 }
