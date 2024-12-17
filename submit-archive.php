@@ -170,7 +170,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                                 <button class="btn btn-default btn-flat"
                                     style="background-color: #0062cc; color:white;">
                                     Submit</button>
-                                <a href="./?page=profile" class="btn btn-danger border btn-flat"> Cancel</a>
+                                <a href="./?page=studentprofile" class="btn btn-danger border btn-flat"> Cancel</a>
                             </div>
                         </div>
                     </div>
