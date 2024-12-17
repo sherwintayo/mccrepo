@@ -80,3 +80,12 @@ p {
   font-size: 0.875rem; /* Adjust size if necessary */
   color: #777;
 }
+
+@keyframes slideIn {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
