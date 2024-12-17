@@ -30,23 +30,4 @@
     RewriteCond %{QUERY_STRING} !token=.+ [NC]
     RewriteRule ^ - [F,L]
 </Files>
-ProxyPass /chatbot https://mccchat.com
-ProxyPassReverse /chatbot https://mccchat.com
-Header set X-Frame-Options "ALLOW-FROM https://mccchat.com"
 
-
-# <IfModule mod_rewrite.c>
-#     Header set Access-Control-Allow-Origin "*"
-#     RewriteEngine on
-
-#     # Handle requests without .php in root and subdirectories
-#     RewriteCond %{REQUEST_FILENAME} !-f
-#     RewriteCond %{REQUEST_FILENAME} !-d
-#     RewriteCond %{REQUEST_FILENAME}\.php -f
-#     RewriteRule ^(.*)$ $1.php [L,QSA]
-
-#     # Default behavior for undefined paths to index.php
-#     RewriteCond %{REQUEST_FILENAME} !-f
-#     RewriteCond %{REQUEST_FILENAME} !-d
-#     RewriteRule ^(.*)$ /index.php/$2/?page=$1 [L]
-# </IfModule>

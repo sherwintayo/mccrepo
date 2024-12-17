@@ -101,6 +101,7 @@ $archive_query = $conn->prepare("
         archive_list a
     WHERE 
         DATE(a.date_created) = ?
+        DESC LIMIT 10
 ");
 $archive_query->bind_param("s", $today);
 $archive_query->execute();

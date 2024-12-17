@@ -60,8 +60,8 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
     }
 </style>
 <div class="content py-4">
-    <div class="card card-outline shadow rounded-3">
-        <div class="card-header rounded-3">
+    <div class="card card-outline">
+        <div class="card-header ">
             <h5 class="card-title"><?= htmlspecialchars(isset($id) ? "Update Archive-{$archive_code} Details" :
                 "Submit Project", ENT_QUOTES, 'UTF-8') ?></h5>
         </div>
