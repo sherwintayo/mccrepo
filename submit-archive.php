@@ -44,6 +44,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 
     .card {
         width: 100%;
+        margin-top: 5vh;
     }
 
     .card-header {
