@@ -2,54 +2,52 @@
 
 <div class="content project-container py-2 h-100">
     <div class="col-12">
-        <div class="head d-flex align-items-center justify-content-between">
-            <h2 class="text-center">Published Projects</h2>
-            <form method="GET" action="" class="form-inline">
-                <label for="year" class="me-2">Filter by Year:</label>
-                <select name="year" id="year" class="form-select" onchange="this.form.submit()">
+        <div class="head d-flex align-items-center">
+            <!-- Year Filter -->
+            <div class="form-group me-3">
+                <label for="year" class="control-label text-navy">Filter by Year</label>
+                <select name="year" id="year" class="form-control form-control-border" onchange="filterByYear()">
+                    <option value="" <?= !isset($_GET['year']) ? 'selected' : '' ?>>All Years</option>
                     <?php
-                    $currentYear = date('Y');
-                    $selectedYear = isset($_GET['year']) ? $_GET['year'] : $currentYear;
-
-                    // Fetch distinct years from archive_list table
-                    $years = $conn->query("SELECT DISTINCT year FROM archive_list ORDER BY year DESC");
-                    while ($row = $years->fetch_assoc()) {
-                        $year = $row['year'];
-                        $isSelected = $year == $selectedYear ? 'selected' : '';
-                        echo "<option value='{$year}' {$isSelected}>{$year}</option>";
-                    }
-                    ?>
+                    // Fetch distinct years from the archive_list table
+                    $years = $conn->query("SELECT DISTINCT `year` FROM archive_list WHERE `status` = 1 ORDER BY `year` DESC");
+                    while ($yearRow = $years->fetch_assoc()):
+                        ?>
+                        <option value="<?= $yearRow['year'] ?>" <?= isset($_GET['year']) && $_GET['year'] == $yearRow['year'] ? 'selected' : '' ?>>
+                            <?= $yearRow['year'] ?>
+                        </option>
+                    <?php endwhile; ?>
                 </select>
-                <input type="hidden" name="q" value="<?= isset($_GET['q']) ? htmlspecialchars($_GET['q']) : '' ?>">
-            </form>
+            </div>
+
+            <h2 class="text-center flex-grow-1">Published Projects</h2>
         </div>
+
         <?php
         // Set the limit to 100 without pagination
         $limit = 100;
 
         $isSearch = isset($_GET['q']) ? "&q={$_GET['q']}" : "";
-        $search = "";
+        $yearFilter = isset($_GET['year']) ? " and `year` = '{$conn->real_escape_string($_GET['year'])}'" : "";
 
+        $search = "";
         if (isset($_GET['q'])) {
             $keyword = $conn->real_escape_string($_GET['q']);
             $search = " and (title LIKE '%{$keyword}%' or abstract LIKE '%{$keyword}%' or members LIKE '%{$keyword}%' or curriculum_id in (SELECT id FROM curriculum_list WHERE name LIKE '%{$keyword}%' or description LIKE '%{$keyword}%') or curriculum_id in (SELECT id FROM curriculum_list WHERE program_id in (SELECT id FROM program_list WHERE name LIKE '%{$keyword}%' or description LIKE '%{$keyword}%'))) ";
             $conn->query("INSERT INTO keyword_search_counter (keyword) VALUES ('{$keyword}')");
         }
 
-        // Filter by the selected year
-        $yearFilter = " and year = '{$selectedYear}'";
-
-        // Fetch students and archives
-        $students = $conn->query("SELECT * FROM `student_list` WHERE id IN (SELECT student_id FROM archive_list WHERE `status` = 1 {$yearFilter} {$search})");
+        // Fetch students and archives with year filter
+        $students = $conn->query("SELECT * FROM `student_list` WHERE id IN (SELECT student_id FROM archive_list WHERE `status` = 1 {$search} {$yearFilter})");
         $student_arr = array_column($students->fetch_all(MYSQLI_ASSOC), 'lastname', 'id');
 
-        $archives = $conn->query("SELECT * FROM archive_list WHERE `status` = 1 {$yearFilter} {$search} ORDER BY unix_timestamp(date_created) DESC LIMIT {$limit}");
+        $archives = $conn->query("SELECT * FROM archive_list WHERE `status` = 1 {$search} {$yearFilter} ORDER BY unix_timestamp(date_created) DESC LIMIT {$limit}");
         ?>
 
         <div class="row">
             <?php
-            if ($archives->num_rows > 0) {
-                while ($row = $archives->fetch_assoc()) {
+            if ($archives->num_rows > 0):
+                while ($row = $archives->fetch_assoc()):
                     $row['abstract'] = strip_tags(html_entity_decode($row['abstract']));
                     ?>
                     <div class="cards col-lg-3 col-md-4 mb-2">
@@ -59,22 +57,38 @@
                             </div>
                             <div class="cards-body">
                                 <div class="cards-title fw-bolder h5 text-center"><?= $row['title'] ?></div><br>
-                                <div class="student"> <small>By:
+                                <div class="student">
+                                    <small>By:
                                         <b><?= isset($student_arr[$row['student_id']]) ? $student_arr[$row['student_id']] : "N/A" ?></b></small>
                                 </div>
                             </div>
                         </a>
                     </div>
-                <?php }
-            } else { ?>
-                <div class="col-12 text-center">
-                    <p>No projects found for the selected year.</p>
+                    <?php
+                endwhile;
+            else:
+                ?>
+                <div class="col-12">
+                    <p class="text-center text-muted">No projects found for the selected filters.</p>
                 </div>
-            <?php } ?>
+            <?php endif; ?>
         </div>
     </div>
 </div>
 
+<script>
+    // JavaScript to handle year filter change
+    function filterByYear() {
+        const year = document.getElementById('year').value;
+        const params = new URLSearchParams(window.location.search);
+        if (year) {
+            params.set('year', year);
+        } else {
+            params.delete('year');
+        }
+        window.location.search = params.toString();
+    }
+</script>
 
 
 
