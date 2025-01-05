@@ -1,69 +1,77 @@
 <link rel="stylesheet" href="<?php echo base_url ?>myStyles/projects.css?v=<?php echo time(); ?>">
 
-
 <div class="content project-container py-2 h-100">
     <div class="col-12">
-        <div class="head">
+        <div class="head d-flex align-items-center justify-content-between">
             <h2 class="text-center">Published Projects</h2>
+            <form method="GET" action="" class="form-inline">
+                <label for="year" class="me-2">Filter by Year:</label>
+                <select name="year" id="year" class="form-select" onchange="this.form.submit()">
+                    <?php
+                    $currentYear = date('Y');
+                    $selectedYear = isset($_GET['year']) ? $_GET['year'] : $currentYear;
+
+                    // Fetch distinct years from archive_list table
+                    $years = $conn->query("SELECT DISTINCT year FROM archive_list ORDER BY year DESC");
+                    while ($row = $years->fetch_assoc()) {
+                        $year = $row['year'];
+                        $isSelected = $year == $selectedYear ? 'selected' : '';
+                        echo "<option value='{$year}' {$isSelected}>{$year}</option>";
+                    }
+                    ?>
+                </select>
+                <input type="hidden" name="q" value="<?= isset($_GET['q']) ? htmlspecialchars($_GET['q']) : '' ?>">
+            </form>
         </div>
         <?php
         // Set the limit to 100 without pagination
         $limit = 100;
 
         $isSearch = isset($_GET['q']) ? "&q={$_GET['q']}" : "";
-
         $search = "";
+
         if (isset($_GET['q'])) {
             $keyword = $conn->real_escape_string($_GET['q']);
             $search = " and (title LIKE '%{$keyword}%' or abstract LIKE '%{$keyword}%' or members LIKE '%{$keyword}%' or curriculum_id in (SELECT id FROM curriculum_list WHERE name LIKE '%{$keyword}%' or description LIKE '%{$keyword}%') or curriculum_id in (SELECT id FROM curriculum_list WHERE program_id in (SELECT id FROM program_list WHERE name LIKE '%{$keyword}%' or description LIKE '%{$keyword}%'))) ";
             $conn->query("INSERT INTO keyword_search_counter (keyword) VALUES ('{$keyword}')");
         }
 
+        // Filter by the selected year
+        $yearFilter = " and year = '{$selectedYear}'";
+
         // Fetch students and archives
-        $students = $conn->query("SELECT * FROM `student_list` WHERE id IN (SELECT student_id FROM archive_list WHERE `status` = 1 {$search})");
+        $students = $conn->query("SELECT * FROM `student_list` WHERE id IN (SELECT student_id FROM archive_list WHERE `status` = 1 {$yearFilter} {$search})");
         $student_arr = array_column($students->fetch_all(MYSQLI_ASSOC), 'lastname', 'id');
 
-        $archives = $conn->query("SELECT * FROM archive_list WHERE `status` = 1 {$search} ORDER BY unix_timestamp(date_created) DESC LIMIT {$limit}");
+        $archives = $conn->query("SELECT * FROM archive_list WHERE `status` = 1 {$yearFilter} {$search} ORDER BY unix_timestamp(date_created) DESC LIMIT {$limit}");
         ?>
 
         <div class="row">
             <?php
-            while ($row = $archives->fetch_assoc()) {
-                $row['abstract'] = strip_tags(html_entity_decode($row['abstract']));
-                ?>
-                <div class="cards col-lg-3 col-md-4 mb-2">
-                    <a href="./?page=view_archive&id=<?= $row['id'] ?>" class="shadow book-item text-decoration-none">
-                        <div class="img-holder banner overflow-hidden">
-                            <img class="img-top" src="<?= validate_image($row['banner_path']) ?>" alt="Banner Image">
-                        </div>
-                        <div class="cards-body">
-                            <div class="cards-title fw-bolder h5 text-center"><?= $row['title'] ?></div><br>
-                            <div class="student"> <small>By:
-                                    <b><?= isset($student_arr[$row['student_id']]) ? $student_arr[$row['student_id']] : "N/A" ?></b></small>
+            if ($archives->num_rows > 0) {
+                while ($row = $archives->fetch_assoc()) {
+                    $row['abstract'] = strip_tags(html_entity_decode($row['abstract']));
+                    ?>
+                    <div class="cards col-lg-3 col-md-4 mb-2">
+                        <a href="./?page=view_archive&id=<?= $row['id'] ?>" class="shadow book-item text-decoration-none">
+                            <div class="img-holder banner overflow-hidden">
+                                <img class="img-top" src="<?= validate_image($row['banner_path']) ?>" alt="Banner Image">
                             </div>
-
-                        </div>
-                    </a>
+                            <div class="cards-body">
+                                <div class="cards-title fw-bolder h5 text-center"><?= $row['title'] ?></div><br>
+                                <div class="student"> <small>By:
+                                        <b><?= isset($student_arr[$row['student_id']]) ? $student_arr[$row['student_id']] : "N/A" ?></b></small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                <?php }
+            } else { ?>
+                <div class="col-12 text-center">
+                    <p>No projects found for the selected year.</p>
                 </div>
             <?php } ?>
         </div>
-        <!-- <div class="card-footer clearfix rounded-0">
-            <div class="d-flex justify-content-center">
-                <ul class="pagination pagination-sm">
-                    <li class="page-item">
-                        <a class="page-link" href="./?page=projects<?= $isSearch ?>&p=<?= $page - 1 ?>" <?= $page == 1 ? 'disabled' : '' ?>>«</a>
-                    </li>
-                    <?php for ($i = 1; $i <= $pages; $i++): ?>
-                        <li class="page-item <?= $page == $i ? 'active' : '' ?>">
-                            <a class="page-link" href="./?page=projects<?= $isSearch ?>&p=<?= $i ?>"><?= $i ?></a>
-                        </li>
-                    <?php endfor; ?>
-                    <li class="page-item">
-                        <a class="page-link" href="./?page=projects<?= $isSearch ?>&p=<?= $page + 1 ?>" <?= $page == $pages ? 'disabled' : '' ?>>»</a>
-                    </li>
-                </ul>
-            </div>
-        </div> -->
     </div>
 </div>
 
