@@ -10,10 +10,19 @@
                 <label for="year" class="control-label text-white">Filter by Year</label>
                 <select name="year" id="year" class="form-control form-control-border" onchange="filterByYear()">
                     <?php
-                    // Only display the current year
-                    $currentYear = date('Y');
-                    ?>
-                    <option value="<?= $currentYear ?>" selected><?= $currentYear ?></option>
+                    // Fetch all distinct years from archive_list and determine the latest year
+                    $years = $conn->query("SELECT DISTINCT `year` FROM archive_list WHERE `status` = 1 ORDER BY `year` DESC");
+                    $latestYear = null;
+
+                    while ($yearRow = $years->fetch_assoc()):
+                        if (!$latestYear) {
+                            $latestYear = $yearRow['year']; // Assign the first year as the latest
+                        }
+                        ?>
+                        <option value="<?= $yearRow['year'] ?>" <?= isset($_GET['year']) && $_GET['year'] == $yearRow['year'] ? 'selected' : ($yearRow['year'] == $latestYear ? 'selected' : '') ?>>
+                            <?= $yearRow['year'] ?>
+                        </option>
+                    <?php endwhile; ?>
                 </select>
             </div>
 
@@ -35,9 +44,12 @@
         // Set the limit to 100 without pagination
         $limit = 100;
 
+        // Use the latest year as the default if no year is selected
+        $selectedYear = isset($_GET['year']) ? $conn->real_escape_string($_GET['year']) : $latestYear;
+        $yearFilter = " and `year` = '{$selectedYear}'";
+
         $isSearch = isset($_GET['q']) ? "&q={$_GET['q']}" : "";
-        $yearFilter = " and `year` = '{$currentYear}'"; // Only use the current year filter
-        
+
         $search = "";
         if (isset($_GET['q'])) {
             $keyword = $conn->real_escape_string($_GET['q']);
@@ -108,7 +120,7 @@
     function filterByYear() {
         const year = document.getElementById('year').value;
         const params = new URLSearchParams(window.location.search);
-        params.set('year', year); // Always set the year to the current year
+        params.set('year', year);
         window.location.search = params.toString();
     }
 
@@ -124,7 +136,6 @@
         window.location.search = params.toString();
     }
 </script>
-
 
 
 
