@@ -7,10 +7,9 @@
             <h2 class="text-center">Published Projects</h2>
         </div>
         <?php
-        $limit = 10;
-        $page = isset($_GET['p']) ? $_GET['p'] : 1;
-        $offset = 10 * ($page - 1);
-        $paginate = " limit {$limit} offset {$offset}";
+        // Set the limit to 100 without pagination
+        $limit = 100;
+
         $isSearch = isset($_GET['q']) ? "&q={$_GET['q']}" : "";
 
         $search = "";
@@ -20,11 +19,11 @@
             $conn->query("INSERT INTO keyword_search_counter (keyword) VALUES ('{$keyword}')");
         }
 
+        // Fetch students and archives
         $students = $conn->query("SELECT * FROM `student_list` WHERE id IN (SELECT student_id FROM archive_list WHERE `status` = 1 {$search})");
         $student_arr = array_column($students->fetch_all(MYSQLI_ASSOC), 'lastname', 'id');
-        $count_all = $conn->query("SELECT * FROM archive_list WHERE `status` = 1 {$search}")->num_rows;
-        $pages = ceil($count_all / $limit);
-        $archives = $conn->query("SELECT * FROM archive_list WHERE `status` = 1 {$search} ORDER BY unix_timestamp(date_created) DESC {$paginate}");
+
+        $archives = $conn->query("SELECT * FROM archive_list WHERE `status` = 1 {$search} ORDER BY unix_timestamp(date_created) DESC LIMIT {$limit}");
         ?>
 
         <div class="row">
@@ -48,7 +47,6 @@
                 </div>
             <?php } ?>
         </div>
-
         <!-- <div class="card-footer clearfix rounded-0">
             <div class="d-flex justify-content-center">
                 <ul class="pagination pagination-sm">
