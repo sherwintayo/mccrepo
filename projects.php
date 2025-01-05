@@ -2,7 +2,8 @@
 
 <div class="content project-container py-2 h-100">
     <div class="col-12">
-        <div class="head d-flex align-items-center">
+        <div class="head d-flex align-items-center justify-content-between">
+            <h2 class="text-center flex-grow-1">Published Projects</h2>
             <!-- Year Filter -->
             <div class="form-group me-3">
                 <label for="year" class="control-label text-navy">Filter by Year</label>
@@ -20,7 +21,7 @@
                 </select>
             </div>
 
-            <h2 class="text-center flex-grow-1">Published Projects</h2>
+
         </div>
 
         <?php
