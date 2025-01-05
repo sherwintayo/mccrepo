@@ -4,24 +4,31 @@
     <div class="col-12">
         <div class="head d-flex align-items-center justify-content-between px-3">
             <h2 class="text-start flex-grow-1">Published Projects</h2>
+
             <!-- Year Filter -->
             <div class="form-group me-3">
-                <label for="year" class="control-label text-navy">Filter by Year</label>
+                <label for="year" class="control-label text-white">Filter by Year</label>
                 <select name="year" id="year" class="form-control form-control-border" onchange="filterByYear()">
-                    <option value="" <?= !isset($_GET['year']) ? 'selected' : '' ?>>All Years</option>
                     <?php
-                    // Fetch distinct years from the archive_list table
-                    $years = $conn->query("SELECT DISTINCT `year` FROM archive_list WHERE `status` = 1 ORDER BY `year` DESC");
-                    while ($yearRow = $years->fetch_assoc()):
-                        ?>
-                        <option value="<?= $yearRow['year'] ?>" <?= isset($_GET['year']) && $_GET['year'] == $yearRow['year'] ? 'selected' : '' ?>>
-                            <?= $yearRow['year'] ?>
-                        </option>
-                    <?php endwhile; ?>
+                    // Only display the current year
+                    $currentYear = date('Y');
+                    ?>
+                    <option value="<?= $currentYear ?>" selected><?= $currentYear ?></option>
                 </select>
             </div>
 
-
+            <!-- Sort By Filter -->
+            <div class="form-group">
+                <label for="sort" class="control-label text-white">Sort By</label>
+                <select name="sort" id="sort" class="form-control form-control-border" onchange="sortBy()">
+                    <option value="" <?= !isset($_GET['sort']) ? 'selected' : '' ?>>Default</option>
+                    <option value="title_asc" <?= isset($_GET['sort']) && $_GET['sort'] == 'title_asc' ? 'selected' : '' ?>>Title (A-Z)</option>
+                    <option value="title_desc" <?= isset($_GET['sort']) && $_GET['sort'] == 'title_desc' ? 'selected' : '' ?>>Title (Z-A)</option>
+                    <option value="date_desc" <?= isset($_GET['sort']) && $_GET['sort'] == 'date_desc' ? 'selected' : '' ?>>Date (Newest to Oldest)</option>
+                    <option value="date_asc" <?= isset($_GET['sort']) && $_GET['sort'] == 'date_asc' ? 'selected' : '' ?>>
+                        Date (Oldest to Newest)</option>
+                </select>
+            </div>
         </div>
 
         <?php
@@ -29,8 +36,8 @@
         $limit = 100;
 
         $isSearch = isset($_GET['q']) ? "&q={$_GET['q']}" : "";
-        $yearFilter = isset($_GET['year']) ? " and `year` = '{$conn->real_escape_string($_GET['year'])}'" : "";
-
+        $yearFilter = " and `year` = '{$currentYear}'"; // Only use the current year filter
+        
         $search = "";
         if (isset($_GET['q'])) {
             $keyword = $conn->real_escape_string($_GET['q']);
@@ -38,11 +45,30 @@
             $conn->query("INSERT INTO keyword_search_counter (keyword) VALUES ('{$keyword}')");
         }
 
-        // Fetch students and archives with year filter
+        // Sort logic
+        $sortBy = "";
+        if (isset($_GET['sort'])) {
+            switch ($_GET['sort']) {
+                case 'title_asc':
+                    $sortBy = "ORDER BY title ASC";
+                    break;
+                case 'title_desc':
+                    $sortBy = "ORDER BY title DESC";
+                    break;
+                case 'date_asc':
+                    $sortBy = "ORDER BY unix_timestamp(date_created) ASC";
+                    break;
+                case 'date_desc':
+                    $sortBy = "ORDER BY unix_timestamp(date_created) DESC";
+                    break;
+            }
+        }
+
+        // Fetch students and archives with year filter and sort
         $students = $conn->query("SELECT * FROM `student_list` WHERE id IN (SELECT student_id FROM archive_list WHERE `status` = 1 {$search} {$yearFilter})");
         $student_arr = array_column($students->fetch_all(MYSQLI_ASSOC), 'lastname', 'id');
 
-        $archives = $conn->query("SELECT * FROM archive_list WHERE `status` = 1 {$search} {$yearFilter} ORDER BY unix_timestamp(date_created) DESC LIMIT {$limit}");
+        $archives = $conn->query("SELECT * FROM archive_list WHERE `status` = 1 {$search} {$yearFilter} {$sortBy} LIMIT {$limit}");
         ?>
 
         <div class="row">
@@ -82,14 +108,23 @@
     function filterByYear() {
         const year = document.getElementById('year').value;
         const params = new URLSearchParams(window.location.search);
-        if (year) {
-            params.set('year', year);
+        params.set('year', year); // Always set the year to the current year
+        window.location.search = params.toString();
+    }
+
+    // JavaScript to handle sort filter change
+    function sortBy() {
+        const sort = document.getElementById('sort').value;
+        const params = new URLSearchParams(window.location.search);
+        if (sort) {
+            params.set('sort', sort);
         } else {
-            params.delete('year');
+            params.delete('sort');
         }
         window.location.search = params.toString();
     }
 </script>
+
 
 
 
