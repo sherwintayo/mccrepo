@@ -2,7 +2,7 @@
 
 <div class="content project-container py-2 h-100">
     <div class="col-12">
-        <div class="head d-flex align-items-center justify-content-between">
+        <div class="head d-flex align-items-center justify-content-between p-5">
             <h2 class="text-start flex-grow-1">Published Projects</h2>
             <!-- Year Filter -->
             <div class="form-group me-3">
