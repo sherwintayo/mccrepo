@@ -49,7 +49,7 @@
             <?php } ?>
         </div>
 
-        <div class="card-footer clearfix rounded-0">
+        <!-- <div class="card-footer clearfix rounded-0">
             <div class="d-flex justify-content-center">
                 <ul class="pagination pagination-sm">
                     <li class="page-item">
@@ -65,7 +65,7 @@
                     </li>
                 </ul>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>
 
